@@ -31,7 +31,7 @@ cmake.args = [
 ]
 
 [project.urls]
-homepage = "https://open-atmos.github.io/MechanismConfiguration/"
+homepage = "https://ncar.github.io/MechanismConfiguration/"
 
 # dynamically read the version: https://scikit-build-core.readthedocs.io/en/latest/configuration.html#dynamic-metadata
 [tool.scikit-build.metadata.version]
