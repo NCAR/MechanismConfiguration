@@ -11,7 +11,7 @@ project = 'Mechanism Configuration'
 current_year = datetime.datetime.now().year
 copyright = f"2022-{current_year}, OpenAtmos"
 author = 'OpenAtmos'
-version = '1.0.0'
+version = 'v0.1.0'
 release = version
 
 # -- General configuration ---------------------------------------------------
