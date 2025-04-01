@@ -32,3 +32,16 @@ target_link_libraries(mechanism_configuration
   PUBLIC 
     yaml-cpp::yaml-cpp
 )
+
+if (APPLE)
+  # set the rpath for the shared library
+  set_target_properties(mechanism_configuration PROPERTIES
+    INSTALL_RPATH "@loader_path;@loader_path/../lib"
+  )
+elseif(UNIX)
+  # set the rpath for the shared library
+  set_target_properties(mechanism_configuration PROPERTIES
+    INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib"
+    BUILD_WITH_INSTALL_RPATH TRUE
+  )
+endif()
