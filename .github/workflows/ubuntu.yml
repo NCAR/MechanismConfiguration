@@ -23,6 +23,7 @@ jobs:
           - { cpp: g++-14, c: gcc-14}
           - { cpp: clang++, c: clang}
         build_type: [Release]
+        shared: [OFF, ON]
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
@@ -31,7 +32,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Cmake 
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D OPEN_ATMOS_BUILD_SHARED_LIBS=${{ matrix.shared }} -D CMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10

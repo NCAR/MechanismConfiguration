@@ -2,7 +2,7 @@
 # version
 configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configuration/version.hpp @ONLY)
 
-if (OPEN_ATMOS_BUILD_SHARED_LIBS)
+if(OPEN_ATMOS_BUILD_SHARED_LIBS OR OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
   set(OPEN_ATMOS_LIBRARY_TYPE SHARED)
 else()
   set(OPEN_ATMOS_LIBRARY_TYPE STATIC)
