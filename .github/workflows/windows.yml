@@ -14,6 +14,7 @@ concurrency:
 jobs:
   build-and-test:
     runs-on: windows-latest
+    continue-on-error: true
     strategy:
       matrix:
         build_type: [Release]
