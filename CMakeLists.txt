@@ -13,6 +13,8 @@ endif()
 
 message(STATUS "CMake build configuration for ${PROJECT_NAME} (${CMAKE_BUILD_TYPE}) ${PROJECT_VERSION}")
 
+include(GNUInstallDirs)
+
 ################################################################################
 # Projet wide setup options
 
@@ -21,6 +23,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 option(OPEN_ATMOS_ENABLE_TESTS "Build the tests" ON)
 option(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
+
+set(OPEN_ATMOS_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(OPEN_ATMOS_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 ################################################################################
 # Dependencies
