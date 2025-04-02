@@ -13,6 +13,13 @@ if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
   set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
+set_target_properties(mechanism_configuration PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+)
+
 target_sources(mechanism_configuration
   PRIVATE
     parse_status.cpp
