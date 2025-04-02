@@ -36,12 +36,12 @@ target_link_libraries(mechanism_configuration
 if (APPLE)
   # set the rpath for the shared library
   set_target_properties(mechanism_configuration PROPERTIES
-    INSTALL_RPATH "@loader_path;@loader_path/../lib"
+    INSTALL_RPATH "@loader_path"
   )
 elseif(UNIX)
   # set the rpath for the shared library
   set_target_properties(mechanism_configuration PROPERTIES
-    INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib"
+    INSTALL_RPATH "$ORIGIN"
     BUILD_WITH_INSTALL_RPATH TRUE
   )
 endif()
