@@ -39,13 +39,8 @@ jobs:
           architecture: 'x64'
 
       - name: Run Cmake
-        if: matrix.architecture == 'Win32'
         run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOPEN_ATMOS_ENABLE_PYTHON_LIBRARY=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
       
-      - name: Run Cmake
-        if: matrix.architecture == 'x64'
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
