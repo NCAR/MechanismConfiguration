@@ -50,6 +50,7 @@ if (APPLE)
   # set the rpath for the shared library
   set_target_properties(mechanism_configuration PROPERTIES
     INSTALL_RPATH "@loader_path"
+    BUILD_WITH_INSTALL_RPATH TRUE
   )
 elseif(UNIX)
   # set the rpath for the shared library
