@@ -39,6 +39,13 @@ set(YAML_BUILD_SHARED_LIBS ${OPEN_ATMOS_BUILD_SHARED_LIBS} CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(yaml-cpp)
 
+# Set output directories for yaml-cpp
+set_target_properties(yaml-cpp PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  RUNTIME_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+)
+
 ################################################################################
 # pybind11
 
