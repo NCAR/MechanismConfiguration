@@ -19,7 +19,6 @@ jobs:
       matrix:
         build_type: [Release]
         architecture: [Win32, x64]
-        shared: [OFF, ON]
 
     steps:
       - name: Checkout code
@@ -40,7 +39,7 @@ jobs:
           architecture: 'x64'
 
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D OPEN_ATMOS_BUILD_SHARED_LIBS=${{ matrix.shared }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
       
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
