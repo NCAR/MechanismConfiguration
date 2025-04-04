@@ -32,4 +32,4 @@ else()
   set(PYTHON_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 endif()
 
-install(TARGETS mechanism_configuration_python LIBRARY DESTINATION .)
+install(TARGETS mechanism_configuration_python mechanism_configuration LIBRARY DESTINATION .)
