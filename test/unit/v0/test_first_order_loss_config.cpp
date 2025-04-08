@@ -50,18 +50,18 @@ TEST(FirstOrderLossConfig, ParseConfig)
 
     // first reaction
     {
-      EXPECT_EQ(process_vector[0].reactants.size(), 0);
-      EXPECT_EQ(process_vector[0].products.size(), 1);
-      EXPECT_EQ(process_vector[0].products[0].species_name, "foo");
+      EXPECT_EQ(process_vector[0].reactants.size(), 1);
+      EXPECT_EQ(process_vector[0].products.size(), 0);
+      EXPECT_EQ(process_vector[0].reactants[0].species_name, "foo");
       EXPECT_EQ(process_vector[0].name, "LOSS.foo");
       EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
     }
 
     // second reaction
     {
-      EXPECT_EQ(process_vector[1].reactants.size(), 0);
-      EXPECT_EQ(process_vector[1].products.size(), 1);
-      EXPECT_EQ(process_vector[1].products[0].species_name, "bar");
+      EXPECT_EQ(process_vector[1].reactants.size(), 1);
+      EXPECT_EQ(process_vector[1].products.size(), 0);
+      EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
       EXPECT_EQ(process_vector[1].name, "LOSS.bar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
