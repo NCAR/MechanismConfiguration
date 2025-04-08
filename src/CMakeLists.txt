@@ -7,11 +7,19 @@ add_library(open_atmos::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
-if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
-  # Add the -fPIC flag for position-independent code if we are building the python library
-  # so that it links correctly on linux
+if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY OR OPEN_ATMOS_ENABLE_PIC)
+  # Add the -fPIC flag for position-independent code if we are building shared libraries
+  # or the python library so that it links correctly on linux
   set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
+
+set_target_properties(mechanism_configuration PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  RUNTIME_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+)
 
 target_sources(mechanism_configuration
   PRIVATE
@@ -32,3 +40,17 @@ target_link_libraries(mechanism_configuration
   PUBLIC 
     yaml-cpp::yaml-cpp
 )
+
+if (APPLE)
+  # set the rpath for the shared library
+  set_target_properties(mechanism_configuration PROPERTIES
+    INSTALL_RPATH "@loader_path"
+    BUILD_WITH_INSTALL_RPATH TRUE
+  )
+elseif(UNIX)
+  # set the rpath for the shared library
+  set_target_properties(mechanism_configuration PROPERTIES
+    INSTALL_RPATH "$ORIGIN"
+    BUILD_WITH_INSTALL_RPATH TRUE
+  )
+endif()
