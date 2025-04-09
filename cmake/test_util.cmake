@@ -12,7 +12,7 @@ function(create_standard_test)
 
   add_executable(test_${TEST_NAME} ${TEST_SOURCES})
 
-  target_link_libraries(test_${TEST_NAME} PUBLIC open_atmos::mechanism_configuration GTest::gtest_main)
+  target_link_libraries(test_${TEST_NAME} PUBLIC musica::mechanism_configuration GTest::gtest_main)
 
 
   # link additional libraries

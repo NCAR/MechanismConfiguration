@@ -30,7 +30,7 @@ install(
     mechanism_configuration_Exports
   DESTINATION 
     ${cmake_config_install_location}
-  NAMESPACE mechanism_configuration::
+  NAMESPACE musica::
 )
 
 configure_package_config_file(
