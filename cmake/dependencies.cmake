@@ -14,7 +14,7 @@ endfunction(set_git_default)
 ################################################################################
 # google test
 
-if(PROJECT_IS_TOP_LEVEL AND OPEN_ATMOS_ENABLE_TESTS)
+if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG v1.14.0
@@ -41,7 +41,7 @@ FetchContent_MakeAvailable(yaml-cpp)
 ################################################################################
 # pybind11
 
-if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
   set(PYBIND11_NEWPYTHON ON)
 
   set_git_default(PYBIND11_GIT_REPOSITORY https://github.com/pybind/pybind11)

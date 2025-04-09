@@ -24,16 +24,16 @@ function(create_standard_test)
     set(TEST_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
   endif()
 
-  add_open_atmos_test(${TEST_NAME} test_${TEST_NAME} "" ${TEST_WORKING_DIRECTORY})
+  add_mech_config_test(${TEST_NAME} test_${TEST_NAME} "" ${TEST_WORKING_DIRECTORY})
 endfunction(create_standard_test)
 
 ################################################################################
 # Add a test
 
-function(add_open_atmos_test test_name test_binary test_args working_dir)
+function(add_mech_config_test test_name test_binary test_args working_dir)
   add_test(NAME ${test_name}
             COMMAND ${test_binary} ${test_args}
             WORKING_DIRECTORY ${working_dir})
-endfunction(add_open_atmos_test)
+endfunction(add_mech_config_test)
 
 ################################################################################

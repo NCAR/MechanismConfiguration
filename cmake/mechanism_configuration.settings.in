@@ -22,8 +22,8 @@ Shared library: @CMAKE_BUILD_SHARED@
 ## Interfaces:
 --------------
 
-Tests:      @OPEN_ATMOS_ENABLE_TESTS@
-Python Library:     @OPEN_ATMOS_ENABLE_PYTHON_LIBRARY@
+Tests:      @MECH_CONFIG_ENABLE_TESTS@
+Python Library:     @MECH_CONFIG_ENABLE_PYTHON_LIBRARY@
 
 ## Dependencies:
 ----------------
