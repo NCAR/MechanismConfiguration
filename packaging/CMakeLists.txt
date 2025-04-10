@@ -5,9 +5,10 @@ set(INSTALL_PREFIX "mechanism_configuration-${PROJECT_VERSION}" )
 install(
   TARGETS
     mechanism_configuration
-    yaml-cpp
-  EXPORT 
+  EXPORT
     mechanism_configuration_Exports
+  NAMESPACE
+    musica
   LIBRARY DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}
@@ -22,6 +23,13 @@ install(
     ${INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+install(
+  TARGETS
+    yaml-cpp
+  EXPORT
+    mechanism_configuration_Exports
+)
+
 # install the cmake config files
 set(cmake_config_install_location ${INSTALL_PREFIX}/cmake)
 
@@ -30,7 +38,6 @@ install(
     mechanism_configuration_Exports
   DESTINATION 
     ${cmake_config_install_location}
-  NAMESPACE musica::
 )
 
 configure_package_config_file(
