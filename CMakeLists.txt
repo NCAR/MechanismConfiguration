@@ -21,12 +21,12 @@ include(GNUInstallDirs)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
-option(OPEN_ATMOS_ENABLE_TESTS "Build the tests" ON)
-option(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
-option(OPEN_ATMOS_ENABLE_PIC "Build the library with position independent code" ON)
+option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
+option(MECH_CONFIG_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
+option(MECH_CONFIG_ENABLE_PIC "Build the library with position independent code" ON)
 
-set(OPEN_ATMOS_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-set(OPEN_ATMOS_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(MECH_CONFIG_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(MECH_CONFIG_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 ################################################################################
 # Dependencies
@@ -40,14 +40,14 @@ add_subdirectory(src)
 
 ################################################################################
 # python
-if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
   add_subdirectory(python)
 endif()
 
 ################################################################################
 # Tests
 
-if(PROJECT_IS_TOP_LEVEL AND OPEN_ATMOS_ENABLE_TESTS)
+if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   enable_testing()
   add_subdirectory(test)
 
@@ -61,6 +61,6 @@ endif()
 # Packaging
 
 # only include packaging if we are the top level project being built
-if(PROJECT_IS_TOP_LEVEL AND NOT OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+if(PROJECT_IS_TOP_LEVEL AND NOT MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
   add_subdirectory(packaging)
 endif()

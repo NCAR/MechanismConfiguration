@@ -3,20 +3,20 @@
 configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configuration/version.hpp @ONLY)
 
 add_library(mechanism_configuration)
-add_library(open_atmos::mechanism_configuration ALIAS mechanism_configuration)
+add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
-if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY OR OPEN_ATMOS_ENABLE_PIC)
+if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY OR MECH_CONFIG_ENABLE_PIC)
   # Add the -fPIC flag for position-independent code if we are building shared libraries
   # or the python library so that it links correctly on linux
   set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 
 set_target_properties(mechanism_configuration PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
-  LIBRARY_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
-  RUNTIME_OUTPUT_DIRECTORY ${OPEN_ATMOS_LIB_DIR}
+  ARCHIVE_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
+  RUNTIME_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
   VERSION ${PROJECT_VERSION}
   SOVERSION ${PROJECT_VERSION_MAJOR}
 )
