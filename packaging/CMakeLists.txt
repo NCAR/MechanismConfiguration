@@ -22,7 +22,7 @@ install(
 )
 
 # install the cmake config files
-set(cmake_config_install_location ${INSTALL_PREFIX}/cmake)
+set(cmake_config_install_location ${INSTALL_PREFIX}/cmake/mechanism_configuration)
 
 install(
   EXPORT 
