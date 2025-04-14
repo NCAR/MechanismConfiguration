@@ -5,6 +5,7 @@ set(INSTALL_PREFIX "mechanism_configuration-${PROJECT_VERSION}" )
 install(
   TARGETS
     mechanism_configuration
+    yaml-cpp
   EXPORT
     mechanism_configuration_Exports
   LIBRARY DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
@@ -29,8 +30,6 @@ install(
     mechanism_configuration_Exports
   DESTINATION 
     ${cmake_config_install_location}
-  NAMESPACE
-    musica::
 )
 
 configure_package_config_file(
