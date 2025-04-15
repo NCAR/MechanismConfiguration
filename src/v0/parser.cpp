@@ -24,7 +24,7 @@ namespace mechanism_configuration
       Errors errors;
       for (const auto& element : object)
       {
-        std::string type = element[validation::TYPE].as<std::string>();
+        std::string type = element[validation::keys.TYPE].as<std::string>();
         auto it = parsers.find(type);
         if (it != parsers.end())
         {
@@ -43,15 +43,15 @@ namespace mechanism_configuration
     Errors ParseMechanism(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       ConfigParseStatus status = ConfigParseStatus::Success;
-      auto required = { validation::NAME, validation::REACTIONS, validation::TYPE };
+      auto required = { validation::keys.NAME, validation::keys.REACTIONS, validation::keys.TYPE };
 
       Errors errors;
       auto validate = ValidateSchema(object, required, {});
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        mechanism->name = object[validation::NAME].as<std::string>();
-        auto parse_errors = run_parsers(parsers, mechanism, object[validation::REACTIONS]);
+        mechanism->name = object[validation::keys.NAME].as<std::string>();
+        auto parse_errors = run_parsers(parsers, mechanism, object[validation::keys.REACTIONS]);
         errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
       }
 

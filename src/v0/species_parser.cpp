@@ -10,25 +10,25 @@ namespace mechanism_configuration
     Errors ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       Errors errors;
-      std::vector<std::string> required = { validation::NAME, validation::TYPE };
-      std::vector<std::string> optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT };
+      std::vector<std::string> required = { validation::keys.NAME, validation::keys.TYPE };
+      std::vector<std::string> optional = { validation::keys.TRACER_TYPE, validation::keys.ABS_TOLERANCE, validation::keys.DIFFUSION_COEFF, validation::keys.MOL_WEIGHT };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        std::string name = object[validation::NAME].as<std::string>();
+        std::string name = object[validation::keys.NAME].as<std::string>();
         types::Species species;
         species.name = name;
 
-        if (object[validation::MOL_WEIGHT])
-          species.molecular_weight = object[validation::MOL_WEIGHT].as<double>();
-        if (object[validation::DIFFUSION_COEFF])
-          species.diffusion_coefficient = object[validation::DIFFUSION_COEFF].as<double>();
-        if (object[validation::ABS_TOLERANCE])
-          species.absolute_tolerance = object[validation::ABS_TOLERANCE].as<double>();
-        if (object[validation::TRACER_TYPE])
-          species.tracer_type = object[validation::TRACER_TYPE].as<std::string>();
+        if (object[validation::keys.MOL_WEIGHT])
+          species.molecular_weight = object[validation::keys.MOL_WEIGHT].as<double>();
+        if (object[validation::keys.DIFFUSION_COEFF])
+          species.diffusion_coefficient = object[validation::keys.DIFFUSION_COEFF].as<double>();
+        if (object[validation::keys.ABS_TOLERANCE])
+          species.absolute_tolerance = object[validation::keys.ABS_TOLERANCE].as<double>();
+        if (object[validation::keys.TRACER_TYPE])
+          species.tracer_type = object[validation::keys.TRACER_TYPE].as<std::string>();
 
         // Load remaining keys as unknown properties
         for (auto it = object.begin(); it != object.end(); ++it)
@@ -52,13 +52,13 @@ namespace mechanism_configuration
     Errors ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       Errors errors;
-      auto required = { validation::VALUE, validation::TYPE };
+      auto required = { validation::keys.VALUE, validation::keys.TYPE };
 
       auto validate = ValidateSchema(object, required, {});
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        mechanism->relative_tolerance = object[validation::VALUE].as<double>();
+        mechanism->relative_tolerance = object[validation::keys.VALUE].as<double>();
       }
 
       return errors;
@@ -72,13 +72,13 @@ namespace mechanism_configuration
         auto key = it->first.as<std::string>();
         auto value = it->second;
 
-        auto validate = ValidateSchema(value, {}, { validation::QTY });
+        auto validate = ValidateSchema(value, {}, { validation::keys.QTY });
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
           double qty = 1;
-          if (value[validation::QTY])
-            qty = value[validation::QTY].as<std::size_t>();
+          if (value[validation::keys.QTY])
+            qty = value[validation::keys.QTY].as<std::size_t>();
           types::ReactionComponent reactant = { .species_name = key, .coefficient = qty };
           reactants.push_back(reactant);
         }
@@ -95,14 +95,14 @@ namespace mechanism_configuration
         auto key = it->first.as<std::string>();
         auto value = it->second;
 
-        auto validate = ValidateSchema(value, {}, { validation::YIELD });
+        auto validate = ValidateSchema(value, {}, { validation::keys.YIELD });
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
           types::ReactionComponent product = { .species_name = key, .coefficient = 1 };
-          if (value[validation::YIELD])
+          if (value[validation::keys.YIELD])
           {
-            double yield = value[validation::YIELD].as<double>();
+            double yield = value[validation::keys.YIELD].as<double>();
             product.coefficient = yield;
           }
           products.push_back(product);

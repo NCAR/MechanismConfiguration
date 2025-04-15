@@ -13,9 +13,9 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
-      auto optional = { validation::K0_A,   validation::K0_B,   validation::K0_C, validation::KINF_A,
-                        validation::KINF_B, validation::KINF_C, validation::FC,   validation::N };
+      auto required = { validation::keys.TYPE, validation::keys.REACTANTS, validation::keys.PRODUCTS };
+      auto optional = { validation::keys.K0_A,   validation::keys.K0_B,   validation::keys.K0_C, validation::keys.KINF_A,
+                        validation::keys.KINF_B, validation::keys.KINF_C, validation::keys.FC,   validation::keys.N };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -24,16 +24,16 @@ namespace mechanism_configuration
         std::vector<types::ReactionComponent> reactants;
         std::vector<types::ReactionComponent> products;
 
-        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        auto parse_error = ParseReactants(object[validation::keys.REACTANTS], reactants);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-        parse_error = ParseProducts(object[validation::PRODUCTS], products);
+        parse_error = ParseProducts(object[validation::keys.PRODUCTS], products);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
         types::Troe parameters;
-        if (object[validation::K0_A])
+        if (object[validation::keys.K0_A])
         {
-          parameters.k0_A = object[validation::K0_A].as<double>();
+          parameters.k0_A = object[validation::keys.K0_A].as<double>();
         }
         // Account for the conversion of reactant concentrations (including M) to molecules cm-3
         int total_moles = 0;
@@ -42,35 +42,35 @@ namespace mechanism_configuration
           total_moles += reactant.coefficient;
         }
         parameters.k0_A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles);
-        if (object[validation::K0_B])
+        if (object[validation::keys.K0_B])
         {
-          parameters.k0_B = object[validation::K0_B].as<double>();
+          parameters.k0_B = object[validation::keys.K0_B].as<double>();
         }
-        if (object[validation::K0_C])
+        if (object[validation::keys.K0_C])
         {
-          parameters.k0_C = object[validation::K0_C].as<double>();
+          parameters.k0_C = object[validation::keys.K0_C].as<double>();
         }
-        if (object[validation::KINF_A])
+        if (object[validation::keys.KINF_A])
         {
-          parameters.kinf_A = object[validation::KINF_A].as<double>();
+          parameters.kinf_A = object[validation::keys.KINF_A].as<double>();
         }
         // Account for terms in denominator and exponent that include [M] but not other reactants
         parameters.kinf_A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
-        if (object[validation::KINF_B])
+        if (object[validation::keys.KINF_B])
         {
-          parameters.kinf_B = object[validation::KINF_B].as<double>();
+          parameters.kinf_B = object[validation::keys.KINF_B].as<double>();
         }
-        if (object[validation::KINF_C])
+        if (object[validation::keys.KINF_C])
         {
-          parameters.kinf_C = object[validation::KINF_C].as<double>();
+          parameters.kinf_C = object[validation::keys.KINF_C].as<double>();
         }
-        if (object[validation::FC])
+        if (object[validation::keys.FC])
         {
-          parameters.Fc = object[validation::FC].as<double>();
+          parameters.Fc = object[validation::keys.FC].as<double>();
         }
-        if (object[validation::N])
+        if (object[validation::keys.N])
         {
-          parameters.N = object[validation::N].as<double>();
+          parameters.N = object[validation::keys.N].as<double>();
         }
 
         parameters.reactants = reactants;

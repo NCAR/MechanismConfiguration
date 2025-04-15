@@ -12,8 +12,8 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
-      auto optional = { validation::A, validation::B, validation::C, validation::D, validation::E, validation::Ea, validation::MUSICA_NAME };
+      auto required = { validation::keys.TYPE, validation::keys.REACTANTS, validation::keys.PRODUCTS };
+      auto optional = { validation::keys.A, validation::keys.B, validation::keys.C, validation::keys.D, validation::keys.E, validation::keys.Ea, validation::keys.MUSICA_NAME };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -22,16 +22,16 @@ namespace mechanism_configuration
         std::vector<types::ReactionComponent> reactants;
         std::vector<types::ReactionComponent> products;
 
-        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        auto parse_error = ParseReactants(object[validation::keys.REACTANTS], reactants);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-        parse_error = ParseProducts(object[validation::PRODUCTS], products);
+        parse_error = ParseProducts(object[validation::keys.PRODUCTS], products);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
         types::Arrhenius parameters;
-        if (object[validation::A])
+        if (object[validation::keys.A])
         {
-          parameters.A = object[validation::A].as<double>();
+          parameters.A = object[validation::keys.A].as<double>();
         }
         int total_moles = 0;
         for (const auto& reactant : reactants)
@@ -39,34 +39,34 @@ namespace mechanism_configuration
           total_moles += reactant.coefficient;
         }
         parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
-        if (object[validation::B])
+        if (object[validation::keys.B])
         {
-          parameters.B = object[validation::B].as<double>();
+          parameters.B = object[validation::keys.B].as<double>();
         }
-        if (object[validation::C])
+        if (object[validation::keys.C])
         {
-          parameters.C = object[validation::C].as<double>();
+          parameters.C = object[validation::keys.C].as<double>();
         }
-        if (object[validation::D])
+        if (object[validation::keys.D])
         {
-          parameters.D = object[validation::D].as<double>();
+          parameters.D = object[validation::keys.D].as<double>();
         }
-        if (object[validation::E])
+        if (object[validation::keys.E])
         {
-          parameters.E = object[validation::E].as<double>();
+          parameters.E = object[validation::keys.E].as<double>();
         }
-        if (object[validation::Ea])
+        if (object[validation::keys.Ea])
         {
           if (parameters.C != 0)
           {
-            std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
-            std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
+            std::string line = std::to_string(object[validation::keys.Ea].Mark().line + 1);
+            std::string column = std::to_string(object[validation::keys.Ea].Mark().column + 1);
             errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
           }
           else
           {
             // Calculate 'C' using 'Ea'
-            parameters.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
+            parameters.C = -1 * object[validation::keys.Ea].as<double>() / constants::boltzmann;
           }
         }
 

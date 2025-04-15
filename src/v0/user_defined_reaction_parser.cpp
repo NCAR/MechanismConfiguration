@@ -12,8 +12,8 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME };
-      auto optional = { validation::SCALING_FACTOR };
+      auto required = { validation::keys.TYPE, validation::keys.REACTANTS, validation::keys.PRODUCTS, validation::keys.MUSICA_NAME };
+      auto optional = { validation::keys.SCALING_FACTOR };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -22,15 +22,15 @@ namespace mechanism_configuration
         std::vector<types::ReactionComponent> reactants;
         std::vector<types::ReactionComponent> products;
 
-        auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+        auto parse_error = ParseReactants(object[validation::keys.REACTANTS], reactants);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-        parse_error = ParseProducts(object[validation::PRODUCTS], products);
+        parse_error = ParseProducts(object[validation::keys.PRODUCTS], products);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-        double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
+        double scaling_factor = object[validation::keys.SCALING_FACTOR] ? object[validation::keys.SCALING_FACTOR].as<double>() : 1.0;
 
-        std::string name = "USER." + object[validation::MUSICA_NAME].as<std::string>();
+        std::string name = "USER." + object[validation::keys.MUSICA_NAME].as<std::string>();
 
         types::UserDefined user_defined = { .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name };
         mechanism->reactions.user_defined.push_back(user_defined);
