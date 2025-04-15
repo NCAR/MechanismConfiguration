@@ -10,8 +10,8 @@ namespace mechanism_configuration
     Errors ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       Errors errors;
-      std::vector<std::string> required = { validation::keys.NAME, validation::keys.TYPE };
-      std::vector<std::string> optional = { validation::keys.TRACER_TYPE, validation::keys.ABS_TOLERANCE, validation::keys.DIFFUSION_COEFF, validation::keys.MOL_WEIGHT };
+      auto required = { validation::keys.NAME, validation::keys.TYPE };
+      auto optional = { validation::keys.TRACER_TYPE, validation::keys.ABS_TOLERANCE, validation::keys.DIFFUSION_COEFF, validation::keys.MOL_WEIGHT };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());
