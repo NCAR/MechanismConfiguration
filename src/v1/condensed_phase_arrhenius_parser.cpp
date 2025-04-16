@@ -17,61 +17,61 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      auto required_keys = { validation::keys.products,
-                             validation::keys.reactants,
-                             validation::keys.type,
-                             validation::keys.aerosol_phase,
-                             validation::keys.aerosol_phase_water };
-      auto optional_keys = { validation::keys.A, validation::keys.B,  validation::keys.C,   validation::keys.D,
-                             validation::keys.E, validation::keys.Ea, validation::keys.name };
+      std::vector<std::string> required_keys = { validation::products,
+                             validation::reactants,
+                             validation::type,
+                             validation::aerosol_phase,
+                             validation::aerosol_phase_water };
+      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
+                             validation::E, validation::Ea, validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        auto products = ParseReactantsOrProducts(validation::keys.products, object);
+        auto products = ParseReactantsOrProducts(validation::products, object);
         errors.insert(errors.end(), products.first.begin(), products.first.end());
-        auto reactants = ParseReactantsOrProducts(validation::keys.reactants, object);
+        auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
-        if (object[validation::keys.A])
+        if (object[validation::A])
         {
-          condensed_phase_arrhenius.A = object[validation::keys.A].as<double>();
+          condensed_phase_arrhenius.A = object[validation::A].as<double>();
         }
-        if (object[validation::keys.B])
+        if (object[validation::B])
         {
-          condensed_phase_arrhenius.B = object[validation::keys.B].as<double>();
+          condensed_phase_arrhenius.B = object[validation::B].as<double>();
         }
-        if (object[validation::keys.C])
+        if (object[validation::C])
         {
-          condensed_phase_arrhenius.C = object[validation::keys.C].as<double>();
+          condensed_phase_arrhenius.C = object[validation::C].as<double>();
         }
-        if (object[validation::keys.D])
+        if (object[validation::D])
         {
-          condensed_phase_arrhenius.D = object[validation::keys.D].as<double>();
+          condensed_phase_arrhenius.D = object[validation::D].as<double>();
         }
-        if (object[validation::keys.E])
+        if (object[validation::E])
         {
-          condensed_phase_arrhenius.E = object[validation::keys.E].as<double>();
+          condensed_phase_arrhenius.E = object[validation::E].as<double>();
         }
-        if (object[validation::keys.Ea])
+        if (object[validation::Ea])
         {
           if (condensed_phase_arrhenius.C != 0)
           {
-            std::string line = std::to_string(object[validation::keys.Ea].Mark().line + 1);
-            std::string column = std::to_string(object[validation::keys.Ea].Mark().column + 1);
+            std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
+            std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
             errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
           }
-          condensed_phase_arrhenius.C = -1 * object[validation::keys.Ea].as<double>() / constants::boltzmann;
+          condensed_phase_arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
         }
 
-        if (object[validation::keys.name])
+        if (object[validation::name])
         {
-          condensed_phase_arrhenius.name = object[validation::keys.name].as<std::string>();
+          condensed_phase_arrhenius.name = object[validation::name].as<std::string>();
         }
 
-        std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
-        std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].as<std::string>();
+        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
+        std::string aerosol_phase_water = object[validation::aerosol_phase_water].as<std::string>();
 
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)

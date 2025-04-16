@@ -12,8 +12,8 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      auto required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME };
-      auto optional = { validation::SCALING_FACTOR };
+      std::vector<std::string> required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME };
+      std::vector<std::string> optional = { validation::SCALING_FACTOR };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());

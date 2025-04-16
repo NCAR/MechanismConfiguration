@@ -17,31 +17,31 @@ namespace mechanism_configuration
       Errors errors;
       types::WetDeposition wet_deposition;
 
-      auto required_keys = { validation::keys.aerosol_phase, validation::keys.type };
-      auto optional_keys = { validation::keys.name, validation::keys.scaling_factor };
+      std::vector<std::string> required_keys = { validation::aerosol_phase, validation::type };
+      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        if (object[validation::keys.scaling_factor])
+        if (object[validation::scaling_factor])
         {
-          wet_deposition.scaling_factor = object[validation::keys.scaling_factor].as<double>();
+          wet_deposition.scaling_factor = object[validation::scaling_factor].as<double>();
         }
 
-        if (object[validation::keys.name])
+        if (object[validation::name])
         {
-          wet_deposition.name = object[validation::keys.name].as<std::string>();
+          wet_deposition.name = object[validation::name].as<std::string>();
         }
 
-        std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
+        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
 
         auto it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
         if (it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 

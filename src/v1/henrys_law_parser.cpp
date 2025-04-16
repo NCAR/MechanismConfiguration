@@ -17,27 +17,27 @@ namespace mechanism_configuration
       Errors errors;
       types::HenrysLaw henrys_law;
 
-      auto required_keys = { validation::keys.type,
-                             validation::keys.gas_phase,
-                             validation::keys.gas_phase_species,
-                             validation::keys.aerosol_phase,
-                             validation::keys.aerosol_phase_species,
-                             validation::keys.aerosol_phase_water };
-      auto optional_keys = { validation::keys.name };
+      std::vector<std::string> required_keys = { validation::type,
+                             validation::gas_phase,
+                             validation::gas_phase_species,
+                             validation::aerosol_phase,
+                             validation::aerosol_phase_species,
+                             validation::aerosol_phase_water };
+      std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        std::string gas_phase = object[validation::keys.gas_phase].as<std::string>();
-        std::string gas_phase_species = object[validation::keys.gas_phase_species].as<std::string>();
-        std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
-        std::string aerosol_phase_species = object[validation::keys.aerosol_phase_species].as<std::string>();
-        std::string aerosol_phase_water = object[validation::keys.aerosol_phase_water].as<std::string>();
+        std::string gas_phase = object[validation::gas_phase].as<std::string>();
+        std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
+        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
+        std::string aerosol_phase_species = object[validation::aerosol_phase_species].as<std::string>();
+        std::string aerosol_phase_water = object[validation::aerosol_phase_water].as<std::string>();
 
-        if (object[validation::keys.name])
+        if (object[validation::name])
         {
-          henrys_law.name = object[validation::keys.name].as<std::string>();
+          henrys_law.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
@@ -59,8 +59,8 @@ namespace mechanism_configuration
         auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::keys.gas_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::keys.gas_phase].Mark().column + 1);
+          std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::gas_phase].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
@@ -80,8 +80,8 @@ namespace mechanism_configuration
         }
         else
         {
-          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 

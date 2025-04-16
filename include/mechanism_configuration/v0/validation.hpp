@@ -13,55 +13,55 @@ namespace mechanism_configuration
   {
     namespace validation
     {
-      const std::string NAME = "name";
-      const std::string TYPE = "type";
+      static constexpr const char* NAME = "name";
+      static constexpr const char* TYPE = "type";
 
-      const std::string VALUE = "value";
+      static constexpr const char* VALUE = "value";
 
-      const std::string REACTIONS = "reactions";
+      static constexpr const char* REACTIONS = "reactions";
 
-      const std::string TRACER_TYPE = "tracer type";
-      const std::string ABS_TOLERANCE = "absolute tolerance";
-      const std::string DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
-      const std::string MOL_WEIGHT = "molecular weight [kg mol-1]";
-      const std::string THIRD_BODY = "THIRD_BODY";
+      static constexpr const char* TRACER_TYPE = "tracer type";
+      static constexpr const char* ABS_TOLERANCE = "absolute tolerance";
+      static constexpr const char* DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
+      static constexpr const char* MOL_WEIGHT = "molecular weight [kg mol-1]";
+      static constexpr const char* THIRD_BODY = "THIRD_BODY";
 
-      const std::string REACTANTS = "reactants";
-      const std::string PRODUCTS = "products";
-      const std::string MUSICA_NAME = "MUSICA name";
-      const std::string SCALING_FACTOR = "scaling factor";
-      const std::string GAS_PHASE_REACTANT = "gas-phase reactant";
-      const std::string GAS_PHASE_PRODUCTS = "gas-phase products";
+      static constexpr const char* REACTANTS = "reactants";
+      static constexpr const char* PRODUCTS = "products";
+      static constexpr const char* MUSICA_NAME = "MUSICA name";
+      static constexpr const char* SCALING_FACTOR = "scaling factor";
+      static constexpr const char* GAS_PHASE_REACTANT = "gas-phase reactant";
+      static constexpr const char* GAS_PHASE_PRODUCTS = "gas-phase products";
 
-      const std::string QTY = "qty";
-      const std::string YIELD = "yield";
+      static constexpr const char* QTY = "qty";
+      static constexpr const char* YIELD = "yield";
 
-      const std::string SPECIES = "species";
+      static constexpr const char* SPECIES = "species";
 
-      const std::string ALKOXY_PRODUCTS = "alkoxy products";
-      const std::string NITRATE_PRODUCTS = "nitrate products";
-      const std::string X = "X";
-      const std::string Y = "Y";
-      const std::string A0 = "a0";
-      const std::string N = "N";
-      const std::string n = "n";
+      static constexpr const char* ALKOXY_PRODUCTS = "alkoxy products";
+      static constexpr const char* NITRATE_PRODUCTS = "nitrate products";
+      static constexpr const char* X = "X";
+      static constexpr const char* Y = "Y";
+      static constexpr const char* A0 = "a0";
+      static constexpr const char* N = "N";
+      static constexpr const char* n = "n";
 
-      const std::string PROBABILITY = "reaction probability";
+      static constexpr const char* PROBABILITY = "reaction probability";
 
-      const std::string A = "A";
-      const std::string B = "B";
-      const std::string C = "C";
-      const std::string D = "D";
-      const std::string E = "E";
-      const std::string Ea = "Ea";
+      static constexpr const char* A = "A";
+      static constexpr const char* B = "B";
+      static constexpr const char* C = "C";
+      static constexpr const char* D = "D";
+      static constexpr const char* E = "E";
+      static constexpr const char* Ea = "Ea";
 
-      const std::string K0_A = "k0_A";
-      const std::string K0_B = "k0_B";
-      const std::string K0_C = "k0_C";
-      const std::string KINF_A = "kinf_A";
-      const std::string KINF_B = "kinf_B";
-      const std::string KINF_C = "kinf_C";
-      const std::string FC = "Fc";
+      static constexpr const char* K0_A = "k0_A";
+      static constexpr const char* K0_B = "k0_B";
+      static constexpr const char* K0_C = "k0_C";
+      static constexpr const char* KINF_A = "kinf_A";
+      static constexpr const char* KINF_B = "kinf_B";
+      static constexpr const char* KINF_C = "kinf_C";
+      static constexpr const char* FC = "Fc";
     }  // namespace validation
   }  // namespace v0
 }  // namespace mechanism_configuration
