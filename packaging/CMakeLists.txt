@@ -6,7 +6,7 @@ install(
   TARGETS
     mechanism_configuration
     yaml-cpp
-  EXPORT 
+  EXPORT
     mechanism_configuration_Exports
   LIBRARY DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
@@ -23,14 +23,13 @@ install(
 )
 
 # install the cmake config files
-set(cmake_config_install_location ${INSTALL_PREFIX}/cmake)
+set(cmake_config_install_location ${INSTALL_PREFIX}/cmake/mechanism_configuration)
 
 install(
   EXPORT 
     mechanism_configuration_Exports
   DESTINATION 
     ${cmake_config_install_location}
-  NAMESPACE musica::
 )
 
 configure_package_config_file(
