@@ -7,6 +7,7 @@ RUN dnf -y update \
         gdb \
         git \
         make \
+        python-devel \
     && dnf clean all
 
 COPY . /mechanism_configuration/
