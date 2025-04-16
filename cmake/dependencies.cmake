@@ -29,9 +29,12 @@ endif()
 ################################################################################
 # yaml-cpp
 
+set_git_default(YAML_CPP_GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git)
+set_git_default(YAML_CPP_GIT_TAG 28f93bdec6387d42332220afa9558060c8016795)
+
 FetchContent_Declare(yaml-cpp
-    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-    GIT_TAG 0.8.0
+    GIT_REPOSITORY ${YAML_CPP_GIT_REPOSITORY}
+    GIT_TAG        ${YAML_CPP_GIT_TAG}
 )
 
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)

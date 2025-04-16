@@ -6,7 +6,9 @@ RUN dnf -y update \
         gcc-c++ \
         gdb \
         git \
+        lcov \
         make \
+        python-devel \
     && dnf clean all
 
 COPY . /mechanism_configuration/
