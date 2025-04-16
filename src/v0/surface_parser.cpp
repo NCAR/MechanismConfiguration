@@ -11,7 +11,9 @@ namespace mechanism_configuration
     Errors SurfaceParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       Errors errors;
-      std::vector<std::string> required = { validation::TYPE, validation::GAS_PHASE_PRODUCTS, validation::GAS_PHASE_REACTANT, validation::MUSICA_NAME };
+      std::vector<std::string> required = {
+        validation::TYPE, validation::GAS_PHASE_PRODUCTS, validation::GAS_PHASE_REACTANT, validation::MUSICA_NAME
+      };
       std::vector<std::string> optional = { validation::PROBABILITY };
 
       auto validate = ValidateSchema(object, required, optional);

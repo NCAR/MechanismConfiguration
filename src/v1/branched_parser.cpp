@@ -17,11 +17,9 @@ namespace mechanism_configuration
       Errors errors;
       types::Branched branched;
 
-      std::vector<std::string> required_keys = { validation::nitrate_products,
-                             validation::alkoxy_products,
-                             validation::reactants,
-                             validation::type,
-                             validation::gas_phase };
+      std::vector<std::string> required_keys = {
+        validation::nitrate_products, validation::alkoxy_products, validation::reactants, validation::type, validation::gas_phase
+      };
       std::vector<std::string> optional_keys = { validation::name, validation::X, validation::Y, validation::a0, validation::n };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);

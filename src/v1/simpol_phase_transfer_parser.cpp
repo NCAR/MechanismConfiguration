@@ -17,12 +17,10 @@ namespace mechanism_configuration
       Errors errors;
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
-      std::vector<std::string> required_keys = { validation::type,
-                             validation::gas_phase,
-                             validation::gas_phase_species,
-                             validation::aerosol_phase,
-                             validation::aerosol_phase_species,
-                             validation::B };
+      std::vector<std::string> required_keys = {
+        validation::type, validation::gas_phase, validation::gas_phase_species, validation::aerosol_phase, validation::aerosol_phase_species,
+        validation::B
+      };
       std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
