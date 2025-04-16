@@ -18,7 +18,7 @@ namespace mechanism_configuration
       types::AqueousEquilibrium aqueous_equilibrium;
 
       std::vector<std::string> required_keys = { validation::type,          validation::reactants,           validation::products,
-                             validation::aerosol_phase, validation::aerosol_phase_water, validation::k_reverse };
+                                                 validation::aerosol_phase, validation::aerosol_phase_water, validation::k_reverse };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);

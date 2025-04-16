@@ -13,7 +13,8 @@ namespace mechanism_configuration
       Errors errors;
 
       std::vector<std::string> required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
-      std::vector<std::string> optional = { validation::A, validation::B, validation::C, validation::D, validation::E, validation::Ea, validation::MUSICA_NAME };
+      std::vector<std::string> optional = { validation::A, validation::B,  validation::C,          validation::D,
+                                            validation::E, validation::Ea, validation::MUSICA_NAME };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());

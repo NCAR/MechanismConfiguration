@@ -17,13 +17,13 @@ namespace mechanism_configuration
         types::Species species;
         std::vector<std::string> required_keys = { validation::name };
         std::vector<std::string> optional_keys = { validation::absolute_tolerance,
-                               validation::diffusion_coefficient,
-                               validation::molecular_weight,
-                               validation::henrys_law_constant_298,
-                               validation::henrys_law_constant_exponential_factor,
-                               validation::n_star,
-                               validation::density,
-                               validation::tracer_type };
+                                                   validation::diffusion_coefficient,
+                                                   validation::molecular_weight,
+                                                   validation::henrys_law_constant_298,
+                                                   validation::henrys_law_constant_exponential_factor,
+                                                   validation::n_star,
+                                                   validation::density,
+                                                   validation::tracer_type };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
