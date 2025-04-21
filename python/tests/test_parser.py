@@ -16,23 +16,23 @@ def validate_species(species):
             "n_star": 1.74,
             "molecular_weight": 0.0340147,
             "density": 1000.0,
-            "unknown_properties": { "__absolute tolerance": "1.0e-10" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-10"},
         },
         "ethanol": {
             "diffusion_coefficient": 0.95e-05,
             "n_star": 2.55,
             "molecular_weight": 0.04607,
-            "unknown_properties": { "__absolute tolerance": "1.0e-20" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
         },
         "ethanol_aq": {
             "molecular_weight": 0.04607,
             "density": 1000.0,
-            "unknown_properties": { "__absolute tolerance": "1.0e-20" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
         },
         "H2O2_aq": {
             "molecular_weight": 0.0340147,
             "density": 1000.0,
-            "unknown_properties": { "__absolute tolerance": "1.0e-10" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-10"},
         },
         "H2O_aq": {
             "density": 1000.0,
@@ -41,12 +41,12 @@ def validate_species(species):
         "aerosol stuff": {
             "molecular_weight": 0.5,
             "density": 1000.0,
-            "unknown_properties": { "__absolute tolerance": "1.0e-20" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
         },
         "more aerosol stuff": {
             "molecular_weight": 0.2,
             "density": 1000.0,
-            "unknown_properties": { "__absolute tolerance": "1.0e-20" },
+            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
         },
     }
 
@@ -57,13 +57,38 @@ def validate_species(species):
     for name, attributes in expected_species.items():
         assert name in species_dict, f"Species '{name}' is missing."
         for attr, expected_value in attributes.items():
-            assert (
-                hasattr(species_dict[name], attr)
+            assert hasattr(
+                species_dict[name], attr
             ), f"Attribute '{attr}' is missing for species '{name}'."
             assert getattr(species_dict[name], attr) == expected_value, (
                 f"Attribute '{attr}' for species '{name}' has value "
                 f"{getattr(species_dict[name], attr)}, expected {expected_value}."
             )
+
+
+def validate_phases(phases):
+    # Define the expected phases and their associated species
+    expected_phases = {
+        "gas": ["A", "B", "C", "ethanol"],
+        "aqueous aerosol": ["H2O2_aq", "H2O_aq", "ethanol_aq", "A", "B", "C"],
+        "surface reacting phase": ["aerosol stuff", "more aerosol stuff"],
+        "cloud": ["B", "C"],
+    }
+
+    # Create a dictionary for quick lookup of phases by name
+    phases_dict = {phase.name: phase for phase in phases}
+
+    # Validate each expected phase
+    for name, expected_species in expected_phases.items():
+        assert name in phases_dict, f"Phase '{name}' is missing."
+        assert hasattr(phases_dict[name], "species"), (
+            f"Phase '{name}' does not have a 'species' attribute."
+        )
+        phase_species = getattr(phases_dict[name], "species")
+        assert set(phase_species) == set(expected_species), (
+            f"Phase '{name}' has species {phase_species}, "
+            f"expected {expected_species}."
+        )
 
 
 def validate_full_v1_mechanism(mechanism):
@@ -72,6 +97,7 @@ def validate_full_v1_mechanism(mechanism):
     assert len(mechanism.species) == 11
     validate_species(mechanism.species)
     assert len(mechanism.phases) == 4
+    validate_phases(mechanism.phases)
     assert len(mechanism.reactions.aqueous_equilibrium) == 1
     assert len(mechanism.reactions.arrhenius) == 2
     assert len(mechanism.reactions.branched) == 1
