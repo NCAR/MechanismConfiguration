@@ -33,7 +33,7 @@ namespace mechanism_configuration
 
         if (object[validation::scaling_factor])
         {
-          condensed_phase_photolysis.scaling_factor_ = object[validation::scaling_factor].as<double>();
+          condensed_phase_photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
         }
 
         if (object[validation::name])

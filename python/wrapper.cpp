@@ -240,7 +240,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
 
   py::class_<CondensedPhasePhotolysis>(m, "CondensedPhasePhotolysis")
       .def(py::init<>())
-      .def_readwrite("scaling_factor_", &CondensedPhasePhotolysis::scaling_factor_)
+      .def_readwrite("scaling_factor", &CondensedPhasePhotolysis::scaling_factor)
       .def_readwrite("reactants", &CondensedPhasePhotolysis::reactants)
       .def_readwrite("products", &CondensedPhasePhotolysis::products)
       .def_readwrite("name", &CondensedPhasePhotolysis::name)

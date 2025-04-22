@@ -86,10 +86,16 @@ namespace mechanism_configuration
         }
 
         henrys_law.gas_phase = gas_phase;
-        henrys_law.gas_phase_species = gas_phase_species;
+        types::ReactionComponent gas_component;
+        gas_component.species_name = gas_phase_species;
+        henrys_law.gas_phase_species = gas_component;
         henrys_law.aerosol_phase = aerosol_phase;
-        henrys_law.aerosol_phase_species = aerosol_phase_species;
-        henrys_law.aerosol_phase_water = aerosol_phase_water;
+        types::ReactionComponent aerosol_component;
+        aerosol_component.species_name = aerosol_phase_species;
+        henrys_law.aerosol_phase_species = aerosol_component;
+        types::ReactionComponent aerosol_phase_water_component;
+        aerosol_phase_water_component.species_name = aerosol_phase_water;
+        henrys_law.aerosol_phase_water = aerosol_phase_water_component;
         henrys_law.unknown_properties = GetComments(object);
         reactions.henrys_law.push_back(henrys_law);
       }

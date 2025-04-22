@@ -18,19 +18,25 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
 
     EXPECT_EQ(mechanism.reactions.henrys_law[0].name, "my henry's law");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase, "gas");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase_species, "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase_species.species_name, "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase, "aqueous aerosol");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species, "B");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_water, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.species_name, "B");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_water.species_name, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_water.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "hi");
 
     EXPECT_EQ(mechanism.reactions.henrys_law[1].name, "");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase, "gas");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase_species, "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase_species.species_name, "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase, "aqueous aerosol");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species, "B");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_water, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.species_name, "B");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_water.species_name, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_water.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].unknown_properties.size(), 0);
   }
 }
