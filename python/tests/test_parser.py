@@ -91,6 +91,33 @@ def validate_phases(phases):
         )
 
 
+def extract_components(components):
+    return [{ "species name": component.species_name, "coefficient": component.coefficient } for component in components]
+
+
+def validate_arrhenius(reactions):
+    assert reactions[0].type == ReactionType.Arrhenius
+    assert extract_components(reactions[0].reactants) == [ { "species name": "B", "coefficient": 1 }]
+    assert extract_components(reactions[0].products) == [ { "species name": "C", "coefficient": 1 }]
+    assert reactions[0].A == 32.1
+    assert reactions[0].B == -2.3
+    assert reactions[0].C == 102.3
+    assert reactions[0].D == 63.4
+    assert reactions[0].E == -1.3
+    assert reactions[0].name == "my arrhenius"
+    assert reactions[0].unknown_properties == {}
+    assert reactions[1].type == ReactionType.Arrhenius
+    assert extract_components(reactions[1].reactants) == [ { "species name": "A", "coefficient": 1 }]
+    assert extract_components(reactions[1].products) == [ { "species name": "B", "coefficient": 1.2 }]
+    assert reactions[1].A == 29.3
+    assert reactions[1].B == -1.5
+    assert reactions[1].C == -101.2/1.380649e-23
+    assert reactions[1].D == 82.6
+    assert reactions[1].E == -0.98
+    assert reactions[1].name == "my other arrhenius"
+    assert reactions[1].unknown_properties == {}
+
+
 def validate_full_v1_mechanism(mechanism):
     assert mechanism is not None
     assert mechanism.name == "Full Configuration"
@@ -100,6 +127,7 @@ def validate_full_v1_mechanism(mechanism):
     validate_phases(mechanism.phases)
     assert len(mechanism.reactions.aqueous_equilibrium) == 1
     assert len(mechanism.reactions.arrhenius) == 2
+    validate_arrhenius(mechanism.reactions.arrhenius)
     assert len(mechanism.reactions.branched) == 1
     assert len(mechanism.reactions.condensed_phase_arrhenius) == 2
     assert len(mechanism.reactions.condensed_phase_photolysis) == 1
