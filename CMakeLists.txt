@@ -76,7 +76,10 @@ if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
     setup_target_for_coverage_lcov(
         NAME coverage
         EXECUTABLE "ctest"
-        EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
+        EXCLUDE 
+          "${PROJECT_SOURCE_DIR}/test/*"
+          "${PROJECT_SOURCE_DIR}/src/CMakeCXXCompilerId.cpp"
+          "${PROJECT_SOURCE_DIR}/src/CMakeCCompilerId.c"
         BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
     endif()
 endif()

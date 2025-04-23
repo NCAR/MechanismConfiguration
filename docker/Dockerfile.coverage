@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:37
 
 RUN dnf -y update \
     && dnf -y install \
@@ -10,12 +10,16 @@ RUN dnf -y update \
         python-devel \
     && dnf clean all
 
+# copy the MICM code
 COPY . /mechanism_configuration/
 
-ENV PATH="${PATH}:/lib64/openmpi/bin"
-ENV OMPI_ALLOW_RUN_AS_ROOT=1
-ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+ENV CXX=g++
+ENV CC=gcc
+ENV CXXFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
+ENV CFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
+ENV LDFLAGS="--coverage"
 
+# build the library and run the tests
 RUN mkdir /build \
       && cd /build \
       && cmake \
@@ -25,3 +29,5 @@ RUN mkdir /build \
       && make install -j 8
 
 WORKDIR /build
+
+CMD ["bash", "-c", "ctest --output-on-failure -j8 && make coverage ARGS=--ignore-errors mismatch,empty"]
