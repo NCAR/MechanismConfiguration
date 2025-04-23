@@ -29,7 +29,7 @@
 # CHANGES:
 #
 # 2025-04-23, Montek Thind
-# - Copied the file from micm coder
+# - Copied the file from micm code
 #
 # USAGE:
 #

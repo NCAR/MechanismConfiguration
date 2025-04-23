@@ -10,16 +10,13 @@ RUN dnf -y update \
         python-devel \
     && dnf clean all
 
-# copy the MICM code
 COPY . /mechanism_configuration/
 
 ENV CXX=g++
 ENV CC=gcc
 ENV CXXFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
 ENV CFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
-ENV LDFLAGS="--coverage"
 
-# build the library and run the tests
 RUN mkdir /build \
       && cd /build \
       && cmake \
