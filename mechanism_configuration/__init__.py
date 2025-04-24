@@ -1,2 +1,2 @@
 from _mechanism_configuration import *
-from .types import Species
+from .types import *

@@ -452,6 +452,19 @@ def test_hard_coded_full_v1_configuration():
         other_properties = {"__absolute tolerance": 1.0e-20},
     )
 
+    # Chemical phases
+    gas = Phase(name = "gas", species = [A, B, C, ethanol])
+    aqueous_aerosol = Phase(
+        name = "aqueous aerosol",
+        species = [H2O2_aq, H2O_aq, ethanol_aq, A, B, C]
+    )
+    surface_reacting_phase = Phase(
+        name = "surface reacting phase",
+        species = [aerosol_stuff, more_aerosol_stuff]
+    )
+    cloud = Phase(name = "cloud", species = [B, C])
+
+
 
 def test_hard_coded_full_v1_configuration_from_dict():
 
@@ -508,14 +521,24 @@ def test_hard_coded_full_v1_configuration_from_dict():
     })
 
     # Chemical phases
-    gas = Phase("gas", [A, B, C, ethanol])
-    aqueous_aerosol = Phase(
-        "aqueous aerosol", [H2O2_aq, H2O_aq, ethanol_aq, A, B, C]
-    )
-    surface_reacting_phase = Phase(
-        "surface reacting phase", [aerosol_stuff, more_aerosol_stuff]
-    )
-    cloud = Phase("cloud", [B, C])
+    gas = Phase.from_dict({
+        "name": "gas",
+        "species": [
+            A, B, C, ethanol
+        ],
+    })
+    aqueous_aerosol = Phase.from_dict({
+        "name": "aqueous aerosol",
+        "species": [H2O2_aq, H2O_aq, ethanol_aq, A, B, C]
+    })
+    surface_reacting_phase = Phase.from_dict({
+        "name": "surface reacting phase",
+        "species": [aerosol_stuff, more_aerosol_stuff]
+    })
+    cloud = Phase.from_dict({
+        "name": "cloud",
+        "species": [B, C]
+    })
 
     # Reactions
     my_arrhenius = Arrhenius("my arrhenius", {

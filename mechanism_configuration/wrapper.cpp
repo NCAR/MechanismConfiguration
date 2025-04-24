@@ -234,14 +234,49 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__str__", [](const Species &s) { return s.name; })
       .def("__repr__", [](const Species &s) { return "<Species: " + s.name + ">"; });
 
-  py::class_<Phase>(m, "Phase")
+  py::class_<Phase>(core, "_Phase")
       .def(py::init<>())
-      .def(py::init([](const std::string &name, const std::vector<Species> &species) {
-          Phase phase;
-          phase.name = name;
-          for (const auto &spec : species) phase.species.push_back(spec.name);
-          return phase;
-      }))
+      .def_static(
+          "from_dict",
+          [](const std::map<std::string, py::object> &properties)
+          {
+            Phase phase;
+
+            // Iterate through the dictionary and set known properties
+            for (const auto &[key, value] : properties)
+            {
+              try
+              {
+                if (key == validation::name)
+                {
+                  phase.name = value.cast<std::string>();
+                }
+                else if (key == validation::species)
+                {
+                  auto species_list = value.cast<py::list>();
+                  for (const auto &spec : species_list)
+                  {
+                    auto species = spec.cast<Species>();
+                    phase.species.push_back(species.name);
+                  }
+                }
+                else
+                {
+                  // Add unmatched properties to unknown_properties
+                  if (key.rfind("__", 0) != 0)
+                  {
+                    throw py::value_error("Unknown property '" + key + "' must start with '__'.");
+                  }
+                  phase.unknown_properties[key] = py::str(value);
+                }
+              }
+              catch (const py::cast_error &e)
+              {
+                throw py::value_error("Invalid type for property '" + key + "'. Expected a string.");
+              }
+            }
+            return phase;
+          })
       .def_readwrite("name", &Phase::name)
       .def_readwrite("species", &Phase::species)
       .def_readwrite("unknown_properties", &Phase::unknown_properties)

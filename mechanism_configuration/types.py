@@ -4,7 +4,7 @@
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
-from _mechanism_configuration._core import _Species
+from _mechanism_configuration._core import _Species, _Phase
 
 class Species(_Species):
     """
@@ -71,3 +71,46 @@ class Species(_Species):
             Species: A Species object.
         """
         return _Species.from_dict(data)
+    
+
+class Phase(_Phase):
+    """
+    A class representing a phase in a chemical mechanism.
+
+    Attributes:
+        name (str): The name of the phase.
+        species (List[Species]): A list of species in the phase.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the phase.
+    """
+
+    def __init__(
+            self, 
+            name: Optional[str] = None, 
+            species: Optional[list[Species]] = None,
+            other_properties: Optional[Dict[str, Any]] = None):
+        """
+        Initializes the Phase object with the given parameters.
+
+        Args:
+            name (str): The name of the phase.
+            species (List[Species]): A list of species in the phase.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the phase.
+        """
+        super().__init__()
+        self.name = name
+        self.species = [s.name for s in species] if species is not None else []
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Phase':
+        """
+        Creates a Phase object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the phase data.
+
+        Returns:
+            Phase: A Phase object.
+        """
+        return _Phase.from_dict(data)
