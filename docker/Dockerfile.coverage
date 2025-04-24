@@ -14,8 +14,6 @@ COPY . /mechanism_configuration/
 
 ENV CXX=g++
 ENV CC=gcc
-ENV CXXFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
-ENV CFLAGS="-fprofile-arcs -ftest-coverage -O0 -g"
 
 RUN mkdir /build \
       && cd /build \

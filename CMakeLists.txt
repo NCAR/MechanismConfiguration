@@ -49,6 +49,18 @@ endif()
 # Tests
 
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
+  # Test code coverage
+  if(MECH_CONFIG_ENABLE_COVERAGE)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_lcov(
+        NAME coverage
+        EXECUTABLE "ctest"
+        EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
+    
+  endif()
+
   enable_testing()
   add_subdirectory(test)
 
@@ -64,22 +76,4 @@ endif()
 # only include packaging if we are the top level project being built
 if(PROJECT_IS_TOP_LEVEL AND NOT MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
   add_subdirectory(packaging)
-endif()
-
-################################################################################
-# Code Coverage
-if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
-  # Test code coverage
-  if(MECH_CONFIG_ENABLE_COVERAGE)
-    include(CodeCoverage)
-    append_coverage_compiler_flags()
-    setup_target_for_coverage_lcov(
-        NAME coverage
-        EXECUTABLE "ctest"
-        EXCLUDE 
-          "${PROJECT_SOURCE_DIR}/test/*"
-          "${PROJECT_SOURCE_DIR}/src/CMakeCXXCompilerId.cpp"
-          "${PROJECT_SOURCE_DIR}/src/CMakeCCompilerId.c"
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
-    endif()
 endif()
