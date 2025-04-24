@@ -283,7 +283,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__str__", [](const Phase &p) { return p.name; })
       .def("__repr__", [](const Phase &p) { return "<Phase: " + p.name + ">"; });
 
-  py::class_<ReactionComponent>(m, "ReactionComponent")
+  py::class_<ReactionComponent>(core, "_ReactionComponent")
       .def(py::init<>())
       .def(py::init([](const std::string &species_name) {
           ReactionComponent rc;
@@ -302,21 +302,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__str__", [](const ReactionComponent &rc) { return rc.species_name; })
       .def("__repr__", [](const ReactionComponent &rc) { return "<ReactionComponent: " + rc.species_name + ">"; });
 
-  py::class_<Arrhenius>(m, "Arrhenius")
+  py::class_<Arrhenius>(core, "_Arrhenius")
       .def(py::init<>())
-      .def(py::init([](const std::string &name) {
-          Arrhenius arrhenius;
-          arrhenius.name = name;
-          return arrhenius;
-      }))
-        .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+      .def("from_dict",
+        [](const std::map<std::string, py::object> &properties) {
             Arrhenius arrhenius;
-            arrhenius.name = name;
     
             // Iterate through the dictionary and set known properties
             for (const auto &[key, value] : properties) {
                 try {
-                    if (key == validation::A) {
+                    if (key == validation::name) {
+                        arrhenius.name = value.cast<std::string>();
+                    } else if (key == validation::A) {
                         arrhenius.A = value.cast<double>();
                     } else if (key == validation::B) {
                         arrhenius.B = value.cast<double>();
@@ -358,7 +355,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                 }
             }
             return arrhenius;
-        }))
+        })
       .def_readwrite("A", &Arrhenius::A)
       .def_readwrite("B", &Arrhenius::B)
       .def_readwrite("C", &Arrhenius::C)

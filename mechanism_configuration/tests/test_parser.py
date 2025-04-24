@@ -464,6 +464,23 @@ def test_hard_coded_full_v1_configuration():
     )
     cloud = Phase(name = "cloud", species = [B, C])
 
+    # Reactions
+    my_arrhenius = Arrhenius(
+        name = "my arrhenius",
+        A = 32.1, B = -2.3, C = 102.3, D = 63.4, E = -1.3,
+        gas_phase = gas,
+        reactants = [B],
+        products = [C]
+    )
+
+    my_other_arrhenius = Arrhenius(
+        name = "my other arrhenius",
+        A = 29.3, B = -1.5, Ea = 101.2, D = 82.6, E = -0.98,
+        gas_phase = gas,
+        reactants = [A],
+        products = [(1.2, B)]
+    )
+
 
 
 def test_hard_coded_full_v1_configuration_from_dict():
@@ -541,14 +558,16 @@ def test_hard_coded_full_v1_configuration_from_dict():
     })
 
     # Reactions
-    my_arrhenius = Arrhenius("my arrhenius", {
+    my_arrhenius = Arrhenius.from_dict({
+        "name": "my arrhenius",
         "A": 32.1, "B": -2.3, "C": 102.3, "D": 63.4, "E": -1.3,
         "gas phase": gas,
         "reactants": [B],
         "products": [C]
         })
     
-    my_other_arrhenius = Arrhenius("my other arrhenius", {
+    my_other_arrhenius = Arrhenius.from_dict({
+        "name": "my other arrhenius",
         "A": 29.3, "B": -1.5, "Ea": 101.2, "D": 82.6, "E": -0.98,
         "gas phase": gas,
         "reactants": [A],
