@@ -98,11 +98,21 @@ std::vector<ReactionComponent> get_reaction_components(const py::list& component
             double coefficient = item_tuple[0].cast<double>();
             Species species = item_tuple[1].cast<Species>();
             reaction_components.push_back(ReactionComponent(species.name, coefficient));
+        } else if (py::isinstance<py::int_>(item_tuple[0]) && py::isinstance<Species>(item_tuple[1])) {
+            double coefficient = item_tuple[0].cast<int>();
+            Species species = item_tuple[1].cast<Species>();
+            reaction_components.push_back(ReactionComponent(species.name, coefficient));
         } else {
             throw py::value_error("Invalid tuple format. Expected (float, Species).");
         }
     } else {
         throw py::value_error("Invalid type for reactant. Expected a Species or a tuple of (float, Species).");
+    }
+  }
+  std::unordered_set<std::string> component_names;
+  for (const auto &component : reaction_components) {
+    if (!component_names.insert(component.species_name).second) {
+        throw py::value_error("Duplicate reaction component name found: " + component.species_name);
     }
   }
   return reaction_components;
@@ -200,7 +210,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                       if (key.rfind("__", 0) != 0) {
                           throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                       }
-                      species.unknown_properties[key] = value.cast<std::string>();
+                      species.unknown_properties[key] = py::str(value);
                   }
               } catch (const py::cast_error &e) {
                   throw py::value_error("Invalid type for property '" + key + "'. Expected a double or string.");
@@ -303,7 +313,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                         if (key.rfind("__", 0) != 0) {
                             throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                         }
-                        arrhenius.unknown_properties[key] = value.cast<std::string>();
+                        arrhenius.unknown_properties[key] = py::str(value);
                     }
                 } catch (const py::cast_error &e) {
                     throw py::value_error("Invalid type for property '" + key + "'.");
@@ -377,7 +387,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                           (key.rfind("__", 0) != 0) {
                           throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                       }
-                      cpa.unknown_properties[key] = value.cast<std::string>();
+                      cpa.unknown_properties[key] = py::str(value);
                   }
               } catch (const py::cast_error &e) {
                   throw py::value_error("Invalid type for property '" + key + "'.");
@@ -447,7 +457,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                         if (key.rfind("__", 0) != 0) {
                             throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                         }
-                        troe.unknown_properties[key] = value.cast<std::string>();
+                        troe.unknown_properties[key] = py::str(value);
                     }
                 } catch (const py::cast_error &e) {
                     throw py::value_error("Invalid type for property '" + key + "'.");
@@ -516,7 +526,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                         if (key.rfind("__", 0) != 0) {
                             throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                         }
-                        branched.unknown_properties[key] = value.cast<std::string>();
+                        branched.unknown_properties[key] = py::str(value);
                     }
                 } catch (const py::cast_error &e) {
                     throw py::value_error("Invalid type for property '" + key + "'.");
@@ -575,7 +585,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            tunneling.unknown_properties[key] = value.cast<std::string>();
+                            tunneling.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -627,7 +637,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            surface.unknown_properties[key] = value.cast<std::string>();
+                            surface.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -679,7 +689,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            photolysis.unknown_properties[key] = value.cast<std::string>();
+                            photolysis.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -732,7 +742,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            cpp.unknown_properties[key] = value.cast<std::string>();
+                            cpp.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -779,7 +789,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            emission.unknown_properties[key] = value.cast<std::string>();
+                            emission.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -824,7 +834,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            fol.unknown_properties[key] = value.cast<std::string>();
+                            fol.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -882,7 +892,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            ae.unknown_properties[key] = value.cast<std::string>();
+                            ae.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -927,7 +937,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            wd.unknown_properties[key] = value.cast<std::string>();
+                            wd.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -972,7 +982,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            hl.unknown_properties[key] = value.cast<std::string>();
+                            hl.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");
@@ -1024,7 +1034,7 @@ PYBIND11_MODULE(mechanism_configuration, m)
                             if (key.rfind("__", 0) != 0) {
                                 throw py::value_error("Unknown property '" + key + "' must start with '__'.");
                             }
-                            spt.unknown_properties[key] = value.cast<std::string>();
+                            spt.unknown_properties[key] = py::str(value);
                         }
                     } catch (const py::cast_error &e) {
                         throw py::value_error("Invalid type for property '" + key + "'.");

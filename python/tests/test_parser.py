@@ -5,7 +5,7 @@ from mechanism_configuration import *
 def validate_species(species):
     # Define the expected species and their required attributes
     expected_species = {
-        "A": {},
+        "A": { "unknown_properties": {"__absolute tolerance": "1e-30"} },
         "B": {"tracer_type": "AEROSOL"},
         "C": {"tracer_type": "THIRD_BODY"},
         "M": {},
@@ -16,23 +16,23 @@ def validate_species(species):
             "n_star": 1.74,
             "molecular_weight": 0.0340147,
             "density": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1.0e-10"},
+            "unknown_properties": {"__absolute tolerance": "1e-10"},
         },
         "ethanol": {
             "diffusion_coefficient": 0.95e-05,
             "n_star": 2.55,
             "molecular_weight": 0.04607,
-            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
+            "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "ethanol_aq": {
             "molecular_weight": 0.04607,
             "density": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
+            "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "H2O2_aq": {
             "molecular_weight": 0.0340147,
             "density": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1.0e-10"},
+            "unknown_properties": {"__absolute tolerance": "1e-10"},
         },
         "H2O_aq": {
             "density": 1000.0,
@@ -41,12 +41,12 @@ def validate_species(species):
         "aerosol stuff": {
             "molecular_weight": 0.5,
             "density": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
+            "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "more aerosol stuff": {
             "molecular_weight": 0.2,
             "density": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1.0e-20"},
+            "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
     }
 
@@ -60,9 +60,21 @@ def validate_species(species):
             assert hasattr(
                 species_dict[name], attr
             ), f"Attribute '{attr}' is missing for species '{name}'."
-            assert getattr(species_dict[name], attr) == expected_value, (
+            got_value = getattr(species_dict[name], attr)
+            # Handle special cases for floating-point representation
+            if isinstance(got_value, str) and ".0e" in got_value:
+                got_value = got_value.replace(".0e", "e")
+            elif isinstance(got_value, dict):
+                def replace_in_dict(d):
+                    for key, value in d.items():
+                        if isinstance(value, str) and ".0e" in value:
+                            d[key] = value.replace(".0e", "e")
+                        elif isinstance(value, dict):
+                            replace_in_dict(value)
+                replace_in_dict(got_value)
+            assert got_value == expected_value, (
                 f"Attribute '{attr}' for species '{name}' has value "
-                f"{getattr(species_dict[name], attr)}, expected {expected_value}."
+                f"{got_value}, expected {expected_value}."
             )
 
 
@@ -389,7 +401,7 @@ def test_parser_reports_bad_files():
 def test_hard_coded_full_v1_configuration():
 
     # Chemical species
-    A = Species("A", {"absolute tolerance": 1.0e-10})
+    A = Species("A", {"__absolute tolerance": 1.0e-30})
     B = Species("B", {"tracer type": "AEROSOL"})
     C = Species("C", {"tracer type": "THIRD_BODY"})
     M = Species("M")
@@ -400,22 +412,23 @@ def test_hard_coded_full_v1_configuration():
         "N star": 1.74,
         "molecular weight [kg mol-1]": 0.0340147,
         "density [kg m-3]": 1000.0,
+        "__absolute tolerance": 1.0e-10,
     })
     ethanol = Species("ethanol", {
         "diffusion coefficient [m2 s-1]": 0.95e-05,
         "N star": 2.55,
         "molecular weight [kg mol-1]": 0.04607,
-        "absolute tolerance": 1.0e-20,
+        "__absolute tolerance": 1.0e-20,
     })
     ethanol_aq = Species("ethanol_aq", {
         "molecular weight [kg mol-1]": 0.04607,
         "density [kg m-3]": 1000.0,
-        "absolute tolerance": 1.0e-20,
+        "__absolute tolerance": 1.0e-20,
     })
     H2O2_aq = Species("H2O2_aq", {
         "molecular weight [kg mol-1]": 0.0340147,
         "density [kg m-3]": 1000.0,
-        "absolute tolerance": 1.0e-10,
+        "__absolute tolerance": 1.0e-10,
     })
     H2O_aq = Species("H2O_aq", {
         "density [kg m-3]": 1000.0,
@@ -424,12 +437,12 @@ def test_hard_coded_full_v1_configuration():
     aerosol_stuff = Species("aerosol stuff", {
         "molecular weight [kg mol-1]": 0.5,
         "density [kg m-3]": 1000.0,
-        "absolute tolerance": 1.0e-20,
+        "__absolute tolerance": 1.0e-20,
     })
     more_aerosol_stuff = Species("more aerosol stuff", {
         "molecular weight [kg mol-1]": 0.2,
         "density [kg m-3]": 1000.0,
-        "absolute tolerance": 1.0e-20,
+        "__absolute tolerance": 1.0e-20,
     })
 
     # Chemical phases
@@ -451,7 +464,7 @@ def test_hard_coded_full_v1_configuration():
         })
     
     my_other_arrhenius = Arrhenius("my other arrhenius", {
-        "A": 29.3, "B": -1.5, "Ea": -101.2, "D": 82.6, "E": -0.98,
+        "A": 29.3, "B": -1.5, "Ea": 101.2, "D": 82.6, "E": -0.98,
         "gas phase": gas,
         "reactants": [A],
         "products": [(1.2, B)]
@@ -474,10 +487,10 @@ def test_hard_coded_full_v1_configuration():
         "aerosol-phase water": H2O_aq,
         "A": 123.45,
         "B": 1.3,
-        "C": 123.34,
+        "C": 123.45,
         "D": 300.0,
         "E": 0.6e-5,
-        "reactants": [aerosol_stuff, more_aerosol_stuff],
+        "reactants": [H2O2_aq, H2O_aq],
         "products": [ethanol_aq]
         })
 
@@ -555,7 +568,7 @@ def test_hard_coded_full_v1_configuration():
         "A": 1.14e-2,
         "C": 2300.0,
         "k_reverse": 0.32,
-        "reactants": [A, A],
+        "reactants": [(2, A)],
         "products": [B, C],
         })
     
@@ -591,4 +604,4 @@ def test_hard_coded_full_v1_configuration():
         "version": Version(1, 0, 0),
     })
 
-    # validate_full_v1_mechanism(mechanism)
+    validate_full_v1_mechanism(mechanism)
