@@ -24,6 +24,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
 option(MECH_CONFIG_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
 option(MECH_CONFIG_ENABLE_PIC "Build the library with position independent code" ON)
+option(MECH_CONFIG_ENABLE_COVERAGE "Enable code coverage output" OFF)
 
 set(MECH_CONFIG_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 set(MECH_CONFIG_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
@@ -48,6 +49,18 @@ endif()
 # Tests
 
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
+  # Test code coverage
+  if(MECH_CONFIG_ENABLE_COVERAGE)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_lcov(
+        NAME coverage
+        EXECUTABLE "ctest"
+        EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
+    
+  endif()
+
   enable_testing()
   add_subdirectory(test)
 

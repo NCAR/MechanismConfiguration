@@ -9,6 +9,7 @@ An attempt at defining a model-independent configuration schema for atmospheric 
 [![Mac](https://github.com/ncar/MechanismConfiguration/actions/workflows/mac.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/mac.yml)
 [![Ubuntu](https://github.com/ncar/MechanismConfiguration/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/ubuntu.yml)
 [![PyPI version](https://badge.fury.io/py/mechanism_configuration.svg)](https://pypi.org/p/mechanism_configuration)
+[![codecov](https://codecov.io/gh/NCAR/MechanismConfiguration/branch/main/graph/badge.svg)](https://codecov.io/gh/NCAR/MechanismConfiguration)
 
 Copyright (C) 2017&ndash;2024 Barcelona Supercomputing Center, University of Illinois at Urbana&ndash;Champaign, and National Center for Atmospheric Research
 
