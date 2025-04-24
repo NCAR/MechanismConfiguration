@@ -131,7 +131,7 @@ reactions:
   products:
   - species name: ethanol_aq
     coefficient: 1
-  name: my condensed arrhenius
+  name: my other condensed arrhenius
 - type: CONDENSED_PHASE_PHOTOLYSIS
   aerosol phase: aqueous aerosol
   aerosol-phase water: H2O_aq

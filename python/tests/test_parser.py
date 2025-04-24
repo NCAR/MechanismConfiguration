@@ -1,5 +1,5 @@
 import pytest
-from mechanism_configuration import Parser, ReactionType
+from mechanism_configuration import *
 
 
 def validate_species(species):
@@ -192,7 +192,10 @@ def validate_condensed_phase_arrhenius(reactions):
         assert extract_components(reaction.products) == [
             {"species name": "ethanol_aq", "coefficient": 1}
         ]
-        assert reaction.name == "my condensed arrhenius"
+    assert reactions[0].name == "my condensed arrhenius"
+    assert reactions[0].C == -123.45 / 1.380649e-23
+    assert reactions[1].name == "my other condensed arrhenius"
+    assert reactions[1].C == 123.45
 
 
 def validate_condensed_phase_photolysis(reactions):
@@ -312,6 +315,13 @@ def validate_tunneling(reactions):
     assert reactions[0].name == "my tunneling"
 
 
+def validate_wet_deposition(reactions):
+    assert reactions[0].type == ReactionType.WetDeposition
+    assert reactions[0].name == "rxn cloud"
+    assert reactions[0].aerosol_phase == "cloud"
+    assert reactions[0].scaling_factor == 12.3
+
+
 def validate_full_v1_mechanism(mechanism):
     assert mechanism is not None
     assert mechanism.name == "Full Configuration"
@@ -347,6 +357,8 @@ def validate_full_v1_mechanism(mechanism):
     validate_troe(mechanism.reactions.troe)
     assert len(mechanism.reactions.tunneling) == 1
     validate_tunneling(mechanism.reactions.tunneling)
+    assert len(mechanism.reactions.wet_deposition) == 1
+    validate_wet_deposition(mechanism.reactions.wet_deposition)
     assert mechanism.version.major == 1
     assert mechanism.version.minor == 0
     assert mechanism.version.patch == 0
@@ -356,7 +368,7 @@ def validate_full_v1_mechanism(mechanism):
         assert isinstance(reaction.type, ReactionType)
 
 
-def test_parsed_full_v1_conofiguration():
+def test_parsed_full_v1_configuration():
     parser = Parser()
     extensions = [".yaml", ".json"]
     for extension in extensions:
@@ -372,3 +384,211 @@ def test_parser_reports_bad_files():
         path = f"examples/_missing_configuration{extension}"
         with pytest.raises(Exception):
             parser.parse(path)
+
+
+def test_hard_coded_full_v1_configuration():
+
+    # Chemical species
+    A = Species("A", {"absolute tolerance": 1.0e-10})
+    B = Species("B", {"tracer type": "AEROSOL"})
+    C = Species("C", {"tracer type": "THIRD_BODY"})
+    M = Species("M")
+    H2O2 = Species("H2O2", {
+        "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
+        "HLC exponential factor [K]": 6340,
+        "diffusion coefficient [m2 s-1]": 1.46e-05,
+        "N star": 1.74,
+        "molecular weight [kg mol-1]": 0.0340147,
+        "density [kg m-3]": 1000.0,
+    })
+    ethanol = Species("ethanol", {
+        "diffusion coefficient [m2 s-1]": 0.95e-05,
+        "N star": 2.55,
+        "molecular weight [kg mol-1]": 0.04607,
+        "absolute tolerance": 1.0e-20,
+    })
+    ethanol_aq = Species("ethanol_aq", {
+        "molecular weight [kg mol-1]": 0.04607,
+        "density [kg m-3]": 1000.0,
+        "absolute tolerance": 1.0e-20,
+    })
+    H2O2_aq = Species("H2O2_aq", {
+        "molecular weight [kg mol-1]": 0.0340147,
+        "density [kg m-3]": 1000.0,
+        "absolute tolerance": 1.0e-10,
+    })
+    H2O_aq = Species("H2O_aq", {
+        "density [kg m-3]": 1000.0,
+        "molecular weight [kg mol-1]": 0.01801,
+    })
+    aerosol_stuff = Species("aerosol stuff", {
+        "molecular weight [kg mol-1]": 0.5,
+        "density [kg m-3]": 1000.0,
+        "absolute tolerance": 1.0e-20,
+    })
+    more_aerosol_stuff = Species("more aerosol stuff", {
+        "molecular weight [kg mol-1]": 0.2,
+        "density [kg m-3]": 1000.0,
+        "absolute tolerance": 1.0e-20,
+    })
+
+    # Chemical phases
+    gas = Phase("gas", [A, B, C, ethanol])
+    aqueous_aerosol = Phase(
+        "aqueous aerosol", [H2O2_aq, H2O_aq, ethanol_aq, A, B, C]
+    )
+    surface_reacting_phase = Phase(
+        "surface reacting phase", [aerosol_stuff, more_aerosol_stuff]
+    )
+    cloud = Phase("cloud", [B, C])
+
+    # Reactions
+    my_arrhenius = Arrhenius("my arrhenius", {
+        "A": 32.1, "B": -2.3, "C": 102.3, "D": 63.4, "E": -1.3,
+        "gas phase": gas,
+        "reactants": [B],
+        "products": [C]
+        })
+    
+    my_other_arrhenius = Arrhenius("my other arrhenius", {
+        "A": 29.3, "B": -1.5, "Ea": -101.2, "D": 82.6, "E": -0.98,
+        "gas phase": gas,
+        "reactants": [A],
+        "products": [(1.2, B)]
+        })
+
+    my_condensed_arrhenius = CondensedPhaseArrhenius("my condensed arrhenius", {
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase water": H2O_aq,
+        "A": 123.45,
+        "B": 1.3,
+        "Ea": 123.45,
+        "D": 300.0,
+        "E": 0.6e-5,
+        "reactants": [H2O2_aq, H2O_aq],
+        "products": [ethanol_aq]
+        })
+    
+    my_other_condensed_arrhenius = CondensedPhaseArrhenius("my other condensed arrhenius", {
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase water": H2O_aq,
+        "A": 123.45,
+        "B": 1.3,
+        "C": 123.34,
+        "D": 300.0,
+        "E": 0.6e-5,
+        "reactants": [aerosol_stuff, more_aerosol_stuff],
+        "products": [ethanol_aq]
+        })
+
+    my_troe = Troe("my troe", {
+        "gas phase": gas,
+        "k0_A": 1.2e-12,
+        "k0_B": 167,
+        "k0_C": 3,
+        "kinf_A": 136,
+        "kinf_B": 5,
+        "kinf_C": 24,
+        "Fc": 0.9,
+        "N": 0.8,
+        "reactants": [B, M],
+        "products": [C]
+        })
+
+    my_branched = Branched("my branched", {
+        "gas phase": gas,
+        "reactants": [A],
+        "alkoxy products": [B],
+        "nitrate products": [C],
+        "X": 1.2e-4,
+        "Y": 167,
+        "a0": 0.15,
+        "n": 9,
+        })
+    
+    my_tunneling = Tunneling("my tunneling", {
+        "gas phase": gas,
+        "reactants": [B],
+        "products": [C],
+        "A": 123.45,
+        "B": 1200.0,
+        "C": 1.0e8,
+        })
+
+    my_surface = Surface("my surface", {
+        "gas phase": gas,
+        "gas-phase species": A,
+        "reaction probability": 2.0e-2,
+        "gas-phase products": [B, C],
+        "aerosol phase": surface_reacting_phase,
+        })
+
+    photo_B = Photolysis("photo B", {
+        "gas phase": gas,
+        "reactants": [B],
+        "products": [C],
+        "scaling factor": 12.3,
+        })
+
+    condensed_photo_B = CondensedPhasePhotolysis("condensed photo B", {
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase water": H2O_aq,
+        "reactants": [H2O2_aq],
+        "products": [ethanol_aq],
+        "scaling factor": 12.3,
+        })
+
+    my_emission = Emission("my emission", {
+        "gas phase": gas,
+        "products": [B],
+        "scaling factor": 12.3,
+        })
+    my_first_order_loss = FirstOrderLoss("my first order loss", {
+        "gas phase": gas,
+        "reactants": [C],
+        "scaling factor": 12.3,
+        })
+
+    my_aqueous_eq = AqueousEquilibrium("my aqueous eq", {
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase water": H2O_aq,
+        "A": 1.14e-2,
+        "C": 2300.0,
+        "k_reverse": 0.32,
+        "reactants": [A, A],
+        "products": [B, C],
+        })
+    
+    wet_deposition = WetDeposition("rxn cloud", {
+        "aerosol phase": cloud,
+        "scaling factor": 12.3,
+        })
+    
+    my_henrys_law = HenrysLaw("my henry's law", {
+        "gas phase": gas,
+        "gas-phase species": H2O2,
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase species": H2O2_aq,
+        "aerosol-phase water": H2O_aq,
+        })
+    
+    my_simpol = SimpolPhaseTransfer("my simpol", {
+        "gas phase": gas,
+        "gas-phase species": ethanol,
+        "aerosol phase": aqueous_aerosol,
+        "aerosol-phase species": ethanol_aq,
+        "B": [-1.97e03, 2.91e00, 1.96e-03, -4.96e-01],
+        })
+
+    # Create the mechanism
+    mechanism = Mechanism("Full Configuration", {
+        "species": [A, B, C, M, H2O2, ethanol, ethanol_aq, H2O2_aq, H2O_aq, aerosol_stuff, more_aerosol_stuff],
+        "phases": [gas, aqueous_aerosol, surface_reacting_phase, cloud],
+        "reactions": [ my_arrhenius, my_other_arrhenius, my_branched, my_condensed_arrhenius,
+            my_other_condensed_arrhenius, condensed_photo_B, my_emission,
+            my_first_order_loss, my_henrys_law, photo_B, my_simpol, my_surface,
+            my_troe, my_tunneling, wet_deposition, my_aqueous_eq],
+        "version": Version(1, 0, 0),
+    })
+
+    # validate_full_v1_mechanism(mechanism)
