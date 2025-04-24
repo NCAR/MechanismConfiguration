@@ -10,42 +10,42 @@ def validate_species(species):
         "C": {"tracer_type": "THIRD_BODY"},
         "M": {},
         "H2O2": {
-            "henrys_law_constant_298": 1.011596348,
-            "henrys_law_constant_exponential_factor": 6340,
-            "diffusion_coefficient": 1.46e-05,
-            "n_star": 1.74,
-            "molecular_weight": 0.0340147,
-            "density": 1000.0,
+            "HLC_298K_mol_m3_Pa": 1.011596348,
+            "HLC_exponential_factor_K": 6340,
+            "diffusion_coefficient_m2_s": 1.46e-05,
+            "N_star": 1.74,
+            "molecular_weight_kg_mol": 0.0340147,
+            "density_kg_m3": 1000.0,
             "unknown_properties": {"__absolute tolerance": "1e-10"},
         },
         "ethanol": {
-            "diffusion_coefficient": 0.95e-05,
-            "n_star": 2.55,
-            "molecular_weight": 0.04607,
+            "diffusion_coefficient_m2_s": 0.95e-05,
+            "N_star": 2.55,
+            "molecular_weight_kg_mol": 0.04607,
             "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "ethanol_aq": {
-            "molecular_weight": 0.04607,
-            "density": 1000.0,
+            "molecular_weight_kg_mol": 0.04607,
+            "density_kg_m3": 1000.0,
             "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "H2O2_aq": {
-            "molecular_weight": 0.0340147,
-            "density": 1000.0,
+            "molecular_weight_kg_mol": 0.0340147,
+            "density_kg_m3": 1000.0,
             "unknown_properties": {"__absolute tolerance": "1e-10"},
         },
         "H2O_aq": {
-            "density": 1000.0,
-            "molecular_weight": 0.01801,
+            "density_kg_m3": 1000.0,
+            "molecular_weight_kg_mol": 0.01801,
         },
         "aerosol stuff": {
-            "molecular_weight": 0.5,
-            "density": 1000.0,
+            "molecular_weight_kg_mol": 0.5,
+            "density_kg_m3": 1000.0,
             "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
         "more aerosol stuff": {
-            "molecular_weight": 0.2,
-            "density": 1000.0,
+            "molecular_weight_kg_mol": 0.2,
+            "density_kg_m3": 1000.0,
             "unknown_properties": {"__absolute tolerance": "1e-20"},
         },
     }
@@ -400,12 +400,68 @@ def test_parser_reports_bad_files():
 
 def test_hard_coded_full_v1_configuration():
 
+    #Chemical species
+    A = Species(name = "A", other_properties = {"__absolute tolerance": 1.0e-30})
+    B = Species(name = "B", tracer_type = "AEROSOL")
+    C = Species(name = "C", tracer_type = "THIRD_BODY")
+    M = Species(name = "M")
+    H2O2 = Species(
+        name = "H2O2",
+        HLC_298K_mol_m3_Pa = 1.011596348,
+        HLC_exponential_factor_K = 6340,
+        diffusion_coefficient_m2_s = 1.46e-05,
+        N_star = 1.74,
+        molecular_weight_kg_mol = 0.0340147,
+        density_kg_m3 = 1000.0,
+        other_properties = {"__absolute tolerance": 1.0e-10},
+    )
+    ethanol = Species(
+        name = "ethanol",
+        diffusion_coefficient_m2_s = 0.95e-05,
+        N_star = 2.55,
+        molecular_weight_kg_mol = 0.04607,
+        other_properties = {"__absolute tolerance": 1.0e-20},
+    )
+    ethanol_aq = Species(
+        name = "ethanol_aq",
+        molecular_weight_kg_mol = 0.04607,
+        density_kg_m3 = 1000.0,
+        other_properties = {"__absolute tolerance": 1.0e-20},
+    )
+    H2O2_aq = Species(
+        name = "H2O2_aq",
+        molecular_weight_kg_mol = 0.0340147,
+        density_kg_m3 = 1000.0,
+        other_properties = {"__absolute tolerance": 1.0e-10},
+    )
+    H2O_aq = Species(
+        name = "H2O_aq",
+        density_kg_m3 = 1000.0,
+        molecular_weight_kg_mol = 0.01801,
+    )
+    aerosol_stuff = Species(
+        name = "aerosol stuff",
+        molecular_weight_kg_mol = 0.5,
+        density_kg_m3 = 1000.0,
+        other_properties = {"__absolute tolerance": 1.0e-20},
+    )
+    more_aerosol_stuff = Species(
+        name = "more aerosol stuff",
+        molecular_weight_kg_mol = 0.2,
+        density_kg_m3 = 1000.0,
+        other_properties = {"__absolute tolerance": 1.0e-20},
+    )
+
+
+def test_hard_coded_full_v1_configuration_from_dict():
+
     # Chemical species
-    A = Species("A", {"__absolute tolerance": 1.0e-30})
-    B = Species("B", {"tracer type": "AEROSOL"})
-    C = Species("C", {"tracer type": "THIRD_BODY"})
-    M = Species("M")
-    H2O2 = Species("H2O2", {
+    A = Species.from_dict({ "name": "A", "__absolute tolerance": 1.0e-30 })
+    B = Species.from_dict({ "name": "B", "tracer type": "AEROSOL" })
+    C = Species.from_dict({ "name": "C", "tracer type": "THIRD_BODY"})
+    M = Species.from_dict({ "name": "M" })
+    H2O2 = Species.from_dict({
+        "name": "H2O2",
         "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
         "HLC exponential factor [K]": 6340,
         "diffusion coefficient [m2 s-1]": 1.46e-05,
@@ -414,32 +470,38 @@ def test_hard_coded_full_v1_configuration():
         "density [kg m-3]": 1000.0,
         "__absolute tolerance": 1.0e-10,
     })
-    ethanol = Species("ethanol", {
+    ethanol = Species.from_dict({
+        "name": "ethanol",
         "diffusion coefficient [m2 s-1]": 0.95e-05,
         "N star": 2.55,
         "molecular weight [kg mol-1]": 0.04607,
         "__absolute tolerance": 1.0e-20,
     })
-    ethanol_aq = Species("ethanol_aq", {
+    ethanol_aq = Species.from_dict({
+        "name": "ethanol_aq",
         "molecular weight [kg mol-1]": 0.04607,
         "density [kg m-3]": 1000.0,
         "__absolute tolerance": 1.0e-20,
     })
-    H2O2_aq = Species("H2O2_aq", {
+    H2O2_aq = Species.from_dict({
+        "name": "H2O2_aq",
         "molecular weight [kg mol-1]": 0.0340147,
         "density [kg m-3]": 1000.0,
         "__absolute tolerance": 1.0e-10,
     })
-    H2O_aq = Species("H2O_aq", {
+    H2O_aq = Species.from_dict({
+        "name": "H2O_aq",
         "density [kg m-3]": 1000.0,
         "molecular weight [kg mol-1]": 0.01801,
     })
-    aerosol_stuff = Species("aerosol stuff", {
+    aerosol_stuff = Species.from_dict({
+        "name": "aerosol stuff",
         "molecular weight [kg mol-1]": 0.5,
         "density [kg m-3]": 1000.0,
         "__absolute tolerance": 1.0e-20,
     })
-    more_aerosol_stuff = Species("more aerosol stuff", {
+    more_aerosol_stuff = Species.from_dict({
+        "name": "more aerosol stuff",
         "molecular weight [kg mol-1]": 0.2,
         "density [kg m-3]": 1000.0,
         "__absolute tolerance": 1.0e-20,

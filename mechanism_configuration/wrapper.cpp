@@ -1,3 +1,5 @@
+// Copyright (C) 2025 University Corporation for Atmospheric Research
+// SPDX-License-Identifier: Apache-2.0
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -157,7 +159,7 @@ Reactions create_reactions(const py::list& reactions)
   return reaction_obj;
 }
 
-PYBIND11_MODULE(mechanism_configuration, m)
+PYBIND11_MODULE(_mechanism_configuration, m)
 {
   py::enum_<ReactionType>(m, "ReactionType")
       .value("Arrhenius", ReactionType::Arrhenius)
@@ -175,21 +177,22 @@ PYBIND11_MODULE(mechanism_configuration, m)
       .value("Troe", ReactionType::Troe)
       .value("Tunneling", ReactionType::Tunneling);
 
-  py::class_<Species>(m, "Species")
+  py::module_ core = m.def_submodule("_core");
+
+  py::class_<Species>(core, "_Species")
       .def(py::init<>())
-      .def(py::init([](const std::string &name) {
-          Species species;
-          species.name = name;
-          return species;
-      }))
-      .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
-          Species species;
-          species.name = name;
+      .def_static(
+          "from_dict",
+          [](const std::map<std::string, py::object> &properties)
+          {
+            Species species;
 
           // Iterate through the dictionary and set known properties
           for (const auto &[key, value] : properties) {
               try {
-                  if (key == validation::absolute_tolerance) {
+                  if (key == validation::name) {
+                      species.name = value.cast<std::string>();
+                  } else if (key == validation::absolute_tolerance) {
                       species.absolute_tolerance = value.cast<double>();
                   } else if (key == validation::diffusion_coefficient) {
                       species.diffusion_coefficient = value.cast<double>();
@@ -215,17 +218,17 @@ PYBIND11_MODULE(mechanism_configuration, m)
               } catch (const py::cast_error &e) {
                   throw py::value_error("Invalid type for property '" + key + "'. Expected a double or string.");
               }
-          }
-          return species;
-      }))
+            }
+            return species;
+          })
       .def_readwrite("name", &Species::name)
       .def_readwrite("absolute_tolerance", &Species::absolute_tolerance)
-      .def_readwrite("diffusion_coefficient", &Species::diffusion_coefficient)
-      .def_readwrite("molecular_weight", &Species::molecular_weight)
-      .def_readwrite("henrys_law_constant_298", &Species::henrys_law_constant_298)
-      .def_readwrite("henrys_law_constant_exponential_factor", &Species::henrys_law_constant_exponential_factor)
-      .def_readwrite("n_star", &Species::n_star)
-      .def_readwrite("density", &Species::density)
+      .def_readwrite("diffusion_coefficient_m2_s", &Species::diffusion_coefficient)
+      .def_readwrite("molecular_weight_kg_mol", &Species::molecular_weight)
+      .def_readwrite("HLC_298K_mol_m3_Pa", &Species::henrys_law_constant_298)
+      .def_readwrite("HLC_exponential_factor_K", &Species::henrys_law_constant_exponential_factor)
+      .def_readwrite("N_star", &Species::n_star)
+      .def_readwrite("density_kg_m3", &Species::density)
       .def_readwrite("tracer_type", &Species::tracer_type)
       .def_readwrite("unknown_properties", &Species::unknown_properties)
       .def("__str__", [](const Species &s) { return s.name; })
