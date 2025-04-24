@@ -26,5 +26,3 @@ RUN mkdir /build \
       && make install -j 8
 
 WORKDIR /build
-
-CMD ["bash", "-c", "ctest --output-on-failure -j8 && make coverage ARGS=--ignore-errors mismatch,empty"]
