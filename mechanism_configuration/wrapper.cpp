@@ -93,17 +93,21 @@ std::vector<ReactionComponent> get_reaction_components(const py::list& component
   std::vector<ReactionComponent> reaction_components;
   for (const auto &item : components) {
     if (py::isinstance<Species>(item)) {
-        reaction_components.push_back(ReactionComponent(item.cast<Species>().name));
+        ReactionComponent component;
+        component.species_name = item.cast<Species>().name;
+        reaction_components.push_back(component);
     } else if (py::isinstance<py::tuple>(item) && py::len(item.cast<py::tuple>()) == 2) {
         auto item_tuple = item.cast<py::tuple>();
         if (py::isinstance<py::float_>(item_tuple[0]) && py::isinstance<Species>(item_tuple[1])) {
-            double coefficient = item_tuple[0].cast<double>();
-            Species species = item_tuple[1].cast<Species>();
-            reaction_components.push_back(ReactionComponent(species.name, coefficient));
+            ReactionComponent component;
+            component.species_name = item_tuple[1].cast<Species>().name;
+            component.coefficient = item_tuple[0].cast<double>();
+            reaction_components.push_back(component);
         } else if (py::isinstance<py::int_>(item_tuple[0]) && py::isinstance<Species>(item_tuple[1])) {
-            double coefficient = item_tuple[0].cast<int>();
-            Species species = item_tuple[1].cast<Species>();
-            reaction_components.push_back(ReactionComponent(species.name, coefficient));
+            ReactionComponent component;
+            component.species_name = item_tuple[1].cast<Species>().name;
+            component.coefficient = item_tuple[0].cast<int>();
+            reaction_components.push_back(component);
         } else {
             throw py::value_error("Invalid tuple format. Expected (float, Species).");
         }
