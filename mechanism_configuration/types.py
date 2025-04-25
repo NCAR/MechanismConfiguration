@@ -5,8 +5,11 @@
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
 from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
-from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling, _Surface
-from _mechanism_configuration._core import _Photolysis, _CondensedPhasePhotolysis
+from _mechanism_configuration._core import _Arrhenius, _CondensedPhaseArrhenius, _Troe
+from _mechanism_configuration._core import _Branched, _Tunneling, _Surface
+from _mechanism_configuration._core import _Photolysis, _CondensedPhasePhotolysis, _Emission
+from _mechanism_configuration._core import _FirstOrderLoss, _AqueousEquilibrium, _WetDeposition
+from _mechanism_configuration._core import _HenrysLaw, _SimpolPhaseTransfer
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -197,7 +200,7 @@ class Arrhenius(_Arrhenius):
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in products
         ] if products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
     @classmethod
@@ -212,6 +215,92 @@ class Arrhenius(_Arrhenius):
             Arrhenius: An Arrhenius object.
         """
         return _Arrhenius.from_dict(data)
+    
+
+class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
+    """
+    A class representing a condensed phase Arrhenius rate constant.
+
+    Attributes:
+        name (str): The name of the condensed phase Arrhenius rate constant.
+        A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+        B (float): Temperature exponent [unitless].
+        C (float): Exponential term [K-1].
+        Ea (float): Activation energy [J molecule-1].
+        D (float): Reference Temperature [K].
+        E (float): Pressure scaling term [Pa-1].
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        aerosol_phase_water (Species): The water species in the aerosol phase.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            A: Optional[float] = None,
+            B: Optional[float] = None,
+            C: Optional[float] = None,
+            Ea: Optional[float] = None,
+            D: Optional[float] = None,
+            E: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            aerosol_phase: Optional[Phase] = None,
+            aerosol_phase_water: Optional[Species] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the CondensedPhaseArrhenius object with the given parameters.
+
+        Args:
+            name (str): The name of the condensed phase Arrhenius rate constant.
+            A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+            B (float): Temperature exponent [unitless].
+            C (float): Exponential term [K-1].
+            Ea (float): Activation energy [J molecule-1].
+            D (float): Reference Temperature [K].
+            E (float): Pressure scaling term [Pa-1].
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            aerosol_phase_water (Species): The water species in the aerosol phase.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.A = A
+        self.B = B
+        if C is not None and Ea is not None:
+            raise ValueError("Cannot specify both C and Ea.")
+        self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C
+        self.D = D
+        self.E = E
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CondensedPhaseArrhenius':
+        """
+        Creates a CondensedPhaseArrhenius object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the condensed phase Arrhenius data.
+
+        Returns:
+            CondensedPhaseArrhenius: A CondensedPhaseArrhenius object.
+        """
+        return _CondensedPhaseArrhenius.from_dict(data)
     
 
 class Troe(_Troe):
@@ -304,7 +393,7 @@ class Troe(_Troe):
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in products
         ] if products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
 
@@ -387,7 +476,7 @@ class Branched(_Branched):
             isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in alkoxy_products
         ] if alkoxy_products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
 
@@ -466,7 +555,7 @@ class Tunneling(_Tunneling):
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in products
         ] if products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
 
@@ -527,13 +616,13 @@ class Surface(_Surface):
         self.gas_phase_species = (
             _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
             else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
-        ) if gas_phase_species is not None else None
+        ) if gas_phase_species is not None else []
         self.gas_phase_products = [
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in gas_phase_products
         ] if gas_phase_products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
     @classmethod
@@ -593,7 +682,7 @@ class Photolysis(_Photolysis):
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in products
         ] if products is not None else []
-        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
     @classmethod
@@ -656,8 +745,8 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
             _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
             for p in products
         ] if products is not None else []
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else None
-        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else None
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
 
@@ -673,3 +762,368 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
             CondensedPhasePhotolysis: A CondensedPhasePhotolysis object.
         """
         return _CondensedPhasePhotolysis.from_dict(data)
+    
+
+class Emission(_Emission):
+    """
+    A class representing an emission reaction rate constant.
+
+    Attributes:
+        name (str): The name of the emission reaction rate constant.
+        scaling_factor (float): The scaling factor for the emission rate constant.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            scaling_factor: Optional[float] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Emission object with the given parameters.
+
+        Args:
+            name (str): The name of the emission reaction rate constant.
+            scaling_factor (float): The scaling factor for the emission rate constant.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.scaling_factor = scaling_factor
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Emission':
+        """
+        Creates an Emission object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the emission reaction data.
+
+        Returns:
+            Emission: An Emission object.
+        """
+        return _Emission.from_dict(data)
+    
+
+class FirstOrderLoss(_FirstOrderLoss):
+    """
+    A class representing a first-order loss reaction rate constant.
+
+    Attributes:
+        name (str): The name of the first-order loss reaction rate constant.
+        scaling_factor (float): The scaling factor for the first-order loss rate constant.
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            scaling_factor: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the FirstOrderLoss object with the given parameters.
+
+        Args:
+            name (str): The name of the first-order loss reaction rate constant.
+            scaling_factor (float): The scaling factor for the first-order loss rate constant.
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.scaling_factor = scaling_factor
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'FirstOrderLoss':
+        """
+        Creates a FirstOrderLoss object from a dictionary.
+        Args:
+            data (Dict[str, Any]): A dictionary containing the first-order loss reaction data.
+        Returns:
+            FirstOrderLoss: A FirstOrderLoss object.
+        """
+        return _FirstOrderLoss.from_dict(data)
+    
+
+class AqueousEquilibrium(_AqueousEquilibrium):
+    """
+    A class representing an aqueous equilibrium reaction rate constant.
+
+    Attributes:
+        name (str): The name of the aqueous equilibrium reaction rate constant.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        aerosol_phase_water (Species): The water species in the aerosol phase.
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+        C (float): Exponential term [K-1].
+        k_reverse (float): Reverse rate constant [(mol m-3)^(n-1)s-1].
+        other_properties (Dict[str, Any]): A dictionary of other properties of the aqueous equilibrium reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            gas_phase: Optional[Phase] = None,
+            aerosol_phase: Optional[Phase] = None,
+            aerosol_phase_water: Optional[Species] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            A: Optional[float] = None,
+            C: Optional[float] = None,
+            k_reverse: Optional[float] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the AqueousEquilibrium object with the given parameters.
+
+        Args:
+            name (str): The name of the aqueous equilibrium reaction rate constant.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            aerosol_phase_water (Species): The water species in the aerosol phase.
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+            C (float): Exponential term [K-1].
+            k_reverse (float): Reverse rate constant [(mol m-3)^(n-1)s-1].
+            other_properties (Dict[str, Any]): A dictionary of other properties of the aqueous equilibrium reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.A = A
+        self.C = C
+        self.k_reverse = k_reverse
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'AqueousEquilibrium':
+        """
+        Creates an AqueousEquilibrium object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the aqueous equilibrium reaction data.
+
+        Returns:
+            AqueousEquilibrium: An AqueousEquilibrium object.
+        """
+        return _AqueousEquilibrium.from_dict(data)
+    
+
+class WetDeposition(_WetDeposition):
+    """
+    A class representing a wet deposition reaction rate constant.
+
+    Attributes:
+        name (str): The name of the wet deposition reaction rate constant.
+        scaling_factor (float): The scaling factor for the wet deposition rate constant.
+        aerosol_phase (Phase): The aerosol phase which undergoes wet deposition.
+        unknown_properties (Dict[str, Any]): A dictionary of other properties of the wet deposition reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            scaling_factor: Optional[float] = None,
+            aerosol_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the WetDeposition object with the given parameters.
+
+        Args:
+            name (str): The name of the wet deposition reaction rate constant.
+            scaling_factor (float): The scaling factor for the wet deposition rate constant.
+            aerosol_phase (Phase): The aerosol phase which undergoes wet deposition.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the wet deposition reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.scaling_factor = scaling_factor
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'WetDeposition':
+        """
+        Creates a WetDeposition object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the wet deposition reaction data.
+
+        Returns:
+            WetDeposition: A WetDeposition object.
+        """
+        return _WetDeposition.from_dict(data)
+    
+
+class HenrysLaw(_HenrysLaw):
+    """
+    A class representing a Henry's law reaction rate constant.
+
+    Attributes:
+        name (str): The name of the Henry's law reaction rate constant.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        aerosol_phase_water (Species): The water species in the aerosol phase.
+        aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            gas_phase: Optional[Phase] = None,
+            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+            aerosol_phase: Optional[Phase] = None,
+            aerosol_phase_water: Optional[Species] = None,
+            aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the HenrysLaw object with the given parameters.
+
+        Args:
+            name (str): The name of the Henry's law reaction rate constant.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            aerosol_phase_water (Species): The water species in the aerosol phase.
+            aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.gas_phase_species = (
+            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
+            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+        ) if gas_phase_species is not None else []
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.aerosol_phase_species = (
+            _ReactionComponent(aerosol_phase_species.name) if isinstance(aerosol_phase_species, Species)
+            else _ReactionComponent(aerosol_phase_species[1].name, aerosol_phase_species[0])
+        ) if aerosol_phase_species is not None else []
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'HenrysLaw':
+        """
+        Creates a HenrysLaw object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the Henry's law reaction data.
+
+        Returns:
+            HenrysLaw: A HenrysLaw object.
+        """
+        return _HenrysLaw.from_dict(data)
+    
+
+class SimpolPhaseTransfer(_SimpolPhaseTransfer):
+    """
+    A class representing a simplified phase transfer reaction rate constant.
+
+    Attributes:
+        name (str): The name of the simplified phase transfer reaction rate constant.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+        B (list[float]): The B parameters [unitless].
+        unknown_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            gas_phase: Optional[Phase] = None,
+            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+            aerosol_phase: Optional[Phase] = None,
+            aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+            B: Optional[list[float]] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the SimpolPhaseTransfer object with the given parameters.
+
+        Args:
+            name (str): The name of the simplified phase transfer reaction rate constant.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+            B (list[float]): The B parameters [unitless].
+            other_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.gas_phase_species = (
+            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
+            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+        ) if gas_phase_species is not None else []
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase_species = (
+            _ReactionComponent(aerosol_phase_species.name) if isinstance(aerosol_phase_species, Species)
+            else _ReactionComponent(aerosol_phase_species[1].name, aerosol_phase_species[0])
+        ) if aerosol_phase_species is not None else []
+        if B is not None:
+            if len(B) != 4:
+                raise ValueError("B must be a list of 4 elements.")
+            self.B = B
+        else:
+            self.B = [0, 0, 0, 0]
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'SimpolPhaseTransfer':
+        """
+        Creates a SimpolPhaseTransfer object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the simplified phase transfer reaction data.
+
+        Returns:
+            SimpolPhaseTransfer: A SimpolPhaseTransfer object.
+        """
+        return _SimpolPhaseTransfer.from_dict(data)

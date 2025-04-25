@@ -302,7 +302,7 @@ namespace mechanism_configuration
         /// @brief An identifier indicating which aerosol phase this reaction takes place in
         std::string aerosol_phase;
         /// @brief An identifier indicating the species label of aqueous phase water
-        ReactionComponent aerosol_phase_water;
+        std::string aerosol_phase_water;
         /// @brief An identifier indicating which aerosol phase species this reaction involves
         ReactionComponent aerosol_phase_species;
         /// @brief Unknown properties, prefixed with two underscores (__)

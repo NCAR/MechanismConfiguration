@@ -151,9 +151,7 @@ def validate_henrys_law(reactions):
     assert extract_components([reactions[0].aerosol_phase_species]) == [
         {"species name": "H2O2_aq", "coefficient": 1}
     ]
-    assert extract_components([reactions[0].aerosol_phase_water]) == [
-        {"species name": "H2O_aq", "coefficient": 1}
-    ]
+    assert reactions[0].aerosol_phase_water == "H2O_aq"
     assert reactions[0].name == "my henry's law"
 
 
@@ -481,6 +479,32 @@ def test_hard_coded_full_v1_configuration():
         products = [(1.2, B)]
     )
 
+    my_condensed_arrhenius = CondensedPhaseArrhenius(
+        name = "my condensed arrhenius",
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_water = H2O_aq,
+        A = 123.45,
+        B = 1.3,
+        Ea = 123.45,
+        D = 300.0,
+        E = 0.6e-5,
+        reactants = [H2O2_aq, H2O_aq],
+        products = [ethanol_aq]
+    )
+
+    my_other_condensed_arrhenius = CondensedPhaseArrhenius(
+        name = "my other condensed arrhenius",
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_water = H2O_aq,
+        A = 123.45,
+        B = 1.3,
+        C = 123.45,
+        D = 300.0,
+        E = 0.6e-5,
+        reactants = [H2O2_aq, H2O_aq],
+        products = [ethanol_aq]
+    )
+
     my_troe = Troe(
         name = "my troe",
         gas_phase = gas,
@@ -544,6 +568,56 @@ def test_hard_coded_full_v1_configuration():
         scaling_factor = 12.3,
     )
 
+    my_emission = Emission(
+        name = "my emission",
+        gas_phase = gas,
+        products = [B],
+        scaling_factor = 12.3,
+    )
+
+    my_first_order_loss = FirstOrderLoss(
+        name = "my first order loss",
+        gas_phase = gas,
+        reactants = [C],
+        scaling_factor = 12.3,
+    )
+
+    my_aqueous_equilibrium = AqueousEquilibrium(
+        name = "my aqueous eq",
+        gas_phase= gas,
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_water = H2O_aq,
+        A = 1.14e-2,
+        C = 2300.0,
+        k_reverse = 0.32,
+        reactants = [(2, A)],
+        products = [B, C],
+    )
+
+    my_wet_deposition = WetDeposition(
+        name = "rxn cloud",
+        aerosol_phase = cloud,
+        scaling_factor = 12.3,
+    )
+
+    my_henrys_law = HenrysLaw(
+        name = "my henry's law",
+        gas_phase = gas,
+        gas_phase_species = H2O2,
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_species = H2O2_aq,
+        aerosol_phase_water = H2O_aq,
+    )
+
+    my_simpol_phase_transfer = SimpolPhaseTransfer(
+        name = "my simpol",
+        gas_phase = gas,
+        gas_phase_species = ethanol,
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_species = ethanol_aq,
+        B = [-1.97e03, 2.91e00, 1.96e-03, -4.96e-01],
+    )
+    
 
 def test_hard_coded_full_v1_configuration_from_dict():
 
@@ -636,7 +710,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "products": [(1.2, B)]
         })
 
-    my_condensed_arrhenius = CondensedPhaseArrhenius("my condensed arrhenius", {
+    my_condensed_arrhenius = CondensedPhaseArrhenius.from_dict({
+        "name": "my condensed arrhenius",
         "aerosol phase": aqueous_aerosol,
         "aerosol-phase water": H2O_aq,
         "A": 123.45,
@@ -648,7 +723,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "products": [ethanol_aq]
         })
     
-    my_other_condensed_arrhenius = CondensedPhaseArrhenius("my other condensed arrhenius", {
+    my_other_condensed_arrhenius = CondensedPhaseArrhenius.from_dict({
+        "name": "my other condensed arrhenius",
         "aerosol phase": aqueous_aerosol,
         "aerosol-phase water": H2O_aq,
         "A": 123.45,
@@ -723,18 +799,22 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "scaling factor": 12.3,
         })
 
-    my_emission = Emission("my emission", {
+    my_emission = Emission.from_dict({
+        "name": "my emission",
         "gas phase": gas,
         "products": [B],
         "scaling factor": 12.3,
         })
-    my_first_order_loss = FirstOrderLoss("my first order loss", {
+    
+    my_first_order_loss = FirstOrderLoss.from_dict({
+        "name": "my first order loss",
         "gas phase": gas,
         "reactants": [C],
         "scaling factor": 12.3,
         })
 
-    my_aqueous_eq = AqueousEquilibrium("my aqueous eq", {
+    my_aqueous_eq = AqueousEquilibrium.from_dict({
+        "name": "my aqueous eq",
         "aerosol phase": aqueous_aerosol,
         "aerosol-phase water": H2O_aq,
         "A": 1.14e-2,
@@ -744,12 +824,14 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "products": [B, C],
         })
     
-    wet_deposition = WetDeposition("rxn cloud", {
+    wet_deposition = WetDeposition.from_dict({
+        "name": "rxn cloud",
         "aerosol phase": cloud,
         "scaling factor": 12.3,
         })
     
-    my_henrys_law = HenrysLaw("my henry's law", {
+    my_henrys_law = HenrysLaw.from_dict({
+        "name": "my henry's law",
         "gas phase": gas,
         "gas-phase species": H2O2,
         "aerosol phase": aqueous_aerosol,
@@ -757,7 +839,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "aerosol-phase water": H2O_aq,
         })
     
-    my_simpol = SimpolPhaseTransfer("my simpol", {
+    my_simpol = SimpolPhaseTransfer.from_dict({
+        "name": "my simpol",
         "gas phase": gas,
         "gas-phase species": ethanol,
         "aerosol phase": aqueous_aerosol,

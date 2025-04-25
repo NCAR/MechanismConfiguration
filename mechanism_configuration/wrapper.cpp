@@ -370,21 +370,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Arrhenius &a) { return "<Arrhenius: " + a.name + ">"; })
       .def_property_readonly("type", [](const Arrhenius &) { return ReactionType::Arrhenius; });
 
-  py::class_<CondensedPhaseArrhenius>(m, "CondensedPhaseArrhenius")
+  py::class_<CondensedPhaseArrhenius>(core, "_CondensedPhaseArrhenius")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            CondensedPhaseArrhenius cpa;
-            cpa.name = name;
-            return cpa;
-        }))
-      .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+      .def("from_dict",
+        [](const std::map<std::string, py::object> &properties) {
           CondensedPhaseArrhenius cpa;
-          cpa.name = name;
-
+          
           // Iterate through the dictionary and set known properties
           for (const auto &[key, value] : properties) {
               try {
-                  if (key == validation::A) {
+                  if (key == validation::name) {
+                      cpa.name = value.cast<std::string>();
+                  } else if (key == validation::A) {
                       cpa.A = value.cast<double>();
                   } else if (key == validation::B) {
                       cpa.B = value.cast<double>();
@@ -429,7 +426,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
               }
           }
           return cpa;
-      }))
+      })
       .def_readwrite("A", &CondensedPhaseArrhenius::A)
       .def_readwrite("B", &CondensedPhaseArrhenius::B)
       .def_readwrite("C", &CondensedPhaseArrhenius::C)
@@ -778,21 +775,17 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const CondensedPhasePhotolysis &cpp) { return "<CondensedPhasePhotolysis: " + cpp.name + ">"; })
       .def_property_readonly("type", [](const CondensedPhasePhotolysis &) { return ReactionType::CondensedPhasePhotolysis; });
 
-  py::class_<Emission>(m, "Emission")
+  py::class_<Emission>(core, "_Emission")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            Emission emission;
-            emission.name = name;
-            return emission;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict", [](const std::map<std::string, py::object> &properties) {
                 Emission emission;
-                emission.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::scaling_factor) {
+                        if (key == validation::name) {
+                            emission.name = value.cast<std::string>();
+                        } else if (key == validation::scaling_factor) {
                             emission.scaling_factor = value.cast<double>();
                         } else if (key == validation::products) {
                             if (!py::isinstance<py::list>(value)) {
@@ -813,7 +806,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return emission;
-            }))
+            })
       .def_readwrite("scaling_factor", &Emission::scaling_factor)
       .def_readwrite("products", &Emission::products)
       .def_readwrite("name", &Emission::name)
@@ -823,21 +816,17 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Emission &e) { return "<Emission: " + e.name + ">"; })
       .def_property_readonly("type", [](const Emission &) { return ReactionType::Emission; });
 
-  py::class_<FirstOrderLoss>(m, "FirstOrderLoss")
+  py::class_<FirstOrderLoss>(core, "_FirstOrderLoss")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            FirstOrderLoss fol;
-            fol.name = name;
-            return fol;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict", [](const std::map<std::string, py::object> &properties) {
                 FirstOrderLoss fol;
-                fol.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::scaling_factor) {
+                        if (key == validation::name) {
+                            fol.name = value.cast<std::string>();
+                        } else if (key == validation::scaling_factor) {
                             fol.scaling_factor = value.cast<double>();
                         } else if (key == validation::reactants) {
                             if (!py::isinstance<py::list>(value)) {
@@ -858,7 +847,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return fol;
-            }))
+            })
       .def_readwrite("scaling_factor", &FirstOrderLoss::scaling_factor)
       .def_readwrite("reactants", &FirstOrderLoss::reactants)
       .def_readwrite("name", &FirstOrderLoss::name)
@@ -868,21 +857,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const FirstOrderLoss &fol) { return "<FirstOrderLoss: " + fol.name + ">"; })
       .def_property_readonly("type", [](const FirstOrderLoss &) { return ReactionType::FirstOrderLoss; });
 
-  py::class_<AqueousEquilibrium>(m, "AqueousEquilibrium")
+  py::class_<AqueousEquilibrium>(core, "_AqueousEquilibrium")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            AqueousEquilibrium ae;
-            ae.name = name;
-            return ae;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 AqueousEquilibrium ae;
-                ae.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::A) {
+                        if (key == validation::name) {
+                            ae.name = value.cast<std::string>();
+                        } else if (key == validation::A) {
                             ae.A = value.cast<double>();
                         } else if (key == validation::C) {
                             ae.C = value.cast<double>();
@@ -916,7 +902,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return ae;
-            }))
+            })
       .def_readwrite("name", &AqueousEquilibrium::name)
       .def_readwrite("gas_phase", &AqueousEquilibrium::gas_phase)
       .def_readwrite("aerosol_phase", &AqueousEquilibrium::aerosol_phase)
@@ -931,21 +917,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const AqueousEquilibrium &ae) { return "<AqueousEquilibrium: " + ae.name + ">"; })
       .def_property_readonly("type", [](const AqueousEquilibrium &) { return ReactionType::AqueousEquilibrium; });
 
-  py::class_<WetDeposition>(m, "WetDeposition")
+  py::class_<WetDeposition>(core, "_WetDeposition")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            WetDeposition wd;
-            wd.name = name;
-            return wd;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 WetDeposition wd;
-                wd.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::scaling_factor) {
+                        if (key == validation::name) {
+                            wd.name = value.cast<std::string>();
+                        } else if (key == validation::scaling_factor) {
                             wd.scaling_factor = value.cast<double>();
                         } else if (key == validation::aerosol_phase) {
                             wd.aerosol_phase = value.cast<Phase>().name;
@@ -961,7 +944,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return wd;
-            }))
+            })
       .def_readwrite("scaling_factor", &WetDeposition::scaling_factor)
       .def_readwrite("name", &WetDeposition::name)
       .def_readwrite("aerosol_phase", &WetDeposition::aerosol_phase)
@@ -970,28 +953,25 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const WetDeposition &wd) { return "<WetDeposition: " + wd.name + ">"; })
       .def_property_readonly("type", [](const WetDeposition &) { return ReactionType::WetDeposition; });
 
-  py::class_<HenrysLaw>(m, "HenrysLaw")
+  py::class_<HenrysLaw>(core, "_HenrysLaw")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            HenrysLaw hl;
-            hl.name = name;
-            return hl;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 HenrysLaw hl;
-                hl.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::gas_phase) {
+                        if (key == validation::name) {
+                            hl.name = value.cast<std::string>();
+                        } else if (key == validation::gas_phase) {
                             hl.gas_phase = value.cast<Phase>().name;
                         } else if (key == validation::gas_phase_species) {
                             hl.gas_phase_species = ReactionComponent(value.cast<Species>().name);
                         } else if (key == validation::aerosol_phase) {
                             hl.aerosol_phase = value.cast<Phase>().name;
                         } else if (key == validation::aerosol_phase_water) {
-                            hl.aerosol_phase_water = ReactionComponent(value.cast<Species>().name);
+                            hl.aerosol_phase_water = value.cast<Species>().name;
                         } else if (key == validation::aerosol_phase_species) {
                             hl.aerosol_phase_species = ReactionComponent(value.cast<Species>().name);
                         } else {
@@ -1006,7 +986,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return hl;
-            }))
+            })
       .def_readwrite("name", &HenrysLaw::name)
       .def_readwrite("gas_phase", &HenrysLaw::gas_phase)
       .def_readwrite("gas_phase_species", &HenrysLaw::gas_phase_species)
@@ -1018,21 +998,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const HenrysLaw &hl) { return "<HenrysLaw: " + hl.name + ">"; })
       .def_property_readonly("type", [](const HenrysLaw &) { return ReactionType::HenrysLaw; });
 
-  py::class_<SimpolPhaseTransfer>(m, "SimpolPhaseTransfer")
+  py::class_<SimpolPhaseTransfer>(core, "_SimpolPhaseTransfer")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            SimpolPhaseTransfer spt;
-            spt.name = name;
-            return spt;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 SimpolPhaseTransfer spt;
-                spt.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::B) {
+                        if (key == validation::name) {
+                            spt.name = value.cast<std::string>();
+                        } else if (key == validation::B) {
                             auto B_list = value.cast<py::list>();
                             if (B_list.size() != 4) {
                                 throw py::value_error("Invalid size for property '" + key + "'. Expected a list of size 4.");
@@ -1058,7 +1035,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return spt;
-            }))
+            })
       .def_readwrite("gas_phase", &SimpolPhaseTransfer::gas_phase)
       .def_readwrite("gas_phase_species", &SimpolPhaseTransfer::gas_phase_species)
       .def_readwrite("aerosol_phase", &SimpolPhaseTransfer::aerosol_phase)
