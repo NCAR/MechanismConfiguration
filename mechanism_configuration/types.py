@@ -6,6 +6,7 @@
 from typing import Optional, Any, Dict
 from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
 from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling, _Surface
+from _mechanism_configuration._core import _Photolysis
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -547,3 +548,63 @@ class Surface(_Surface):
             Surface: A Surface object.
         """
         return _Surface.from_dict(data)
+    
+
+class Photolysis(_Photolysis):
+    """
+    A class representing a photolysis reaction rate constant.
+
+    Attributes:
+        name (str): The name of the photolysis reaction rate constant.
+        scaling_factor (float): The scaling factor for the photolysis rate constant.
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            scaling_factor: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Photolysis object with the given parameters.
+
+        Args:
+            name (str): The name of the photolysis reaction rate constant.
+            scaling_factor (float): The scaling factor for the photolysis rate constant.
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.scaling_factor = scaling_factor
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Photolysis':
+        """
+        Creates a Photolysis object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the photolysis reaction data.
+
+        Returns:
+            Photolysis: A Photolysis object.
+        """
+        return _Photolysis.from_dict(data)

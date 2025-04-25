@@ -527,6 +527,14 @@ def test_hard_coded_full_v1_configuration():
         aerosol_phase = surface_reacting_phase,
     )
 
+    photo_B = Photolysis(
+        name = "photo B",
+        gas_phase = gas,
+        reactants = [B],
+        products = [C],
+        scaling_factor = 12.3,
+    )
+
 
 def test_hard_coded_full_v1_configuration_from_dict():
 
@@ -689,7 +697,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "aerosol phase": surface_reacting_phase,
         })
 
-    photo_B = Photolysis("photo B", {
+    photo_B = Photolysis.from_dict({
+        "name": "photo B",
         "gas phase": gas,
         "reactants": [B],
         "products": [C],

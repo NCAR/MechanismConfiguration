@@ -679,21 +679,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Surface &s) { return "<Surface: " + s.name + ">"; })
       .def_property_readonly("type", [](const Surface &) { return ReactionType::Surface; });
 
-  py::class_<Photolysis>(m, "Photolysis")
+  py::class_<Photolysis>(core, "_Photolysis")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            Photolysis photolysis;
-            photolysis.name = name;
-            return photolysis;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 Photolysis photolysis;
-                photolysis.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::scaling_factor) {
+                        if (key == validation::name) {
+                            photolysis.name = value.cast<std::string>();
+                        } else if (key == validation::scaling_factor) {
                             photolysis.scaling_factor = value.cast<double>();
                         } else if (key == validation::reactants) {
                             if (!py::isinstance<py::list>(value)) {
@@ -719,7 +716,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return photolysis;
-            }))
+            })
       .def_readwrite("scaling_factor", &Photolysis::scaling_factor)
       .def_readwrite("reactants", &Photolysis::reactants)
       .def_readwrite("products", &Photolysis::products)
