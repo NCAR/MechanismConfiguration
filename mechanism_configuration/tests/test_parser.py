@@ -1,11 +1,12 @@
 import pytest
 from mechanism_configuration import *
+from _mechanism_configuration import _core
 
 
 def validate_species(species):
     # Define the expected species and their required attributes
     expected_species = {
-        "A": { "unknown_properties": {"__absolute tolerance": "1e-30"} },
+        "A": { "other_properties": {"__absolute tolerance": "1e-30"} },
         "B": {"tracer_type": "AEROSOL"},
         "C": {"tracer_type": "THIRD_BODY"},
         "M": {},
@@ -16,23 +17,23 @@ def validate_species(species):
             "N_star": 1.74,
             "molecular_weight_kg_mol": 0.0340147,
             "density_kg_m3": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1e-10"},
+            "other_properties": {"__absolute tolerance": "1e-10"},
         },
         "ethanol": {
             "diffusion_coefficient_m2_s": 0.95e-05,
             "N_star": 2.55,
             "molecular_weight_kg_mol": 0.04607,
-            "unknown_properties": {"__absolute tolerance": "1e-20"},
+            "other_properties": {"__absolute tolerance": "1e-20"},
         },
         "ethanol_aq": {
             "molecular_weight_kg_mol": 0.04607,
             "density_kg_m3": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1e-20"},
+            "other_properties": {"__absolute tolerance": "1e-20"},
         },
         "H2O2_aq": {
             "molecular_weight_kg_mol": 0.0340147,
             "density_kg_m3": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1e-10"},
+            "other_properties": {"__absolute tolerance": "1e-10"},
         },
         "H2O_aq": {
             "density_kg_m3": 1000.0,
@@ -41,12 +42,12 @@ def validate_species(species):
         "aerosol stuff": {
             "molecular_weight_kg_mol": 0.5,
             "density_kg_m3": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1e-20"},
+            "other_properties": {"__absolute tolerance": "1e-20"},
         },
         "more aerosol stuff": {
             "molecular_weight_kg_mol": 0.2,
             "density_kg_m3": 1000.0,
-            "unknown_properties": {"__absolute tolerance": "1e-20"},
+            "other_properties": {"__absolute tolerance": "1e-20"},
         },
     }
 
@@ -124,7 +125,7 @@ def validate_arrhenius(reactions):
     assert reactions[0].D == 63.4
     assert reactions[0].E == -1.3
     assert reactions[0].name == "my arrhenius"
-    assert reactions[0].unknown_properties == {}
+    assert reactions[0].other_properties == {}
     assert reactions[1].type == ReactionType.Arrhenius
     assert extract_components(reactions[1].reactants) == [
         {"species name": "A", "coefficient": 1}
@@ -138,7 +139,7 @@ def validate_arrhenius(reactions):
     assert reactions[1].D == 82.6
     assert reactions[1].E == -0.98
     assert reactions[1].name == "my other arrhenius"
-    assert reactions[1].unknown_properties == {}
+    assert reactions[1].other_properties == {}
 
 
 def validate_henrys_law(reactions):
@@ -375,7 +376,7 @@ def validate_full_v1_mechanism(mechanism):
     assert len(mechanism.reactions) == 16
     for reaction in mechanism.reactions:
         assert reaction is not None
-        assert isinstance(reaction.type, ReactionType)
+        assert isinstance(reaction.type, _core._ReactionType)
 
 
 def test_parsed_full_v1_configuration():
@@ -399,7 +400,7 @@ def test_parser_reports_bad_files():
 def test_hard_coded_full_v1_configuration():
 
     #Chemical species
-    A = Species(name = "A", other_properties = {"__absolute tolerance": 1.0e-30})
+    A = Species(name = "A", other_properties = {"__absolute tolerance": "1.0e-30"})
     B = Species(name = "B", tracer_type = "AEROSOL")
     C = Species(name = "C", tracer_type = "THIRD_BODY")
     M = Species(name = "M")
@@ -411,26 +412,26 @@ def test_hard_coded_full_v1_configuration():
         N_star = 1.74,
         molecular_weight_kg_mol = 0.0340147,
         density_kg_m3 = 1000.0,
-        other_properties = {"__absolute tolerance": 1.0e-10},
+        other_properties = {"__absolute tolerance": "1.0e-10"},
     )
     ethanol = Species(
         name = "ethanol",
         diffusion_coefficient_m2_s = 0.95e-05,
         N_star = 2.55,
         molecular_weight_kg_mol = 0.04607,
-        other_properties = {"__absolute tolerance": 1.0e-20},
+        other_properties = {"__absolute tolerance": "1.0e-20"},
     )
     ethanol_aq = Species(
         name = "ethanol_aq",
         molecular_weight_kg_mol = 0.04607,
         density_kg_m3 = 1000.0,
-        other_properties = {"__absolute tolerance": 1.0e-20},
+        other_properties = {"__absolute tolerance": "1.0e-20"},
     )
     H2O2_aq = Species(
         name = "H2O2_aq",
         molecular_weight_kg_mol = 0.0340147,
         density_kg_m3 = 1000.0,
-        other_properties = {"__absolute tolerance": 1.0e-10},
+        other_properties = {"__absolute tolerance": "1.0e-10"},
     )
     H2O_aq = Species(
         name = "H2O_aq",
@@ -441,13 +442,13 @@ def test_hard_coded_full_v1_configuration():
         name = "aerosol stuff",
         molecular_weight_kg_mol = 0.5,
         density_kg_m3 = 1000.0,
-        other_properties = {"__absolute tolerance": 1.0e-20},
+        other_properties = {"__absolute tolerance": "1.0e-20"},
     )
     more_aerosol_stuff = Species(
         name = "more aerosol stuff",
         molecular_weight_kg_mol = 0.2,
         density_kg_m3 = 1000.0,
-        other_properties = {"__absolute tolerance": 1.0e-20},
+        other_properties = {"__absolute tolerance": "1.0e-20"},
     )
 
     # Chemical phases
@@ -617,6 +618,22 @@ def test_hard_coded_full_v1_configuration():
         aerosol_phase_species = ethanol_aq,
         B = [-1.97e03, 2.91e00, 1.96e-03, -4.96e-01],
     )
+
+    #Mechanism
+    mechanism = Mechanism(
+        name = "Full Configuration",
+        species = [A, B, C, M, H2O2, ethanol, ethanol_aq, H2O2_aq, H2O_aq,
+                    aerosol_stuff, more_aerosol_stuff],
+        phases = [gas, aqueous_aerosol, surface_reacting_phase, cloud],
+        reactions = [my_arrhenius, my_other_arrhenius, my_condensed_arrhenius,
+                     my_other_condensed_arrhenius, my_troe, my_branched,
+                     my_tunneling, my_surface, photo_B, condensed_photo_B,
+                     my_emission, my_first_order_loss, my_aqueous_equilibrium,
+                     my_wet_deposition, my_henrys_law, my_simpol_phase_transfer],
+        version = Version(1, 0, 0),
+    )
+
+    validate_full_v1_mechanism(mechanism)
     
 
 def test_hard_coded_full_v1_configuration_from_dict():
@@ -849,7 +866,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         })
 
     # Create the mechanism
-    mechanism = Mechanism("Full Configuration", {
+    mechanism = Mechanism.from_dict({
+        "name": "Full Configuration",
         "species": [A, B, C, M, H2O2, ethanol, ethanol_aq, H2O2_aq, H2O_aq, aerosol_stuff, more_aerosol_stuff],
         "phases": [gas, aqueous_aerosol, surface_reacting_phase, cloud],
         "reactions": [ my_arrhenius, my_other_arrhenius, my_branched, my_condensed_arrhenius,

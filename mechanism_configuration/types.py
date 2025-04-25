@@ -4,14 +4,21 @@
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
-from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
+from _mechanism_configuration._core import _ReactionType, _Species, _Phase, _ReactionComponent
 from _mechanism_configuration._core import _Arrhenius, _CondensedPhaseArrhenius, _Troe
 from _mechanism_configuration._core import _Branched, _Tunneling, _Surface
 from _mechanism_configuration._core import _Photolysis, _CondensedPhasePhotolysis, _Emission
 from _mechanism_configuration._core import _FirstOrderLoss, _AqueousEquilibrium, _WetDeposition
 from _mechanism_configuration._core import _HenrysLaw, _SimpolPhaseTransfer
+from _mechanism_configuration._core import _Reactions, _ReactionsIterator, _Mechanism, _Version, _Parser
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
+
+class ReactionType(_ReactionType):
+    """
+    A enum class representing a reaction type in a chemical mechanism.
+    """
+
 
 class Species(_Species):
     """
@@ -65,6 +72,7 @@ class Species(_Species):
         self.density_kg_m3 = density_kg_m3
         self.tracer_type = tracer_type
         self.other_properties = other_properties if other_properties is not None else {}
+
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'Species':
@@ -685,6 +693,7 @@ class Photolysis(_Photolysis):
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
 
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'Photolysis':
         """
@@ -1127,3 +1136,79 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
             SimpolPhaseTransfer: A SimpolPhaseTransfer object.
         """
         return _SimpolPhaseTransfer.from_dict(data)
+
+
+class Reactions(_Reactions):
+    """
+    A class representing a collection of reactions in a chemical mechanism.
+
+    Attributes:
+        reactions (List[Any]): A list of reactions in the mechanism.
+    """
+    def __init__(
+            self, 
+            reactions: Optional[list[Any]] = None,
+    ):
+        """
+        Initializes the Reactions object with the given parameters.
+
+        Args:
+            reactions (List[]): A list of reactions in the mechanism.
+        """
+        super().__init__(reactions)
+
+
+
+class ReactionsIterator(_ReactionsIterator):
+    """
+    An iterator for the Reactions class.
+    """
+
+
+class Version(_Version):
+    """
+    A class representing the version of the mechanism.
+    """
+
+
+class Mechanism(_Mechanism):
+    """
+    A class representing a chemical mechanism.
+
+    Attributes:
+        name (str): The name of the mechanism.
+        reactions (List[Reaction]): A list of reactions in the mechanism.
+        species (List[Species]): A list of species in the mechanism.
+        phases (List[Phase]): A list of phases in the mechanism.
+        version (Version): The version of the mechanism.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            reactions: Optional[list[Any]] = None,
+            species: Optional[list[Species]] = None,
+            phases: Optional[list[Phase]] = None,
+            version: Optional[Version] = None,
+    ):
+        """
+        Initializes the Mechanism object with the given parameters.
+
+        Args:
+            name (str): The name of the mechanism.
+            reactions (List[]): A list of reactions in the mechanism.
+            species (List[Species]): A list of species in the mechanism.
+            phases (List[Phase]): A list of phases in the mechanism.
+            version (Version): The version of the mechanism.
+        """
+        super().__init__()
+        self.name = name
+        self.species = species if species is not None else []
+        self.phases = phases if phases is not None else []
+        self.reactions = Reactions(reactions=reactions)
+        self.version = version if version is not None else Version()
+
+
+class Parser(_Parser):
+    """
+    A class for parsing a chemical mechanism.
+    """
