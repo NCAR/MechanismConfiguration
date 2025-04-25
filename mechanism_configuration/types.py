@@ -4,7 +4,8 @@
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
-from _mechanism_configuration._core import *
+from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
+from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -401,3 +402,82 @@ class Branched(_Branched):
             Branched: A Branched object.
         """
         return _Branched.from_dict(data)
+    
+
+class Tunneling(_Tunneling):
+    """
+    A class representing a quantum tunneling reaction rate constant.
+
+    k = A * exp( -B / T ) * exp( C / T^3 )
+    
+    where:
+        k = rate constant
+        A = pre-exponential factor [(mol m-3)^(n-1)s-1]
+        B = tunneling parameter [K^-1]
+        C = tunneling parameter [K^-3]
+        T = temperature [K]
+        n = number of reactants
+
+    Attributes:
+        name (str): The name of the tunneling reaction rate constant.
+        A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+        B (float): Tunneling parameter [K^-1].
+        C (float): Tunneling parameter [K^-3].
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            A: Optional[float] = None,
+            B: Optional[float] = None,
+            C: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Tunneling object with the given parameters.
+
+        Args:
+            name (str): The name of the tunneling reaction rate constant.
+            A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
+            B (float): Tunneling parameter [K^-1].
+            C (float): Tunneling parameter [K^-3].
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.A = A
+        self.B = B
+        self.C = C
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Tunneling':
+        """
+        Creates a Tunneling object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the tunneling reaction data.
+
+        Returns:
+            Tunneling: A Tunneling object.
+        """
+        return _Tunneling.from_dict(data)

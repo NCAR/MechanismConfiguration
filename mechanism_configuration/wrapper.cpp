@@ -577,21 +577,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Branched &b) { return "<Branched: " + b.name + ">"; })
       .def_property_readonly("type", [](const Branched &) { return ReactionType::Branched; });
 
-  py::class_<Tunneling>(m, "Tunneling")
+  py::class_<Tunneling>(core, "_Tunneling")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            Tunneling tunneling;
-            tunneling.name = name;
-            return tunneling;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 Tunneling tunneling;
-                tunneling.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::A) {
+                        if (key == validation::name) {
+                            tunneling.name = value.cast<std::string>();
+                        } else if (key == validation::A) {
                             tunneling.A = value.cast<double>();
                         } else if (key == validation::B) {
                             tunneling.B = value.cast<double>();
@@ -621,7 +618,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return tunneling;
-            }))
+            })
       .def_readwrite("A", &Tunneling::A)
       .def_readwrite("B", &Tunneling::B)
       .def_readwrite("C", &Tunneling::C)

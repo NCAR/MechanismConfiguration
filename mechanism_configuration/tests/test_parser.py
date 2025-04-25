@@ -508,6 +508,16 @@ def test_hard_coded_full_v1_configuration():
         n = 9,
     )
 
+    my_tunneling = Tunneling(
+        name = "my tunneling",
+        gas_phase = gas,
+        reactants = [B],
+        products = [C],
+        A = 123.45,
+        B = 1200.0,
+        C = 1.0e8,
+    )
+
 def test_hard_coded_full_v1_configuration_from_dict():
 
     # Chemical species
@@ -650,7 +660,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "n": 9,
         })
     
-    my_tunneling = Tunneling("my tunneling", {
+    my_tunneling = Tunneling.from_dict({
+        "name": "my tunneling",
         "gas phase": gas,
         "reactants": [B],
         "products": [C],
