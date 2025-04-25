@@ -481,6 +481,20 @@ def test_hard_coded_full_v1_configuration():
         products = [(1.2, B)]
     )
 
+    my_troe = Troe(
+        name = "my troe",
+        gas_phase = gas,
+        k0_A = 1.2e-12,
+        k0_B = 167,
+        k0_C = 3,
+        kinf_A = 136,
+        kinf_B = 5,
+        kinf_C = 24,
+        Fc = 0.9,
+        N = 0.8,
+        reactants = [B, M],
+        products = [C]
+    )
 
 
 def test_hard_coded_full_v1_configuration_from_dict():
@@ -598,7 +612,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "products": [ethanol_aq]
         })
 
-    my_troe = Troe("my troe", {
+    my_troe = Troe.from_dict({
+        "name": "my troe",
         "gas phase": gas,
         "k0_A": 1.2e-12,
         "k0_B": 167,
@@ -610,7 +625,7 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "N": 0.8,
         "reactants": [B, M],
         "products": [C]
-        })
+    })
 
     my_branched = Branched("my branched", {
         "gas phase": gas,

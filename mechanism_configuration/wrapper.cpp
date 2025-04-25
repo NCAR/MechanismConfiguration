@@ -445,21 +445,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const CondensedPhaseArrhenius &cpa) { return "<CondensedPhaseArrhenius: " + cpa.name + ">"; })
       .def_property_readonly("type", [](const CondensedPhaseArrhenius &) { return ReactionType::CondensedPhaseArrhenius; });
 
-  py::class_<Troe>(m, "Troe")
+  py::class_<Troe>(core, "_Troe")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
+        .def("from_dict",
+          [](const std::map<std::string, py::object> &properties) {
             Troe troe;
-            troe.name = name;
-            return troe;
-        }))
-        .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
-            Troe troe;
-            troe.name = name;
     
             // Iterate through the dictionary and set known properties
             for (const auto &[key, value] : properties) {
                 try {
-                    if (key == validation::k0_A) {
+                    if (key == validation::name) {
+                        troe.name = value.cast<std::string>();
+                    } else if (key == validation::k0_A) {
                         troe.k0_A = value.cast<double>();
                     } else if (key == validation::k0_B) {
                         troe.k0_B = value.cast<double>();
@@ -499,7 +496,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                 }
             }
             return troe;
-        }))
+        })
       .def_readwrite("k0_A", &Troe::k0_A)
       .def_readwrite("k0_B", &Troe::k0_B)
       .def_readwrite("k0_C", &Troe::k0_C)

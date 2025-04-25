@@ -4,7 +4,7 @@
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
-from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent, _Arrhenius
+from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent, _Arrhenius, _Troe
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -210,3 +210,111 @@ class Arrhenius(_Arrhenius):
             Arrhenius: An Arrhenius object.
         """
         return _Arrhenius.from_dict(data)
+    
+
+class Troe(_Troe):
+    """
+    A class representing a Troe rate constant.
+
+    Attributes:
+        name (str): The name of the Troe rate constant.
+        k0_A (float): Pre-exponential factor for the low-pressure limit [(mol m-3)^(n-1)s-1].
+        k0_B (float): Temperature exponent for the low-pressure limit [unitless].
+        k0_C (float): Exponential term for the low-pressure limit [K-1].
+        kinf_A (float): Pre-exponential factor for the high-pressure limit [(mol m-3)^(n-1)s-1].
+        kinf_B (float): Temperature exponent for the high-pressure limit [unitless].
+        kinf_C (float): Exponential term for the high-pressure limit [K-1].
+        Fc (float): Troe parameter [unitless].
+        N (float): Troe parameter [unitless].
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            k0_A: Optional[float] = None,
+            k0_B: Optional[float] = None,
+            k0_C: Optional[float] = None,
+            kinf_A: Optional[float] = None,
+            kinf_B: Optional[float] = None,
+            kinf_C: Optional[float] = None,
+            Fc: Optional[float] = None,
+            N: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Troe object with the given parameters.
+
+        k0 = k0_A * exp( k0_C / T ) * ( T / 300.0 )^k0_B
+        kinf = kinf_A * exp( kinf_C / T ) * ( T / 300.0 )^kinf_B
+        k = k0[M] / ( 1 + k0[M] / kinf ) * Fc^(1 + 1/N*(log10(k0[M]/kinf))^2)^-1
+
+        where:
+            k = rate constant
+            k0 = low-pressure limit rate constant
+            kinf = high-pressure limit rate constant
+            k0_A = pre-exponential factor for the low-pressure limit [(mol m-3)^(n-1)s-1]
+            k0_B = temperature exponent for the low-pressure limit [unitless]
+            k0_C = exponential term for the low-pressure limit [K-1]
+            kinf_A = pre-exponential factor for the high-pressure limit [(mol m-3)^(n-1)s-1]
+            kinf_B = temperature exponent for the high-pressure limit [unitless]
+            kinf_C = exponential term for the high-pressure limit [K-1]
+            Fc = Troe parameter [unitless]
+            N = Troe parameter [unitless]
+            T = temperature [K]
+            M = concentration of the third body [mol m-3]
+
+        Args:
+            name (str): The name of the Troe rate constant.
+            k0_A (float): Pre-exponential factor for the low-pressure limit [(mol m-3)^(n-1)s-1].
+            k0_B (float): Temperature exponent for the low-pressure limit [unitless].
+            k0_C (float): Exponential term for the low-pressure limit [K-1].
+            kinf_A (float): Pre-exponential factor for the high-pressure limit [(mol m-3)^(n-1)s-1].
+            kinf_B (float): Temperature exponent for the high-pressure limit [unitless].
+            kinf_C (float): Exponential term for the high-pressure limit [K-1].
+            Fc (float): Troe parameter [unitless].
+            N (float): Troe parameter [unitless].
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.k0_A = k0_A
+        self.k0_B = k0_B
+        self.k0_C = k0_C
+        self.kinf_A = kinf_A
+        self.kinf_B = kinf_B
+        self.kinf_C = kinf_C
+        self.Fc = Fc
+        self.N = N
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Troe':
+        """
+        Creates a Troe object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the Troe data.
+
+        Returns:
+            Troe: A Troe object.
+        """
+        return _Troe.from_dict(data)
