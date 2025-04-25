@@ -3,16 +3,35 @@
 #
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
-from typing import Optional, Any, Dict
-from _mechanism_configuration._core import _ReactionType, _Species, _Phase, _ReactionComponent
-from _mechanism_configuration._core import _Arrhenius, _CondensedPhaseArrhenius, _Troe
-from _mechanism_configuration._core import _Branched, _Tunneling, _Surface
-from _mechanism_configuration._core import _Photolysis, _CondensedPhasePhotolysis, _Emission
-from _mechanism_configuration._core import _FirstOrderLoss, _AqueousEquilibrium, _WetDeposition
-from _mechanism_configuration._core import _HenrysLaw, _SimpolPhaseTransfer
-from _mechanism_configuration._core import _Reactions, _ReactionsIterator, _Mechanism, _Version, _Parser
+from typing import Optional, Any, Dict, List
+from _mechanism_configuration._core import (
+    _ReactionType,
+    _Species,
+    _Phase,
+    _ReactionComponent,
+    _Arrhenius,
+    _CondensedPhaseArrhenius,
+    _Troe,
+    _Branched,
+    _Tunneling,
+    _Surface,
+    _Photolysis,
+    _CondensedPhasePhotolysis,
+    _Emission,
+    _FirstOrderLoss,
+    _AqueousEquilibrium,
+    _WetDeposition,
+    _HenrysLaw,
+    _SimpolPhaseTransfer,
+    _Reactions,
+    _ReactionsIterator,
+    _Mechanism,
+    _Version,
+    _Parser,
+)
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
+
 
 class ReactionType(_ReactionType):
     """
@@ -37,16 +56,16 @@ class Species(_Species):
     """
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            HLC_298K_mol_m3_Pa: Optional[float] = None,
-            HLC_exponential_factor_K: Optional[float] = None,
-            diffusion_coefficient_m2_s: Optional[float] = None,
-            N_star: Optional[float] = None,
-            molecular_weight_kg_mol: Optional[float] = None,
-            density_kg_m3: Optional[float] = None,
-            tracer_type: Optional[str] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        HLC_298K_mol_m3_Pa: Optional[float] = None,
+        HLC_exponential_factor_K: Optional[float] = None,
+        diffusion_coefficient_m2_s: Optional[float] = None,
+        N_star: Optional[float] = None,
+        molecular_weight_kg_mol: Optional[float] = None,
+        density_kg_m3: Optional[float] = None,
+        tracer_type: Optional[str] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Species object with the given parameters.
@@ -72,7 +91,7 @@ class Species(_Species):
         self.density_kg_m3 = density_kg_m3
         self.tracer_type = tracer_type
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Phase(_Phase):
     """
@@ -85,10 +104,11 @@ class Phase(_Phase):
     """
 
     def __init__(
-            self, 
-            name: Optional[str] = None, 
-            species: Optional[list[Species]] = None,
-            other_properties: Optional[Dict[str, Any]] = None):
+        self,
+        name: Optional[str] = None,
+        species: Optional[List[Species]] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
+    ):
         """
         Initializes the Phase object with the given parameters.
 
@@ -101,14 +121,14 @@ class Phase(_Phase):
         self.name = name
         self.species = [s.name for s in species] if species is not None else []
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Arrhenius(_Arrhenius):
     """
     A class representing an Arrhenius rate constant.
 
     k = A * exp( C / T ) * ( T / D )^B * exp( 1 - E * P )
-    
+
     where:
         k = rate constant
         A = pre-exponential factor [(mol m-3)^(n-1)s-1]
@@ -134,18 +154,18 @@ class Arrhenius(_Arrhenius):
     """
 
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            A: Optional[float] = None,
-            B: Optional[float] = None,
-            C: Optional[float] = None,
-            Ea: Optional[float] = None,
-            D: Optional[float] = None,
-            E: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        A: Optional[float] = None,
+        B: Optional[float] = None,
+        C: Optional[float] = None,
+        Ea: Optional[float] = None,
+        D: Optional[float] = None,
+        E: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Arrhenius object with the given parameters.
@@ -172,17 +192,33 @@ class Arrhenius(_Arrhenius):
         self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C
         self.D = D
         self.E = E
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
     """
@@ -202,20 +238,21 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
         aerosol_phase_water (Species): The water species in the aerosol phase.
         other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            A: Optional[float] = None,
-            B: Optional[float] = None,
-            C: Optional[float] = None,
-            Ea: Optional[float] = None,
-            D: Optional[float] = None,
-            E: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            aerosol_phase: Optional[Phase] = None,
-            aerosol_phase_water: Optional[Species] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        A: Optional[float] = None,
+        B: Optional[float] = None,
+        C: Optional[float] = None,
+        Ea: Optional[float] = None,
+        D: Optional[float] = None,
+        E: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        aerosol_phase: Optional[Phase] = None,
+        aerosol_phase_water: Optional[Species] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the CondensedPhaseArrhenius object with the given parameters.
@@ -243,18 +280,36 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
         self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C
         self.D = D
         self.E = E
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.aerosol_phase_water = (
+            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        )
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Troe(_Troe):
     """
@@ -275,21 +330,22 @@ class Troe(_Troe):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            k0_A: Optional[float] = None,
-            k0_B: Optional[float] = None,
-            k0_C: Optional[float] = None,
-            kinf_A: Optional[float] = None,
-            kinf_B: Optional[float] = None,
-            kinf_C: Optional[float] = None,
-            Fc: Optional[float] = None,
-            N: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        k0_A: Optional[float] = None,
+        k0_B: Optional[float] = None,
+        k0_C: Optional[float] = None,
+        kinf_A: Optional[float] = None,
+        kinf_B: Optional[float] = None,
+        kinf_C: Optional[float] = None,
+        Fc: Optional[float] = None,
+        N: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Troe object with the given parameters.
@@ -338,17 +394,33 @@ class Troe(_Troe):
         self.kinf_C = kinf_C
         self.Fc = Fc
         self.N = N
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Branched(_Branched):
     """
@@ -368,18 +440,19 @@ class Branched(_Branched):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            X: Optional[float] = None,
-            Y: Optional[float] = None,
-            a0: Optional[float] = None,
-            n: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            nitrate_products: Optional[list[Species | tuple[float, Species]]] = None,
-            alkoxy_products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        X: Optional[float] = None,
+        Y: Optional[float] = None,
+        a0: Optional[float] = None,
+        n: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        nitrate_products: Optional[List[Species | tuple[float, Species]]] = None,
+        alkoxy_products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Branched object with the given parameters.
@@ -402,29 +475,52 @@ class Branched(_Branched):
         self.Y = Y
         self.a0 = a0
         self.n = n
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.nitrate_products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in nitrate_products
-        ] if nitrate_products is not None else []
-        self.alkoxy_products = [
-            _ReactionComponent(p.name) if
-            isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in alkoxy_products
-        ] if alkoxy_products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.nitrate_products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in nitrate_products
+            ]
+            if nitrate_products is not None
+            else []
+        )
+        self.alkoxy_products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in alkoxy_products
+            ]
+            if alkoxy_products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Tunneling(_Tunneling):
     """
     A class representing a quantum tunneling reaction rate constant.
 
     k = A * exp( -B / T ) * exp( C / T^3 )
-    
+
     where:
         k = rate constant
         A = pre-exponential factor [(mol m-3)^(n-1)s-1]
@@ -443,16 +539,17 @@ class Tunneling(_Tunneling):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            A: Optional[float] = None,
-            B: Optional[float] = None,
-            C: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        A: Optional[float] = None,
+        B: Optional[float] = None,
+        C: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Tunneling object with the given parameters.
@@ -472,17 +569,33 @@ class Tunneling(_Tunneling):
         self.A = A
         self.B = B
         self.C = C
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Surface(_Surface):
     """
@@ -499,15 +612,16 @@ class Surface(_Surface):
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            reaction_probability: Optional[float] = None,
-            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
-            gas_phase_products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            aerosol_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        reaction_probability: Optional[float] = None,
+        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+        gas_phase_products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        aerosol_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Surface object with the given parameters.
@@ -525,17 +639,30 @@ class Surface(_Surface):
         self.name = name
         self.reaction_probability = reaction_probability
         self.gas_phase_species = (
-            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
-            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
-        ) if gas_phase_species is not None else []
-        self.gas_phase_products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in gas_phase_products
-        ] if gas_phase_products is not None else []
+            (
+                _ReactionComponent(gas_phase_species.name)
+                if isinstance(gas_phase_species, Species)
+                else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+            )
+            if gas_phase_species is not None
+            else []
+        )
+        self.gas_phase_products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in gas_phase_products
+            ]
+            if gas_phase_products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Photolysis(_Photolysis):
     """
@@ -549,14 +676,15 @@ class Photolysis(_Photolysis):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            scaling_factor: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Photolysis object with the given parameters.
@@ -572,17 +700,33 @@ class Photolysis(_Photolysis):
         super().__init__()
         self.name = name
         self.scaling_factor = scaling_factor
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
     """
@@ -597,15 +741,16 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
         aerosol_phase_water (float): The water species in the aerosol phase [unitless].
         other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            scaling_factor: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            aerosol_phase: Optional[Phase] = None,
-            aerosol_phase_water: Optional[Species] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        aerosol_phase: Optional[Phase] = None,
+        aerosol_phase_water: Optional[Species] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the CondensedPhasePhotolysis object with the given parameters.
@@ -622,18 +767,36 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
         super().__init__()
         self.name = name
         self.scaling_factor = scaling_factor
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.aerosol_phase_water = (
+            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        )
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class Emission(_Emission):
     """
@@ -646,13 +809,14 @@ class Emission(_Emission):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            scaling_factor: Optional[float] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the Emission object with the given parameters.
@@ -667,13 +831,21 @@ class Emission(_Emission):
         super().__init__()
         self.name = name
         self.scaling_factor = scaling_factor
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class FirstOrderLoss(_FirstOrderLoss):
     """
@@ -686,13 +858,14 @@ class FirstOrderLoss(_FirstOrderLoss):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            scaling_factor: Optional[float] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            gas_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the FirstOrderLoss object with the given parameters.
@@ -707,13 +880,21 @@ class FirstOrderLoss(_FirstOrderLoss):
         super().__init__()
         self.name = name
         self.scaling_factor = scaling_factor
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class AqueousEquilibrium(_AqueousEquilibrium):
     """
@@ -731,18 +912,19 @@ class AqueousEquilibrium(_AqueousEquilibrium):
         k_reverse (float): Reverse rate constant [(mol m-3)^(n-1)s-1].
         other_properties (Dict[str, Any]): A dictionary of other properties of the aqueous equilibrium reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            gas_phase: Optional[Phase] = None,
-            aerosol_phase: Optional[Phase] = None,
-            aerosol_phase_water: Optional[Species] = None,
-            reactants: Optional[list[Species | tuple[float, Species]]] = None,
-            products: Optional[list[Species | tuple[float, Species]]] = None,
-            A: Optional[float] = None,
-            C: Optional[float] = None,
-            k_reverse: Optional[float] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        gas_phase: Optional[Phase] = None,
+        aerosol_phase: Optional[Phase] = None,
+        aerosol_phase_water: Optional[Species] = None,
+        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Species | tuple[float, Species]]] = None,
+        A: Optional[float] = None,
+        C: Optional[float] = None,
+        k_reverse: Optional[float] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the AqueousEquilibrium object with the given parameters.
@@ -763,20 +945,38 @@ class AqueousEquilibrium(_AqueousEquilibrium):
         self.name = name
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
-        self.reactants = [
-            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
-            for r in reactants
-        ] if reactants is not None else []
-        self.products = [
-            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
-            for p in products
-        ] if products is not None else []
+        self.aerosol_phase_water = (
+            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        )
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else []
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else []
+        )
         self.A = A
         self.C = C
         self.k_reverse = k_reverse
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class WetDeposition(_WetDeposition):
     """
@@ -788,12 +988,13 @@ class WetDeposition(_WetDeposition):
         aerosol_phase (Phase): The aerosol phase which undergoes wet deposition.
         unknown_properties (Dict[str, Any]): A dictionary of other properties of the wet deposition reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            scaling_factor: Optional[float] = None,
-            aerosol_phase: Optional[Phase] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        aerosol_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the WetDeposition object with the given parameters.
@@ -809,7 +1010,7 @@ class WetDeposition(_WetDeposition):
         self.scaling_factor = scaling_factor
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class HenrysLaw(_HenrysLaw):
     """
@@ -824,15 +1025,16 @@ class HenrysLaw(_HenrysLaw):
         aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
         other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            gas_phase: Optional[Phase] = None,
-            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
-            aerosol_phase: Optional[Phase] = None,
-            aerosol_phase_water: Optional[Species] = None,
-            aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        gas_phase: Optional[Phase] = None,
+        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+        aerosol_phase: Optional[Phase] = None,
+        aerosol_phase_water: Optional[Species] = None,
+        aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the HenrysLaw object with the given parameters.
@@ -850,17 +1052,31 @@ class HenrysLaw(_HenrysLaw):
         self.name = name
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.gas_phase_species = (
-            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
-            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
-        ) if gas_phase_species is not None else []
+            (
+                _ReactionComponent(gas_phase_species.name)
+                if isinstance(gas_phase_species, Species)
+                else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+            )
+            if gas_phase_species is not None
+            else []
+        )
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        self.aerosol_phase_water = (
+            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+        )
         self.aerosol_phase_species = (
-            _ReactionComponent(aerosol_phase_species.name) if isinstance(aerosol_phase_species, Species)
-            else _ReactionComponent(aerosol_phase_species[1].name, aerosol_phase_species[0])
-        ) if aerosol_phase_species is not None else []
+            (
+                _ReactionComponent(aerosol_phase_species.name)
+                if isinstance(aerosol_phase_species, Species)
+                else _ReactionComponent(
+                    aerosol_phase_species[1].name, aerosol_phase_species[0]
+                )
+            )
+            if aerosol_phase_species is not None
+            else []
+        )
         self.other_properties = other_properties if other_properties is not None else {}
-    
+
 
 class SimpolPhaseTransfer(_SimpolPhaseTransfer):
     """
@@ -872,18 +1088,19 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
         gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
-        B (list[float]): The B parameters [unitless].
+        B (List[float]): The B parameters [unitless].
         unknown_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            gas_phase: Optional[Phase] = None,
-            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
-            aerosol_phase: Optional[Phase] = None,
-            aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
-            B: Optional[list[float]] = None,
-            other_properties: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        gas_phase: Optional[Phase] = None,
+        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+        aerosol_phase: Optional[Phase] = None,
+        aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+        B: Optional[List[float]] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
         Initializes the SimpolPhaseTransfer object with the given parameters.
@@ -894,21 +1111,33 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
             gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
-            B (list[float]): The B parameters [unitless].
+            B (List[float]): The B parameters [unitless].
             other_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
         """
         super().__init__()
         self.name = name
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.gas_phase_species = (
-            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
-            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
-        ) if gas_phase_species is not None else []
+            (
+                _ReactionComponent(gas_phase_species.name)
+                if isinstance(gas_phase_species, Species)
+                else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+            )
+            if gas_phase_species is not None
+            else []
+        )
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.aerosol_phase_species = (
-            _ReactionComponent(aerosol_phase_species.name) if isinstance(aerosol_phase_species, Species)
-            else _ReactionComponent(aerosol_phase_species[1].name, aerosol_phase_species[0])
-        ) if aerosol_phase_species is not None else []
+            (
+                _ReactionComponent(aerosol_phase_species.name)
+                if isinstance(aerosol_phase_species, Species)
+                else _ReactionComponent(
+                    aerosol_phase_species[1].name, aerosol_phase_species[0]
+                )
+            )
+            if aerosol_phase_species is not None
+            else []
+        )
         if B is not None:
             if len(B) != 4:
                 raise ValueError("B must be a list of 4 elements.")
@@ -925,9 +1154,10 @@ class Reactions(_Reactions):
     Attributes:
         reactions (List[Any]): A list of reactions in the mechanism.
     """
+
     def __init__(
-            self, 
-            reactions: Optional[list[Any]] = None,
+        self,
+        reactions: Optional[List[Any]] = None,
     ):
         """
         Initializes the Reactions object with the given parameters.
@@ -936,7 +1166,6 @@ class Reactions(_Reactions):
             reactions (List[]): A list of reactions in the mechanism.
         """
         super().__init__(reactions)
-
 
 
 class ReactionsIterator(_ReactionsIterator):
@@ -962,13 +1191,14 @@ class Mechanism(_Mechanism):
         phases (List[Phase]): A list of phases in the mechanism.
         version (Version): The version of the mechanism.
     """
+
     def __init__(
-            self, 
-            name: Optional[str] = None,
-            reactions: Optional[list[Any]] = None,
-            species: Optional[list[Species]] = None,
-            phases: Optional[list[Phase]] = None,
-            version: Optional[Version] = None,
+        self,
+        name: Optional[str] = None,
+        reactions: Optional[List[Any]] = None,
+        species: Optional[List[Species]] = None,
+        phases: Optional[List[Phase]] = None,
+        version: Optional[Version] = None,
     ):
         """
         Initializes the Mechanism object with the given parameters.
