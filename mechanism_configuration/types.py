@@ -3,7 +3,7 @@
 #
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union, Tuple
 from _mechanism_configuration._core import (
     _ReactionType,
     _Species,
@@ -147,8 +147,8 @@ class Arrhenius(_Arrhenius):
         C (float): Exponential term [K-1].
         D (float): Reference Temperature [K].
         E (float): Pressure scaling term [Pa-1].
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the Arrhenius rate constant.
     """
@@ -162,8 +162,8 @@ class Arrhenius(_Arrhenius):
         Ea: Optional[float] = None,
         D: Optional[float] = None,
         E: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -178,8 +178,8 @@ class Arrhenius(_Arrhenius):
             Ea (float): Activation energy [J molecule-1].
             D (float): Reference Temperature [K].
             E (float): Pressure scaling term [Pa-1].
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the Arrhenius rate constant.
         """
@@ -232,8 +232,8 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
         Ea (float): Activation energy [J molecule-1].
         D (float): Reference Temperature [K].
         E (float): Pressure scaling term [Pa-1].
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         aerosol_phase_water (Species): The water species in the aerosol phase.
         other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
@@ -248,8 +248,8 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
         Ea: Optional[float] = None,
         D: Optional[float] = None,
         E: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         aerosol_phase: Optional[Phase] = None,
         aerosol_phase_water: Optional[Species] = None,
         other_properties: Optional[Dict[str, Any]] = None,
@@ -265,8 +265,8 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
             Ea (float): Activation energy [J molecule-1].
             D (float): Reference Temperature [K].
             E (float): Pressure scaling term [Pa-1].
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]]: A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]]: A list of products formed in the reaction.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             aerosol_phase_water (Species): The water species in the aerosol phase.
             other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
@@ -325,8 +325,8 @@ class Troe(_Troe):
         kinf_C (float): Exponential term for the high-pressure limit [K-1].
         Fc (float): Troe parameter [unitless].
         N (float): Troe parameter [unitless].
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
     """
@@ -342,8 +342,8 @@ class Troe(_Troe):
         kinf_C: Optional[float] = None,
         Fc: Optional[float] = None,
         N: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -379,8 +379,8 @@ class Troe(_Troe):
             kinf_C (float): Exponential term for the high-pressure limit [K-1].
             Fc (float): Troe parameter [unitless].
             N (float): Troe parameter [unitless].
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
         """
@@ -434,9 +434,9 @@ class Branched(_Branched):
         Y (float): Exponential branching factor [K-1].
         a0 (float): Z parameter [unitless].
         n (float): A parameter [unitless].
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        nitrate_products (List[Species | (float, Species)]): A list of products formed in the nitrate branch.
-        alkoxy_products (List[Species | (float, Species)]): A list of products formed in the alkoxy branch.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        nitrate_products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the nitrate branch.
+        alkoxy_products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the alkoxy branch.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
     """
@@ -448,9 +448,9 @@ class Branched(_Branched):
         Y: Optional[float] = None,
         a0: Optional[float] = None,
         n: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        nitrate_products: Optional[List[Species | tuple[float, Species]]] = None,
-        alkoxy_products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        nitrate_products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        alkoxy_products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -463,9 +463,9 @@ class Branched(_Branched):
             Y (float): Exponential branching factor [K-1].
             a0 (float): Z parameter [unitless].
             n (float): A parameter [unitless].
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            nitrate_products (List[Species | (float, Species)]): A list of products formed in the nitrate branch.
-            alkoxy_products (List[Species | (float, Species)]): A list of products formed in the alkoxy branch.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            nitrate_products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the nitrate branch.
+            alkoxy_products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the alkoxy branch.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
         """
@@ -534,8 +534,8 @@ class Tunneling(_Tunneling):
         A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
         B (float): Tunneling parameter [K^-1].
         C (float): Tunneling parameter [K^-3].
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
     """
@@ -546,8 +546,8 @@ class Tunneling(_Tunneling):
         A: Optional[float] = None,
         B: Optional[float] = None,
         C: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -559,8 +559,8 @@ class Tunneling(_Tunneling):
             A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
             B (float): Tunneling parameter [K^-1].
             C (float): Tunneling parameter [K^-3].
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
         """
@@ -606,8 +606,8 @@ class Surface(_Surface):
     Attributes:
         name (str): The name of the surface.
         reaction_probability (float): The probability of a reaction occurring on the surface.
-        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
-        gas_phase_products (List[Species | Tuple[float, Species]]): The gas phase products formed in the reaction.
+        gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
+        gas_phase_products (List[Union[Species, Tuple[float, Species]]]): The gas phase products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
@@ -617,8 +617,10 @@ class Surface(_Surface):
         self,
         name: Optional[str] = None,
         reaction_probability: Optional[float] = None,
-        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
-        gas_phase_products: Optional[List[Species | tuple[float, Species]]] = None,
+        gas_phase_species: Optional[Union[Species, Tuple[float, Species]]] = None,
+        gas_phase_products: Optional[
+            List[Union[Species, Tuple[float, Species]]]
+        ] = None,
         gas_phase: Optional[Phase] = None,
         aerosol_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
@@ -629,8 +631,8 @@ class Surface(_Surface):
         Args:
             name (str): The name of the surface.
             reaction_probability (float): The probability of a reaction occurring on the surface.
-            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
-            gas_phase_products (List[Species | Tuple[float, Species]]): The gas phase products formed in the reaction.
+            gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
+            gas_phase_products (List[Union[Species, Tuple[float, Species]]]): The gas phase products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
@@ -671,8 +673,8 @@ class Photolysis(_Photolysis):
     Attributes:
         name (str): The name of the photolysis reaction rate constant.
         scaling_factor (float): The scaling factor for the photolysis rate constant.
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
     """
@@ -681,8 +683,8 @@ class Photolysis(_Photolysis):
         self,
         name: Optional[str] = None,
         scaling_factor: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -692,8 +694,8 @@ class Photolysis(_Photolysis):
         Args:
             name (str): The name of the photolysis reaction rate constant.
             scaling_factor (float): The scaling factor for the photolysis rate constant.
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
         """
@@ -735,8 +737,8 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
     Attributes:
         name (str): The name of the condensed phase photolysis reaction rate constant.
         scaling_factor (float): The scaling factor for the photolysis rate constant.
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         aerosol_phase_water (float): The water species in the aerosol phase [unitless].
         other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
@@ -746,8 +748,8 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
         self,
         name: Optional[str] = None,
         scaling_factor: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         aerosol_phase: Optional[Phase] = None,
         aerosol_phase_water: Optional[Species] = None,
         other_properties: Optional[Dict[str, Any]] = None,
@@ -758,8 +760,8 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
         Args:
             name (str): The name of the condensed phase photolysis reaction rate constant.
             scaling_factor (float): The scaling factor for the photolysis rate constant.
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             aerosol_phase_water (Species): The water species in the aerosol phase [unitless].
             other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
@@ -805,7 +807,7 @@ class Emission(_Emission):
     Attributes:
         name (str): The name of the emission reaction rate constant.
         scaling_factor (float): The scaling factor for the emission rate constant.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
     """
@@ -814,7 +816,7 @@ class Emission(_Emission):
         self,
         name: Optional[str] = None,
         scaling_factor: Optional[float] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -824,7 +826,7 @@ class Emission(_Emission):
         Args:
             name (str): The name of the emission reaction rate constant.
             scaling_factor (float): The scaling factor for the emission rate constant.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
         """
@@ -854,7 +856,7 @@ class FirstOrderLoss(_FirstOrderLoss):
     Attributes:
         name (str): The name of the first-order loss reaction rate constant.
         scaling_factor (float): The scaling factor for the first-order loss rate constant.
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
         gas_phase (Phase): The gas phase in which the reaction occurs.
         other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
     """
@@ -863,7 +865,7 @@ class FirstOrderLoss(_FirstOrderLoss):
         self,
         name: Optional[str] = None,
         scaling_factor: Optional[float] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         gas_phase: Optional[Phase] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -873,7 +875,7 @@ class FirstOrderLoss(_FirstOrderLoss):
         Args:
             name (str): The name of the first-order loss reaction rate constant.
             scaling_factor (float): The scaling factor for the first-order loss rate constant.
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
             gas_phase (Phase): The gas phase in which the reaction occurs.
             other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
         """
@@ -905,8 +907,8 @@ class AqueousEquilibrium(_AqueousEquilibrium):
         gas_phase (Phase): The gas phase in which the reaction occurs.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         aerosol_phase_water (Species): The water species in the aerosol phase.
-        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
         A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
         C (float): Exponential term [K-1].
         k_reverse (float): Reverse rate constant [(mol m-3)^(n-1)s-1].
@@ -919,8 +921,8 @@ class AqueousEquilibrium(_AqueousEquilibrium):
         gas_phase: Optional[Phase] = None,
         aerosol_phase: Optional[Phase] = None,
         aerosol_phase_water: Optional[Species] = None,
-        reactants: Optional[List[Species | tuple[float, Species]]] = None,
-        products: Optional[List[Species | tuple[float, Species]]] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
         A: Optional[float] = None,
         C: Optional[float] = None,
         k_reverse: Optional[float] = None,
@@ -934,8 +936,8 @@ class AqueousEquilibrium(_AqueousEquilibrium):
             gas_phase (Phase): The gas phase in which the reaction occurs.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             aerosol_phase_water (Species): The water species in the aerosol phase.
-            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
-            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
             A (float): Pre-exponential factor [(mol m-3)^(n-1)s-1].
             C (float): Exponential term [K-1].
             k_reverse (float): Reverse rate constant [(mol m-3)^(n-1)s-1].
@@ -1019,10 +1021,10 @@ class HenrysLaw(_HenrysLaw):
     Attributes:
         name (str): The name of the Henry's law reaction rate constant.
         gas_phase (Phase): The gas phase in which the reaction occurs.
-        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+        gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
         aerosol_phase_water (Species): The water species in the aerosol phase.
-        aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+        aerosol_phase_species (Union[Species, Tuple[float, Species]]): The aerosol phase species involved in the reaction.
         other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
     """
 
@@ -1030,10 +1032,10 @@ class HenrysLaw(_HenrysLaw):
         self,
         name: Optional[str] = None,
         gas_phase: Optional[Phase] = None,
-        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+        gas_phase_species: Optional[Union[Species, Tuple[float, Species]]] = None,
         aerosol_phase: Optional[Phase] = None,
         aerosol_phase_water: Optional[Species] = None,
-        aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+        aerosol_phase_species: Optional[Union[Species, Tuple[float, Species]]] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
         """
@@ -1042,10 +1044,10 @@ class HenrysLaw(_HenrysLaw):
         Args:
             name (str): The name of the Henry's law reaction rate constant.
             gas_phase (Phase): The gas phase in which the reaction occurs.
-            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+            gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
             aerosol_phase_water (Species): The water species in the aerosol phase.
-            aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+            aerosol_phase_species (Union[Species, Tuple[float, Species]]): The aerosol phase species involved in the reaction.
             other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
         """
         super().__init__()
@@ -1085,9 +1087,9 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
     Attributes:
         name (str): The name of the simplified phase transfer reaction rate constant.
         gas_phase (Phase): The gas phase in which the reaction occurs.
-        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+        gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
         aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
-        aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+        aerosol_phase_species (Union[Species, Tuple[float, Species]]): The aerosol phase species involved in the reaction.
         B (List[float]): The B parameters [unitless].
         unknown_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
     """
@@ -1096,9 +1098,9 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
         self,
         name: Optional[str] = None,
         gas_phase: Optional[Phase] = None,
-        gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+        gas_phase_species: Optional[Union[Species, Tuple[float, Species]]] = None,
         aerosol_phase: Optional[Phase] = None,
-        aerosol_phase_species: Optional[Species | tuple[float, Species]] = None,
+        aerosol_phase_species: Optional[Union[Species, Tuple[float, Species]]] = None,
         B: Optional[List[float]] = None,
         other_properties: Optional[Dict[str, Any]] = None,
     ):
@@ -1108,9 +1110,9 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
         Args:
             name (str): The name of the simplified phase transfer reaction rate constant.
             gas_phase (Phase): The gas phase in which the reaction occurs.
-            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+            gas_phase_species (Union[Species, Tuple[float, Species]]): The gas phase species involved in the reaction.
             aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
-            aerosol_phase_species (Species | Tuple[float, Species]): The aerosol phase species involved in the reaction.
+            aerosol_phase_species (Union[Species, Tuple[float, Species]]): The aerosol phase species involved in the reaction.
             B (List[float]): The B parameters [unitless].
             other_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
         """
