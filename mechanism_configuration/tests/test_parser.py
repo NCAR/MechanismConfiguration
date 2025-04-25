@@ -518,6 +518,16 @@ def test_hard_coded_full_v1_configuration():
         C = 1.0e8,
     )
 
+    my_surface = Surface(
+        name = "my surface",
+        gas_phase = gas,
+        gas_phase_species = A,
+        reaction_probability = 2.0e-2,
+        gas_phase_products = [B, C],
+        aerosol_phase = surface_reacting_phase,
+    )
+
+
 def test_hard_coded_full_v1_configuration_from_dict():
 
     # Chemical species
@@ -670,7 +680,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "C": 1.0e8,
         })
 
-    my_surface = Surface("my surface", {
+    my_surface = Surface.from_dict({
+        "name": "my surface",
         "gas phase": gas,
         "gas-phase species": A,
         "reaction probability": 2.0e-2,

@@ -631,21 +631,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Tunneling &t) { return "<Tunneling: " + t.name + ">"; })
       .def_property_readonly("type", [](const Tunneling &) { return ReactionType::Tunneling; });
 
-  py::class_<Surface>(m, "Surface")
+  py::class_<Surface>(core, "_Surface")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            Surface surface;
-            surface.name = name;
-            return surface;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 Surface surface;
-                surface.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::reaction_probability) {
+                        if (key == validation::name) {
+                            surface.name = value.cast<std::string>();
+                        } else if (key == validation::reaction_probability) {
                             surface.reaction_probability = value.cast<double>();
                         } else if (key == validation::gas_phase_species) {
                             surface.gas_phase_species = ReactionComponent(value.cast<Species>().name);
@@ -670,7 +667,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return surface;
-            }))
+            })
       .def_readwrite("reaction_probability", &Surface::reaction_probability)
       .def_readwrite("gas_phase_species", &Surface::gas_phase_species)
       .def_readwrite("gas_phase_products", &Surface::gas_phase_products)

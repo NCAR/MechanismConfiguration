@@ -5,7 +5,7 @@
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
 from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
-from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling
+from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling, _Surface
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -481,3 +481,69 @@ class Tunneling(_Tunneling):
             Tunneling: A Tunneling object.
         """
         return _Tunneling.from_dict(data)
+    
+
+class Surface(_Surface):
+    """
+    A class representing a surface in a chemical mechanism.
+
+    (TODO: get details from MusicBox)
+
+    Attributes:
+        name (str): The name of the surface.
+        reaction_probability (float): The probability of a reaction occurring on the surface.
+        gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+        gas_phase_products (List[Species | Tuple[float, Species]]): The gas phase products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            reaction_probability: Optional[float] = None,
+            gas_phase_species: Optional[Species | tuple[float, Species]] = None,
+            gas_phase_products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            aerosol_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Surface object with the given parameters.
+
+        Args:
+            name (str): The name of the surface.
+            reaction_probability (float): The probability of a reaction occurring on the surface.
+            gas_phase_species (Species | Tuple[float, Species]): The gas phase species involved in the reaction.
+            gas_phase_products (List[Species | Tuple[float, Species]]): The gas phase products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
+        """
+        super().__init__()
+        self.name = name
+        self.reaction_probability = reaction_probability
+        self.gas_phase_species = (
+            _ReactionComponent(gas_phase_species.name) if isinstance(gas_phase_species, Species)
+            else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
+        ) if gas_phase_species is not None else None
+        self.gas_phase_products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in gas_phase_products
+        ] if gas_phase_products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Surface':
+        """
+        Creates a Surface object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the surface data.
+
+        Returns:
+            Surface: A Surface object.
+        """
+        return _Surface.from_dict(data)
