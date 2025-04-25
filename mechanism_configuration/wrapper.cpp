@@ -182,46 +182,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Species>(core, "_Species")
       .def(py::init<>())
-      .def_static(
-          "from_dict",
-          [](const std::map<std::string, py::object> &properties)
-          {
-            Species species;
-
-          // Iterate through the dictionary and set known properties
-          for (const auto &[key, value] : properties) {
-              try {
-                  if (key == validation::name) {
-                      species.name = value.cast<std::string>();
-                  } else if (key == validation::absolute_tolerance) {
-                      species.absolute_tolerance = value.cast<double>();
-                  } else if (key == validation::diffusion_coefficient) {
-                      species.diffusion_coefficient = value.cast<double>();
-                  } else if (key == validation::molecular_weight) {
-                      species.molecular_weight = value.cast<double>();
-                  } else if (key == validation::henrys_law_constant_298) {
-                      species.henrys_law_constant_298 = value.cast<double>();
-                  } else if (key == validation::henrys_law_constant_exponential_factor) {
-                      species.henrys_law_constant_exponential_factor = value.cast<double>();
-                  } else if (key == validation::n_star) {
-                      species.n_star = value.cast<double>();
-                  } else if (key == validation::density) {
-                      species.density = value.cast<double>();
-                  } else if (key == validation::tracer_type) {
-                      species.tracer_type = value.cast<std::string>();
-                  } else {
-                      // Add unmatched properties to unknown_properties
-                      if (key.rfind("__", 0) != 0) {
-                          throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                      }
-                      species.unknown_properties[key] = py::str(value);
-                  }
-              } catch (const py::cast_error &e) {
-                  throw py::value_error("Invalid type for property '" + key + "'. Expected a double or string.");
-              }
-            }
-            return species;
-          })
       .def_readwrite("name", &Species::name)
       .def_readwrite("absolute_tolerance", &Species::absolute_tolerance)
       .def_readwrite("diffusion_coefficient_m2_s", &Species::diffusion_coefficient)
@@ -237,47 +197,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Phase>(core, "_Phase")
       .def(py::init<>())
-      .def_static(
-          "from_dict",
-          [](const std::map<std::string, py::object> &properties)
-          {
-            Phase phase;
-
-            // Iterate through the dictionary and set known properties
-            for (const auto &[key, value] : properties)
-            {
-              try
-              {
-                if (key == validation::name)
-                {
-                  phase.name = value.cast<std::string>();
-                }
-                else if (key == validation::species)
-                {
-                  auto species_list = value.cast<py::list>();
-                  for (const auto &spec : species_list)
-                  {
-                    auto species = spec.cast<Species>();
-                    phase.species.push_back(species.name);
-                  }
-                }
-                else
-                {
-                  // Add unmatched properties to unknown_properties
-                  if (key.rfind("__", 0) != 0)
-                  {
-                    throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                  }
-                  phase.unknown_properties[key] = py::str(value);
-                }
-              }
-              catch (const py::cast_error &e)
-              {
-                throw py::value_error("Invalid type for property '" + key + "'. Expected a string.");
-              }
-            }
-            return phase;
-          })
       .def_readwrite("name", &Phase::name)
       .def_readwrite("species", &Phase::species)
       .def_readwrite("other_properties", &Phase::unknown_properties)
@@ -305,58 +224,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Arrhenius>(core, "_Arrhenius")
       .def(py::init<>())
-      .def("from_dict",
-        [](const std::map<std::string, py::object> &properties) {
-            Arrhenius arrhenius;
-    
-            // Iterate through the dictionary and set known properties
-            for (const auto &[key, value] : properties) {
-                try {
-                    if (key == validation::name) {
-                        arrhenius.name = value.cast<std::string>();
-                    } else if (key == validation::A) {
-                        arrhenius.A = value.cast<double>();
-                    } else if (key == validation::B) {
-                        arrhenius.B = value.cast<double>();
-                    } else if (key == validation::C) {
-                        if (arrhenius.C != 0) {
-                            throw py::value_error("Mutually exclusive option: Ea and C");
-                        }
-                        arrhenius.C = value.cast<double>();
-                    } else if (key == validation::Ea) {
-                        if (arrhenius.C != 0) {
-                            throw py::value_error("Mutually exclusive option: Ea and C");
-                        }
-                        arrhenius.C = -1 * value.cast<double>() / constants::boltzmann;
-                    } else if (key == validation::D) {
-                        arrhenius.D = value.cast<double>();
-                    } else if (key == validation::E) {
-                        arrhenius.E = value.cast<double>();
-                    } else if (key == validation::reactants) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        arrhenius.reactants = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::products) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        arrhenius.products = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::gas_phase) {
-                        arrhenius.gas_phase = value.cast<Phase>().name;
-                    } else {
-                        // Add unmatched properties to unknown_properties
-                        if (key.rfind("__", 0) != 0) {
-                            throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                        }
-                        arrhenius.unknown_properties[key] = py::str(value);
-                    }
-                } catch (const py::cast_error &e) {
-                    throw py::value_error("Invalid type for property '" + key + "'.");
-                }
-            }
-            return arrhenius;
-        })
       .def_readwrite("A", &Arrhenius::A)
       .def_readwrite("B", &Arrhenius::B)
       .def_readwrite("C", &Arrhenius::C)
@@ -373,61 +240,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<CondensedPhaseArrhenius>(core, "_CondensedPhaseArrhenius")
       .def(py::init<>())
-      .def("from_dict",
-        [](const std::map<std::string, py::object> &properties) {
-          CondensedPhaseArrhenius cpa;
-          
-          // Iterate through the dictionary and set known properties
-          for (const auto &[key, value] : properties) {
-              try {
-                  if (key == validation::name) {
-                      cpa.name = value.cast<std::string>();
-                  } else if (key == validation::A) {
-                      cpa.A = value.cast<double>();
-                  } else if (key == validation::B) {
-                      cpa.B = value.cast<double>();
-                  } else if (key == validation::C) {
-                      if (cpa.C != 0) {
-                          throw py::value_error("Mutually exclusive option: Ea and C");
-                      }
-                      cpa.C = value.cast<double>();
-                  } else if (key == validation::Ea) {
-                      if (cpa.C != 0) {
-                          throw py::value_error("Mutually exclusive option: Ea and C");
-                      }
-                      cpa.C = -1 * value.cast<double>() / constants::boltzmann;
-                  } else if (key == validation::D) {
-                      cpa.D = value.cast<double>();
-                  } else if (key == validation::E) {
-                      cpa.E = value.cast<double>();
-                  } else if (key == validation::reactants) {
-                      if (!py::isinstance<py::list>(value)) {
-                          throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                      }
-                      cpa.reactants = get_reaction_components(value.cast<py::list>());
-                  } else if (key == validation::products) {
-                      if (!py::isinstance<py::list>(value)) {
-                          throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                      }
-                      cpa.products = get_reaction_components(value.cast<py::list>());
-                  } else if (key == validation::aerosol_phase_water) {
-                      cpa.aerosol_phase_water = value.cast<Species>().name;
-                  } else if (key == validation::aerosol_phase) {
-                      cpa.aerosol_phase = value.cast<Phase>().name;
-                  } else {
-                      // Add unmatched properties to unknown_properties
-                      if
-                          (key.rfind("__", 0) != 0) {
-                          throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                      }
-                      cpa.unknown_properties[key] = py::str(value);
-                  }
-              } catch (const py::cast_error &e) {
-                  throw py::value_error("Invalid type for property '" + key + "'.");
-              }
-          }
-          return cpa;
-      })
       .def_readwrite("A", &CondensedPhaseArrhenius::A)
       .def_readwrite("B", &CondensedPhaseArrhenius::B)
       .def_readwrite("C", &CondensedPhaseArrhenius::C)
@@ -445,56 +257,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Troe>(core, "_Troe")
       .def(py::init<>())
-        .def("from_dict",
-          [](const std::map<std::string, py::object> &properties) {
-            Troe troe;
-    
-            // Iterate through the dictionary and set known properties
-            for (const auto &[key, value] : properties) {
-                try {
-                    if (key == validation::name) {
-                        troe.name = value.cast<std::string>();
-                    } else if (key == validation::k0_A) {
-                        troe.k0_A = value.cast<double>();
-                    } else if (key == validation::k0_B) {
-                        troe.k0_B = value.cast<double>();
-                    } else if (key == validation::k0_C) {
-                        troe.k0_C = value.cast<double>();
-                    } else if (key == validation::kinf_A) {
-                        troe.kinf_A = value.cast<double>();
-                    } else if (key == validation::kinf_B) {
-                        troe.kinf_B = value.cast<double>();
-                    } else if (key == validation::kinf_C) {
-                        troe.kinf_C = value.cast<double>();
-                    } else if (key == validation::Fc) {
-                        troe.Fc = value.cast<double>();
-                    } else if (key == validation::N) {
-                        troe.N = value.cast<double>();
-                    } else if (key == validation::reactants) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        troe.reactants = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::products) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        troe.products = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::gas_phase) {
-                        troe.gas_phase = value.cast<Phase>().name;
-                    } else {
-                        // Add unmatched properties to unknown_properties
-                        if (key.rfind("__", 0) != 0) {
-                            throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                        }
-                        troe.unknown_properties[key] = py::str(value);
-                    }
-                } catch (const py::cast_error &e) {
-                    throw py::value_error("Invalid type for property '" + key + "'.");
-                }
-            }
-            return troe;
-        })
       .def_readwrite("k0_A", &Troe::k0_A)
       .def_readwrite("k0_B", &Troe::k0_B)
       .def_readwrite("k0_C", &Troe::k0_C)
@@ -514,53 +276,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Branched>(core, "_Branched")
       .def(py::init<>())
-        .def("from_dict",
-          [](const std::map<std::string, py::object> &properties) {
-            Branched branched;
-            
-            // Iterate through the dictionary and set known properties
-            for (const auto &[key, value] : properties) {
-                try {
-                    if (key == validation::name) {
-                        branched.name = value.cast<std::string>();
-                    } else if (key == validation::X) {
-                        branched.X = value.cast<double>();
-                    } else if (key == validation::Y) {
-                        branched.Y = value.cast<double>();
-                    } else if (key == validation::a0) {
-                        branched.a0 = value.cast<double>();
-                    } else if (key == validation::n) {
-                        branched.n = value.cast<int>();
-                    } else if (key == validation::reactants) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        branched.reactants = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::nitrate_products) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        branched.nitrate_products = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::alkoxy_products) {
-                        if (!py::isinstance<py::list>(value)) {
-                            throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                        }
-                        branched.alkoxy_products = get_reaction_components(value.cast<py::list>());
-                    } else if (key == validation::gas_phase) {
-                        branched.gas_phase = value.cast<Phase>().name;
-                    } else {
-                        // Add unmatched properties to unknown_properties
-                        if (key.rfind("__", 0) != 0) {
-                            throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                        }
-                        branched.unknown_properties[key] = py::str(value);
-                    }
-                } catch (const py::cast_error &e) {
-                    throw py::value_error("Invalid type for property '" + key + "'.");
-                }
-            }
-            return branched;
-        })
       .def_readwrite("X", &Branched::X)
       .def_readwrite("Y", &Branched::Y)
       .def_readwrite("a0", &Branched::a0)
@@ -577,46 +292,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Tunneling>(core, "_Tunneling")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                Tunneling tunneling;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            tunneling.name = value.cast<std::string>();
-                        } else if (key == validation::A) {
-                            tunneling.A = value.cast<double>();
-                        } else if (key == validation::B) {
-                            tunneling.B = value.cast<double>();
-                        } else if (key == validation::C) {
-                            tunneling.C = value.cast<double>();
-                        } else if (key == validation::reactants) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            tunneling.reactants = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            tunneling.products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            tunneling.gas_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            tunneling.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return tunneling;
-            })
       .def_readwrite("A", &Tunneling::A)
       .def_readwrite("B", &Tunneling::B)
       .def_readwrite("C", &Tunneling::C)
@@ -631,41 +306,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Surface>(core, "_Surface")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                Surface surface;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            surface.name = value.cast<std::string>();
-                        } else if (key == validation::reaction_probability) {
-                            surface.reaction_probability = value.cast<double>();
-                        } else if (key == validation::gas_phase_species) {
-                            surface.gas_phase_species = ReactionComponent(value.cast<Species>().name);
-                        } else if (key == validation::gas_phase_products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            surface.gas_phase_products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            surface.gas_phase = value.cast<Phase>().name;
-                        } else if (key == validation::aerosol_phase) {
-                            surface.aerosol_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            surface.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return surface;
-            })
       .def_readwrite("reaction_probability", &Surface::reaction_probability)
       .def_readwrite("gas_phase_species", &Surface::gas_phase_species)
       .def_readwrite("gas_phase_products", &Surface::gas_phase_products)
@@ -679,42 +319,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Photolysis>(core, "_Photolysis")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                Photolysis photolysis;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            photolysis.name = value.cast<std::string>();
-                        } else if (key == validation::scaling_factor) {
-                            photolysis.scaling_factor = value.cast<double>();
-                        } else if (key == validation::reactants) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            photolysis.reactants = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            photolysis.products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            photolysis.gas_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            photolysis.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return photolysis;
-            })
       .def_readwrite("scaling_factor", &Photolysis::scaling_factor)
       .def_readwrite("reactants", &Photolysis::reactants)
       .def_readwrite("products", &Photolysis::products)
@@ -727,44 +331,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<CondensedPhasePhotolysis>(core, "_CondensedPhasePhotolysis")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                CondensedPhasePhotolysis cpp;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            cpp.name = value.cast<std::string>();
-                        } else if (key == validation::scaling_factor) {
-                            cpp.scaling_factor = value.cast<double>();
-                        } else if (key == validation::reactants) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            cpp.reactants = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            cpp.products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::aerosol_phase_water) {
-                            cpp.aerosol_phase_water = value.cast<Species>().name;
-                        } else if (key == validation::aerosol_phase) {
-                            cpp.aerosol_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            cpp.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return cpp;
-            })
       .def_readwrite("scaling_factor", &CondensedPhasePhotolysis::scaling_factor)
       .def_readwrite("reactants", &CondensedPhasePhotolysis::reactants)
       .def_readwrite("products", &CondensedPhasePhotolysis::products)
@@ -778,36 +344,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Emission>(core, "_Emission")
       .def(py::init<>())
-        .def("from_dict", [](const std::map<std::string, py::object> &properties) {
-                Emission emission;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            emission.name = value.cast<std::string>();
-                        } else if (key == validation::scaling_factor) {
-                            emission.scaling_factor = value.cast<double>();
-                        } else if (key == validation::products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            emission.products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            emission.gas_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            emission.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return emission;
-            })
       .def_readwrite("scaling_factor", &Emission::scaling_factor)
       .def_readwrite("products", &Emission::products)
       .def_readwrite("name", &Emission::name)
@@ -819,36 +355,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<FirstOrderLoss>(core, "_FirstOrderLoss")
       .def(py::init<>())
-        .def("from_dict", [](const std::map<std::string, py::object> &properties) {
-                FirstOrderLoss fol;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            fol.name = value.cast<std::string>();
-                        } else if (key == validation::scaling_factor) {
-                            fol.scaling_factor = value.cast<double>();
-                        } else if (key == validation::reactants) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            fol.reactants = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            fol.gas_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            fol.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return fol;
-            })
       .def_readwrite("scaling_factor", &FirstOrderLoss::scaling_factor)
       .def_readwrite("reactants", &FirstOrderLoss::reactants)
       .def_readwrite("name", &FirstOrderLoss::name)
@@ -860,50 +366,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<AqueousEquilibrium>(core, "_AqueousEquilibrium")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                AqueousEquilibrium ae;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            ae.name = value.cast<std::string>();
-                        } else if (key == validation::A) {
-                            ae.A = value.cast<double>();
-                        } else if (key == validation::C) {
-                            ae.C = value.cast<double>();
-                        } else if (key == validation::k_reverse) {
-                            ae.k_reverse = value.cast<double>();
-                        } else if (key == validation::reactants) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            ae.reactants = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::products) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            ae.products = get_reaction_components(value.cast<py::list>());
-                        } else if (key == validation::gas_phase) {
-                            ae.gas_phase = value.cast<Phase>().name;
-                        } else if (key == validation::aerosol_phase) {
-                            ae.aerosol_phase = value.cast<Phase>().name;
-                        } else if (key == validation::aerosol_phase_water) {
-                            ae.aerosol_phase_water = value.cast<Species>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            ae.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return ae;
-            })
       .def_readwrite("name", &AqueousEquilibrium::name)
       .def_readwrite("gas_phase", &AqueousEquilibrium::gas_phase)
       .def_readwrite("aerosol_phase", &AqueousEquilibrium::aerosol_phase)
@@ -920,32 +382,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<WetDeposition>(core, "_WetDeposition")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                WetDeposition wd;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            wd.name = value.cast<std::string>();
-                        } else if (key == validation::scaling_factor) {
-                            wd.scaling_factor = value.cast<double>();
-                        } else if (key == validation::aerosol_phase) {
-                            wd.aerosol_phase = value.cast<Phase>().name;
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            wd.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return wd;
-            })
       .def_readwrite("scaling_factor", &WetDeposition::scaling_factor)
       .def_readwrite("name", &WetDeposition::name)
       .def_readwrite("aerosol_phase", &WetDeposition::aerosol_phase)
@@ -956,38 +392,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<HenrysLaw>(core, "_HenrysLaw")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                HenrysLaw hl;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            hl.name = value.cast<std::string>();
-                        } else if (key == validation::gas_phase) {
-                            hl.gas_phase = value.cast<Phase>().name;
-                        } else if (key == validation::gas_phase_species) {
-                            hl.gas_phase_species = ReactionComponent(value.cast<Species>().name);
-                        } else if (key == validation::aerosol_phase) {
-                            hl.aerosol_phase = value.cast<Phase>().name;
-                        } else if (key == validation::aerosol_phase_water) {
-                            hl.aerosol_phase_water = value.cast<Species>().name;
-                        } else if (key == validation::aerosol_phase_species) {
-                            hl.aerosol_phase_species = ReactionComponent(value.cast<Species>().name);
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            hl.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return hl;
-            })
       .def_readwrite("name", &HenrysLaw::name)
       .def_readwrite("gas_phase", &HenrysLaw::gas_phase)
       .def_readwrite("gas_phase_species", &HenrysLaw::gas_phase_species)
@@ -1001,42 +405,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<SimpolPhaseTransfer>(core, "_SimpolPhaseTransfer")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                SimpolPhaseTransfer spt;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            spt.name = value.cast<std::string>();
-                        } else if (key == validation::B) {
-                            auto B_list = value.cast<py::list>();
-                            if (B_list.size() != 4) {
-                                throw py::value_error("Invalid size for property '" + key + "'. Expected a list of size 4.");
-                            }
-                            spt.B = std::array<double, 4>{B_list[0].cast<double>(), B_list[1].cast<double>(), B_list[2].cast<double>(), B_list[3].cast<double>()};
-                        } else if (key == validation::gas_phase) {
-                            spt.gas_phase = value.cast<Phase>().name;
-                        } else if (key == validation::gas_phase_species) {
-                            spt.gas_phase_species = ReactionComponent(value.cast<Species>().name);
-                        } else if (key == validation::aerosol_phase) {
-                            spt.aerosol_phase = value.cast<Phase>().name;
-                        } else if (key == validation::aerosol_phase_species) {
-                            spt.aerosol_phase_species = ReactionComponent(value.cast<Species>().name);
-                        } else {
-                            // Add unmatched properties to unknown_properties
-                            if (key.rfind("__", 0) != 0) {
-                                throw py::value_error("Unknown property '" + key + "' must start with '__'.");
-                            }
-                            spt.unknown_properties[key] = py::str(value);
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for property '" + key + "'.");
-                    }
-                }
-                return spt;
-            })
       .def_readwrite("gas_phase", &SimpolPhaseTransfer::gas_phase)
       .def_readwrite("gas_phase_species", &SimpolPhaseTransfer::gas_phase_species)
       .def_readwrite("aerosol_phase", &SimpolPhaseTransfer::aerosol_phase)
@@ -1085,51 +453,6 @@ PYBIND11_MODULE(_mechanism_configuration, m)
 
   py::class_<Mechanism>(core, "_Mechanism")
       .def(py::init<>())
-        .def("from_dict",
-            [](const std::map<std::string, py::object> &properties) {
-                Mechanism mechanism;
-                
-                // Iterate through the dictionary and set known properties
-                for (const auto &[key, value] : properties) {
-                    try {
-                        if (key == validation::name) {
-                            mechanism.name = value.cast<std::string>();
-                        } else if (key == validation::species) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            for (auto &item : value.cast<py::list>()) {
-                                if (!py::isinstance<Species>(item)) {
-                                    throw py::value_error("Invalid type for property '" + key + "'. Expected a list of Species.");
-                                }
-                                mechanism.species.push_back(item.cast<Species>());
-                            }
-                        } else if (key == validation::phases) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            for (auto &item : value.cast<py::list>()) {
-                                if (!py::isinstance<Phase>(item)) {
-                                    throw py::value_error("Invalid type for property '" + key + "'. Expected a list of Phase.");
-                                }
-                                mechanism.phases.push_back(item.cast<Phase>());
-                            }
-                        } else if (key == validation::reactions) {
-                            if (!py::isinstance<py::list>(value)) {
-                                throw py::value_error("Invalid type for property '" + key + "'. Expected a list.");
-                            }
-                            mechanism.reactions = create_reactions(value.cast<py::list>());
-                        } else if (key == validation::version) {
-                            mechanism.version = value.cast<mechanism_configuration::Version>();
-                        } else {
-                           throw py::value_error("Unknown mechanism component '" + key + ".");
-                        }
-                    } catch (const py::cast_error &e) {
-                        throw py::value_error("Invalid type for mechanism component '" + key + "'.");
-                    }
-                }
-                return mechanism;
-            })
       .def_readwrite("name", &Mechanism::name)
       .def_readwrite("species", &Mechanism::species)
       .def_readwrite("phases", &Mechanism::phases)

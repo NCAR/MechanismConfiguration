@@ -72,20 +72,6 @@ class Species(_Species):
         self.density_kg_m3 = density_kg_m3
         self.tracer_type = tracer_type
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Species':
-        """
-        Creates a Species object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the species data.
-
-        Returns:
-            Species: A Species object.
-        """
-        return _Species.from_dict(data)
     
 
 class Phase(_Phase):
@@ -115,20 +101,6 @@ class Phase(_Phase):
         self.name = name
         self.species = [s.name for s in species] if species is not None else []
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Phase':
-        """
-        Creates a Phase object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the phase data.
-
-        Returns:
-            Phase: A Phase object.
-        """
-        return _Phase.from_dict(data)
     
 
 class Arrhenius(_Arrhenius):
@@ -210,19 +182,6 @@ class Arrhenius(_Arrhenius):
         ] if products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Arrhenius':
-        """
-        Creates an Arrhenius object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the Arrhenius data.
-
-        Returns:
-            Arrhenius: An Arrhenius object.
-        """
-        return _Arrhenius.from_dict(data)
     
 
 class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
@@ -295,20 +254,6 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'CondensedPhaseArrhenius':
-        """
-        Creates a CondensedPhaseArrhenius object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the condensed phase Arrhenius data.
-
-        Returns:
-            CondensedPhaseArrhenius: A CondensedPhaseArrhenius object.
-        """
-        return _CondensedPhaseArrhenius.from_dict(data)
     
 
 class Troe(_Troe):
@@ -403,20 +348,6 @@ class Troe(_Troe):
         ] if products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Troe':
-        """
-        Creates a Troe object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the Troe data.
-
-        Returns:
-            Troe: A Troe object.
-        """
-        return _Troe.from_dict(data)
     
 
 class Branched(_Branched):
@@ -486,20 +417,6 @@ class Branched(_Branched):
         ] if alkoxy_products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Branched':
-        """
-        Creates a Branched object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the branched reaction data.
-
-        Returns:
-            Branched: A Branched object.
-        """
-        return _Branched.from_dict(data)
     
 
 class Tunneling(_Tunneling):
@@ -565,20 +482,6 @@ class Tunneling(_Tunneling):
         ] if products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Tunneling':
-        """
-        Creates a Tunneling object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the tunneling reaction data.
-
-        Returns:
-            Tunneling: A Tunneling object.
-        """
-        return _Tunneling.from_dict(data)
     
 
 class Surface(_Surface):
@@ -632,19 +535,6 @@ class Surface(_Surface):
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Surface':
-        """
-        Creates a Surface object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the surface data.
-
-        Returns:
-            Surface: A Surface object.
-        """
-        return _Surface.from_dict(data)
     
 
 class Photolysis(_Photolysis):
@@ -692,20 +582,6 @@ class Photolysis(_Photolysis):
         ] if products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Photolysis':
-        """
-        Creates a Photolysis object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the photolysis reaction data.
-
-        Returns:
-            Photolysis: A Photolysis object.
-        """
-        return _Photolysis.from_dict(data)
     
 
 class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
@@ -757,20 +633,6 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'CondensedPhasePhotolysis':
-        """
-        Creates a CondensedPhasePhotolysis object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the condensed phase photolysis reaction data.
-
-        Returns:
-            CondensedPhasePhotolysis: A CondensedPhasePhotolysis object.
-        """
-        return _CondensedPhasePhotolysis.from_dict(data)
     
 
 class Emission(_Emission):
@@ -811,20 +673,6 @@ class Emission(_Emission):
         ] if products is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Emission':
-        """
-        Creates an Emission object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the emission reaction data.
-
-        Returns:
-            Emission: An Emission object.
-        """
-        return _Emission.from_dict(data)
     
 
 class FirstOrderLoss(_FirstOrderLoss):
@@ -865,18 +713,6 @@ class FirstOrderLoss(_FirstOrderLoss):
         ] if reactants is not None else []
         self.gas_phase = gas_phase.name if gas_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'FirstOrderLoss':
-        """
-        Creates a FirstOrderLoss object from a dictionary.
-        Args:
-            data (Dict[str, Any]): A dictionary containing the first-order loss reaction data.
-        Returns:
-            FirstOrderLoss: A FirstOrderLoss object.
-        """
-        return _FirstOrderLoss.from_dict(data)
     
 
 class AqueousEquilibrium(_AqueousEquilibrium):
@@ -940,20 +776,6 @@ class AqueousEquilibrium(_AqueousEquilibrium):
         self.C = C
         self.k_reverse = k_reverse
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AqueousEquilibrium':
-        """
-        Creates an AqueousEquilibrium object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the aqueous equilibrium reaction data.
-
-        Returns:
-            AqueousEquilibrium: An AqueousEquilibrium object.
-        """
-        return _AqueousEquilibrium.from_dict(data)
     
 
 class WetDeposition(_WetDeposition):
@@ -987,20 +809,6 @@ class WetDeposition(_WetDeposition):
         self.scaling_factor = scaling_factor
         self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'WetDeposition':
-        """
-        Creates a WetDeposition object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the wet deposition reaction data.
-
-        Returns:
-            WetDeposition: A WetDeposition object.
-        """
-        return _WetDeposition.from_dict(data)
     
 
 class HenrysLaw(_HenrysLaw):
@@ -1052,20 +860,6 @@ class HenrysLaw(_HenrysLaw):
             else _ReactionComponent(aerosol_phase_species[1].name, aerosol_phase_species[0])
         ) if aerosol_phase_species is not None else []
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'HenrysLaw':
-        """
-        Creates a HenrysLaw object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the Henry's law reaction data.
-
-        Returns:
-            HenrysLaw: A HenrysLaw object.
-        """
-        return _HenrysLaw.from_dict(data)
     
 
 class SimpolPhaseTransfer(_SimpolPhaseTransfer):
@@ -1122,20 +916,6 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
         else:
             self.B = [0, 0, 0, 0]
         self.other_properties = other_properties if other_properties is not None else {}
-
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'SimpolPhaseTransfer':
-        """
-        Creates a SimpolPhaseTransfer object from a dictionary.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the simplified phase transfer reaction data.
-
-        Returns:
-            SimpolPhaseTransfer: A SimpolPhaseTransfer object.
-        """
-        return _SimpolPhaseTransfer.from_dict(data)
 
 
 class Reactions(_Reactions):
