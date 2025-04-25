@@ -535,6 +535,15 @@ def test_hard_coded_full_v1_configuration():
         scaling_factor = 12.3,
     )
 
+    condensed_photo_B = CondensedPhasePhotolysis(
+        name = "condensed photo B",
+        aerosol_phase = aqueous_aerosol,
+        aerosol_phase_water = H2O_aq,
+        reactants = [H2O2_aq],
+        products = [ethanol_aq],
+        scaling_factor = 12.3,
+    )
+
 
 def test_hard_coded_full_v1_configuration_from_dict():
 
@@ -705,7 +714,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "scaling factor": 12.3,
         })
 
-    condensed_photo_B = CondensedPhasePhotolysis("condensed photo B", {
+    condensed_photo_B = CondensedPhasePhotolysis.from_dict({
+        "name": "condensed photo B",
         "aerosol phase": aqueous_aerosol,
         "aerosol-phase water": H2O_aq,
         "reactants": [H2O2_aq],

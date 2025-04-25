@@ -6,7 +6,7 @@
 from typing import Optional, Any, Dict
 from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent
 from _mechanism_configuration._core import _Arrhenius, _Troe, _Branched, _Tunneling, _Surface
-from _mechanism_configuration._core import _Photolysis
+from _mechanism_configuration._core import _Photolysis, _CondensedPhasePhotolysis
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -608,3 +608,68 @@ class Photolysis(_Photolysis):
             Photolysis: A Photolysis object.
         """
         return _Photolysis.from_dict(data)
+    
+
+class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
+    """
+    A class representing a condensed phase photolysis reaction rate constant.
+
+    Attributes:
+        name (str): The name of the condensed phase photolysis reaction rate constant.
+        scaling_factor (float): The scaling factor for the photolysis rate constant.
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        products (List[Species | (float, Species)]): A list of products formed in the reaction.
+        aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+        aerosol_phase_water (float): The water species in the aerosol phase [unitless].
+        other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            scaling_factor: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            products: Optional[list[Species | tuple[float, Species]]] = None,
+            aerosol_phase: Optional[Phase] = None,
+            aerosol_phase_water: Optional[Species] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the CondensedPhasePhotolysis object with the given parameters.
+
+        Args:
+            name (str): The name of the condensed phase photolysis reaction rate constant.
+            scaling_factor (float): The scaling factor for the photolysis rate constant.
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            products (List[Species | (float, Species)]): A list of products formed in the reaction.
+            aerosol_phase (Phase): The aerosol phase in which the reaction occurs.
+            aerosol_phase_water (Species): The water species in the aerosol phase [unitless].
+            other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.scaling_factor = scaling_factor
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in products
+        ] if products is not None else []
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else None
+        self.aerosol_phase_water = aerosol_phase_water.name if aerosol_phase_water is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CondensedPhasePhotolysis':
+        """
+        Creates a CondensedPhasePhotolysis object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the condensed phase photolysis reaction data.
+
+        Returns:
+            CondensedPhasePhotolysis: A CondensedPhasePhotolysis object.
+        """
+        return _CondensedPhasePhotolysis.from_dict(data)

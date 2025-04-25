@@ -727,21 +727,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Photolysis &p) { return "<Photolysis: " + p.name + ">"; })
       .def_property_readonly("type", [](const Photolysis &) { return ReactionType::Photolysis; });
 
-  py::class_<CondensedPhasePhotolysis>(m, "CondensedPhasePhotolysis")
+  py::class_<CondensedPhasePhotolysis>(core, "_CondensedPhasePhotolysis")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
-            CondensedPhasePhotolysis cpp;
-            cpp.name = name;
-            return cpp;
-        }))
-            .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
+        .def("from_dict",
+            [](const std::map<std::string, py::object> &properties) {
                 CondensedPhasePhotolysis cpp;
-                cpp.name = name;
-    
+                
                 // Iterate through the dictionary and set known properties
                 for (const auto &[key, value] : properties) {
                     try {
-                        if (key == validation::scaling_factor) {
+                        if (key == validation::name) {
+                            cpp.name = value.cast<std::string>();
+                        } else if (key == validation::scaling_factor) {
                             cpp.scaling_factor = value.cast<double>();
                         } else if (key == validation::reactants) {
                             if (!py::isinstance<py::list>(value)) {
@@ -769,7 +766,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                     }
                 }
                 return cpp;
-            }))
+            })
       .def_readwrite("scaling_factor", &CondensedPhasePhotolysis::scaling_factor)
       .def_readwrite("reactants", &CondensedPhasePhotolysis::reactants)
       .def_readwrite("products", &CondensedPhasePhotolysis::products)
