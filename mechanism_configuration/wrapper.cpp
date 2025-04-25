@@ -514,21 +514,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const Troe &t) { return "<Troe: " + t.name + ">"; })
       .def_property_readonly("type", [](const Troe &) { return ReactionType::Troe; });
 
-  py::class_<Branched>(m, "Branched")
+  py::class_<Branched>(core, "_Branched")
       .def(py::init<>())
-        .def(py::init([](const std::string &name) {
+        .def("from_dict",
+          [](const std::map<std::string, py::object> &properties) {
             Branched branched;
-            branched.name = name;
-            return branched;
-        }))
-        .def(py::init([](const std::string &name, const std::map<std::string, py::object> &properties) {
-            Branched branched;
-            branched.name = name;
-
+            
             // Iterate through the dictionary and set known properties
             for (const auto &[key, value] : properties) {
                 try {
-                    if (key == validation::X) {
+                    if (key == validation::name) {
+                        branched.name = value.cast<std::string>();
+                    } else if (key == validation::X) {
                         branched.X = value.cast<double>();
                     } else if (key == validation::Y) {
                         branched.Y = value.cast<double>();
@@ -565,7 +562,7 @@ PYBIND11_MODULE(_mechanism_configuration, m)
                 }
             }
             return branched;
-        }))
+        })
       .def_readwrite("X", &Branched::X)
       .def_readwrite("Y", &Branched::Y)
       .def_readwrite("a0", &Branched::a0)

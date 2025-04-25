@@ -4,7 +4,7 @@
 # This file is part of the musica Python package.
 # For more information, see the LICENSE file in the top-level directory of this distribution.
 from typing import Optional, Any, Dict
-from _mechanism_configuration._core import _Species, _Phase, _ReactionComponent, _Arrhenius, _Troe
+from _mechanism_configuration._core import *
 
 BOLTZMANN_CONSTANT_J_K = 1.380649e-23  # J K-1
 
@@ -318,3 +318,86 @@ class Troe(_Troe):
             Troe: A Troe object.
         """
         return _Troe.from_dict(data)
+    
+
+class Branched(_Branched):
+    """
+    A class representing a branched reaction rate constant.
+
+    (TODO: get details from MusicBox)
+
+    Attributes:
+        name (str): The name of the branched reaction rate constant.
+        X (float): Pre-exponential branching factor [(mol m-3)^-(n-1)s-1].
+        Y (float): Exponential branching factor [K-1].
+        a0 (float): Z parameter [unitless].
+        n (float): A parameter [unitless].
+        reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+        nitrate_products (List[Species | (float, Species)]): A list of products formed in the nitrate branch.
+        alkoxy_products (List[Species | (float, Species)]): A list of products formed in the alkoxy branch.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
+    """
+    def __init__(
+            self, 
+            name: Optional[str] = None,
+            X: Optional[float] = None,
+            Y: Optional[float] = None,
+            a0: Optional[float] = None,
+            n: Optional[float] = None,
+            reactants: Optional[list[Species | tuple[float, Species]]] = None,
+            nitrate_products: Optional[list[Species | tuple[float, Species]]] = None,
+            alkoxy_products: Optional[list[Species | tuple[float, Species]]] = None,
+            gas_phase: Optional[Phase] = None,
+            other_properties: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Initializes the Branched object with the given parameters.
+
+        Args:
+            name (str): The name of the branched reaction rate constant.
+            X (float): Pre-exponential branching factor [(mol m-3)^-(n-1)s-1].
+            Y (float): Exponential branching factor [K-1].
+            a0 (float): Z parameter [unitless].
+            n (float): A parameter [unitless].
+            reactants (List[Species | (float, Species)]): A list of reactants involved in the reaction.
+            nitrate_products (List[Species | (float, Species)]): A list of products formed in the nitrate branch.
+            alkoxy_products (List[Species | (float, Species)]): A list of products formed in the alkoxy branch.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
+        """
+        super().__init__()
+        self.name = name
+        self.X = X
+        self.Y = Y
+        self.a0 = a0
+        self.n = n
+        self.reactants = [
+            _ReactionComponent(r.name) if isinstance(r, Species) else _ReactionComponent(r[1].name, r[0])
+            for r in reactants
+        ] if reactants is not None else []
+        self.nitrate_products = [
+            _ReactionComponent(p.name) if isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in nitrate_products
+        ] if nitrate_products is not None else []
+        self.alkoxy_products = [
+            _ReactionComponent(p.name) if
+            isinstance(p, Species) else _ReactionComponent(p[1].name, p[0])
+            for p in alkoxy_products
+        ] if alkoxy_products is not None else []
+        self.gas_phase = gas_phase.name if gas_phase is not None else None
+        self.other_properties = other_properties if other_properties is not None else {}
+
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Branched':
+        """
+        Creates a Branched object from a dictionary.
+
+        Args:
+            data (Dict[str, Any]): A dictionary containing the branched reaction data.
+
+        Returns:
+            Branched: A Branched object.
+        """
+        return _Branched.from_dict(data)

@@ -496,6 +496,17 @@ def test_hard_coded_full_v1_configuration():
         products = [C]
     )
 
+    my_branched = Branched(
+        name = "my branched",
+        gas_phase = gas,
+        reactants = [A],
+        alkoxy_products = [B],
+        nitrate_products = [C],
+        X = 1.2e-4,
+        Y = 167,
+        a0 = 0.15,
+        n = 9,
+    )
 
 def test_hard_coded_full_v1_configuration_from_dict():
 
@@ -627,7 +638,8 @@ def test_hard_coded_full_v1_configuration_from_dict():
         "products": [C]
     })
 
-    my_branched = Branched("my branched", {
+    my_branched = Branched.from_dict({
+        "name": "my branched",
         "gas phase": gas,
         "reactants": [A],
         "alkoxy products": [B],
