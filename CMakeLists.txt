@@ -42,7 +42,7 @@ add_subdirectory(src)
 ################################################################################
 # python
 if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
-  add_subdirectory(python)
+  add_subdirectory(mechanism_configuration)
 endif()
 
 ################################################################################

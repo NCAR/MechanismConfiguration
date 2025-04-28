@@ -1,4 +1,5 @@
 .DS_Store
+.vscode
 docs/build
 build
 
