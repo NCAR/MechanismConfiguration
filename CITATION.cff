@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: Chemical Mechanism Configurations
+version: v3.8.0
+doi: "10.5281/zenodo.15116380"
+authors:
+  - family-names: Dawson
+    given-names: Matthew
+  - family-names: Shores
+    given-names: Kyle
+  - family-names: Gim
+    given-names: Jiwon
+  - family-names: Thind
+    given-names: Montek
+license: Apache-2.0
+url: "https://github.com/NCAR/MechanismConfiguration"
