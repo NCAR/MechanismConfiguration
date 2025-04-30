@@ -327,6 +327,22 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      struct UserDefined
+      {
+        /// @brief Scaling factor to apply to user-provided rate constants
+        double scaling_factor{ 1.0 };
+        /// @brief A list of reactants
+        std::vector<ReactionComponent> reactants;
+        /// @brief A list of products
+        std::vector<ReactionComponent> products;
+        /// @brief An identifier, optional, uniqueness not enforced
+        std::string name;
+        /// @brief An identifier indicating which gas phase this reaction takes place in
+        std::string gas_phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
       struct Reactions
       {
         std::vector<v1::types::Arrhenius> arrhenius;
@@ -343,6 +359,7 @@ namespace mechanism_configuration
         std::vector<v1::types::Surface> surface;
         std::vector<v1::types::Troe> troe;
         std::vector<v1::types::Tunneling> tunneling;
+        std::vector<v1::types::UserDefined> user_defined;
       };
 
       struct Mechanism : public ::mechanism_configuration::Mechanism

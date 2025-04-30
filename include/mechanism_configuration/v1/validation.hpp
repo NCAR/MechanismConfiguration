@@ -150,6 +150,15 @@ namespace mechanism_configuration
       // aerosol phase
       // aerosol-phase water
       // aerosol-phase species
+
+      // User Defined
+      static constexpr const char* UserDefined_key = "USER_DEFINED";
+      // also
+      // gas phase
+      // reactants
+      // products
+      // scaling factor
+
     }  // namespace validation
   }  // namespace v1
 }  // namespace mechanism_configuration

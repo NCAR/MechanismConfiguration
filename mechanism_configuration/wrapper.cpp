@@ -29,7 +29,8 @@ enum class ReactionType
   Photolysis,
   Surface,
   Troe,
-  Tunneling
+  Tunneling,
+  UserDefined
 };
 
 struct ReactionsIterator
@@ -48,7 +49,8 @@ struct ReactionsIterator
       Photolysis,
       Surface,
       Troe,
-      Tunneling>;
+      Tunneling,
+      UserDefined>;
 
   std::vector<std::vector<VariantType>> reaction_lists;
   size_t outer_index = 0;
@@ -68,7 +70,8 @@ struct ReactionsIterator
                         std::vector<VariantType>(reactions.photolysis.begin(), reactions.photolysis.end()),
                         std::vector<VariantType>(reactions.surface.begin(), reactions.surface.end()),
                         std::vector<VariantType>(reactions.troe.begin(), reactions.troe.end()),
-                        std::vector<VariantType>(reactions.tunneling.begin(), reactions.tunneling.end()) }
+                        std::vector<VariantType>(reactions.tunneling.begin(), reactions.tunneling.end()),
+                        std::vector<VariantType>(reactions.user_defined.begin(), reactions.user_defined.end()) }
   {
   }
 
@@ -156,6 +159,8 @@ Reactions create_reactions(const py::list& reactions)
       reaction_obj.troe.push_back(item.cast<Troe>());
     } else if (py::isinstance<Tunneling>(item)) {
       reaction_obj.tunneling.push_back(item.cast<Tunneling>());
+    } else if (py::isinstance<UserDefined>(item)) {
+      reaction_obj.user_defined.push_back(item.cast<UserDefined>());
     } else {
         throw py::value_error("Invalid reaction type.");
     }
@@ -182,7 +187,8 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .value("Photolysis", ReactionType::Photolysis)
       .value("Surface", ReactionType::Surface)
       .value("Troe", ReactionType::Troe)
-      .value("Tunneling", ReactionType::Tunneling);
+      .value("Tunneling", ReactionType::Tunneling)
+      .value("UserDefined", ReactionType::UserDefined);
 
   py::class_<Species>(core, "_Species")
       .def(py::init<>())
@@ -420,6 +426,18 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def("__repr__", [](const SimpolPhaseTransfer &spt) { return "<SimpolPhaseTransfer: " + spt.name + ">"; })
       .def_property_readonly("type", [](const SimpolPhaseTransfer &) { return ReactionType::SimpolPhaseTransfer; });
 
+  py::class_<UserDefined>(core, "_UserDefined")
+      .def(py::init<>())
+      .def_readwrite("scaling_factor", &UserDefined::scaling_factor)
+      .def_readwrite("reactants", &UserDefined::reactants)
+      .def_readwrite("products", &UserDefined::products)
+      .def_readwrite("name", &UserDefined::name)
+      .def_readwrite("gas_phase", &UserDefined::gas_phase)
+      .def_readwrite("other_properties", &UserDefined::unknown_properties)
+      .def("__str__", [](const UserDefined &p) { return p.name; })
+      .def("__repr__", [](const UserDefined &p) { return "<UserDefined: " + p.name + ">"; })
+      .def_property_readonly("type", [](const UserDefined &) { return ReactionType::UserDefined; });
+
   py::class_<Reactions>(core, "_Reactions")
       .def(py::init<>())
       .def(py::init([](const py::list &reactions) {
@@ -439,13 +457,15 @@ PYBIND11_MODULE(_mechanism_configuration, m)
       .def_readwrite("surface", &Reactions::surface)
       .def_readwrite("troe", &Reactions::troe)
       .def_readwrite("tunneling", &Reactions::tunneling)
+      .def_readwrite("user_defined", &Reactions::user_defined)
       .def(
           "__len__",
           [](const Reactions &r)
           {
             return r.arrhenius.size() + r.branched.size() + r.condensed_phase_arrhenius.size() + r.condensed_phase_photolysis.size() +
                    r.emission.size() + r.first_order_loss.size() + r.simpol_phase_transfer.size() + r.aqueous_equilibrium.size() +
-                   r.wet_deposition.size() + r.henrys_law.size() + r.photolysis.size() + r.surface.size() + r.troe.size() + r.tunneling.size();
+                   r.wet_deposition.size() + r.henrys_law.size() + r.photolysis.size() + r.surface.size() + r.troe.size() + r.tunneling.size() +
+                   r.user_defined.size();
           })
       .def("__str__", [](const Reactions &r) { return "Reactions"; })
       .def("__repr__", [](const Reactions &r) { return "<Reactions>"; })

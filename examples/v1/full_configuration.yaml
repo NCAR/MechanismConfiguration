@@ -257,3 +257,15 @@ reactions:
   D: 82.6
   E: -0.98
   name: my other arrhenius
+- type: USER_DEFINED
+  gas phase: gas
+  reactants:
+  - species name: A
+    coefficient: 1
+  - species name: B
+    coefficient: 1
+  products:
+  - species name: C
+    coefficient: 1.3
+  name: my user defined
+  scaling factor: 12.3

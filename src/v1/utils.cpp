@@ -148,6 +148,7 @@ namespace mechanism_configuration
       parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();
       parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
+      parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
 
       for (const auto& object : objects)
       {

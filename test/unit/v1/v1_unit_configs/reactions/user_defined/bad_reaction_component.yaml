@@ -1,0 +1,20 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - coefficient: 0.2
+    species name: B
+  reactants:
+  - Coefficient: 1.2
+    species name: A
+  type: USER_DEFINED
+  name: my bad reaction
+species:
+- name: A
+- name: B
+version: 1.0.0
