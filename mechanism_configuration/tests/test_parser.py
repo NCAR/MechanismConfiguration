@@ -414,6 +414,7 @@ def test_parser_reports_bad_files():
 
 
 def test_hard_coded_full_v1_configuration():
+    # TODO: pull out line 401-635+ into separate something.
 
     #Chemical species
     A = Species(name = "A", other_properties = {"__absolute tolerance": "1.0e-30"})

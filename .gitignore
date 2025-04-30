@@ -2,5 +2,8 @@
 .vscode
 docs/build
 build
+xcode
 
+.venv
+.pytest_cache
 __pycache__

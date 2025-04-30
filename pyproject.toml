@@ -20,7 +20,7 @@ dependencies = []
 
 [project.optional-dependencies]
 test = [
-  'pytest'
+  "pytest",
 ]
 
 [tool.scikit-build]
