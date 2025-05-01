@@ -332,6 +332,20 @@ def validate_wet_deposition(reactions):
     assert reactions[0].aerosol_phase == "cloud"
     assert reactions[0].scaling_factor == 12.3
 
+def validate_user_defined(reactions):
+    assert reactions[0].type == ReactionType.UserDefined
+    assert reactions[0].gas_phase == "gas"
+    assert extract_components(reactions[0].reactants) == [
+        {"species name": "A", "coefficient": 1},
+        {"species name": "B", "coefficient": 1},
+    ]
+    assert extract_components(reactions[0].products) == [
+        {"species name": "C", "coefficient": 1.3}
+    ]
+    assert reactions[0].scaling_factor == 12.3
+    assert reactions[0].name == "my user defined"
+    assert reactions[0].other_properties == {}
+
 
 def validate_full_v1_mechanism(mechanism):
     assert mechanism is not None
@@ -370,10 +384,12 @@ def validate_full_v1_mechanism(mechanism):
     validate_tunneling(mechanism.reactions.tunneling)
     assert len(mechanism.reactions.wet_deposition) == 1
     validate_wet_deposition(mechanism.reactions.wet_deposition)
+    assert len(mechanism.reactions.user_defined) == 1
+    validate_user_defined(mechanism.reactions.user_defined)
     assert mechanism.version.major == 1
     assert mechanism.version.minor == 0
     assert mechanism.version.patch == 0
-    assert len(mechanism.reactions) == 16
+    assert len(mechanism.reactions) == 17
     for reaction in mechanism.reactions:
         assert reaction is not None
         assert isinstance(reaction.type, _core._ReactionType)
@@ -619,6 +635,14 @@ def test_hard_coded_full_v1_configuration():
         B = [-1.97e03, 2.91e00, 1.96e-03, -4.96e-01],
     )
 
+    user_defined = UserDefined(
+        name = "my user defined",
+        gas_phase = gas,
+        reactants = [A, B],
+        products = [(1.3, C)],
+        scaling_factor = 12.3,
+    )
+
     #Mechanism
     mechanism = Mechanism(
         name = "Full Configuration",
@@ -629,9 +653,41 @@ def test_hard_coded_full_v1_configuration():
                      my_other_condensed_arrhenius, my_troe, my_branched,
                      my_tunneling, my_surface, photo_B, condensed_photo_B,
                      my_emission, my_first_order_loss, my_aqueous_equilibrium,
-                     my_wet_deposition, my_henrys_law, my_simpol_phase_transfer],
+                     my_wet_deposition, my_henrys_law, my_simpol_phase_transfer,
+                     user_defined],
         version = Version(1, 0, 0),
     )
 
     validate_full_v1_mechanism(mechanism)
+
+def test_hard_coded_default_constructed_types():
+    arrhenius = Arrhenius()
+    assert arrhenius.type == ReactionType.Arrhenius
+    condensed_phase_arrhenius = CondensedPhaseArrhenius()
+    assert condensed_phase_arrhenius.type == ReactionType.CondensedPhaseArrhenius
+    condensed_phase_photolysis = CondensedPhasePhotolysis()
+    assert condensed_phase_photolysis.type == ReactionType.CondensedPhasePhotolysis
+    emission = Emission()
+    assert emission.type == ReactionType.Emission
+    first_order_loss = FirstOrderLoss()
+    assert first_order_loss.type == ReactionType.FirstOrderLoss
+    henrys_law = HenrysLaw()
+    assert henrys_law.type == ReactionType.HenrysLaw
+    photolysis = Photolysis()
+    assert photolysis.type == ReactionType.Photolysis
+    simpol_phase_transfer = SimpolPhaseTransfer()
+    assert simpol_phase_transfer.type == ReactionType.SimpolPhaseTransfer
+    surface = Surface()
+    assert surface.type == ReactionType.Surface
+    troe = Troe()
+    assert troe.type == ReactionType.Troe
+    tunneling = Tunneling()
+    assert tunneling.type == ReactionType.Tunneling
+    wet_deposition = WetDeposition()
+    assert wet_deposition.type == ReactionType.WetDeposition
+    branched = Branched()
+    assert branched.type == ReactionType.Branched
+    user_defined = UserDefined()
+    assert user_defined.type == ReactionType.UserDefined
+    
     

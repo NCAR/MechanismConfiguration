@@ -23,6 +23,7 @@ from _mechanism_configuration._core import (
     _WetDeposition,
     _HenrysLaw,
     _SimpolPhaseTransfer,
+    _UserDefined,
     _Reactions,
     _ReactionsIterator,
     _Mechanism,
@@ -82,15 +83,15 @@ class Species(_Species):
             other_properties (Dict[str, Any]): A dictionary of other properties of the species.
         """
         super().__init__()
-        self.name = name
-        self.HLC_298K_mol_m3_Pa = HLC_298K_mol_m3_Pa
-        self.HLC_exponential_factor_K = HLC_exponential_factor_K
-        self.diffusion_coefficient_m2_s = diffusion_coefficient_m2_s
-        self.N_star = N_star
-        self.molecular_weight_kg_mol = molecular_weight_kg_mol
-        self.density_kg_m3 = density_kg_m3
-        self.tracer_type = tracer_type
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.name = name if name is not None else self.name
+        self.HLC_298K_mol_m3_Pa = HLC_298K_mol_m3_Pa if HLC_298K_mol_m3_Pa is not None else self.HLC_298K_mol_m3_Pa
+        self.HLC_exponential_factor_K = HLC_exponential_factor_K if HLC_exponential_factor_K is not None else self.HLC_exponential_factor_K
+        self.diffusion_coefficient_m2_s = diffusion_coefficient_m2_s if diffusion_coefficient_m2_s is not None else self.diffusion_coefficient_m2_s
+        self.N_star = N_star if N_star is not None else self.N_star
+        self.molecular_weight_kg_mol = molecular_weight_kg_mol if molecular_weight_kg_mol is not None else self.molecular_weight_kg_mol
+        self.density_kg_m3 = density_kg_m3 if density_kg_m3 is not None else self.density_kg_m3
+        self.tracer_type = tracer_type if tracer_type is not None else self.tracer_type
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Phase(_Phase):
@@ -119,8 +120,8 @@ class Phase(_Phase):
         """
         super().__init__()
         self.name = name
-        self.species = [s.name for s in species] if species is not None else []
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.species = [s.name for s in species] if species is not None else self.species
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Arrhenius(_Arrhenius):
@@ -184,14 +185,14 @@ class Arrhenius(_Arrhenius):
             other_properties (Dict[str, Any]): A dictionary of other properties of the Arrhenius rate constant.
         """
         super().__init__()
-        self.name = name
-        self.A = A
-        self.B = B
+        self.name = name if name is not None else self.name
+        self.A = A if A is not None else self.A
+        self.B = B if B is not None else self.B
         if C is not None and Ea is not None:
             raise ValueError("Cannot specify both C and Ea.")
-        self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C
-        self.D = D
-        self.E = E
+        self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C if C is not None else self.C
+        self.D = D if D is not None else self.D
+        self.E = E if E is not None else self.E
         self.reactants = (
             [
                 (
@@ -202,7 +203,7 @@ class Arrhenius(_Arrhenius):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -214,10 +215,10 @@ class Arrhenius(_Arrhenius):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
@@ -272,14 +273,14 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
             other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase Arrhenius rate constant.
         """
         super().__init__()
-        self.name = name
-        self.A = A
-        self.B = B
+        self.name = name if name is not None else self.name
+        self.A = A if A is not None else self.A
+        self.B = B if B is not None else self.B
         if C is not None and Ea is not None:
             raise ValueError("Cannot specify both C and Ea.")
-        self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C
-        self.D = D
-        self.E = E
+        self.C = -Ea / BOLTZMANN_CONSTANT_J_K if Ea is not None else C if C is not None else self.C
+        self.D = D if D is not None else self.D
+        self.E = E if E is not None else self.E
         self.reactants = (
             [
                 (
@@ -290,7 +291,7 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -302,13 +303,13 @@ class CondensedPhaseArrhenius(_CondensedPhaseArrhenius):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
         self.aerosol_phase_water = (
-            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+            aerosol_phase_water.name if aerosol_phase_water is not None else self.aerosol_phase_water
         )
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Troe(_Troe):
@@ -385,15 +386,15 @@ class Troe(_Troe):
             other_properties (Dict[str, Any]): A dictionary of other properties of the Troe rate constant.
         """
         super().__init__()
-        self.name = name
-        self.k0_A = k0_A
-        self.k0_B = k0_B
-        self.k0_C = k0_C
-        self.kinf_A = kinf_A
-        self.kinf_B = kinf_B
-        self.kinf_C = kinf_C
-        self.Fc = Fc
-        self.N = N
+        self.name = name if name is not None else self.name
+        self.k0_A = k0_A if k0_A is not None else self.k0_A
+        self.k0_B = k0_B if k0_B is not None else self.k0_B
+        self.k0_C = k0_C if k0_C is not None else self.k0_C
+        self.kinf_A = kinf_A if kinf_A is not None else self.kinf_A
+        self.kinf_B = kinf_B if kinf_B is not None else self.kinf_B
+        self.kinf_C = kinf_C if kinf_C is not None else self.kinf_C
+        self.Fc = Fc if Fc is not None else self.Fc
+        self.N = N if N is not None else self.N
         self.reactants = (
             [
                 (
@@ -404,7 +405,7 @@ class Troe(_Troe):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -416,10 +417,10 @@ class Troe(_Troe):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Branched(_Branched):
@@ -470,11 +471,11 @@ class Branched(_Branched):
             other_properties (Dict[str, Any]): A dictionary of other properties of the branched reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.X = X
-        self.Y = Y
-        self.a0 = a0
-        self.n = n
+        self.name = name if name is not None else self.name
+        self.X = X if X is not None else self.X
+        self.Y = Y if Y is not None else self.Y
+        self.a0 = a0 if a0 is not None else self.a0
+        self.n = n if n is not None else self.n
         self.reactants = (
             [
                 (
@@ -485,7 +486,7 @@ class Branched(_Branched):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.nitrate_products = (
             [
@@ -497,7 +498,7 @@ class Branched(_Branched):
                 for p in nitrate_products
             ]
             if nitrate_products is not None
-            else []
+            else self.nitrate_products
         )
         self.alkoxy_products = (
             [
@@ -509,10 +510,10 @@ class Branched(_Branched):
                 for p in alkoxy_products
             ]
             if alkoxy_products is not None
-            else []
+            else self.alkoxy_products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Tunneling(_Tunneling):
@@ -565,10 +566,10 @@ class Tunneling(_Tunneling):
             other_properties (Dict[str, Any]): A dictionary of other properties of the tunneling reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.A = A
-        self.B = B
-        self.C = C
+        self.name = name if name is not None else self.name
+        self.A = A if A is not None else self.A
+        self.B = B if B is not None else self.B
+        self.C = C if C is not None else self.C
         self.reactants = (
             [
                 (
@@ -579,7 +580,7 @@ class Tunneling(_Tunneling):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -591,10 +592,10 @@ class Tunneling(_Tunneling):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Surface(_Surface):
@@ -638,8 +639,8 @@ class Surface(_Surface):
             other_properties (Dict[str, Any]): A dictionary of other properties of the surface.
         """
         super().__init__()
-        self.name = name
-        self.reaction_probability = reaction_probability
+        self.name = name if name is not None else self.name
+        self.reaction_probability = reaction_probability if reaction_probability is not None else self.reaction_probability
         self.gas_phase_species = (
             (
                 _ReactionComponent(gas_phase_species.name)
@@ -647,7 +648,7 @@ class Surface(_Surface):
                 else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
             )
             if gas_phase_species is not None
-            else []
+            else self.gas_phase_species
         )
         self.gas_phase_products = (
             [
@@ -659,11 +660,11 @@ class Surface(_Surface):
                 for p in gas_phase_products
             ]
             if gas_phase_products is not None
-            else []
+            else self.gas_phase_products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Photolysis(_Photolysis):
@@ -700,8 +701,8 @@ class Photolysis(_Photolysis):
             other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.scaling_factor = scaling_factor
+        self.name = name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
         self.reactants = (
             [
                 (
@@ -712,7 +713,7 @@ class Photolysis(_Photolysis):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -724,10 +725,10 @@ class Photolysis(_Photolysis):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
@@ -767,8 +768,8 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
             other_properties (Dict[str, Any]): A dictionary of other properties of the condensed phase photolysis reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.scaling_factor = scaling_factor
+        self.name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
         self.reactants = (
             [
                 (
@@ -779,7 +780,7 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -791,13 +792,13 @@ class CondensedPhasePhotolysis(_CondensedPhasePhotolysis):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
         self.aerosol_phase_water = (
-            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+            aerosol_phase_water.name if aerosol_phase_water is not None else self.aerosol_phase_water
         )
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Emission(_Emission):
@@ -831,8 +832,8 @@ class Emission(_Emission):
             other_properties (Dict[str, Any]): A dictionary of other properties of the emission reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.scaling_factor = scaling_factor
+        self.name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
         self.products = (
             [
                 (
@@ -843,10 +844,10 @@ class Emission(_Emission):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class FirstOrderLoss(_FirstOrderLoss):
@@ -880,8 +881,8 @@ class FirstOrderLoss(_FirstOrderLoss):
             other_properties (Dict[str, Any]): A dictionary of other properties of the first-order loss reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.scaling_factor = scaling_factor
+        self.name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
         self.reactants = (
             [
                 (
@@ -892,10 +893,10 @@ class FirstOrderLoss(_FirstOrderLoss):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class AqueousEquilibrium(_AqueousEquilibrium):
@@ -944,11 +945,11 @@ class AqueousEquilibrium(_AqueousEquilibrium):
             other_properties (Dict[str, Any]): A dictionary of other properties of the aqueous equilibrium reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.name = name if name is not None else self.name
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
         self.aerosol_phase_water = (
-            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+            aerosol_phase_water.name if aerosol_phase_water is not None else self.aerosol_phase_water
         )
         self.reactants = (
             [
@@ -960,7 +961,7 @@ class AqueousEquilibrium(_AqueousEquilibrium):
                 for r in reactants
             ]
             if reactants is not None
-            else []
+            else self.reactants
         )
         self.products = (
             [
@@ -972,12 +973,12 @@ class AqueousEquilibrium(_AqueousEquilibrium):
                 for p in products
             ]
             if products is not None
-            else []
+            else self.products
         )
-        self.A = A
-        self.C = C
-        self.k_reverse = k_reverse
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.A = A if A is not None else self.A
+        self.C = C if C is not None else self.C
+        self.k_reverse = k_reverse if k_reverse is not None else self.k_reverse
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class WetDeposition(_WetDeposition):
@@ -1008,10 +1009,10 @@ class WetDeposition(_WetDeposition):
             other_properties (Dict[str, Any]): A dictionary of other properties of the wet deposition reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.scaling_factor = scaling_factor
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class HenrysLaw(_HenrysLaw):
@@ -1051,8 +1052,8 @@ class HenrysLaw(_HenrysLaw):
             other_properties (Dict[str, Any]): A dictionary of other properties of the Henry's law reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.name = name if name is not None else self.name
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
         self.gas_phase_species = (
             (
                 _ReactionComponent(gas_phase_species.name)
@@ -1060,11 +1061,11 @@ class HenrysLaw(_HenrysLaw):
                 else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
             )
             if gas_phase_species is not None
-            else []
+            else self.gas_phase_species
         )
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
         self.aerosol_phase_water = (
-            aerosol_phase_water.name if aerosol_phase_water is not None else ""
+            aerosol_phase_water.name if aerosol_phase_water is not None else self.aerosol_phase_water
         )
         self.aerosol_phase_species = (
             (
@@ -1075,9 +1076,9 @@ class HenrysLaw(_HenrysLaw):
                 )
             )
             if aerosol_phase_species is not None
-            else []
+            else self.aerosol_phase_species
         )
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class SimpolPhaseTransfer(_SimpolPhaseTransfer):
@@ -1117,8 +1118,8 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
             other_properties (Dict[str, Any]): A dictionary of other properties of the simplified phase transfer reaction rate constant.
         """
         super().__init__()
-        self.name = name
-        self.gas_phase = gas_phase.name if gas_phase is not None else ""
+        self.name = name if name is not None else self.name
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
         self.gas_phase_species = (
             (
                 _ReactionComponent(gas_phase_species.name)
@@ -1126,9 +1127,9 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
                 else _ReactionComponent(gas_phase_species[1].name, gas_phase_species[0])
             )
             if gas_phase_species is not None
-            else []
+            else self.gas_phase_species
         )
-        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else ""
+        self.aerosol_phase = aerosol_phase.name if aerosol_phase is not None else self.aerosol_phase
         self.aerosol_phase_species = (
             (
                 _ReactionComponent(aerosol_phase_species.name)
@@ -1138,7 +1139,7 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
                 )
             )
             if aerosol_phase_species is not None
-            else []
+            else self.aerosol_phase_species
         )
         if B is not None:
             if len(B) != 4:
@@ -1146,7 +1147,70 @@ class SimpolPhaseTransfer(_SimpolPhaseTransfer):
             self.B = B
         else:
             self.B = [0, 0, 0, 0]
-        self.other_properties = other_properties if other_properties is not None else {}
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
+
+class UserDefined(_UserDefined):
+    """
+    A class representing a user-defined reaction rate constant.
+
+    Attributes:
+        name (str): The name of the photolysis reaction rate constant.
+        scaling_factor (float): The scaling factor for the photolysis rate constant.
+        reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+        products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
+        gas_phase (Phase): The gas phase in which the reaction occurs.
+        other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
+    """
+
+    def __init__(
+        self,
+        name: Optional[str] = None,
+        scaling_factor: Optional[float] = None,
+        reactants: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        products: Optional[List[Union[Species, Tuple[float, Species]]]] = None,
+        gas_phase: Optional[Phase] = None,
+        other_properties: Optional[Dict[str, Any]] = None,
+    ):
+        """
+        Initializes the UserDefined object with the given parameters.
+
+        Args:
+            name (str): The name of the photolysis reaction rate constant.
+            scaling_factor (float): The scaling factor for the photolysis rate constant.
+            reactants (List[Union[Species, Tuple[float, Species]]]): A list of reactants involved in the reaction.
+            products (List[Union[Species, Tuple[float, Species]]]): A list of products formed in the reaction.
+            gas_phase (Phase): The gas phase in which the reaction occurs.
+            other_properties (Dict[str, Any]): A dictionary of other properties of the photolysis reaction rate constant.
+        """
+        super().__init__()
+        self.name = name if name is not None else self.name
+        self.scaling_factor = scaling_factor if scaling_factor is not None else self.scaling_factor
+        self.reactants = (
+            [
+                (
+                    _ReactionComponent(r.name)
+                    if isinstance(r, Species)
+                    else _ReactionComponent(r[1].name, r[0])
+                )
+                for r in reactants
+            ]
+            if reactants is not None
+            else self.reactants
+        )
+        self.products = (
+            [
+                (
+                    _ReactionComponent(p.name)
+                    if isinstance(p, Species)
+                    else _ReactionComponent(p[1].name, p[0])
+                )
+                for p in products
+            ]
+            if products is not None
+            else self.products
+        )
+        self.gas_phase = gas_phase.name if gas_phase is not None else self.gas_phase
+        self.other_properties = other_properties if other_properties is not None else self.other_properties
 
 
 class Reactions(_Reactions):

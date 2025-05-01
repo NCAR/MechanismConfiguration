@@ -157,5 +157,15 @@ namespace mechanism_configuration
           const std::vector<types::Phase>& existing_phases,
           types::Reactions& reactions) override;
     };
+
+    class UserDefinedParser : public IReactionParser
+    {
+     public:
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
   }  // namespace v1
 }  // namespace mechanism_configuration

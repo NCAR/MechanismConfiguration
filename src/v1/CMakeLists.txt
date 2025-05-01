@@ -17,4 +17,5 @@ target_sources(mechanism_configuration
     tunneling_parser.cpp
     utils.cpp
     wet_deposition_parser.cpp
+    user_defined_parser.cpp
 )
