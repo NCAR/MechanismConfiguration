@@ -1,6 +1,6 @@
 import pytest
 from mechanism_configuration import *
-from utils_constants import SUPPORTED_FILE_EXTENSIONS
+from mechanism_configuration.utils_constants import SUPPORTED_FILE_EXTENSIONS
 from utils_mechanism import mechanism_fully_defined, validate_full_v1_mechanism
 
 
