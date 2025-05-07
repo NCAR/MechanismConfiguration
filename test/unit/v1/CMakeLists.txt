@@ -22,6 +22,7 @@ create_standard_test(NAME v1_parse_tunneling SOURCES test_parse_tunneling.cpp)
 create_standard_test(NAME v1_parse_simpol_phase_transfer SOURCES test_parse_simpol_phase_transfer.cpp)
 create_standard_test(NAME v1_parse_aqueous_equilibrium SOURCES test_parse_aqueous_equilibrium.cpp)
 create_standard_test(NAME v1_parse_wet_deposition SOURCES test_parse_wet_deposition.cpp)
+create_standard_test(NAME v1_parse_user_defined SOURCES test_parse_user_defined.cpp)
 
 ################################################################################
 # Copy test data

@@ -13,7 +13,7 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      auto required = {
+      std::vector<std::string> required = {
         validation::TYPE, validation::REACTANTS, validation::ALKOXY_PRODUCTS, validation::NITRATE_PRODUCTS, validation::X, validation::Y,
         validation::A0,   validation::n
       };

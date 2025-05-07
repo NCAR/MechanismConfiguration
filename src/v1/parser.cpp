@@ -25,10 +25,8 @@ namespace mechanism_configuration
       YAML::Node object = YAML::LoadFile(config_path.string());
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
-      const auto mechanism_required_keys = {
-        validation::keys.version, validation::keys.species, validation::keys.phases, validation::keys.reactions
-      };
-      const auto mechanism_optional_keys = { validation::keys.name };
+      std::vector<std::string> mechanism_required_keys = { validation::version, validation::species, validation::phases, validation::reactions };
+      std::vector<std::string> mechanism_optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
@@ -38,7 +36,7 @@ namespace mechanism_configuration
         return result;
       }
 
-      Version version = Version(object[validation::keys.version].as<std::string>());
+      Version version = Version(object[validation::version].as<std::string>());
 
       if (version.major != 1)
       {
@@ -48,16 +46,16 @@ namespace mechanism_configuration
 
       mechanism->version = version;
 
-      std::string name = object[validation::keys.name].as<std::string>();
+      std::string name = object[validation::name].as<std::string>();
       mechanism->name = name;
 
-      auto species_parsing = ParseSpecies(object[validation::keys.species]);
+      auto species_parsing = ParseSpecies(object[validation::species]);
       result.errors.insert(result.errors.end(), species_parsing.first.begin(), species_parsing.first.end());
 
-      auto phases_parsing = ParsePhases(object[validation::keys.phases], species_parsing.second);
+      auto phases_parsing = ParsePhases(object[validation::phases], species_parsing.second);
       result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
 
-      auto reactions_parsing = ParseReactions(object[validation::keys.reactions], species_parsing.second, phases_parsing.second);
+      auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
 
       mechanism->species = species_parsing.second;

@@ -19,7 +19,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].aerosol_phase, "aqueous aerosol");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].aerosol_phase_water, "H2O_aq");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].name, "my condensed phase photolysis");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].scaling_factor_, 12.3);
+    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].scaling_factor, 12.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].reactants.size(), 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].reactants[0].species_name, "B");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].reactants[0].coefficient, 1);
@@ -31,7 +31,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].aerosol_phase, "aqueous aerosol");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].aerosol_phase_water, "H2O_aq");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].scaling_factor_, 1);
+    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].scaling_factor, 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].reactants.size(), 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].reactants[0].species_name, "B");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].reactants[0].coefficient, 1.2);

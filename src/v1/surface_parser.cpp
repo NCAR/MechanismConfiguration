@@ -17,30 +17,28 @@ namespace mechanism_configuration
       Errors errors;
       types::Surface surface;
 
-      auto required_keys = { validation::keys.gas_phase_products,
-                             validation::keys.gas_phase_species,
-                             validation::keys.type,
-                             validation::keys.gas_phase,
-                             validation::keys.aerosol_phase };
-      auto optional_keys = { validation::keys.name, validation::keys.reaction_probability };
+      std::vector<std::string> required_keys = {
+        validation::gas_phase_products, validation::gas_phase_species, validation::type, validation::gas_phase, validation::aerosol_phase
+      };
+      std::vector<std::string> optional_keys = { validation::name, validation::reaction_probability };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        std::string gas_phase_species = object[validation::keys.gas_phase_species].as<std::string>();
+        std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
 
-        auto products = ParseReactantsOrProducts(validation::keys.gas_phase_products, object);
+        auto products = ParseReactantsOrProducts(validation::gas_phase_products, object);
         errors.insert(errors.end(), products.first.begin(), products.first.end());
 
-        if (object[validation::keys.reaction_probability])
+        if (object[validation::reaction_probability])
         {
-          surface.reaction_probability = object[validation::keys.reaction_probability].as<double>();
+          surface.reaction_probability = object[validation::reaction_probability].as<double>();
         }
 
-        if (object[validation::keys.name])
+        if (object[validation::name])
         {
-          surface.name = object[validation::keys.name].as<std::string>();
+          surface.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
@@ -58,17 +56,17 @@ namespace mechanism_configuration
               { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
         }
 
-        std::string aerosol_phase = object[validation::keys.aerosol_phase].as<std::string>();
+        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
         auto it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
         if (it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::keys.aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::keys.aerosol_phase].Mark().column + 1);
+          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 
-        surface.gas_phase = object[validation::keys.gas_phase].as<std::string>();
+        surface.gas_phase = object[validation::gas_phase].as<std::string>();
         surface.aerosol_phase = aerosol_phase;
         surface.gas_phase_products = products.second;
         types::ReactionComponent component;

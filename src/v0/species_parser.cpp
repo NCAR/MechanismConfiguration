@@ -52,7 +52,7 @@ namespace mechanism_configuration
     Errors ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
       Errors errors;
-      auto required = { validation::VALUE, validation::TYPE };
+      std::vector<std::string> required = { validation::VALUE, validation::TYPE };
 
       auto validate = ValidateSchema(object, required, {});
       errors.insert(errors.end(), validate.begin(), validate.end());

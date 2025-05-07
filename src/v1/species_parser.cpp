@@ -15,39 +15,39 @@ namespace mechanism_configuration
       for (const auto& object : objects)
       {
         types::Species species;
-        auto required_keys = { validation::keys.name };
-        auto optional_keys = { validation::keys.absolute_tolerance,
-                               validation::keys.diffusion_coefficient,
-                               validation::keys.molecular_weight,
-                               validation::keys.henrys_law_constant_298,
-                               validation::keys.henrys_law_constant_exponential_factor,
-                               validation::keys.n_star,
-                               validation::keys.density,
-                               validation::keys.tracer_type };
+        std::vector<std::string> required_keys = { validation::name };
+        std::vector<std::string> optional_keys = { validation::absolute_tolerance,
+                                                   validation::diffusion_coefficient,
+                                                   validation::molecular_weight,
+                                                   validation::henrys_law_constant_298,
+                                                   validation::henrys_law_constant_exponential_factor,
+                                                   validation::n_star,
+                                                   validation::density,
+                                                   validation::tracer_type };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
-          std::string name = object[validation::keys.name].as<std::string>();
+          std::string name = object[validation::name].as<std::string>();
           species.name = name;
 
-          if (object[validation::keys.tracer_type])
-            species.tracer_type = object[validation::keys.tracer_type].as<std::string>();
+          if (object[validation::tracer_type])
+            species.tracer_type = object[validation::tracer_type].as<std::string>();
 
-          if (object[validation::keys.absolute_tolerance])
-            species.absolute_tolerance = object[validation::keys.absolute_tolerance].as<double>();
-          if (object[validation::keys.diffusion_coefficient])
-            species.diffusion_coefficient = object[validation::keys.diffusion_coefficient].as<double>();
-          if (object[validation::keys.molecular_weight])
-            species.molecular_weight = object[validation::keys.molecular_weight].as<double>();
-          if (object[validation::keys.henrys_law_constant_298])
-            species.henrys_law_constant_298 = object[validation::keys.henrys_law_constant_298].as<double>();
-          if (object[validation::keys.henrys_law_constant_exponential_factor])
-            species.henrys_law_constant_exponential_factor = object[validation::keys.henrys_law_constant_exponential_factor].as<double>();
-          if (object[validation::keys.n_star])
-            species.n_star = object[validation::keys.n_star].as<double>();
-          if (object[validation::keys.density])
-            species.density = object[validation::keys.density].as<double>();
+          if (object[validation::absolute_tolerance])
+            species.absolute_tolerance = object[validation::absolute_tolerance].as<double>();
+          if (object[validation::diffusion_coefficient])
+            species.diffusion_coefficient = object[validation::diffusion_coefficient].as<double>();
+          if (object[validation::molecular_weight])
+            species.molecular_weight = object[validation::molecular_weight].as<double>();
+          if (object[validation::henrys_law_constant_298])
+            species.henrys_law_constant_298 = object[validation::henrys_law_constant_298].as<double>();
+          if (object[validation::henrys_law_constant_exponential_factor])
+            species.henrys_law_constant_exponential_factor = object[validation::henrys_law_constant_exponential_factor].as<double>();
+          if (object[validation::n_star])
+            species.n_star = object[validation::n_star].as<double>();
+          if (object[validation::density])
+            species.density = object[validation::density].as<double>();
 
           species.unknown_properties = GetComments(object);
 

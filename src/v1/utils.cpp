@@ -42,7 +42,7 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
-      const std::vector<std::string> phase_required_keys = { validation::keys.name, validation::keys.species };
+      const std::vector<std::string> phase_required_keys = { validation::name, validation::species };
       const std::vector<std::string> phase_optional_keys = {};
 
       for (const auto& object : objects)
@@ -52,10 +52,10 @@ namespace mechanism_configuration
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
-          std::string name = object[validation::keys.name].as<std::string>();
+          std::string name = object[validation::name].as<std::string>();
 
           std::vector<std::string> species{};
-          for (const auto& spec : object[validation::keys.species])
+          for (const auto& spec : object[validation::species])
           {
             species.push_back(spec.as<std::string>());
           }
@@ -88,19 +88,19 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       types::ReactionComponent component;
-      const std::vector<std::string> reaction_component_required_keys = { validation::keys.species_name };
-      const std::vector<std::string> reaction_component_optional_keys = { validation::keys.coefficient };
+      const std::vector<std::string> reaction_component_required_keys = { validation::species_name };
+      const std::vector<std::string> reaction_component_optional_keys = { validation::coefficient };
 
       auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
         if (status == ConfigParseStatus::Success)
         {
-          std::string species_name = object[validation::keys.species_name].as<std::string>();
+          std::string species_name = object[validation::species_name].as<std::string>();
           double coefficient = 1;
-          if (object[validation::keys.coefficient])
+          if (object[validation::coefficient])
           {
-            coefficient = object[validation::keys.coefficient].as<double>();
+            coefficient = object[validation::coefficient].as<double>();
           }
 
           component.species_name = species_name;
@@ -134,24 +134,25 @@ namespace mechanism_configuration
       types::Reactions reactions;
 
       std::map<std::string, std::unique_ptr<IReactionParser>> parsers;
-      parsers[validation::keys.Arrhenius_key] = std::make_unique<ArrheniusParser>();
-      parsers[validation::keys.HenrysLaw_key] = std::make_unique<HenrysLawParser>();
-      parsers[validation::keys.WetDeposition_key] = std::make_unique<WetDepositionParser>();
-      parsers[validation::keys.AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
-      parsers[validation::keys.SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
-      parsers[validation::keys.FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
-      parsers[validation::keys.Emission_key] = std::make_unique<EmissionParser>();
-      parsers[validation::keys.CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
-      parsers[validation::keys.Photolysis_key] = std::make_unique<PhotolysisParser>();
-      parsers[validation::keys.Surface_key] = std::make_unique<SurfaceParser>();
-      parsers[validation::keys.Tunneling_key] = std::make_unique<TunnelingParser>();
-      parsers[validation::keys.Branched_key] = std::make_unique<BranchedParser>();
-      parsers[validation::keys.Troe_key] = std::make_unique<TroeParser>();
-      parsers[validation::keys.CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
+      parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
+      parsers[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
+      parsers[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
+      parsers[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
+      parsers[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
+      parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
+      parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
+      parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
+      parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
+      parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
+      parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
+      parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
+      parsers[validation::Troe_key] = std::make_unique<TroeParser>();
+      parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
+      parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
 
       for (const auto& object : objects)
       {
-        std::string type = object[validation::keys.type].as<std::string>();
+        std::string type = object[validation::type].as<std::string>();
         auto it = parsers.find(type);
         if (it != parsers.end())
         {
@@ -160,8 +161,8 @@ namespace mechanism_configuration
         }
         else
         {
-          std::string line = std::to_string(object[validation::keys.type].Mark().line + 1);
-          std::string column = std::to_string(object[validation::keys.type].Mark().column + 1);
+          std::string line = std::to_string(object[validation::type].Mark().line + 1);
+          std::string column = std::to_string(object[validation::type].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
         }
       }

@@ -14,7 +14,7 @@ endfunction(set_git_default)
 ################################################################################
 # google test
 
-if(PROJECT_IS_TOP_LEVEL AND OPEN_ATMOS_ENABLE_TESTS)
+if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG v1.14.0
@@ -29,9 +29,12 @@ endif()
 ################################################################################
 # yaml-cpp
 
+set_git_default(YAML_CPP_GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git)
+set_git_default(YAML_CPP_GIT_TAG 28f93bdec6387d42332220afa9558060c8016795)
+
 FetchContent_Declare(yaml-cpp
-    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-    GIT_TAG 0.8.0
+    GIT_REPOSITORY ${YAML_CPP_GIT_REPOSITORY}
+    GIT_TAG        ${YAML_CPP_GIT_TAG}
 )
 
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
@@ -41,7 +44,7 @@ FetchContent_MakeAvailable(yaml-cpp)
 ################################################################################
 # pybind11
 
-if(OPEN_ATMOS_ENABLE_PYTHON_LIBRARY)
+if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
   set(PYBIND11_NEWPYTHON ON)
 
   set_git_default(PYBIND11_GIT_REPOSITORY https://github.com/pybind/pybind11)
