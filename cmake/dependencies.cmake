@@ -40,21 +40,3 @@ FetchContent_Declare(yaml-cpp
 set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(yaml-cpp)
-
-################################################################################
-# pybind11
-
-if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
-  set(PYBIND11_NEWPYTHON ON)
-
-  set_git_default(PYBIND11_GIT_REPOSITORY https://github.com/pybind/pybind11)
-  set_git_default(PYBIND11_GIT_TAG v2.12.0)
-
-  FetchContent_Declare(pybind11
-      GIT_REPOSITORY ${PYBIND11_GIT_REPOSITORY}
-      GIT_TAG        ${PYBIND11_GIT_TAG}
-      GIT_PROGRESS  NOT ${FETCHCONTENT_QUIET}
-  )
-
-  FetchContent_MakeAvailable(pybind11)
-endif()

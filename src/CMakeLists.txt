@@ -7,9 +7,7 @@ add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
-if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY OR MECH_CONFIG_ENABLE_PIC)
-  # Add the -fPIC flag for position-independent code if we are building shared libraries
-  # or the python library so that it links correctly on linux
+if(MECH_CONFIG_ENABLE_PIC)
   set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 

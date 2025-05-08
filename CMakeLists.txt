@@ -22,7 +22,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
-option(MECH_CONFIG_ENABLE_PYTHON_LIBRARY "Build the python library" ON)
 option(MECH_CONFIG_ENABLE_PIC "Build the library with position independent code" ON)
 option(MECH_CONFIG_ENABLE_COVERAGE "Enable code coverage output" OFF)
 
@@ -38,12 +37,6 @@ include(cmake/dependencies.cmake)
 # project source code
 
 add_subdirectory(src)
-
-################################################################################
-# python
-if(MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
-  add_subdirectory(mechanism_configuration)
-endif()
 
 ################################################################################
 # Tests
@@ -74,6 +67,6 @@ endif()
 # Packaging
 
 # only include packaging if we are the top level project being built
-if(PROJECT_IS_TOP_LEVEL AND NOT MECH_CONFIG_ENABLE_PYTHON_LIBRARY)
+if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(packaging)
 endif()
