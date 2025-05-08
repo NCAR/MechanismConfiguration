@@ -7,7 +7,6 @@ RUN dnf -y update \
         git \
         lcov \
         make \
-        python-devel \
     && dnf clean all
 
 COPY . /mechanism_configuration/
