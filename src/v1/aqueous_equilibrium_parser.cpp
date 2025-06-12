@@ -18,7 +18,7 @@ namespace mechanism_configuration
       types::AqueousEquilibrium aqueous_equilibrium;
 
       std::vector<std::string> required_keys = { validation::type,          validation::reactants,           validation::products,
-                                                 validation::aerosol_phase, validation::aerosol_phase_water, validation::k_reverse };
+                                                 validation::aerosol_phase, validation::k_reverse };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -47,7 +47,6 @@ namespace mechanism_configuration
         }
 
         std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
-        std::string aerosol_phase_water = object[validation::aerosol_phase_water].as<std::string>();
 
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)
@@ -58,7 +57,6 @@ namespace mechanism_configuration
         {
           requested_species.push_back(spec.species_name);
         }
-        requested_species.push_back(aerosol_phase_water);
 
         if (RequiresUnknownSpecies(requested_species, existing_species))
         {
@@ -89,7 +87,6 @@ namespace mechanism_configuration
         }
 
         aqueous_equilibrium.aerosol_phase = aerosol_phase;
-        aqueous_equilibrium.aerosol_phase_water = aerosol_phase_water;
         aqueous_equilibrium.products = products.second;
         aqueous_equilibrium.reactants = reactants.second;
         aqueous_equilibrium.unknown_properties = GetComments(object);
