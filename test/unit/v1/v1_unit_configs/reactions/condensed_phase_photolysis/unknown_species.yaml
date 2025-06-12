@@ -8,7 +8,7 @@ reactions:
 - aerosol phase: aqueous aerosol
   products:
   - coefficient: 0.2
-    species name: B
+    species name: C
   reactants:
   - coefficient: 1.2
     species name: A
