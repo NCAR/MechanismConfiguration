@@ -14,7 +14,6 @@ reactions:
   E: -1.3
   __solver_param: 0.1
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   name: my arrhenius
   products:
   - coefficient: 1.2
@@ -31,7 +30,6 @@ reactions:
   D: 6.4
   E: -0.3
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   name: my arrhenius2
   products:
   - __optional thing: hello
@@ -44,7 +42,6 @@ reactions:
     species name: B
   type: CONDENSED_PHASE_ARRHENIUS
 - aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   products:
   - species name: C
   reactants:

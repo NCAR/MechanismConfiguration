@@ -9,7 +9,6 @@ phases:
 reactions:
 - __comment: hi
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   name: my condensed phase photolysis
   products:
   - coefficient: 1
@@ -20,7 +19,6 @@ reactions:
   scaling factor: 12.3
   type: CONDENSED_PHASE_PHOTOLYSIS
 - aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   products:
   - coefficient: 0.2
     species name: C

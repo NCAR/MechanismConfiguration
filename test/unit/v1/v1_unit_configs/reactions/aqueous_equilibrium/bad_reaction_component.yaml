@@ -8,7 +8,6 @@ phases:
   - H2O_aq
 reactions:
 - aerosol phase: aerosol
-  aerosol-phase water: H2O_aq
   k_reverse: 0.32
   products:
   - Species name: B

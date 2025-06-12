@@ -20,7 +20,6 @@
       "gas-phase species": "H2O2",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "H2O2_aq",
-      "aerosol-phase water": "H2O_aq",
       "name": "my henry's law"
     }
   ]

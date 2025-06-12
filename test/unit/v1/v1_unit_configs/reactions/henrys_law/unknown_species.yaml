@@ -10,7 +10,6 @@ phases:
 reactions:
 - aerosol phase: aqueous aerosol
   aerosol-phase species: B
-  aerosol-phase water: H2O_aq
   gas phase: gas
   gas-phase species: C
   type: HL_PHASE_TRANSFER

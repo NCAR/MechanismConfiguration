@@ -30,7 +30,6 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "reactants": [
         {
           "species name": "A",
@@ -58,7 +57,6 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "reactants": [
         {
           "species name": "A",
@@ -86,7 +84,6 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "reactants": [
         {
           "species name": "A"

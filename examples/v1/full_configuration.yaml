@@ -70,7 +70,6 @@ reactions:
   gas-phase species: H2O2
   aerosol phase: aqueous aerosol
   aerosol-phase species: H2O2_aq
-  aerosol-phase water: H2O_aq
   name: my henry's law
 - type: SIMPOL_PHASE_TRANSFER
   gas phase: gas
@@ -85,7 +84,6 @@ reactions:
   name: my simpol
 - type: AQUEOUS_EQUILIBRIUM
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   A: 0.0114
   C: 2300
   k_reverse: 0.32
@@ -100,7 +98,6 @@ reactions:
   name: my aqueous eq
 - type: CONDENSED_PHASE_ARRHENIUS
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   A: 123.45
   Ea: 123.45
   B: 1.3
@@ -117,7 +114,6 @@ reactions:
   name: my condensed arrhenius
 - type: CONDENSED_PHASE_ARRHENIUS
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   A: 123.45
   C: 123.45
   B: 1.3
@@ -134,7 +130,6 @@ reactions:
   name: my other condensed arrhenius
 - type: CONDENSED_PHASE_PHOTOLYSIS
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   reactants:
   - species name: H2O2_aq
     coefficient: 1
