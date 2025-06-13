@@ -79,7 +79,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -133,8 +133,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueo
     std::string file = std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.errors)
     {

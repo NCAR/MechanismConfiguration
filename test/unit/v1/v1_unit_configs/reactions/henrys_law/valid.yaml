@@ -9,13 +9,13 @@ phases:
   - H2O_aq
 reactions:
 - __comment: hi
-  
+  aqueous phase: aqueous
   aqueous-phase species: B
   gas phase: gas
   gas-phase species: A
   name: my henry's law
   type: HL_PHASE_TRANSFER
-- 
+- aqueous phase: aqueous
   aqueous-phase species: B
   gas phase: gas
   gas-phase species: A

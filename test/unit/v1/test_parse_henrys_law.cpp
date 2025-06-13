@@ -85,7 +85,7 @@ TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

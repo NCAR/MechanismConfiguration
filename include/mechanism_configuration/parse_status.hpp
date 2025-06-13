@@ -25,7 +25,7 @@ namespace mechanism_configuration
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,
-    RequestedAqeuousSpeciesNotIncludedInAqueousPhase,
+    RequestedAqueousSpeciesNotIncludedInAqueousPhase,
     TooManyReactionComponents,
     InvalidIonPair,
     UnknownType
