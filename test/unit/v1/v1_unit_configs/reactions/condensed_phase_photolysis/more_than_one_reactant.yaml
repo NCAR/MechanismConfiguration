@@ -7,7 +7,7 @@ phases:
   - C
   - H2O_aq
 reactions:
-- 
+- aqueous phase: aqueous
   products:
   - coefficient: 0.2
     species name: C

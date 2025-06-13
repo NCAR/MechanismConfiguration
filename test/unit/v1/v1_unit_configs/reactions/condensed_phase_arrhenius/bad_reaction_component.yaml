@@ -6,7 +6,7 @@ phases:
   - B
   - H2O_aq
 reactions:
-- 
+- aqueous phase: aqueous
   products:
   - species name: B
   reactants:

@@ -6,7 +6,7 @@ phases:
   - C
   - H2O_aq
 reactions:
-- 
+- aqueous phase: aqueous
   products:
   - coefficient: 1.2
     species name: B
