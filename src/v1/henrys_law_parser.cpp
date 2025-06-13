@@ -21,8 +21,7 @@ namespace mechanism_configuration
                                                  validation::gas_phase,
                                                  validation::gas_phase_species,
                                                  validation::aerosol_phase,
-                                                 validation::aerosol_phase_species,
-                                                 validation::aerosol_phase_water };
+                                                 validation::aerosol_phase_species};
       std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -33,7 +32,6 @@ namespace mechanism_configuration
         std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
         std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
         std::string aerosol_phase_species = object[validation::aerosol_phase_species].as<std::string>();
-        std::string aerosol_phase_water = object[validation::aerosol_phase_water].as<std::string>();
 
         if (object[validation::name])
         {
@@ -43,11 +41,9 @@ namespace mechanism_configuration
         std::vector<std::string> requested_species;
         requested_species.push_back(gas_phase_species);
         requested_species.push_back(aerosol_phase_species);
-        requested_species.push_back(aerosol_phase_water);
 
         std::vector<std::string> requested_aerosol_species;
         requested_aerosol_species.push_back(aerosol_phase_species);
-        requested_aerosol_species.push_back(aerosol_phase_water);
 
         if (RequiresUnknownSpecies(requested_species, existing_species))
         {
@@ -93,7 +89,6 @@ namespace mechanism_configuration
         types::ReactionComponent aerosol_component;
         aerosol_component.species_name = aerosol_phase_species;
         henrys_law.aerosol_phase_species = aerosol_component;
-        henrys_law.aerosol_phase_water = aerosol_phase_water;
         henrys_law.unknown_properties = GetComments(object);
         reactions.henrys_law.push_back(henrys_law);
       }

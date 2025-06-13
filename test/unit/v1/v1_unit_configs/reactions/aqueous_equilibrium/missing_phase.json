@@ -20,7 +20,6 @@
     {
       "type": "AQUEOUS_EQUILIBRIUM",
       "aerosol phase": "aerosol",
-      "aerosol-phase water": "H2O_aq",
       "k_reverse": 0.32,
       "reactants": [
         {

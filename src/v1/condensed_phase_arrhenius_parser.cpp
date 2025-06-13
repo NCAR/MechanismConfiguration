@@ -18,8 +18,7 @@ namespace mechanism_configuration
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
       std::vector<std::string> required_keys = {
-        validation::products, validation::reactants, validation::type, validation::aerosol_phase, validation::aerosol_phase_water
-      };
+        validation::products, validation::reactants, validation::type, validation::aerosol_phase};
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
@@ -69,7 +68,6 @@ namespace mechanism_configuration
         }
 
         std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
-        std::string aerosol_phase_water = object[validation::aerosol_phase_water].as<std::string>();
 
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)
@@ -80,7 +78,6 @@ namespace mechanism_configuration
         {
           requested_species.push_back(spec.species_name);
         }
-        requested_species.push_back(aerosol_phase_water);
 
         if (RequiresUnknownSpecies(requested_species, existing_species))
         {
@@ -111,7 +108,6 @@ namespace mechanism_configuration
         }
 
         condensed_phase_arrhenius.aerosol_phase = aerosol_phase;
-        condensed_phase_arrhenius.aerosol_phase_water = aerosol_phase_water;
         condensed_phase_arrhenius.products = products.second;
         condensed_phase_arrhenius.reactants = reactants.second;
         condensed_phase_arrhenius.unknown_properties = GetComments(object);

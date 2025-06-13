@@ -8,7 +8,6 @@ phases:
   - H2O_aq
 reactions:
 - aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   products:
   - coefficient: 0.2
     species name: B

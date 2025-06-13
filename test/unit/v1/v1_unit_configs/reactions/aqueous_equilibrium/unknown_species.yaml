@@ -6,7 +6,6 @@ phases:
   - B
 reactions:
 - aerosol phase: aerosol
-  aerosol-phase water: H2O_aq
   k_reverse: 0.32
   products:
   - coefficient: 1

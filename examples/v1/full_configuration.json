@@ -107,7 +107,6 @@
       "gas-phase species": "H2O2",
       "aerosol phase": "aqueous aerosol",
       "aerosol-phase species": "H2O2_aq",
-      "aerosol-phase water": "H2O_aq",
       "name": "my henry's law"
     },
     {
@@ -127,7 +126,6 @@
     {
       "type": "AQUEOUS_EQUILIBRIUM",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "A": 1.14e-2,
       "C": 2300.0,
       "k_reverse": 0.32,
@@ -152,7 +150,6 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "A": 123.45,
       "Ea": 123.45,
       "B": 1.3,
@@ -179,7 +176,6 @@
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "A": 123.45,
       "C": 123.45,
       "B": 1.3,
@@ -206,7 +202,6 @@
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
       "reactants": [
         {
           "species name": "H2O2_aq",

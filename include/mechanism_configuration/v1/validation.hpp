@@ -55,7 +55,6 @@ namespace mechanism_configuration
 
       // Condensed Phase Arrhenius
       static constexpr const char* CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
-      static constexpr const char* aerosol_phase_water = "aerosol-phase water";
       // also these
       // aerosol phase
       // A
@@ -108,7 +107,6 @@ namespace mechanism_configuration
       // also
       // scaling factor
       // aerosol phase
-      // aerosol-phase water
 
       // Emissions
       static constexpr const char* Emission_key = "EMISSION";
@@ -132,7 +130,6 @@ namespace mechanism_configuration
       static constexpr const char* AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
       // also
       // aerosol phase
-      // aerosol-phase water
       // A
       // C
       static constexpr const char* k_reverse = "k_reverse";
@@ -148,7 +145,6 @@ namespace mechanism_configuration
       // also
       // gas phase
       // aerosol phase
-      // aerosol-phase water
       // aerosol-phase species
 
       // User Defined

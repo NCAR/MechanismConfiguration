@@ -7,7 +7,6 @@ phases:
   - H2O_aq
 reactions:
 - aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_a
   products:
   - species name: B
   reactants:

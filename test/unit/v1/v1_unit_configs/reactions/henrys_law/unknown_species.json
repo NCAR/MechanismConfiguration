@@ -33,8 +33,7 @@
       "gas phase": "gas",
       "gas-phase species": "C",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
-      "aerosol-phase water": "H2O_aq"
+      "aerosol-phase species": "B"
     }
   ]
 }

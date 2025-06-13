@@ -23,7 +23,6 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase, "aqueous aerosol");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.species_name, "B");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.coefficient, 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_water, "H2O_aq");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "hi");
 
@@ -34,7 +33,6 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase, "aqueous aerosol");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.species_name, "B");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.coefficient, 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_water, "H2O_aq");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].unknown_properties.size(), 0);
   }
 }
@@ -70,25 +68,6 @@ TEST(ParserBase, HenrysLawDetectsUnknownPhase)
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::UnknownPhase);
     EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
-    {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-    }
-  }
-}
-
-TEST(ParserBase, HenrysLawDetectsUnknownAerosolPhaseWater)
-{
-  v1::Parser parser;
-  std::vector<std::string> extensions = { ".json", ".yaml" };
-  for (auto& extension : extensions)
-  {
-    std::string file = std::string("v1_unit_configs/reactions/henrys_law/missing_aerosol_phase_water") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

@@ -9,7 +9,6 @@ reactions:
 - C: 10
   Ea: 0.5
   aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
   products:
   - species name: B
   reactants:

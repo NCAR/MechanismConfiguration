@@ -11,7 +11,6 @@ reactions:
   C: 2300.0
   __comment: GIF is pronounced with a hard g
   aerosol phase: aerosol
-  aerosol-phase water: H2O_aq
   k_reverse: 0.32
   name: my aqueous eq
   products:
@@ -24,7 +23,6 @@ reactions:
     species name: A
   type: AQUEOUS_EQUILIBRIUM
 - aerosol phase: aerosol
-  aerosol-phase water: H2O_aq
   k_reverse: 0.32
   products:
   - coefficient: 1
