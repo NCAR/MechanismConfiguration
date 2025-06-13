@@ -17,11 +17,9 @@ namespace mechanism_configuration
       Errors errors;
       types::HenrysLaw henrys_law;
 
-      std::vector<std::string> required_keys = { validation::type,
-                                                 validation::gas_phase,
-                                                 validation::gas_phase_species,
-                                                 validation::aerosol_phase,
-                                                 validation::aerosol_phase_species};
+      std::vector<std::string> required_keys = {
+        validation::type, validation::gas_phase, validation::gas_phase_species, validation::aerosol_phase, validation::aerosol_phase_species
+      };
       std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
