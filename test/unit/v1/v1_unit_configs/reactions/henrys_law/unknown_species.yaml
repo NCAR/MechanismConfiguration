@@ -8,7 +8,7 @@ phases:
   - B
   - H2O_aq
 reactions:
-- 
+- aqueous phase: aqueous
   aqueous-phase species: B
   gas phase: gas
   gas-phase species: C

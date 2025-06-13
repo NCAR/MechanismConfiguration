@@ -16,7 +16,7 @@ reactions:
 - type: HL_PHASE_TRANSFER
   gas phase: gas
   gas-phase species: A
-  aerosol phase: aqueous
+  aqueous phase: aqueous
   aqueous-phase species: B
   name: my henry's law
   __comment: hi

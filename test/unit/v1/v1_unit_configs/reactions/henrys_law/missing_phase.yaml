@@ -1,7 +1,7 @@
 name: Missing phase
 phases: []
 reactions:
-- 
+- aqueous phase: aqueous
   aqueous-phase species: H2O2_aq
   gas phase: gas
   gas-phase species: H2O2
