@@ -18,7 +18,7 @@ namespace mechanism_configuration
       types::Surface surface;
 
       std::vector<std::string> required_keys = {
-        validation::gas_phase_products, validation::gas_phase_species, validation::type, validation::gas_phase, validation::aerosol_phase
+        validation::gas_phase_products, validation::gas_phase_species, validation::type, validation::gas_phase, validation::aqueous_phase
       };
       std::vector<std::string> optional_keys = { validation::name, validation::reaction_probability };
 
@@ -56,13 +56,13 @@ namespace mechanism_configuration
               { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
         }
 
-        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
+        std::string aerosol_phase = object[validation::aqueous_phase].as<std::string>();
         auto it =
             std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
         if (it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
+          std::string line = std::to_string(object[validation::aqueous_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aqueous_phase].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
         }
 

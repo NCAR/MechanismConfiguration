@@ -19,7 +19,7 @@
   "reactions": [
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "aqueous phase": "aerosol",
       "k_reverse": 0.32,
       "reactants": [
         {

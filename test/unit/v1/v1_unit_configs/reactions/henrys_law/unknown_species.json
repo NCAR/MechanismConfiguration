@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "B",
         "H2O_aq"
@@ -32,7 +32,7 @@
       "type": "HL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "C",
-      "aerosol phase": "aqueous aerosol",
+      "aqueous phase": "aqueous",
       "aqueous-phase species": "B"
     }
   ]

@@ -18,7 +18,7 @@
       "type": "HL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "H2O2",
-      "aerosol phase": "aqueous aerosol",
+      "aqueous phase": "aqueous",
       "aqueous-phase species": "H2O2_aq",
       "name": "my henry's law"
     }
