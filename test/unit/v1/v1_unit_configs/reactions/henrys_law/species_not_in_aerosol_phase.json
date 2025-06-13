@@ -33,7 +33,7 @@
       "gas phase": "gas",
       "gas-phase species": "A",
       "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
+      "aqueous-phase species": "B",
       "name": "my henry's law",
       "__comment": "hi"
     }

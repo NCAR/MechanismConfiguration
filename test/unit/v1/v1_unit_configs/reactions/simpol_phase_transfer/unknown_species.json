@@ -28,8 +28,8 @@
       "type": "SIMPOL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "C",
-      "aerosol phase": "aerosol",
-      "aerosol-phase species": "B",
+      "aqueous phase": "aqueous",
+      "aqueous-phase species": "B",
       "B": [
         -1.97E+03,
         2.91E+00,
