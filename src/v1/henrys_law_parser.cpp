@@ -70,7 +70,7 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase,
+            errors.push_back({ ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase,
                                line + ":" + column + ": Requested aqueous species not included in aqueous phase" });
           }
         }

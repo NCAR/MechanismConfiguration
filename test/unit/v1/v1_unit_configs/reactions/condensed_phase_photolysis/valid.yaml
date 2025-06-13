@@ -1,6 +1,6 @@
 name: Valid surface
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - B
@@ -8,7 +8,7 @@ phases:
   - H2O_aq
 reactions:
 - __comment: hi
-  aerosol phase: aqueous aerosol
+  
   name: my condensed phase photolysis
   products:
   - coefficient: 1
@@ -18,7 +18,7 @@ reactions:
     species name: B
   scaling factor: 12.3
   type: CONDENSED_PHASE_PHOTOLYSIS
-- aerosol phase: aqueous aerosol
+- 
   products:
   - coefficient: 0.2
     species name: C

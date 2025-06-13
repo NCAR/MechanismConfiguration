@@ -3,20 +3,20 @@ phases:
 - name: gas
   species:
   - A
-- name: aqueous aerosol
+- name: aqueous
   species:
   - B
   - H2O_aq
 reactions:
 - __comment: hi
-  aerosol phase: aqueous aerosol
-  aerosol-phase species: B
+  
+  aqueous-phase species: B
   gas phase: gas
   gas-phase species: A
   name: my henry's law
   type: HL_PHASE_TRANSFER
-- aerosol phase: aqueous aerosol
-  aerosol-phase species: B
+- 
+  aqueous-phase species: B
   gas phase: gas
   gas-phase species: A
   type: HL_PHASE_TRANSFER

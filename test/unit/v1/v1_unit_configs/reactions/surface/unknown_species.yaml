@@ -9,7 +9,7 @@ phases:
   - A
   - B
 reactions:
-- aerosol phase: surface reacting phase
+- aqueous phase: surface reacting phase
   gas phase: gas
   gas-phase products:
   - coefficient: 1

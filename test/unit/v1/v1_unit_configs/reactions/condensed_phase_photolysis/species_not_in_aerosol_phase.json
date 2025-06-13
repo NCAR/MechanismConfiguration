@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase photolysis using species not in its requested aerosol phase",
+  "name": "Condensed phase photolysis using species not in its requested aqueous phase",
   "species": [
     {
       "name": "A"

@@ -1,5 +1,5 @@
 version: 1.0.0
-name: Condensed phase arrhenius using species not in its requested aerosol phase
+name: Condensed phase arrhenius using species not in its requested aqueous phase
 species:
 - name: A
 - name: B
@@ -9,14 +9,14 @@ phases:
   species:
   - A
   - B
-- name: aqueous aerosol
+- name: aqueous
   species:
   - H2O_aq
 reactions:
 - type: HL_PHASE_TRANSFER
   gas phase: gas
   gas-phase species: A
-  aerosol phase: aqueous aerosol
-  aerosol-phase species: B
+  
+  aqueous-phase species: B
   name: my henry's law
   __comment: hi

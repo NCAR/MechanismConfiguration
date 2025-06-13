@@ -3,7 +3,7 @@ phases:
 - name: gas
   species:
   - A
-- name: aerosol
+- name: aqueous
   species:
   - A
 reactions:
@@ -12,8 +12,8 @@ reactions:
   - 2.91
   - 0.00196
   - -0.496
-  aerosol phase: aerosol
-  aerosol-phase species: B
+  aqueous phase: aqueous
+  aqueous-phase species: B
   gas phase: gas
   gas-phase species: A
   name: my simpol

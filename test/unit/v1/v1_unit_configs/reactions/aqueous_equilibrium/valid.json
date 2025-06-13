@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "B",

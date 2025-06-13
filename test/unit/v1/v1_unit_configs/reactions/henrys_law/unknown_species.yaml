@@ -3,13 +3,13 @@ phases:
 - name: gas
   species:
   - A
-- name: aqueous aerosol
+- name: aqueous
   species:
   - B
   - H2O_aq
 reactions:
-- aerosol phase: aqueous aerosol
-  aerosol-phase species: B
+- 
+  aqueous-phase species: B
   gas phase: gas
   gas-phase species: C
   type: HL_PHASE_TRANSFER

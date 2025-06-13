@@ -1,12 +1,12 @@
-name: Condensed phase photolysis using species not in its requested aerosol phase
+name: Condensed phase photolysis using species not in its requested aqueous phase
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - C
   - H2O_aq
 reactions:
-- aerosol phase: aqueous aerosol
+- 
   products:
   - coefficient: 1.2
     species name: B

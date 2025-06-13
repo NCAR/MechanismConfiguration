@@ -1,8 +1,8 @@
 name: Missing phase
 phases: []
 reactions:
-- aerosol phase: aqueous aerosol
-  aerosol-phase species: H2O2_aq
+- 
+  aqueous-phase species: H2O2_aq
   gas phase: gas
   gas-phase species: H2O2
   name: my henry's law

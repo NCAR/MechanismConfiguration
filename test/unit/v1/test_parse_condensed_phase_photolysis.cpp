@@ -50,7 +50,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -112,17 +112,17 @@ TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/species_not_in_aerosol_phase") + extension;
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_photolysis/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

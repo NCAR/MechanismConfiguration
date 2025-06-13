@@ -21,8 +21,8 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase_species.species_name, "A");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].aqueous_phase, "aqueous");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.species_name, "B");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].aerosol_phase_species.coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aqueous_phase_species.species_name, "B");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].aqueous_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "hi");
 
@@ -31,8 +31,8 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase_species.species_name, "A");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].aqueous_phase, "aqueous");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.species_name, "B");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].aerosol_phase_species.coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aqueous_phase_species.species_name, "B");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].aqueous_phase_species.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].unknown_properties.size(), 0);
   }
 }
@@ -75,17 +75,17 @@ TEST(ParserBase, HenrysLawDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
+TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("v1_unit_configs/reactions/henrys_law/species_not_in_aerosol_phase") + extension;
+    std::string file = std::string("v1_unit_configs/reactions/henrys_law/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqeuousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
