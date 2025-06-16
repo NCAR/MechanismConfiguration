@@ -17,8 +17,9 @@ namespace mechanism_configuration
       Errors errors;
       types::AqueousEquilibrium aqueous_equilibrium;
 
-      std::vector<std::string> required_keys = { validation::type,          validation::reactants,           validation::products,
-                                                 validation::aqueous_phase, validation::k_reverse };
+      std::vector<std::string> required_keys = {
+        validation::type, validation::reactants, validation::products, validation::aqueous_phase, validation::k_reverse
+      };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);

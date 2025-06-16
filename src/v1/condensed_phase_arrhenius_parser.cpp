@@ -17,8 +17,7 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      std::vector<std::string> required_keys = {
-        validation::products, validation::reactants, validation::type, validation::aqueous_phase};
+      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::aqueous_phase };
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
