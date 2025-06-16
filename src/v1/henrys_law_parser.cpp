@@ -20,8 +20,8 @@ namespace mechanism_configuration
       std::vector<std::string> required_keys = { validation::type,
                                                  validation::gas_phase,
                                                  validation::gas_phase_species,
-                                                 validation::aerosol_phase,
-                                                 validation::aerosol_phase_species};
+                                                 validation::aqueous_phase,
+                                                 validation::aqueous_phase_species};
       std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -30,8 +30,8 @@ namespace mechanism_configuration
       {
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
         std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
-        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
-        std::string aerosol_phase_species = object[validation::aerosol_phase_species].as<std::string>();
+        std::string aqueous_phase = object[validation::aqueous_phase].as<std::string>();
+        std::string aqueous_phase_species = object[validation::aqueous_phase_species].as<std::string>();
 
         if (object[validation::name])
         {
@@ -40,10 +40,10 @@ namespace mechanism_configuration
 
         std::vector<std::string> requested_species;
         requested_species.push_back(gas_phase_species);
-        requested_species.push_back(aerosol_phase_species);
+        requested_species.push_back(aqueous_phase_species);
 
-        std::vector<std::string> requested_aerosol_species;
-        requested_aerosol_species.push_back(aerosol_phase_species);
+        std::vector<std::string> requested_aqueous_species;
+        requested_aqueous_species.push_back(aqueous_phase_species);
 
         if (RequiresUnknownSpecies(requested_species, existing_species))
         {
@@ -61,34 +61,34 @@ namespace mechanism_configuration
         }
 
         auto phase_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const types::Phase& phase) { return phase.name == aerosol_phase; });
+            existing_phases.begin(), existing_phases.end(), [&aqueous_phase](const types::Phase& phase) { return phase.name == aqueous_phase; });
 
         if (phase_it != existing_phases.end())
         {
-          std::vector<std::string> aerosol_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
-          if (RequiresUnknownSpecies(requested_aerosol_species, aerosol_phase_species))
+          std::vector<std::string> aqueous_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
+          if (RequiresUnknownSpecies(requested_aqueous_species, aqueous_phase_species))
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase,
-                               line + ":" + column + ": Requested aerosol species not included in aerosol phase" });
+            errors.push_back({ ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase,
+                               line + ":" + column + ": Requested aqueous species not included in aqueous phase" });
           }
         }
         else
         {
-          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
+          std::string line = std::to_string(object[validation::aqueous_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aqueous_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aqueous_phase });
         }
 
         henrys_law.gas_phase = gas_phase;
         types::ReactionComponent gas_component;
         gas_component.species_name = gas_phase_species;
         henrys_law.gas_phase_species = gas_component;
-        henrys_law.aerosol_phase = aerosol_phase;
-        types::ReactionComponent aerosol_component;
-        aerosol_component.species_name = aerosol_phase_species;
-        henrys_law.aerosol_phase_species = aerosol_component;
+        henrys_law.aqueous_phase = aqueous_phase;
+        types::ReactionComponent aqueous_component;
+        aqueous_component.species_name = aqueous_phase_species;
+        henrys_law.aqueous_phase_species = aqueous_component;
         henrys_law.unknown_properties = GetComments(object);
         reactions.henrys_law.push_back(henrys_law);
       }

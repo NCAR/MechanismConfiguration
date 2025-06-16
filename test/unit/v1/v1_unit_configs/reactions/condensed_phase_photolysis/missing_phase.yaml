@@ -1,7 +1,7 @@
 name: Missing phase
 phases: []
 reactions:
-- aerosol phase: aqueous aerosol
+- aqueous phase: aqueous
   products:
   - coefficient: 0.2
     species name: C

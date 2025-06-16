@@ -1,11 +1,11 @@
 name: Unknown species
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - B
 reactions:
-- aerosol phase: aqueous aerosol
+- aqueous phase: aqueous
   products:
   - coefficient: 0.2
     species name: C

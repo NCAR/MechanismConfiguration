@@ -14,7 +14,7 @@
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "B",
@@ -25,7 +25,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

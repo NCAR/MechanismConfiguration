@@ -94,10 +94,8 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -188,8 +186,8 @@ namespace mechanism_configuration
         std::string name;
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -220,10 +218,8 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -261,10 +257,8 @@ namespace mechanism_configuration
         std::string name;
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
         /// @brief A list of reactants
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products
@@ -285,8 +279,8 @@ namespace mechanism_configuration
         double scaling_factor{ 1.0 };
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -299,12 +293,10 @@ namespace mechanism_configuration
         std::string gas_phase;
         /// @brief An identifier indicating which gas phase species this reaction involves
         ReactionComponent gas_phase_species;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief An identifier indicating the species label of aqueous phase water
-        std::string aerosol_phase_water;
-        /// @brief An identifier indicating which aerosol phase species this reaction involves
-        ReactionComponent aerosol_phase_species;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
+        /// @brief An identifier indicating which aqueous phase species this reaction involves
+        ReactionComponent aqueous_phase_species;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -315,10 +307,10 @@ namespace mechanism_configuration
         std::string gas_phase;
         /// @brief The species in the gas phase participating in this reaction
         ReactionComponent gas_phase_species;
-        /// @brief An identifier indicating which aerosol phase this reaction takes place in
-        std::string aerosol_phase;
-        /// @brief The species in the aerosol phase participating in this reaction
-        ReactionComponent aerosol_phase_species;
+        /// @brief An identifier for the aqueous phase where this reaction occurs
+        std::string aqueous_phase;
+        /// @brief The species in the aqueous phase participating in this reaction
+        ReactionComponent aqueous_phase_species;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
         /// @brief The 4 SIMPOL parameters

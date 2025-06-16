@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Valid surface",
+  "name": "Missing gas phase",
   "species": [
     {
       "name": "A"
@@ -15,6 +15,12 @@
       "species": [
         "A"
       ]
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        "A"
+      ]
     }
   ],
   "reactions": [
@@ -22,8 +28,8 @@
       "type": "SIMPOL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
-      "aerosol phase": "aerosol",
-      "aerosol-phase species": "B",
+      "aqueous phase": "aqueous",
+      "aqueous-phase species": "B",
       "B": [
         -1.97E+03,
         2.91E+00,

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase photolysis using species not in its requested aerosol phase",
+  "name": "Condensed phase photolysis using species not in its requested aqueous phase",
   "species": [
     {
       "name": "A"
@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "C",
@@ -28,7 +28,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aerosol phase": "aqueous aerosol",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A",

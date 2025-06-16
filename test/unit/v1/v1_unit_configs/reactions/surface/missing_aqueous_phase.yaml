@@ -1,4 +1,4 @@
-name: Missing aerosol phase
+name: Missing aqueous phase
 phases:
 - name: gas
   species:
@@ -6,7 +6,7 @@ phases:
   - B
   - C
 reactions:
-- aerosol phase: surface reacting phase
+- aqueous phase: surface reacting phase
   gas phase: gas
   gas-phase products:
   - __optional thing: hello

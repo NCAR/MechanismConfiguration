@@ -7,7 +7,7 @@ phases:
   - B
 - __other1: key1
   __other2: key2
-  name: aerosols
+  name: aqueous
   species:
   - C
 reactions: []

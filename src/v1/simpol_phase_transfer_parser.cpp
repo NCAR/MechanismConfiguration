@@ -18,7 +18,7 @@ namespace mechanism_configuration
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
       std::vector<std::string> required_keys = {
-        validation::type, validation::gas_phase, validation::gas_phase_species, validation::aerosol_phase, validation::aerosol_phase_species,
+        validation::type, validation::gas_phase, validation::gas_phase_species, validation::aqueous_phase, validation::aqueous_phase_species,
         validation::B
       };
       std::vector<std::string> optional_keys = { validation::name };
@@ -28,14 +28,14 @@ namespace mechanism_configuration
       if (validate.empty())
       {
         std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
-        std::string aerosol_phase_species = object[validation::aerosol_phase_species].as<std::string>();
+        std::string aqueous_phase_species = object[validation::aqueous_phase_species].as<std::string>();
 
         if (object[validation::name])
         {
           simpol_phase_transfer.name = object[validation::name].as<std::string>();
         }
 
-        std::vector<std::string> requested_species{ gas_phase_species, aerosol_phase_species };
+        std::vector<std::string> requested_species{ gas_phase_species, aqueous_phase_species };
         if (RequiresUnknownSpecies(requested_species, existing_species))
         {
           std::string line = std::to_string(object.Mark().line + 1);
@@ -44,28 +44,28 @@ namespace mechanism_configuration
               { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species in object" });
         }
 
-        std::string aerosol_phase = object[validation::aerosol_phase].as<std::string>();
-        auto aerosol_it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&aerosol_phase](const auto& phase) { return phase.name == aerosol_phase; });
-        if (aerosol_it == existing_phases.end())
+        std::string aqueous_phase = object[validation::aqueous_phase].as<std::string>();
+        auto aqueous_it =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&aqueous_phase](const auto& phase) { return phase.name == aqueous_phase; });
+        if (aqueous_it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::aerosol_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::aerosol_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aerosol_phase });
+          std::string line = std::to_string(object[validation::aqueous_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::aqueous_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aqueous_phase });
         }
         else
         {
-          auto phase = *aerosol_it;
+          auto phase = *aqueous_it;
           auto spec_it = std::find_if(
               phase.species.begin(),
               phase.species.end(),
-              [&aerosol_phase_species](const std::string& species) { return species == aerosol_phase_species; });
+              [&aqueous_phase_species](const std::string& species) { return species == aqueous_phase_species; });
           if (spec_it == phase.species.end())
           {
-            std::string line = std::to_string(object[validation::aerosol_phase_species].Mark().line + 1);
-            std::string column = std::to_string(object[validation::aerosol_phase_species].Mark().column + 1);
+            std::string line = std::to_string(object[validation::aqueous_phase_species].Mark().line + 1);
+            std::string column = std::to_string(object[validation::aqueous_phase_species].Mark().column + 1);
             errors.push_back(
-                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aerosol_phase_species });
+                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aqueous_phase_species });
           }
         }
 
@@ -103,10 +103,10 @@ namespace mechanism_configuration
         types::ReactionComponent gas_component;
         gas_component.species_name = gas_phase_species;
         simpol_phase_transfer.gas_phase_species = gas_component;
-        simpol_phase_transfer.aerosol_phase = aerosol_phase;
-        types::ReactionComponent aerosol_component;
-        aerosol_component.species_name = aerosol_phase_species;
-        simpol_phase_transfer.aerosol_phase_species = aerosol_component;
+        simpol_phase_transfer.aqueous_phase = aqueous_phase;
+        types::ReactionComponent aqueous_component;
+        aqueous_component.species_name = aqueous_phase_species;
+        simpol_phase_transfer.aqueous_phase_species = aqueous_component;
         simpol_phase_transfer.unknown_properties = GetComments(object);
         reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
       }

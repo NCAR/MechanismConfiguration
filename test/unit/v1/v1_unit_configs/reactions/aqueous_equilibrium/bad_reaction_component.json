@@ -17,7 +17,7 @@
   ],
   "phases": [
     {
-      "name": "aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "B",
@@ -29,7 +29,7 @@
   "reactions": [
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "aerosol phase": "aerosol",
+      "aqueous phase": "aqueous",
       "k_reverse": 0.32,
       "reactants": [
         {

@@ -7,11 +7,11 @@ phases:
   - C
 reactions:
 - __comment: Tuxedo cats are the best
-  aerosol phase: cloud
+  aqueous phase: cloud
   name: rxn cloud
   scaling factor: 12.3
   type: WET_DEPOSITION
-- aerosol phase: cloud
+- aqueous phase: cloud
   name: rxn cloud2
   type: WET_DEPOSITION
 species:

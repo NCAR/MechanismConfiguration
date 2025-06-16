@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "B",
         "H2O_aq"
@@ -32,8 +32,8 @@
       "type": "HL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
+      "aqueous phase": "aqueous",
+      "aqueous-phase species": "B",
       "name": "my henry's law",
       "__comment": "hi"
     },
@@ -41,8 +41,8 @@
       "type": "HL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B"
+      "aqueous phase": "aqueous",
+      "aqueous-phase species": "B"
     }
   ]
 }

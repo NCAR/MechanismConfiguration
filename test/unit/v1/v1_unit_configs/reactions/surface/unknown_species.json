@@ -41,7 +41,7 @@
           "coefficient": 1
         }
       ],
-      "aerosol phase": "surface reacting phase"
+      "aqueous phase": "surface reacting phase"
     }
   ]
 }
