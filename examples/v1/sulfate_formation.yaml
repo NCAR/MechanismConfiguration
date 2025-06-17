@@ -41,6 +41,12 @@
       "molecular weight [kg mol-1]": 0.09606,
       "density [kg m-3]": 1769.0,
       "__absolute tolerance": 1.0e-20
+    },
+    {
+      "name": "organic carbon",
+      "molecular weight [kg mol-1]": 0.150,
+      "density [kg m-3]": 1200,
+      "__absolute tolerance": 1.0e-20
     }
   ],
   "phases": [
@@ -59,47 +65,39 @@
         "SO4",
         "H2O2",
         "H2SO4",
-        "H2O"
+        "H2O",
+        "O3",
+        "H2O2"
       ]
+    },
+    {
+      "name": "organic",
+      "species": ["organic carbon"]
     }
   ],
   "models": [
     {
-      "label": "gas",
+      "name": "gas",
       "type": "GAS_PHASE",
       "phases": ["gas"]
     },
     {
-      "label": "clouds",
+      "name": "aqueous",
       "type": "TWO_MOMENT_MODAL",
       "modes": [
         {
-          "label": "aitken",
+          "name": "aitken",
           "distribution": "log normal",
           "geometric mean diameter [m]": 2.6e-8,
           "geometric standard deviation": 1.6,
-          "phases": [
-            {
-              "phase:": "aqueous",
-              "species": ["SO4", "H2O2", "H2SO4", "H2O"]
-            }
-          ]
+          "phases": ["aqueous"]
         },
         {
-          "label": "accumulation",
+          "name": "accumulation",
           "distribution": "log normal",
           "geometric mean diameter [m]": 1.1e-7,
           "geometric standard deviation": 1.8,
-          "phases": [
-            {
-              "phase:": "aqueous",
-              "species": ["SO4", "H2O2", "H2O"]
-            },
-            {
-              "phase:": "solid",
-              "species": ["black carbon"]
-            }
-          ]
+          "phases": ["aqueous", "organic"]
         }
       ]
     }
@@ -107,28 +105,29 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": ["H2SO4"],
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": ["H2SO4"],
-      "name": "aqueous phase production of H2SO4 (kg/m2/s)"
-    },
-    {
-      "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": ["SO2"],
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": ["SO4", "H2O", "H2O2"],
+      "gas": {
+        "phase": "gas",
+        "species": ["SO2", "H2O2"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["SO4", "H2O2"],
+        "solvent": "H2O"
+      },
       "__comment": "SO4 aqueous phase production due to H2O2 (kg/m2/s)"
     },
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": ["SO2"],
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": ["SO4", "H2O", "O3"],
+      "gas": {
+        "phase": "gas",
+        "species": ["SO2", "O3"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["SO4", "O3"],
+        "solvent": "H2O"
+      },
       "__comment": "SO4 aqueous phase production due to O3 (kg/m2/s)"
     }
   ]
-
 }

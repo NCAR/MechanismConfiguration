@@ -142,10 +142,13 @@ namespace mechanism_configuration
 
       // Henry's Law Phase Transfer
       static constexpr const char* HenrysLaw_key = "HL_PHASE_TRANSFER";
+      static constexpr const char* gas = "gas";
+      static constexpr const char* particle = "particle";
+      static constexpr const char* solutes = "solutes";
+      static constexpr const char* solvent = "solvent";
       // also
-      // gas phase
-      // aqueous phase
-      // aqueous-phase species
+      // species
+      // phase
 
       // User Defined
       static constexpr const char* UserDefined_key = "USER_DEFINED";
