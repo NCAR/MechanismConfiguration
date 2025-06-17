@@ -9,7 +9,7 @@
       "name": "B"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
@@ -23,7 +23,7 @@
     {
       "name": "aqueous",
       "species": [
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],

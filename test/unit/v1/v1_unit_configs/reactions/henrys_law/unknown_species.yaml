@@ -6,7 +6,7 @@ phases:
 - name: aqueous
   species:
   - B
-  - H2O_aq
+  - H2O
 reactions:
 - aqueous phase: aqueous
   aqueous-phase species: B
@@ -16,5 +16,5 @@ reactions:
 species:
 - name: A
 - name: B
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

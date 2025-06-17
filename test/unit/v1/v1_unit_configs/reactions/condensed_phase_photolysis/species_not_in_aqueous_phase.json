@@ -12,7 +12,7 @@
       "name": "C"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
@@ -21,7 +21,7 @@
       "species": [
         "A",
         "C",
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],

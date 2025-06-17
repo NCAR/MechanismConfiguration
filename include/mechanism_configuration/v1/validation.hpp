@@ -147,8 +147,8 @@ namespace mechanism_configuration
       static constexpr const char* solutes = "solutes";
       static constexpr const char* solvent = "solvent";
       // also
-      // species
       // phase
+      // species
 
       // User Defined
       static constexpr const char* UserDefined_key = "USER_DEFINED";

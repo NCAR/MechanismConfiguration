@@ -47,7 +47,7 @@
       "__absolute tolerance": 1.0e-10
     },
     {
-      "name": "H2O_aq",
+      "name": "H2O",
       "density [kg m-3]": 1000.0,
       "molecular weight [kg mol-1]": 0.01801
     },
@@ -78,7 +78,7 @@
       "name": "aqueous",
       "species": [
         "H2O2_aq",
-        "H2O_aq",
+        "H2O",
         "ethanol_aq",
         "A",
         "B",
@@ -161,7 +161,7 @@
           "coefficient": 1
         },
         {
-          "species name": "H2O_aq",
+          "species name": "H2O",
           "coefficient": 1
         }
       ],
@@ -187,7 +187,7 @@
           "coefficient": 1
         },
         {
-          "species name": "H2O_aq",
+          "species name": "H2O",
           "coefficient": 1
         }
       ],

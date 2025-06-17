@@ -3,7 +3,7 @@ name: Condensed phase arrhenius using species not in its requested aqueous phase
 species:
 - name: A
 - name: B
-- name: H2O_aq
+- name: H2O
 phases:
 - name: gas
   species:
@@ -11,7 +11,7 @@ phases:
   - B
 - name: aqueous
   species:
-  - H2O_aq
+  - H2O
 reactions:
 - type: HL_PHASE_TRANSFER
   gas phase: gas
