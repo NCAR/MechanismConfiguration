@@ -106,7 +106,7 @@
     {
       "type": "HL_PHASE_TRANSFER",
       "gas": {
-        "phase": "gas",
+        "name": "gas",
         "species": ["SO2", "H2O2"]
       },
       "particle": {
@@ -119,7 +119,7 @@
     {
       "type": "HL_PHASE_TRANSFER",
       "gas": {
-        "phase": "gas",
+        "name": "gas",
         "species": ["SO2", "O3"]
       },
       "particle": {

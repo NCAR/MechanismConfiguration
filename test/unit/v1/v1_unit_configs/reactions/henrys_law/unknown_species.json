@@ -30,10 +30,15 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": "C",
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": "B"
+      "gas": {
+        "name": "gas",
+        "species": ["C"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B"],
+        "solvent": "H2O"
+      }
     }
   ]
 }

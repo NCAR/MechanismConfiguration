@@ -50,6 +50,18 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      struct Particle
+      {
+        /// @brief Describes the physical state of the particle
+        std::string phase;
+        /// @brief Lists the chemical species dissolved in the solvent
+        std::vector<ReactionComponent> solutes;
+        /// @brief Specifies the liquid medium in which solutes are dissolved
+        ReactionComponent solvent;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
       struct Arrhenius
       {
         /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
@@ -289,14 +301,10 @@ namespace mechanism_configuration
       {
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief An identifier indicating which gas phase species this reaction involves
-        ReactionComponent gas_phase_species;
-        /// @brief An identifier for the aqueous phase where this reaction occurs
-        std::string aqueous_phase;
-        /// @brief An identifier indicating which aqueous phase species this reaction involves
-        ReactionComponent aqueous_phase_species;
+        /// @brief Represents the composition of a gas mixture
+        Phase gas;
+        /// @brief Represents a particle within a solution, including its phase and chemical composition
+        Particle particle;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

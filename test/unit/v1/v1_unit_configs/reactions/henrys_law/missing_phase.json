@@ -16,10 +16,15 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": "H2O2",
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": "H2O2_aq",
+      "gas": {
+        "name": "gas",
+        "species": ["A"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B"],
+        "solvent": "H2O"
+      },
       "name": "my henry's law"
     }
   ]
