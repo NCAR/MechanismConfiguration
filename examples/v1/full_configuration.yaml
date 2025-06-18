@@ -48,7 +48,7 @@ phases:
   - B
   - C
   - ethanol
-  - H2O3
+  - H2O2
 - name: aqueous
   species:
   - H2O2_aq
