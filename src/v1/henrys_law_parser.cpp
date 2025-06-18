@@ -135,6 +135,7 @@ namespace mechanism_configuration
             errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, message });
           }
 
+          // Check whether the species in solvent belong to the corresponding phase
           bool found_solvent = std::find(species_registered_in_phase.begin(), 
                                 species_registered_in_phase.end(), 
                                 particle.solvent.species_name) != species_registered_in_phase.end();
