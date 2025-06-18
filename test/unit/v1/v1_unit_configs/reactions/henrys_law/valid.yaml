@@ -1,32 +1,3 @@
-name: Valid surface
-phases:
-- name: gas
-  species:
-  - A
-- name: aqueous
-  species:
-  - B
-  - H2O
-reactions:
-- __comment: hi
-  aqueous phase: aqueous
-  aqueous-phase species: B
-  gas phase: gas
-  gas-phase species: A
-  name: my henry's law
-  type: HL_PHASE_TRANSFER
-- aqueous phase: aqueous
-  aqueous-phase species: B
-  gas phase: gas
-  gas-phase species: A
-  type: HL_PHASE_TRANSFER
-species:
-- name: A
-- name: B
-- name: H2O
-version: 1.0.0
-
----
 version: 1.0.0
 name: Valid surface
 species:
