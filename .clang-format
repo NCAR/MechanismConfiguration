@@ -24,3 +24,17 @@ SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: 'true'
 SpaceInEmptyBlock: true
 Standard: 'Latest'
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Current project headers
+  - Regex:           '<(mechanism_configuration)\/'
+    Priority:        2
+  # External libraries headers
+  - Regex:           '<[[:alnum:].(-|_)*]+\/'
+    Priority:        3
+  # System headers
+  - Regex:           '<[[:alnum:].(-|_)*]+>'
+    Priority:        4
+  # Main, local, private headers
+  - Regex:           '".*'
+    Priority:        1

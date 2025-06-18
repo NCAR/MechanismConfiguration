@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include <mechanism_configuration/parse_status.hpp>
+
 #include <yaml-cpp/yaml.h>
 
-#include <mechanism_configuration/parse_status.hpp>
 #include <string>
 #include <utility>
 #include <vector>
