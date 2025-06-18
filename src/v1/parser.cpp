@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <yaml-cpp/yaml.h>
-
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/parser_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+
+#include <yaml-cpp/yaml.h>
 
 namespace mechanism_configuration
 {
