@@ -1,4 +1,5 @@
-// Copyright (C) 2023-2025 University Corporation for Atmospheric Research, University of Illinois at Urbana-Champaign
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
@@ -362,14 +363,6 @@ namespace mechanism_configuration
         std::vector<v1::types::UserDefined> user_defined;
       };
 
-      struct Mechanism : public ::mechanism_configuration::Mechanism
-      {
-        /// @brief An identifier, optional
-        std::string name;
-        std::vector<v1::types::Species> species;
-        std::vector<v1::types::Phase> phases;
-        Reactions reactions;
-      };
     }  // namespace types
   }  // namespace v1
 }  // namespace mechanism_configuration

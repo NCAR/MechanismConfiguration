@@ -1,5 +1,5 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
@@ -41,6 +41,8 @@ namespace mechanism_configuration
 
     std::pair<Errors, types::Reactions>
     ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+
+    std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases);
 
     template<typename T>
     bool ContainsUniqueObjectsByName(const std::vector<T>& collection)

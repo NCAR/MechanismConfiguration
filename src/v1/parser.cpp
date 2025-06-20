@@ -1,5 +1,5 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/v1/parser.hpp>
@@ -26,7 +26,7 @@ namespace mechanism_configuration
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       std::vector<std::string> mechanism_required_keys = { validation::version, validation::species, validation::phases, validation::reactions };
-      std::vector<std::string> mechanism_optional_keys = { validation::name };
+      std::vector<std::string> mechanism_optional_keys = { validation::name, validations::models };
 
       auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
@@ -51,16 +51,23 @@ namespace mechanism_configuration
 
       auto species_parsing = ParseSpecies(object[validation::species]);
       result.errors.insert(result.errors.end(), species_parsing.first.begin(), species_parsing.first.end());
+      mechanism->species = species_parsing.second;
 
       auto phases_parsing = ParsePhases(object[validation::phases], species_parsing.second);
       result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
+      mechanism->phases = phases_parsing.second;
 
       auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
-
-      mechanism->species = species_parsing.second;
-      mechanism->phases = phases_parsing.second;
       mechanism->reactions = reactions_parsing.second;
+
+      YAML::Node models_node = object[validation::models];
+      if (models_node && !models_node.IsNull())
+      {
+        auto models_parsing = ParseModels(object[validation::models], phases_parsing.second);
+        result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
+        mechanism->models = models_parsing.second;
+      }
 
       // prepend the file name to the error messages
       for (auto& error : result.errors)

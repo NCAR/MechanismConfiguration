@@ -1,4 +1,5 @@
-// Copyright (C) 2023-2025 University Corporation for Atmospheric Research, University of Illinois at Urbana-Champaign
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
@@ -10,10 +11,10 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    namespace models
+    namespace types
     {
 
-      struct GaseModel
+      struct GasModel
       {
         std::string name;
         std::string type;
@@ -42,6 +43,11 @@ namespace mechanism_configuration
         ModalModel modal;
       };
 
+      /// @brief Represents a collection of different model types
+      struct Model
+      {
+        GasParticleInteraction gas_particle_interaction;
+      }
     }
   }
 }
