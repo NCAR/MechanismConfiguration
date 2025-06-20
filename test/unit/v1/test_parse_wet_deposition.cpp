@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include <mechanism_configuration/v1/parser.hpp>
+
+#include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
 
