@@ -5,7 +5,7 @@ phases:
   - A
   - B
   - C
-  - H2O_aq
+  - H2O
 reactions:
 - A: 32.1
   B: -2.3
@@ -51,5 +51,5 @@ species:
 - name: A
 - name: B
 - name: C
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

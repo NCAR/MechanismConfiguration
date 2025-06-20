@@ -1,22 +1,27 @@
 version: 1.0.0
 name: Condensed phase arrhenius using species not in its requested aqueous phase
 species:
-- name: A
-- name: B
-- name: H2O_aq
+  - name: A
+  - name: B
+  - name: H2O
 phases:
-- name: gas
-  species:
-  - A
-  - B
-- name: aqueous
-  species:
-  - H2O_aq
+  - name: gas
+    species:
+      - A
+      - B
+  - name: aqueous
+    species:
+      - H2O
 reactions:
-- type: HL_PHASE_TRANSFER
-  gas phase: gas
-  gas-phase species: A
-  aqueous phase: aqueous
-  aqueous-phase species: B
-  name: my henry's law
-  __comment: hi
+  - type: HL_PHASE_TRANSFER
+    gas:
+      name: gas
+      species:
+        - A
+    particle:
+      phase: aqueous
+      solutes:
+        - B
+      solvent: H2O
+    name: my henry's law
+    __comment: hi

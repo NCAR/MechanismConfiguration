@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Unknown species",
+  "name": "Gas species in reactions are not found in gas phase",
   "species": [
     {
       "name": "A"
@@ -32,7 +32,7 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["C"]
+        "species": ["H2O"]
       },
       "particle": {
         "phase": "aqueous",

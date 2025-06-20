@@ -30,7 +30,7 @@ species:
   molecular weight [kg mol-1]: 0.0340147
   density [kg m-3]: 1000
   __absolute tolerance: 1.0e-10
-- name: H2O_aq
+- name: H2O
   density [kg m-3]: 1000
   molecular weight [kg mol-1]: 0.01801
 - name: aerosol stuff
@@ -48,10 +48,11 @@ phases:
   - B
   - C
   - ethanol
+  - H2O2
 - name: aqueous
   species:
   - H2O2_aq
-  - H2O_aq
+  - H2O
   - ethanol_aq
   - A
   - B
@@ -66,10 +67,15 @@ phases:
   - C
 reactions:
 - type: HL_PHASE_TRANSFER
-  gas phase: gas
-  gas-phase species: H2O2
-  aqueous phase: aqueous
-  aqueous-phase species: H2O2_aq
+  gas:
+    name: gas
+    species:
+      - H2O2
+  particle:
+    phase: aqueous
+    solutes:
+      - H2O2_aq
+    solvent: H2O
   name: my henry's law
 - type: SIMPOL_PHASE_TRANSFER
   gas phase: gas
@@ -106,7 +112,7 @@ reactions:
   reactants:
   - species name: H2O2_aq
     coefficient: 1
-  - species name: H2O_aq
+  - species name: H2O
     coefficient: 1
   products:
   - species name: ethanol_aq
@@ -122,7 +128,7 @@ reactions:
   reactants:
   - species name: H2O2_aq
     coefficient: 1
-  - species name: H2O_aq
+  - species name: H2O
     coefficient: 1
   products:
   - species name: ethanol_aq

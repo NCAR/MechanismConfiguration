@@ -1,12 +1,15 @@
 {
   "version": "1.0.0",
-  "name": "Unknown species",
+  "name": "Solvent species in not registered in the corresponding phase",
   "species": [
     {
       "name": "A"
     },
     {
       "name": "B"
+    },
+    {
+      "name": "C"
     },
     {
       "name": "H2O"
@@ -16,14 +19,15 @@
     {
       "name": "gas",
       "species": [
-        "A"
+        "A",
+        "B"
       ]
     },
     {
       "name": "aqueous",
       "species": [
-        "B",
-        "H2O"
+        "H2O",
+        "C"
       ]
     }
   ],
@@ -32,13 +36,15 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["C"]
+        "species": ["A"]
       },
       "particle": {
         "phase": "aqueous",
-        "solutes": ["B"],
-        "solvent": "H2O"
-      }
+        "solutes": ["C"],
+        "solvent": "B"
+      },
+      "name": "my henry's law",
+      "__comment": "hi"
     }
   ]
 }
