@@ -1,10 +1,11 @@
 #pragma once
 
+#include <mechanism_configuration/parse_status.hpp>
+
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
 #include <iostream>
-#include <mechanism_configuration/parse_status.hpp>
 #include <string>
 #include <variant>
 

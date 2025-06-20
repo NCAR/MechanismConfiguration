@@ -2,6 +2,7 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
+
 #include <memory>
 #include <string>
 #include <utility>

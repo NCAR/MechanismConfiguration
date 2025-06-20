@@ -3,9 +3,10 @@
 
 #pragma once
 
+#include <mechanism_configuration/mechanism.hpp>
+
 #include <array>
 #include <map>
-#include <mechanism_configuration/mechanism.hpp>
 #include <optional>
 #include <string>
 #include <unordered_map>

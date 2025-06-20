@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include <yaml-cpp/yaml.h>
-
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parse_status.hpp>
 #include <mechanism_configuration/v0/types.hpp>
+
+#include <yaml-cpp/yaml.h>
+
 #include <vector>
 
 namespace mechanism_configuration
