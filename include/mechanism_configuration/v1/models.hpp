@@ -38,7 +38,7 @@ namespace mechanism_configuration
       struct GasParticleInteraction
       {
         std::string name;
-        GaseModel gas;
+        GasModel gas;
         ModalModel modal;
       };
 
