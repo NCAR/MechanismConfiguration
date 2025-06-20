@@ -4,9 +4,6 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 namespace mechanism_configuration
 {
   namespace v1
