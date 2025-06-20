@@ -59,8 +59,8 @@ namespace mechanism_configuration
         {
           henrys_law.name = object[validation::name].as<std::string>();
         }
-
-        // Check whether the species listed in the reactions are valid by
+  
+        // Check whether the species listed in the reactions are valid by 
         // comparing them to the registered species
         std::vector<std::string> combined_species;
         combined_species.insert(combined_species.end(), gas.species.begin(), gas.species.end());
