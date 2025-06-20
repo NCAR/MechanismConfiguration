@@ -17,27 +17,24 @@ namespace mechanism_configuration
       Errors errors;
       types::HenrysLaw henrys_law;
 
-      std::vector<std::string> required_top_level_keys = {
-        validation::type, validation::gas, validation::particle };
+      std::vector<std::string> required_top_level_keys = { validation::type, validation::gas, validation::particle };
       std::vector<std::string> optional_top_level_keys = { validation::name };
 
-      std::vector<std::string> required_second_level_keys_for_gas = {
-        validation::name, validation::species };
-      std::vector<std::string> required_second_level_keys_for_particle = {
-        validation::phase, validation::solutes, validation::solvent };
+      std::vector<std::string> required_second_level_keys_for_gas = { validation::name, validation::species };
+      std::vector<std::string> required_second_level_keys_for_particle = { validation::phase, validation::solutes, validation::solvent };
       std::vector<std::string> optional_second_level_keys = {};
 
       auto has_error_top_level_keys = ValidateSchema(object, required_top_level_keys, optional_top_level_keys);
-      auto has_error_second_level_keys_for_gas = ValidateSchema(object[validation::gas], required_second_level_keys_for_gas, optional_second_level_keys);
-      auto has_error_second_level_keys_for_particle = ValidateSchema(object[validation::particle], required_second_level_keys_for_particle, optional_second_level_keys);
-      
+      auto has_error_second_level_keys_for_gas =
+          ValidateSchema(object[validation::gas], required_second_level_keys_for_gas, optional_second_level_keys);
+      auto has_error_second_level_keys_for_particle =
+          ValidateSchema(object[validation::particle], required_second_level_keys_for_particle, optional_second_level_keys);
+
       errors.insert(errors.end(), has_error_top_level_keys.begin(), has_error_top_level_keys.end());
       errors.insert(errors.end(), has_error_second_level_keys_for_gas.begin(), has_error_second_level_keys_for_gas.end());
       errors.insert(errors.end(), has_error_second_level_keys_for_particle.begin(), has_error_second_level_keys_for_particle.end());
 
-      if (has_error_top_level_keys.empty() &&
-          has_error_second_level_keys_for_gas.empty() &&
-          has_error_second_level_keys_for_particle.empty())
+      if (has_error_top_level_keys.empty() && has_error_second_level_keys_for_gas.empty() && has_error_second_level_keys_for_particle.empty())
       {
         types::Phase gas;
         gas.name = object[validation::gas][validation::name].as<std::string>();
@@ -62,8 +59,8 @@ namespace mechanism_configuration
         {
           henrys_law.name = object[validation::name].as<std::string>();
         }
-  
-        // Check whether the species listed in the reactions are valid by 
+
+        // Check whether the species listed in the reactions are valid by
         // comparing them to the registered species
         std::vector<std::string> combined_species;
         combined_species.insert(combined_species.end(), gas.species.begin(), gas.species.end());
@@ -81,9 +78,8 @@ namespace mechanism_configuration
         }
 
         // Check whether the phases in the reactions are valid by comparing them to the initialized phases
-        auto it_found_gas_phase = std::find_if(
-              existing_phases.begin(), existing_phases.end(),
-              [&gas](const auto& phase) {return phase.name == gas.name;});
+        auto it_found_gas_phase =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas](const auto& phase) { return phase.name == gas.name; });
         if (it_found_gas_phase == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas][validation::name].Mark().line + 1);
@@ -104,9 +100,8 @@ namespace mechanism_configuration
         }
 
         // Check whether the phases in the reactions are valid by comparing them to the initialized phases
-        auto it_found_particle_phase = std::find_if(
-              existing_phases.begin(), existing_phases.end(),
-              [&particle](const auto& phase) {return phase.name == particle.phase;});
+        auto it_found_particle_phase =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&particle](const auto& phase) { return phase.name == particle.phase; });
         if (it_found_gas_phase == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::particle][validation::phase].Mark().line + 1);
@@ -116,8 +111,7 @@ namespace mechanism_configuration
         // Check whether the species in solutes belong to the corresponding phase
         else
         {
-          std::vector<std::string> species_registered_in_phase = { it_found_particle_phase->species.begin(), 
-                                                                   it_found_particle_phase->species.end() };
+          std::vector<std::string> species_registered_in_phase = { it_found_particle_phase->species.begin(), it_found_particle_phase->species.end() };
           std::vector<std::string> speices_in_solutes;
           for (const auto& elem : particle.solutes)
           {
@@ -128,25 +122,20 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            std::string message =
-                line + ":" + column + ": Required " + particle.phase +
-                " species as solutes do not exist in the species registered in the " +
-                particle.phase + " phase";
+            std::string message = line + ":" + column + ": Required " + particle.phase +
+                                  " species as solutes do not exist in the species registered in the " + particle.phase + " phase";
             errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, message });
           }
 
           // Check whether the species in solvent belong to the corresponding phase
-          bool found_solvent = std::find(species_registered_in_phase.begin(), 
-                                species_registered_in_phase.end(), 
-                                particle.solvent.species_name) != species_registered_in_phase.end();
+          bool found_solvent = std::find(species_registered_in_phase.begin(), species_registered_in_phase.end(), particle.solvent.species_name) !=
+                               species_registered_in_phase.end();
           if (!found_solvent)
           {
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            std::string message =
-                line + ":" + column + ": Required " + particle.phase +
-                " species as a solvent do not exist in the species registered in the " +
-                particle.phase + " phase";
+            std::string message = line + ":" + column + ": Required " + particle.phase +
+                                  " species as a solvent do not exist in the species registered in the " + particle.phase + " phase";
             errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, message });
           }
         }
