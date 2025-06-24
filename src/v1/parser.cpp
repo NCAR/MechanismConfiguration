@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
@@ -57,10 +57,6 @@ namespace mechanism_configuration
       result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
       mechanism->phases = phases_parsing.second;
 
-      auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
-      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
-      mechanism->reactions = reactions_parsing.second;
-
       YAML::Node models_node = object[validation::models];
       if (models_node && !models_node.IsNull())
       {
@@ -68,6 +64,10 @@ namespace mechanism_configuration
         result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
         mechanism->models = models_parsing.second;
       }
+
+      auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
+      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
+      mechanism->reactions = reactions_parsing.second;
 
       // prepend the file name to the error messages
       for (auto& error : result.errors)
