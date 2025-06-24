@@ -5,9 +5,9 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/v1/models.hpp>
+#include <mechanism_configuration/v1/model_types.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/types.hpp>
-
 
 #include <yaml-cpp/yaml.h>
 

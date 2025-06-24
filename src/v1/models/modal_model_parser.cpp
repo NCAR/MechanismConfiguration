@@ -1,7 +1,13 @@
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
 #include <mechanism_configuration/v1/model_parsers.hpp>
 #include <mechanism_configuration/v1/model_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+
+#include  <utility>
 
 namespace mechanism_configuration
 {
@@ -13,7 +19,7 @@ namespace mechanism_configuration
         types::Models& models)
     {
       Errors errors;
-      types::ModalModel modal_model;
+      types::ModalModel model;
 
       std::vector<std::string> required_top_level_keys = { validation::type, validation::modes };
       std::vector<std::string> optional_top_level_keys = { validation::name };
@@ -30,11 +36,11 @@ namespace mechanism_configuration
 
       if (has_error_top_level_keys.empty() && has_error_second_level_keys.empty())
       {
-        modal_model.type = object[validation::type].as<std::string>();
+        model.type = object[validation::type].as<std::string>();
 
         if (object[validation::name])
         {
-          gas_model.name = object[validation::name].as<std::string>();
+          model.name = object[validation::name].as<std::string>();
         }
         
         for (const auto& mode_object : object[validation::modes])
@@ -42,15 +48,15 @@ namespace mechanism_configuration
           types::Mode mode;
 
           mode.name = mode_object[validation::name].as<std::string>();
-          mode.geometric_mean_diamete = mode_object[validation::geometric_mean_diameter].as<double>();
+          mode.geometric_mean_diameter = mode_object[validation::geometric_mean_diameter].as<double>();
           mode.geometric_standard_deviation = mode_object[validation::geometric_standard_deviation].as<double>();
           mode.phase = mode_object[validation::phase].as<std::string>();
           mode.unknown_properties = GetComments(mode_object);
-          modal_model.modes.push_back(mode);
+          model.modes.push_back(mode);
         }
 
-        modal_model.unknown_properties = GetComments(mode_object);
-        models.push_back(modal_model);
+        model.unknown_properties = GetComments(object);
+        models.modal_model = std::move(model);
       }
 
       return errors;

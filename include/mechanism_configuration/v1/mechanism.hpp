@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include <mechanism_configuration/types.hpp>
-#include <mechanism_configuration/models.hpp>
+#include <mechanism_configuration/v1/types.hpp>
+#include <mechanism_configuration/v1/model_types.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
+#include <mechanism_configuration/mechanism.hpp>
 
 #include <string>
 #include <vector>

@@ -1,7 +1,13 @@
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
 #include <mechanism_configuration/v1/model_parsers.hpp>
 #include <mechanism_configuration/v1/model_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+
+#include  <utility>
 
 namespace mechanism_configuration
 {
@@ -13,7 +19,7 @@ namespace mechanism_configuration
         types::Models& models)
     {
       Errors errors;
-      types::GasModel gas_model;
+      types::GasModel model;
 
       std::vector<std::string> required_keys = { validation::type, validation::phase };
       std::vector<std::string> optional_keys = { validation::name };
@@ -22,16 +28,16 @@ namespace mechanism_configuration
       errors.insert(errors.end(), has_error.begin(), has_error.end());
       if (has_error.empty())
       {
-        gas_model.type = object[validation::type].as<std::string>();
-        gas_model.phase = object[validation::phase].as<std::string>();
+        model.type = object[validation::type].as<std::string>();
+        model.phase = object[validation::phase].as<std::string>();
 
         if (object[validation::name])
         {
-          gas_model.name = object[validation::name].as<std::string>();
+          model.name = object[validation::name].as<std::string>();
         }
 
-        gas_model.unknown_properties = GetComments(object);
-        models.push_back(gas_model);
+        model.unknown_properties = GetComments(object);
+        models.gas_model = std::move(model);
       }
 
       return errors;

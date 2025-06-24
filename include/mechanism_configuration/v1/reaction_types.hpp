@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <mechanism_configuration/v1/types.hpp>
+
 #include <array>
 #include <optional>
 #include <string>

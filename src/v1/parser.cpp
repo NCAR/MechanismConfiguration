@@ -26,7 +26,7 @@ namespace mechanism_configuration
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       std::vector<std::string> mechanism_required_keys = { validation::version, validation::species, validation::phases, validation::reactions };
-      std::vector<std::string> mechanism_optional_keys = { validation::name, validations::models };
+      std::vector<std::string> mechanism_optional_keys = { validation::name, validation::models };
 
       auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
