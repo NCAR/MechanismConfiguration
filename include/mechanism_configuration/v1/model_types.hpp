@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace mechanism_configuration
 {
@@ -18,6 +19,9 @@ namespace mechanism_configuration
       {
         std::string name;
         std::string type;
+        std::string phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
       };
 
       struct Mode
@@ -26,6 +30,8 @@ namespace mechanism_configuration
         double geometric_mean_diameter;
         double geometric_standard_deviation;
         std::string phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
       };
 
       struct ModalModel
@@ -33,6 +39,8 @@ namespace mechanism_configuration
         std::string name;
         std::string type;
         std::vector<Mode> modes;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
       };
 
       // struct GasParticleInteraction

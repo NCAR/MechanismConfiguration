@@ -172,11 +172,12 @@ namespace mechanism_configuration
 
       // Modal model
       static constexpr const char* ModalModel_key = "MODAL";
+      static constexpr const char* modes = "modes";
       static constexpr const char* geometric_mean_diameter = "geometric mean diameter [m]";
       static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
       // also
       // name
-      // phases
+      // phase
 
     }  // namespace validation
   }  // namespace v1
