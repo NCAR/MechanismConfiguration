@@ -64,7 +64,7 @@ namespace mechanism_configuration
       YAML::Node models_node = object[validation::models];
       if (models_node && !models_node.IsNull())
       {
-        auto models_parsing = ParseModels(object[validation::models], phases_parsing.second);
+        auto models_parsing = ParseModels(models_node, phases_parsing.second);
         result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
         mechanism->models = models_parsing.second;
       }

@@ -43,7 +43,7 @@ namespace mechanism_configuration
       static constexpr const char* coefficient = "coefficient";
 
       // ----------------------------------------
-      // Reactions
+      // Reaction types
       // ----------------------------------------
 
       // Arrhenius
@@ -161,11 +161,17 @@ namespace mechanism_configuration
       // scaling factor
 
       // ----------------------------------------
-      // Models
+      // Model types
       // ----------------------------------------
+      
+      // Gas model
+      static constexpr const char* GasModel_key = "GAS_PHASE";
+      // also
+      // name
+      // phases
 
-      // Two moment modal models
-      static constexpr const char* TwoMomentModal_key = "TWO_MOMENT_MODAL";
+      // Modal model
+      static constexpr const char* ModalModel_key = "MODAL";
       static constexpr const char* geometric_mean_diameter = "geometric mean diameter [m]";
       static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
       // also

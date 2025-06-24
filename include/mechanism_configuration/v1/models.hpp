@@ -18,7 +18,6 @@ namespace mechanism_configuration
       {
         std::string name;
         std::string type;
-        std::string phase;
       };
 
       struct Mode
@@ -26,7 +25,7 @@ namespace mechanism_configuration
         std::string name;
         double geometric_mean_diameter;
         double geometric_standard_deviation;
-        std::vector<std::string> phases;
+        std::string phase;
       };
 
       struct ModalModel
@@ -36,18 +35,19 @@ namespace mechanism_configuration
         std::vector<Mode> modes;
       };
 
-      struct GasParticleInteraction
-      {
-        std::string name;
-        GasModel gas;
-        ModalModel modal;
-      };
+      // struct GasParticleInteraction
+      // {
+      //   std::string name;
+      //   GasModel gas;
+      //   ModalModel modal;
+      // };
 
       /// @brief Represents a collection of different model types
-      struct Model
+      struct Models
       {
-        GasParticleInteraction gas_particle_interaction;
-      }
+        GasModel gas_model;
+        ModalModel modal_model;
+      };
     }
   }
 }
