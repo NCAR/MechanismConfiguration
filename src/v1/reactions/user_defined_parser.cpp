@@ -1,4 +1,5 @@
 #include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
