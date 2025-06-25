@@ -15,6 +15,7 @@ namespace mechanism_configuration
     namespace types
     {
 
+      /// @brief Represents gas model
       struct GasModel
       {
         std::string name;
@@ -24,6 +25,7 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      /// @brief Represents a single mode with log-normal size distribution
       struct Mode
       {
         std::string name;
@@ -34,6 +36,7 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      /// @brief Models a collection of multiple modes
       struct ModalModel
       {
         std::string name;
@@ -42,13 +45,6 @@ namespace mechanism_configuration
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
-
-      // struct GasParticleInteraction
-      // {
-      //   std::string name;
-      //   GasModel gas;
-      //   ModalModel modal;
-      // };
 
       /// @brief Represents a collection of different model types
       struct Models
