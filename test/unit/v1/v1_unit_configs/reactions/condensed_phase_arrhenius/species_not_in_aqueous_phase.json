@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase arrhenius using species not in its requested aerosol phase",
+  "name": "Condensed phase arrhenius using species not in its requested aqueous phase",
   "species": [
     {
       "name": "A"
@@ -12,24 +12,23 @@
       "name": "C"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "C",
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A",
@@ -56,8 +55,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A",
@@ -84,8 +82,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

@@ -1,10 +1,17 @@
 version: 1.0.0
-name: Missing phase
+name: Condensed phase arrhenius using species not in its requested aqueous phase
 species:
   - name: A
   - name: B
-  - name: C
-phases: []
+  - name: H2O
+phases:
+  - name: gas
+    species:
+      - A
+      - B
+  - name: aqueous
+    species:
+      - H2O
 reactions:
   - type: HL_PHASE_TRANSFER
     gas:
@@ -17,3 +24,4 @@ reactions:
         - B
       solvent: H2O
     name: my henry's law
+    __comment: hi

@@ -1,10 +1,10 @@
-name: Condensed phase arrhenius using species not in its requested aerosol phase
+name: Condensed phase arrhenius using species not in its requested aqueous phase
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - C
-  - H2O_aq
+  - H2O
 reactions:
 - A: 32.1
   B: -2.3
@@ -12,8 +12,7 @@ reactions:
   D: 63.4
   E: -1.3
   __solver_param: 0.1
-  aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
+  aqueous phase: aqueous
   name: my arrhenius
   products:
   - coefficient: 1.2
@@ -29,8 +28,7 @@ reactions:
   C: 12.3
   D: 6.4
   E: -0.3
-  aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
+  aqueous phase: aqueous
   name: my arrhenius2
   products:
   - __optional thing: hello
@@ -42,8 +40,7 @@ reactions:
   - coefficient: 0.1
     species name: B
   type: CONDENSED_PHASE_ARRHENIUS
-- aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
+- aqueous phase: aqueous
   products:
   - species name: C
   reactants:
@@ -53,5 +50,5 @@ species:
 - name: A
 - name: B
 - name: C
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
+
+#include <gtest/gtest.h>
 
 TEST(ParserBase, ParsesFullV0ConfigurationWithoutExtension)
 {

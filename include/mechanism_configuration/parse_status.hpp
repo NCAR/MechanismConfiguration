@@ -25,7 +25,8 @@ namespace mechanism_configuration
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,
-    RequestedAerosolSpeciesNotIncludedInAerosolPhase,
+    RequestedAqueousSpeciesNotIncludedInAqueousPhase,
+    RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
     InvalidIonPair,
     UnknownType

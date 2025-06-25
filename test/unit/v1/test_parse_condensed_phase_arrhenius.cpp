@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include <mechanism_configuration/v1/parser.hpp>
+
+#include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
 
@@ -17,8 +17,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius.size(), 3);
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].name, "my arrhenius");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].aerosol_phase, "aqueous aerosol");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].aerosol_phase_water, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].aqueous_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].A, 32.1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].B, -2.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].C, 102.3);
@@ -36,8 +35,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].unknown_properties["__solver_param"], "0.1");
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].name, "my arrhenius2");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].aerosol_phase, "aqueous aerosol");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].aerosol_phase_water, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].aqueous_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].A, 3.1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].B, -0.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].C, 12.3);
@@ -55,8 +53,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].products[0].unknown_properties["__optional thing"], "hello");
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].name, "");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].aerosol_phase, "aqueous aerosol");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].aerosol_phase_water, "H2O_aq");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].aqueous_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].A, 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].B, 0);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].C, 0);
@@ -82,7 +79,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -117,11 +114,9 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
     std::string file = std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 4);
+    EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -129,36 +124,17 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownAerosolPhaseWater)
+TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/missing_aerosol_phase_water") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
-    for (auto& error : parsed.errors)
-    {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-    }
-  }
-}
-
-TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAerosolPhase)
-{
-  v1::Parser parser;
-  std::vector<std::string> extensions = { ".json", ".yaml" };
-  for (auto& extension : extensions)
-  {
-    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aerosol_phase") + extension;
+    std::string file = std::string("v1_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAerosolSpeciesNotIncludedInAerosolPhase);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.errors)
     {

@@ -12,25 +12,24 @@
       "name": "C"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "A",
         "B",
         "C",
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],
   "reactions": [
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "__comment": "hi",
       "reactants": [
         {
@@ -49,8 +48,7 @@
     },
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "B",

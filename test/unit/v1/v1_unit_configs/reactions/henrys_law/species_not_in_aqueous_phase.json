@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase arrhenius using species not in its requested aerosol phase",
+  "name": "Condensed phase arrhenius using species not in its requested aqueous phase",
   "species": [
     {
       "name": "A"
@@ -9,7 +9,7 @@
       "name": "B"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
@@ -21,20 +21,24 @@
       ]
     },
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": "A",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
-      "aerosol-phase water": "H2O_aq",
+      "gas": {
+        "name": "gas",
+        "species": ["A"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B"],
+        "solvent": "H2O"
+      },
       "name": "my henry's law",
       "__comment": "hi"
     }

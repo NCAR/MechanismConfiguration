@@ -12,7 +12,7 @@
       "name": "C"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
@@ -20,8 +20,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_aq",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

@@ -25,14 +25,14 @@
   "reactions": [
     {
       "type": "WET_DEPOSITION",
-      "aerosol phase": "cloud",
+      "aqueous phase": "cloud",
       "name": "rxn cloud",
       "scaling factor": 12.3,
       "__comment": "Tuxedo cats are the best"
     },
     {
       "type": "WET_DEPOSITION",
-      "aerosol phase": "cloud",
+      "aqueous phase": "cloud",
       "name": "rxn cloud2"
     }
   ]

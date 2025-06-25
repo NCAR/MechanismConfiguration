@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Missing aerosol phase",
+  "name": "Missing aqueous phase",
   "species": [
     {
       "name": "A"
@@ -36,7 +36,7 @@
           "species name": "C"
         }
       ],
-      "aerosol phase": "surface reacting phase"
+      "aqueous phase": "surface reacting phase"
     }
   ]
 }

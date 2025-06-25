@@ -9,7 +9,10 @@
       "name": "B"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
+    },
+    {
+      "name": "C"
     }
   ],
   "phases": [
@@ -20,31 +23,41 @@
       ]
     },
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "B",
-        "H2O_aq"
+        "H2O",
+        "C"
       ]
     }
   ],
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": "A",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
-      "aerosol-phase water": "H2O_aq",
+      "gas": {
+        "name": "gas",
+        "species": ["A"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B"],
+        "solvent": "H2O"
+      },
       "name": "my henry's law",
-      "__comment": "hi"
+      "__comment": "B aqueous phase production (kg/m2/s)"
     },
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas phase": "gas",
-      "gas-phase species": "A",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase species": "B",
-      "aerosol-phase water": "H2O_aq"
+      "gas": {
+        "name": "gas",
+        "species": ["A"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B", "C"],
+        "solvent": "H2O"
+      }
     }
+
   ]
 }

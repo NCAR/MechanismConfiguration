@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include <mechanism_configuration/v1/parser.hpp>
+
+#include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
 
@@ -17,13 +17,13 @@ TEST(ParserBase, CanParseValidWetDepositionReaction)
     EXPECT_EQ(mechanism.reactions.wet_deposition.size(), 2);
 
     EXPECT_EQ(mechanism.reactions.wet_deposition[0].name, "rxn cloud");
-    EXPECT_EQ(mechanism.reactions.wet_deposition[0].aerosol_phase, "cloud");
+    EXPECT_EQ(mechanism.reactions.wet_deposition[0].aqueous_phase, "cloud");
     EXPECT_EQ(mechanism.reactions.wet_deposition[0].scaling_factor, 12.3);
     EXPECT_EQ(mechanism.reactions.wet_deposition[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.wet_deposition[0].unknown_properties["__comment"], "Tuxedo cats are the best");
 
     EXPECT_EQ(mechanism.reactions.wet_deposition[1].name, "rxn cloud2");
-    EXPECT_EQ(mechanism.reactions.wet_deposition[1].aerosol_phase, "cloud");
+    EXPECT_EQ(mechanism.reactions.wet_deposition[1].aqueous_phase, "cloud");
     EXPECT_EQ(mechanism.reactions.wet_deposition[1].scaling_factor, 1);
   }
 }

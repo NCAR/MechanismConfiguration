@@ -1,8 +1,7 @@
 name: Missing phase
 phases: []
 reactions:
-- aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
+- aqueous phase: aqueous
   products:
   - coefficient: 0.2
     species name: C
@@ -14,5 +13,5 @@ species:
 - name: A
 - name: B
 - name: C
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

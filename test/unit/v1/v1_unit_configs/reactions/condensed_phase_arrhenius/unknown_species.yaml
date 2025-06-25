@@ -1,13 +1,12 @@
 name: Unknown species
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - B
-  - H2O_aq
+  - H2O
 reactions:
-- aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_aq
+- aqueous phase: aqueous
   products:
   - species name: C
   reactants:
@@ -16,5 +15,5 @@ reactions:
 species:
 - name: A
 - name: B
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

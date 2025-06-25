@@ -1,5 +1,6 @@
-#include <iostream>
 #include <mechanism_configuration/validate_schema.hpp>
+
+#include <iostream>
 
 namespace mechanism_configuration
 {

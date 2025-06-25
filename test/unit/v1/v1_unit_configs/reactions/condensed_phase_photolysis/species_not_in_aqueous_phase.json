@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Missing condensed phase arrhenius aerosol phase water",
+  "name": "Condensed phase photolysis using species not in its requested aqueous phase",
   "species": [
     {
       "name": "A"
@@ -12,35 +12,37 @@
       "name": "C"
     },
     {
-      "name": "H2O_aq"
+      "name": "H2O"
     }
   ],
   "phases": [
     {
-      "name": "aqueous aerosol",
+      "name": "aqueous",
       "species": [
         "A",
-        "B",
         "C",
-        "H2O_aq"
+        "H2O"
       ]
     }
   ],
   "reactions": [
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aerosol phase": "aqueous aerosol",
-      "aerosol-phase water": "H2O_a",
+      "aqueous phase": "aqueous",
       "reactants": [
         {
-          "species name": "B",
-          "coefficient": 1.2
+          "species name": "A",
+          "coefficient": 1
         }
       ],
       "products": [
         {
+          "species name": "B",
+          "coefficient": 1.2
+        },
+        {
           "species name": "C",
-          "coefficient": 0.2
+          "coefficient": 0.3
         }
       ]
     }

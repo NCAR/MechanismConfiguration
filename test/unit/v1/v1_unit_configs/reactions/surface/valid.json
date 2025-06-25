@@ -46,7 +46,7 @@
           "coefficient": 1
         }
       ],
-      "aerosol phase": "surface reacting phase",
+      "aqueous phase": "surface reacting phase",
       "name": "my surface",
       "__comment": "key lime pie is superior to all other pies"
     },
@@ -63,7 +63,7 @@
           "species name": "C"
         }
       ],
-      "aerosol phase": "surface reacting phase"
+      "aqueous phase": "surface reacting phase"
     }
   ]
 }

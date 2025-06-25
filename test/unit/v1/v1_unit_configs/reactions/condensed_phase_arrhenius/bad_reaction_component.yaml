@@ -1,13 +1,12 @@
 name: Bad reaction component
 phases:
-- name: aqueous aerosol
+- name: aqueous
   species:
   - A
   - B
-  - H2O_aq
+  - H2O
 reactions:
-- aerosol phase: aqueous aerosol
-  aerosol-phase water: H2O_a
+- aqueous phase: aqueous
   products:
   - species name: B
   reactants:
@@ -16,5 +15,5 @@ reactions:
 species:
 - name: A
 - name: B
-- name: H2O_aq
+- name: H2O
 version: 1.0.0

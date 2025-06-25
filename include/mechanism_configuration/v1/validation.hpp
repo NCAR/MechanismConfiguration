@@ -55,9 +55,8 @@ namespace mechanism_configuration
 
       // Condensed Phase Arrhenius
       static constexpr const char* CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
-      static constexpr const char* aerosol_phase_water = "aerosol-phase water";
       // also these
-      // aerosol phase
+      // aqueous phase
       // A
       // B
       // C
@@ -97,7 +96,7 @@ namespace mechanism_configuration
       static constexpr const char* reaction_probability = "reaction probability";
       static constexpr const char* gas_phase_species = "gas-phase species";
       static constexpr const char* gas_phase_products = "gas-phase products";
-      static constexpr const char* aerosol_phase = "aerosol phase";
+      static constexpr const char* aqueous_phase = "aqueous phase";
 
       // Photolysis
       static constexpr const char* Photolysis_key = "PHOTOLYSIS";
@@ -107,8 +106,7 @@ namespace mechanism_configuration
       static constexpr const char* CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
       // also
       // scaling factor
-      // aerosol phase
-      // aerosol-phase water
+      // aqueous phase
 
       // Emissions
       static constexpr const char* Emission_key = "EMISSION";
@@ -120,19 +118,18 @@ namespace mechanism_configuration
 
       // Simpol Phase Transfer
       static constexpr const char* SimpolPhaseTransfer_key = "SIMPOL_PHASE_TRANSFER";
-      static constexpr const char* aerosol_phase_species = "aerosol-phase species";
+      static constexpr const char* aqueous_phase_species = "aqueous-phase species";
       // also
       // gas phase
       // gas-phase species
-      // aerosol phase
-      // aserosol-phase species
+      // aqueous phase
+      // aqueous-phase species
       // B
 
       // Aqueous Equilibrium
       static constexpr const char* AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
       // also
-      // aerosol phase
-      // aerosol-phase water
+      // aqueous phase
       // A
       // C
       static constexpr const char* k_reverse = "k_reverse";
@@ -141,15 +138,17 @@ namespace mechanism_configuration
       static constexpr const char* WetDeposition_key = "WET_DEPOSITION";
       // also
       // scaling factor
-      // aerosol phase
+      // aqueous phase
 
       // Henry's Law Phase Transfer
       static constexpr const char* HenrysLaw_key = "HL_PHASE_TRANSFER";
+      static constexpr const char* gas = "gas";
+      static constexpr const char* particle = "particle";
+      static constexpr const char* solutes = "solutes";
+      static constexpr const char* solvent = "solvent";
       // also
-      // gas phase
-      // aerosol phase
-      // aerosol-phase water
-      // aerosol-phase species
+      // phase
+      // species
 
       // User Defined
       static constexpr const char* UserDefined_key = "USER_DEFINED";
