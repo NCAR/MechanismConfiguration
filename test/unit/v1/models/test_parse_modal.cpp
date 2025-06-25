@@ -7,8 +7,7 @@ using namespace mechanism_configuration;
 TEST(ParserBase, CanParseValidModalModel)
 {
   v1::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-  std::vector<std::string> extensions = { ".json"};
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("v1_unit_configs/models/modal/valid") + extension);
@@ -36,8 +35,7 @@ TEST(ParserBase, CanParseValidModalModel)
 TEST(ParserBase, MissingModes)
 {
   v1::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-  std::vector<std::string> extensions = { ".json"};
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("v1_unit_configs/models/modal/missing_modes") + extension);
@@ -57,8 +55,7 @@ TEST(ParserBase, MissingModes)
 TEST(ParserBase, MissingModalMemberData)
 {
   v1::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-  std::vector<std::string> extensions = { ".json"};
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("v1_unit_configs/models/modal/missing_modal_variable") + extension);
@@ -78,8 +75,7 @@ TEST(ParserBase, MissingModalMemberData)
 TEST(ParserBase, PhaseInModeNotFoundInRegisteredPhase)
 {
   v1::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-  std::vector<std::string> extensions = { ".json"};
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("v1_unit_configs/models/modal/mode_phase_not_found_in_phases") + extension);

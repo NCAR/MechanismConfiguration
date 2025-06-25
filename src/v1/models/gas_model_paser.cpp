@@ -26,12 +26,28 @@ namespace mechanism_configuration
 
       auto has_error = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), has_error.begin(), has_error.end());
-      if (has_error.empty())
+      if (!has_error.empty())
+      {
+        models.gas_model = std::move(model);
+      }
+      else
       {
         model.type = object[validation::type].as<std::string>();
-        
-        // TODO - Check phases contains the current phase from model 
-        model.phase = object[validation::phase].as<std::string>();
+
+        // Check whether the phase for the model is valid by comparing it to the initialized phases
+        std::string model_phase = object[validation::phase].as<std::string>();
+        auto it_found_phase =
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&model_phase](const auto& phase) { return phase.name == model_phase; });
+        if (it_found_phase == existing_phases.end())
+        {
+          std::string line = std::to_string(object[validation::phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + model_phase });
+        }
+        else
+        {
+          model.phase = model_phase;
+        }
 
         if (object[validation::name])
         {
@@ -41,7 +57,6 @@ namespace mechanism_configuration
         model.unknown_properties = GetComments(object);
         models.gas_model = std::move(model);
       }
-      // TODO else case
 
       return errors;
     }
