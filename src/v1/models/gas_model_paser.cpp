@@ -29,6 +29,8 @@ namespace mechanism_configuration
       if (has_error.empty())
       {
         model.type = object[validation::type].as<std::string>();
+        
+        // TODO - Check phases contains the current phase from model 
         model.phase = object[validation::phase].as<std::string>();
 
         if (object[validation::name])
@@ -39,6 +41,7 @@ namespace mechanism_configuration
         model.unknown_properties = GetComments(object);
         models.gas_model = std::move(model);
       }
+      // TODO else case
 
       return errors;
     }
