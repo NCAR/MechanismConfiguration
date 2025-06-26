@@ -1,6 +1,7 @@
 #include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -8,18 +9,18 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors ArrheniusParser::parse(
+    Errors TroeParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
       Errors errors;
-      types::Arrhenius arrhenius;
+      types::Troe troe;
 
       std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
-                                                 validation::E, validation::Ea, validation::name };
+      std::vector<std::string> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B, validation::k0_C, validation::kinf_A,
+                                                 validation::kinf_B, validation::kinf_C, validation::Fc,   validation::N };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -30,40 +31,42 @@ namespace mechanism_configuration
         auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
-        if (object[validation::A])
+        if (object[validation::k0_A])
         {
-          arrhenius.A = object[validation::A].as<double>();
+          troe.k0_A = object[validation::k0_A].as<double>();
         }
-        if (object[validation::B])
+        if (object[validation::k0_B])
         {
-          arrhenius.B = object[validation::B].as<double>();
+          troe.k0_B = object[validation::k0_B].as<double>();
         }
-        if (object[validation::C])
+        if (object[validation::k0_C])
         {
-          arrhenius.C = object[validation::C].as<double>();
+          troe.k0_C = object[validation::k0_C].as<double>();
         }
-        if (object[validation::D])
+        if (object[validation::kinf_A])
         {
-          arrhenius.D = object[validation::D].as<double>();
+          troe.kinf_A = object[validation::kinf_A].as<double>();
         }
-        if (object[validation::E])
+        if (object[validation::kinf_B])
         {
-          arrhenius.E = object[validation::E].as<double>();
+          troe.kinf_B = object[validation::kinf_B].as<double>();
         }
-        if (object[validation::Ea])
+        if (object[validation::kinf_C])
         {
-          if (arrhenius.C != 0)
-          {
-            std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
-            std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Mutually exclusive option: Ea and C" });
-          }
-          arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
+          troe.kinf_C = object[validation::kinf_C].as<double>();
+        }
+        if (object[validation::Fc])
+        {
+          troe.Fc = object[validation::Fc].as<double>();
+        }
+        if (object[validation::N])
+        {
+          troe.N = object[validation::N].as<double>();
         }
 
         if (object[validation::name])
         {
-          arrhenius.name = object[validation::name].as<std::string>();
+          troe.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
@@ -92,11 +95,11 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
-        arrhenius.gas_phase = gas_phase;
-        arrhenius.products = products.second;
-        arrhenius.reactants = reactants.second;
-        arrhenius.unknown_properties = GetComments(object);
-        reactions.arrhenius.push_back(arrhenius);
+        troe.gas_phase = gas_phase;
+        troe.products = products.second;
+        troe.reactants = reactants.second;
+        troe.unknown_properties = GetComments(object);
+        reactions.troe.push_back(troe);
       }
 
       return errors;

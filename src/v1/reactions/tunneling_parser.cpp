@@ -1,6 +1,7 @@
 #include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -8,47 +9,47 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors BranchedParser::parse(
+    Errors TunnelingParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
       Errors errors;
-      types::Branched branched;
+      types::Tunneling tunneling;
 
-      std::vector<std::string> required_keys = {
-        validation::nitrate_products, validation::alkoxy_products, validation::reactants, validation::type, validation::gas_phase
-      };
-      std::vector<std::string> optional_keys = { validation::name, validation::X, validation::Y, validation::a0, validation::n };
+      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::gas_phase };
+      std::vector<std::string> optional_keys = { validation::name, validation::A, validation::B, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        auto alkoxy_products = ParseReactantsOrProducts(validation::alkoxy_products, object);
-        errors.insert(errors.end(), alkoxy_products.first.begin(), alkoxy_products.first.end());
-        auto nitrate_products = ParseReactantsOrProducts(validation::nitrate_products, object);
-        errors.insert(errors.end(), nitrate_products.first.begin(), nitrate_products.first.end());
+        auto products = ParseReactantsOrProducts(validation::products, object);
+        errors.insert(errors.end(), products.first.begin(), products.first.end());
         auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
-        branched.X = object[validation::X].as<double>();
-        branched.Y = object[validation::Y].as<double>();
-        branched.a0 = object[validation::a0].as<double>();
-        branched.n = object[validation::n].as<double>();
+        if (object[validation::A])
+        {
+          tunneling.A = object[validation::A].as<double>();
+        }
+        if (object[validation::B])
+        {
+          tunneling.B = object[validation::B].as<double>();
+        }
+        if (object[validation::C])
+        {
+          tunneling.C = object[validation::C].as<double>();
+        }
 
         if (object[validation::name])
         {
-          branched.name = object[validation::name].as<std::string>();
+          tunneling.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : nitrate_products.second)
-        {
-          requested_species.push_back(spec.species_name);
-        }
-        for (const auto& spec : alkoxy_products.second)
+        for (const auto& spec : products.second)
         {
           requested_species.push_back(spec.species_name);
         }
@@ -73,12 +74,11 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
-        branched.gas_phase = gas_phase;
-        branched.nitrate_products = nitrate_products.second;
-        branched.alkoxy_products = alkoxy_products.second;
-        branched.reactants = reactants.second;
-        branched.unknown_properties = GetComments(object);
-        reactions.branched.push_back(branched);
+        tunneling.gas_phase = gas_phase;
+        tunneling.products = products.second;
+        tunneling.reactants = reactants.second;
+        tunneling.unknown_properties = GetComments(object);
+        reactions.tunneling.push_back(tunneling);
       }
 
       return errors;

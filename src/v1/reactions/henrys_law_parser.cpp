@@ -1,6 +1,7 @@
 #include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 

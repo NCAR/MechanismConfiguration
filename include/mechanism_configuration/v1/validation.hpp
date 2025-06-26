@@ -1,11 +1,8 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
-
-#include <string>
-#include <vector>
 
 namespace mechanism_configuration
 {
@@ -20,6 +17,7 @@ namespace mechanism_configuration
       // Configuration
       static constexpr const char* species = "species";
       static constexpr const char* phases = "phases";
+      static constexpr const char* models = "models";
       static constexpr const char* reactions = "reactions";
 
       // Species
@@ -43,6 +41,10 @@ namespace mechanism_configuration
       // Reactant and product
       static constexpr const char* species_name = "species name";
       static constexpr const char* coefficient = "coefficient";
+
+      // ----------------------------------------
+      // Reaction types
+      // ----------------------------------------
 
       // Arrhenius
       static constexpr const char* Arrhenius_key = "ARRHENIUS";
@@ -157,6 +159,25 @@ namespace mechanism_configuration
       // reactants
       // products
       // scaling factor
+
+      // ----------------------------------------
+      // Model types
+      // ----------------------------------------
+      
+      // Gas model
+      static constexpr const char* GasModel_key = "GAS_PHASE";
+      // also
+      // name
+      // phases
+
+      // Modal model
+      static constexpr const char* ModalModel_key = "MODAL";
+      static constexpr const char* modes = "modes";
+      static constexpr const char* geometric_mean_diameter = "geometric mean diameter [m]";
+      static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
+      // also
+      // name
+      // phase
 
     }  // namespace validation
   }  // namespace v1

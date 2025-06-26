@@ -1,6 +1,7 @@
 #include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -8,14 +9,14 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors UserDefinedParser::parse(
+    Errors PhotolysisParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
       Errors errors;
-      types::UserDefined user_defined;
+      types::Photolysis photolysis;
 
       std::vector<std::string> required_keys = { validation::reactants, validation::products, validation::type, validation::gas_phase };
       std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
@@ -31,12 +32,12 @@ namespace mechanism_configuration
 
         if (object[validation::scaling_factor])
         {
-          user_defined.scaling_factor = object[validation::scaling_factor].as<double>();
+          photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
         }
 
         if (object[validation::name])
         {
-          user_defined.name = object[validation::name].as<std::string>();
+          photolysis.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
@@ -65,11 +66,18 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
-        user_defined.gas_phase = gas_phase;
-        user_defined.products = products.second;
-        user_defined.reactants = reactants.second;
-        user_defined.unknown_properties = GetComments(object);
-        reactions.user_defined.push_back(user_defined);
+        if (reactants.second.size() > 1)
+        {
+          std::string line = std::to_string(object[validation::reactants].Mark().line + 1);
+          std::string column = std::to_string(object[validation::reactants].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reactants" });
+        }
+
+        photolysis.gas_phase = gas_phase;
+        photolysis.products = products.second;
+        photolysis.reactants = reactants.second;
+        photolysis.unknown_properties = GetComments(object);
+        reactions.photolysis.push_back(photolysis);
       }
 
       return errors;

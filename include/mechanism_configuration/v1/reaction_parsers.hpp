@@ -1,13 +1,12 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/parse_status.hpp>
 #include <mechanism_configuration/v1/types.hpp>
-#include <mechanism_configuration/v1/utils.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -17,21 +16,31 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects);
 
-    class CondensedPhaseArrheniusParser : public IReactionParser
+    /// @brief Abstract interface for reaction parsers
+    class IReactionParser
     {
      public:
-      Errors parse(
+      /// @brief Parses a YAML node representing a chemical reaction
+      /// @param object The YAML node containing reaction information
+      /// @param existing_species A list of species previously defined in the mechanism
+      /// @param existing_phases A list of chemical phases relevant to the reaction
+      /// @param reactions The container to which the parsed reactions will be added
+      /// @return A list of any parsing errors encountered
+      virtual Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+          types::Reactions& reactions) = 0;
+
+      /// @brief Destructor
+      virtual ~IReactionParser() = default;
     };
 
-    class TroeParser : public IReactionParser
+    class ArrheniusParser : public IReactionParser
     {
      public:
+      /// @brief Parser for Arrhenius reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -42,6 +51,7 @@ namespace mechanism_configuration
     class BranchedParser : public IReactionParser
     {
      public:
+      /// @brief Parser for branched reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -49,19 +59,10 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
-    class TunnelingParser : public IReactionParser
+    class CondensedPhaseArrheniusParser : public IReactionParser
     {
      public:
-      Errors parse(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
-    };
-
-    class SurfaceParser : public IReactionParser
-    {
-     public:
+      /// @brief Parser for condensed-phase Arrhenius reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -72,16 +73,7 @@ namespace mechanism_configuration
     class CondensedPhasePhotolysisParser : public IReactionParser
     {
      public:
-      Errors parse(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
-    };
-
-    class SimpolPhaseTransferParser : public IReactionParser
-    {
-     public:
+      /// @brief Parser for condensed-phase photolysis reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -92,16 +84,7 @@ namespace mechanism_configuration
     class EmissionParser : public IReactionParser
     {
      public:
-      Errors parse(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
-    };
-
-    class PhotolysisParser : public IReactionParser
-    {
-     public:
+      /// @brief Parser for emission reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -112,6 +95,18 @@ namespace mechanism_configuration
     class FirstOrderLossParser : public IReactionParser
     {
      public:
+      /// @brief Parser for first-order loss reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
+    class SimpolPhaseTransferParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for SIMPOL-phase transfer reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -122,6 +117,7 @@ namespace mechanism_configuration
     class AqueousEquilibriumParser : public IReactionParser
     {
      public:
+      /// @brief Parser for aqueous equilibrium reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -132,6 +128,7 @@ namespace mechanism_configuration
     class WetDepositionParser : public IReactionParser
     {
      public:
+      /// @brief Parser for wet deposition reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -142,6 +139,7 @@ namespace mechanism_configuration
     class HenrysLawParser : public IReactionParser
     {
      public:
+      /// @brief Parser for Henry's Law reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -149,9 +147,44 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
-    class ArrheniusParser : public IReactionParser
+    class PhotolysisParser : public IReactionParser
     {
      public:
+      /// @brief Parser for photolysis reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
+    class SurfaceParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for surface reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
+    class TroeParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for Troe reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
+
+    class TunnelingParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for tunneling reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -162,11 +195,13 @@ namespace mechanism_configuration
     class UserDefinedParser : public IReactionParser
     {
      public:
+      /// @brief Parser for user-defined reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
           types::Reactions& reactions) override;
     };
+
   }  // namespace v1
 }  // namespace mechanism_configuration

@@ -1,6 +1,7 @@
 #include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/parser_types.hpp>
+#include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -8,68 +9,47 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors TroeParser::parse(
+    Errors BranchedParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
       Errors errors;
-      types::Troe troe;
+      types::Branched branched;
 
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B, validation::k0_C, validation::kinf_A,
-                                                 validation::kinf_B, validation::kinf_C, validation::Fc,   validation::N };
+      std::vector<std::string> required_keys = {
+        validation::nitrate_products, validation::alkoxy_products, validation::reactants, validation::type, validation::gas_phase
+      };
+      std::vector<std::string> optional_keys = { validation::name, validation::X, validation::Y, validation::a0, validation::n };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
-        auto products = ParseReactantsOrProducts(validation::products, object);
-        errors.insert(errors.end(), products.first.begin(), products.first.end());
+        auto alkoxy_products = ParseReactantsOrProducts(validation::alkoxy_products, object);
+        errors.insert(errors.end(), alkoxy_products.first.begin(), alkoxy_products.first.end());
+        auto nitrate_products = ParseReactantsOrProducts(validation::nitrate_products, object);
+        errors.insert(errors.end(), nitrate_products.first.begin(), nitrate_products.first.end());
         auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
-        if (object[validation::k0_A])
-        {
-          troe.k0_A = object[validation::k0_A].as<double>();
-        }
-        if (object[validation::k0_B])
-        {
-          troe.k0_B = object[validation::k0_B].as<double>();
-        }
-        if (object[validation::k0_C])
-        {
-          troe.k0_C = object[validation::k0_C].as<double>();
-        }
-        if (object[validation::kinf_A])
-        {
-          troe.kinf_A = object[validation::kinf_A].as<double>();
-        }
-        if (object[validation::kinf_B])
-        {
-          troe.kinf_B = object[validation::kinf_B].as<double>();
-        }
-        if (object[validation::kinf_C])
-        {
-          troe.kinf_C = object[validation::kinf_C].as<double>();
-        }
-        if (object[validation::Fc])
-        {
-          troe.Fc = object[validation::Fc].as<double>();
-        }
-        if (object[validation::N])
-        {
-          troe.N = object[validation::N].as<double>();
-        }
+        branched.X = object[validation::X].as<double>();
+        branched.Y = object[validation::Y].as<double>();
+        branched.a0 = object[validation::a0].as<double>();
+        branched.n = object[validation::n].as<double>();
 
         if (object[validation::name])
         {
-          troe.name = object[validation::name].as<std::string>();
+          branched.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
-        for (const auto& spec : products.second)
+        for (const auto& spec : nitrate_products.second)
+        {
+          requested_species.push_back(spec.species_name);
+        }
+        for (const auto& spec : alkoxy_products.second)
         {
           requested_species.push_back(spec.species_name);
         }
@@ -94,11 +74,12 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
-        troe.gas_phase = gas_phase;
-        troe.products = products.second;
-        troe.reactants = reactants.second;
-        troe.unknown_properties = GetComments(object);
-        reactions.troe.push_back(troe);
+        branched.gas_phase = gas_phase;
+        branched.nitrate_products = nitrate_products.second;
+        branched.alkoxy_products = alkoxy_products.second;
+        branched.reactants = reactants.second;
+        branched.unknown_properties = GetComments(object);
+        reactions.branched.push_back(branched);
       }
 
       return errors;
