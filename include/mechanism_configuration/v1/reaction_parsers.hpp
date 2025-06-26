@@ -5,8 +5,8 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/v1/types.hpp>
 #include <mechanism_configuration/v1/reaction_types.hpp>
+#include <mechanism_configuration/v1/types.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -179,7 +179,6 @@ namespace mechanism_configuration
           const std::vector<types::Phase>& existing_phases,
           types::Reactions& reactions) override;
     };
-
 
     class TunnelingParser : public IReactionParser
     {
