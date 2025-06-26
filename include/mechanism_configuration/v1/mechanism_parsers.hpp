@@ -11,8 +11,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace mechanism_configuration
 {

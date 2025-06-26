@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <mechanism_configuration/v1/mechanism.hpp>
 #include <mechanism_configuration/parser_result.hpp>
+#include <mechanism_configuration/v1/mechanism.hpp>
 
 #include <filesystem>
 

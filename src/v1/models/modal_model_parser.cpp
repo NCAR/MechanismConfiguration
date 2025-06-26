@@ -7,16 +7,13 @@
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include  <utility>
+#include <utility>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors ModalModelParser::parse(
-        const YAML::Node& object,
-        const std::vector<types::Phase>& existing_phases,
-        types::Models& models)
+    Errors ModalModelParser::parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
     {
       Errors errors;
       types::ModalModel model;
@@ -24,11 +21,12 @@ namespace mechanism_configuration
       std::vector<std::string> required_top_level_keys = { validation::type, validation::modes };
       std::vector<std::string> optional_top_level_keys = { validation::name };
 
-      std::vector<std::string> required_second_level_keys = { validation::name, 
-        validation::geometric_mean_diameter, validation::geometric_standard_deviation, validation::phase };
-      std::vector<std::string> optional_second_level_keys = { };
+      std::vector<std::string> required_second_level_keys = {
+        validation::name, validation::geometric_mean_diameter, validation::geometric_standard_deviation, validation::phase
+      };
+      std::vector<std::string> optional_second_level_keys = {};
 
-      auto has_error_top_level_keys = ValidateSchema(object, required_top_level_keys , optional_top_level_keys);
+      auto has_error_top_level_keys = ValidateSchema(object, required_top_level_keys, optional_top_level_keys);
       errors.insert(errors.end(), has_error_top_level_keys.begin(), has_error_top_level_keys.end());
 
       // Check the top level keys are valid
@@ -42,8 +40,7 @@ namespace mechanism_configuration
       bool no_errors_in_second_level_keys = true;
       for (const auto& mode_object : object[validation::modes])
       {
-        auto has_error_second_level_keys = ValidateSchema(mode_object, 
-            required_second_level_keys , optional_second_level_keys);
+        auto has_error_second_level_keys = ValidateSchema(mode_object, required_second_level_keys, optional_second_level_keys);
         errors.insert(errors.end(), has_error_second_level_keys.begin(), has_error_second_level_keys.end());
 
         if (!has_error_second_level_keys.empty())
@@ -60,7 +57,7 @@ namespace mechanism_configuration
         {
           model.name = object[validation::name].as<std::string>();
         }
-        
+
         for (const auto& mode_object : object[validation::modes])
         {
           types::Mode mode;
