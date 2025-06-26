@@ -57,7 +57,6 @@ namespace mechanism_configuration
         {
           model.name = object[validation::name].as<std::string>();
         }
-
         for (const auto& mode_object : object[validation::modes])
         {
           types::Mode mode;

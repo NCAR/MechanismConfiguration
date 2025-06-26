@@ -18,6 +18,10 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.name, "Full Configuration");
     EXPECT_EQ(mechanism.species.size(), 11);
     EXPECT_EQ(mechanism.phases.size(), 4);
+
+    EXPECT_EQ(mechanism.models.gas_model.type, "GAS_PHASE");
+    EXPECT_EQ(mechanism.models.modal_model.modes.size(), 2);
+
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium.size(), 1);
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 2);
     EXPECT_EQ(mechanism.reactions.branched.size(), 1);
