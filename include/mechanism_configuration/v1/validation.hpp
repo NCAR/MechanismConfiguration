@@ -163,7 +163,6 @@ namespace mechanism_configuration
       // ----------------------------------------
       // Model types
       // ----------------------------------------
-      
       // Gas model
       static constexpr const char* GasModel_key = "GAS_PHASE";
       // also

@@ -7,16 +7,13 @@
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include  <utility>
+#include <utility>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors GasModelParser::parse(
-        const YAML::Node& object,
-        const std::vector<types::Phase>& existing_phases,
-        types::Models& models)
+    Errors GasModelParser::parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
     {
       Errors errors;
       types::GasModel model;

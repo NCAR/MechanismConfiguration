@@ -5,8 +5,8 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 namespace mechanism_configuration
 {
@@ -52,6 +52,6 @@ namespace mechanism_configuration
         GasModel gas_model;
         ModalModel modal_model;
       };
-    }
-  }
-}
+    }  // namespace types
+  }  // namespace v1
+}  // namespace mechanism_configuration
