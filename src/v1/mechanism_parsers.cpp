@@ -176,6 +176,7 @@ namespace mechanism_configuration
       parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
       parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
       parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
+      parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
       parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
       parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();

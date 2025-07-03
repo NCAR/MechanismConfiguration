@@ -15,6 +15,7 @@ emission                               |:white_check_mark:|                     
 first_order_loss                       |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
 photolysis                             |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
 surface                                |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
+taylor_series                          |:x:|                                         |:white_check_mark:|                     |:question:|
 ternary_chemical_activation            |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
 troe                                   |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
 tunneling                              |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
@@ -32,6 +33,7 @@ tunneling                              |:white_check_mark:|                     
    first_order_loss
    photolysis
    surface
+   taylor_series
    ternary_chemical_activation
    troe
    tunneling
