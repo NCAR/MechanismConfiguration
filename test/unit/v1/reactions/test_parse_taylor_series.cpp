@@ -65,7 +65,8 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
     EXPECT_EQ(mechanism.reactions.taylor_series[2].C, 0);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].D, 300);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].E, 0);
-    EXPECT_EQ(mechanism.reactions.taylor_series[2].taylor_coefficients.size(), 0);
+    EXPECT_EQ(mechanism.reactions.taylor_series[2].taylor_coefficients.size(), 1);
+    EXPECT_EQ(mechanism.reactions.taylor_series[2].taylor_coefficients[0], 1.0);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants.size(), 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants[0].species_name, "A");
     EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants[0].coefficient, 1);

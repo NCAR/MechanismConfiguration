@@ -249,7 +249,7 @@ namespace mechanism_configuration
         /// @brief A factor that determines pressure dependence [Pa-1]
         double E{ 0 };
         /// @brief An array of coefficients for the Taylor series expansion
-        std::vector<double> taylor_coefficients{ };
+        std::vector<double> taylor_coefficients{ 1.0 };
         /// @brief A list of reactants
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products
