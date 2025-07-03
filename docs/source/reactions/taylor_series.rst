@@ -41,16 +41,15 @@ Input data for Taylor Series equations has the following format:
               - 1.0
               - 2.0
               - 3.0
-            time unit: MIN
             reactants:
-              spec1:
-              spec2:
-                qty: 2
+              - species name: spec1
+              - species name: spec2
+                coefficient: 2
               ...
             products:
-              spec3:
-              spec4:
-                yield: 0.65
+              - species name: spec3
+              - species name: spec4
+                coefficient: 0.65
               ...
 
 
@@ -72,17 +71,16 @@ Input data for Taylor Series equations has the following format:
                     2.0,
                     3.0
                 ],
-                "time unit" : "MIN",
-                "reactants" : {
-                  "spec1" : {},
-                  "spec2" : { "qty" : 2 },
+                "reactants" : [
+                  { "species name" : "spec1" },
+                  { "species name" : "spec2", "coefficient" : 2 },
                   ...
-                },
-                "products" : {
-                  "spec3" : {},
-                  "spec4" : { "yield" : 0.65 },
+                ],
+                "products" : [
+                  { "species name" : "spec3" },
+                  { "species name" : "spec4", "coefficient" : 0.65 },
                   ...
-                }
+                ]
             }
 
 The key-value pairs ``reactants`` and ``products`` are required. Reactants without a ``qty`` value
