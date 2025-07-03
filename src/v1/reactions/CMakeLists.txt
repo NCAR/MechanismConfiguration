@@ -11,6 +11,7 @@ target_sources(mechanism_configuration
     photolysis_parser.cpp
     simpol_phase_transfer_parser.cpp
     surface_parser.cpp
+    taylor_series_parser.cpp
     troe_parser.cpp
     tunneling_parser.cpp
     wet_deposition_parser.cpp

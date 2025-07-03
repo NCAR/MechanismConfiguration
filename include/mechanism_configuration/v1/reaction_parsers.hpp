@@ -169,6 +169,17 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
+    class TaylorSeriesParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for Taylor series reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
     class TroeParser : public IReactionParser
     {
      public:
