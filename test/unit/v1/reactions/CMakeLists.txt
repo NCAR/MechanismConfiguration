@@ -10,6 +10,7 @@ create_standard_test(NAME v1_parse_first_order_loss SOURCES test_parse_first_ord
 create_standard_test(NAME v1_parse_henrys_law SOURCES test_parse_henrys_law.cpp)
 create_standard_test(NAME v1_parse_photolysis SOURCES test_parse_photolysis.cpp)
 create_standard_test(NAME v1_parse_surface SOURCES test_parse_surface.cpp)
+create_standard_test(NAME v1_parse_taylor_series SOURCES test_parse_taylor_series.cpp)
 create_standard_test(NAME v1_parse_troe SOURCES test_parse_troe.cpp)
 create_standard_test(NAME v1_parse_tunneling SOURCES test_parse_tunneling.cpp)
 create_standard_test(NAME v1_parse_simpol_phase_transfer SOURCES test_parse_simpol_phase_transfer.cpp)

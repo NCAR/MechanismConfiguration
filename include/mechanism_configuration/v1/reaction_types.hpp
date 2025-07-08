@@ -235,6 +235,33 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      struct TaylorSeries
+      {
+        /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
+        double A{ 1 };
+        /// @brief Unitless exponential factor
+        double B{ 0 };
+        /// @brief Activation threshold, expected to be the negative activation energy divided by the boltzman constant
+        ///        [-E_a / k_b), K]
+        double C{ 0 };
+        /// @brief A factor that determines temperature dependence [K]
+        double D{ 300 };
+        /// @brief A factor that determines pressure dependence [Pa-1]
+        double E{ 0 };
+        /// @brief An array of coefficients for the Taylor series expansion
+        std::vector<double> taylor_coefficients{ 1.0 };
+        /// @brief A list of reactants
+        std::vector<ReactionComponent> reactants;
+        /// @brief A list of products
+        std::vector<ReactionComponent> products;
+        /// @brief An identifier, optional, uniqueness not enforced
+        std::string name;
+        /// @brief An identifier indicating which gas phase this reaction takes place in
+        std::string gas_phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
       struct Troe
       {
         /// @brief low-pressure pre-exponential factor
@@ -316,6 +343,7 @@ namespace mechanism_configuration
         std::vector<HenrysLaw> henrys_law;
         std::vector<Photolysis> photolysis;
         std::vector<Surface> surface;
+        std::vector<TaylorSeries> taylor_series;
         std::vector<Troe> troe;
         std::vector<Tunneling> tunneling;
         std::vector<UserDefined> user_defined;

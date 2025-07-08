@@ -55,6 +55,17 @@ namespace mechanism_configuration
       static constexpr const char* E = "E";
       static constexpr const char* Ea = "Ea";
 
+      // TaylorSeries
+      static constexpr const char* TaylorSeries_key = "TAYLOR_SERIES";
+      static constexpr const char* taylor_coefficients = "taylor coefficients";
+      // also these
+      // A
+      // B
+      // C
+      // D
+      // E
+      // Ea
+
       // Condensed Phase Arrhenius
       static constexpr const char* CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
       // also these
