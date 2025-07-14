@@ -31,7 +31,7 @@ namespace mechanism_configuration
         std::string name;
         double geometric_mean_diameter;
         double geometric_standard_deviation;
-        std::string phase;
+        std::vector<std::string> phases;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
