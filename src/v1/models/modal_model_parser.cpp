@@ -22,7 +22,7 @@ namespace mechanism_configuration
       std::vector<std::string> optional_top_level_keys = { validation::name };
 
       std::vector<std::string> required_second_level_keys = {
-        validation::name, validation::geometric_mean_diameter, validation::geometric_standard_deviation, validation::phase
+        validation::name, validation::geometric_mean_diameter, validation::geometric_standard_deviation, validation::phases
       };
       std::vector<std::string> optional_second_level_keys = {};
 
@@ -63,20 +63,24 @@ namespace mechanism_configuration
           mode.name = mode_object[validation::name].as<std::string>();
           mode.geometric_mean_diameter = mode_object[validation::geometric_mean_diameter].as<double>();
           mode.geometric_standard_deviation = mode_object[validation::geometric_standard_deviation].as<double>();
+          mode.phases.reserve(mode_object[validation::phases].size());
 
           // Check whether the phase for the mode is valid by comparing it to the initialized phases
-          std::string mode_phase = mode_object[validation::phase].as<std::string>();
-          auto it_found_phase =
-              std::find_if(existing_phases.begin(), existing_phases.end(), [&mode_phase](const auto& phase) { return phase.name == mode_phase; });
-          if (it_found_phase == existing_phases.end())
+          for (const auto& phase_object : mode_object[validation::phases])
           {
-            std::string line = std::to_string(mode_object[validation::phase].Mark().line + 1);
-            std::string column = std::to_string(mode_object[validation::phase].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + mode_phase });
-          }
-          else
-          {
-            mode.phase = mode_phase;
+            std::string mode_phase = phase_object.as<std::string>();
+            auto it_found_phase =
+                std::find_if(existing_phases.begin(), existing_phases.end(), [&mode_phase](const auto& phase) { return phase.name == mode_phase; });
+            if (it_found_phase == existing_phases.end())
+            {
+              std::string line = std::to_string(phase_object.Mark().line + 1);
+              std::string column = std::to_string(phase_object.Mark().column + 1);
+              errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + mode_phase });
+            }
+            else
+            {
+              mode.phases.emplace_back(mode_phase);
+            }
           }
 
           mode.unknown_properties = GetComments(mode_object);

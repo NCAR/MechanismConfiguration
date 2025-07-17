@@ -58,6 +58,10 @@ phases:
       - O3
       - H2O2
 
+  - name: organic
+    species: 
+      - organic carbon
+
 models:
   - name: gas
     type: GAS_PHASE
@@ -69,13 +73,16 @@ models:
       - name: aitken
         geometric mean diameter [m]: 2.6e-8
         geometric standard deviation: 1.6
-        phase: aqueous
+        phases: 
+          - aqueous
         __comment: Aitken mode
 
       - name: accumulation
         geometric mean diameter [m]: 1.1e-7
         geometric standard deviation: 1.8
-        phase: aqueous
+        phases: 
+          - aqueous
+          - organic
 
 reactions:
   - type: HL_PHASE_TRANSFER
