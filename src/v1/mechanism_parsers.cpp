@@ -9,6 +9,8 @@
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
+#include <sstream>
+
 namespace mechanism_configuration
 {
   namespace v1
@@ -61,9 +63,20 @@ namespace mechanism_configuration
         }
       }
 
-      if (!ContainsUniqueObjectsByName<types::Species>(all_species))
+      std::vector<std::string> duplicates = FindDuplicateObjectsByName<types::Species>(all_species);
+      if (!duplicates.empty())
       {
-        errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, "Duplicate species detected." });
+        std::ostringstream oss;
+        oss << " error: Species with duplicate names: ";
+        for (size_t i = 0; i < duplicates.size(); i++)
+        {
+          oss << "'" << duplicates[i] << "'";
+          if (i != duplicates.size()-1)
+          {
+            oss << ", ";
+          }
+        }
+        errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, oss.str() });
       }
 
       return { errors, all_species };
@@ -107,9 +120,20 @@ namespace mechanism_configuration
         }
       }
 
-      if (!ContainsUniqueObjectsByName<types::Phase>(all_phases))
+      std::vector<std::string> duplicates = FindDuplicateObjectsByName<types::Phase>(all_phases);
+      if (!duplicates.empty())
       {
-        errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, "Duplicate phases detected." });
+        std::ostringstream oss;
+        oss << " error: Phases with duplicate names: ";
+        for (size_t i = 0; i < duplicates.size(); i++)
+        {
+          oss << "'" << duplicates[i] << "'";
+          if (i != duplicates.size()-1)
+          {
+            oss << ", ";
+          }
+        }
+        errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, oss.str() });
       }
 
       return { errors, all_phases };

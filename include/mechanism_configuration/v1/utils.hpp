@@ -26,19 +26,26 @@ namespace mechanism_configuration
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
     template<typename T>
-    bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
+    std::vector<std::string> FindDuplicateObjectsByName(const std::vector<T>& collection)
     {
-      for (size_t i = 0; i < collection.size(); ++i)
+
+      std::unordered_map<std::string, size_t> name_count;
+      std::vector<std::string> duplicates;
+
+      for (const auto& elem : collection)
       {
-        for (size_t j = i + 1; j < collection.size(); ++j)
+        name_count[elem.name]++;
+      }
+
+      for (const auto& pair : name_count)
+      {
+        if (pair.second > 1)
         {
-          if (collection[i].name == collection[j].name)
-          {
-            return false;
-          }
+          duplicates.push_back(pair.first);
         }
       }
-      return true;
+
+      return duplicates;
     }
 
     template<typename SpeciesType>
