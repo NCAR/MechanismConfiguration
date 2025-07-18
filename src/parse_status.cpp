@@ -23,7 +23,6 @@ namespace mechanism_configuration
       case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
       case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
       case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
-      case ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase: return "RequestedAqueousSpeciesNotIncludedInAqueousPhase";
       case ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase: return "RequestedSpeciesNotRegisteredInPhase";
       case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
       case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";

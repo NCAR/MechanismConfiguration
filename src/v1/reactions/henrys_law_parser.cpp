@@ -75,11 +75,34 @@ namespace mechanism_configuration
         }
         combined_species.push_back(particle.solvent.species_name);
 
-        if (RequiresUnknownSpecies(combined_species, existing_species))
+        std::vector<std::string> unknown_species = FindUnknownSpecies(combined_species, existing_species);
+        if (!unknown_species.empty())
         {
+          std::ostringstream oss;
+
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species" });
+          oss << line << ":" << column;
+
+          if (object[validation::name])
+          {
+            oss << " error: Reaction '" << object[validation::name].as<std::string>() << "' requires unknown species: ";
+          }
+          else
+          {
+            oss << " error: Reaction requires unknown species: ";
+          }
+
+          for (size_t i = 0; i < unknown_species.size(); i++)
+          {
+            oss << "'" << unknown_species[i] << "'";
+            if (i != unknown_species.size()-1)
+            {
+              oss << ", ";
+            }
+          }
+
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, oss.str() });
         }
 
         // Check whether the phases in the reactions are valid by comparing them to the initialized phases
@@ -91,16 +114,40 @@ namespace mechanism_configuration
           std::string column = std::to_string(object[validation::gas][validation::name].Mark().column + 1);
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas.name });
         }
-        // Check whether the species belong to the corresponding phase
+        // Check whether the species belong to the corresponding phase in that reactions (mulitple phases)
         else
         {
           std::vector<std::string> species_registered_in_phase = { it_found_gas_phase->species.begin(), it_found_gas_phase->species.end() };
-          if (RequiresUnknownSpecies(gas.species, species_registered_in_phase))
+          std::vector<std::string> unknown_species_gas = FindUnknownSpecies(gas.species, species_registered_in_phase);
+          if (!unknown_species_gas.empty())
           {
+            std::ostringstream oss;
+
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase,
-                               line + ":" + column + ": Requried gas species in reactions do not exist in the species registered in the gas phase" });
+            oss << line << ":" << column;
+            oss << " error: Required '" << gas.name << "' species ";
+
+            for (size_t i = 0; i < unknown_species_gas.size(); i++)
+            {
+              oss << "'" << unknown_species_gas[i] << "'";
+              if (i != unknown_species_gas.size()-1)
+              {
+                oss << ", ";
+              }
+            }
+
+            if (object[validation::name])
+            {
+              oss << " in '" << object[validation::name].as<std::string>() << "' reaction";
+            }
+            else
+            {
+              oss << " in the reaction";
+            }
+            oss << " do not exist in the species registered in the '" << gas.name << "' phase";
+
+            errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, oss.str() });
           }
         }
 
@@ -123,13 +170,36 @@ namespace mechanism_configuration
             speices_in_solutes.push_back(elem.species_name);
           }
 
-          if (RequiresUnknownSpecies(speices_in_solutes, species_registered_in_phase))
+          std::vector<std::string> unknown_species_solutes = FindUnknownSpecies(speices_in_solutes, species_registered_in_phase);
+          if (!unknown_species_solutes.empty())
           {
+            std::ostringstream oss;
+
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            std::string message = line + ":" + column + ": Required " + particle.phase +
-                                  " species as solutes do not exist in the species registered in the " + particle.phase + " phase";
-            errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, message });
+            oss << line << ":" << column;
+            oss << " error: Required '" << particle.phase << "' species ";
+
+            for (size_t i = 0; i < unknown_species_solutes.size(); i++)
+            {
+              oss << "'" << unknown_species_solutes[i] << "'";
+              if (i != unknown_species_solutes.size()-1)
+              {
+                oss << ", ";
+              }
+            }
+
+            if (object[validation::name])
+            {
+              oss << " in '" << object[validation::name].as<std::string>() << "' reaction";
+            }
+            else
+            {
+              oss << " in the reaction";
+            }
+            oss << " do not exist in the species registered in the '" << particle.phase << "' phase";
+
+            errors.push_back({ ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase, oss.str() });
           }
 
           // Check whether the species in solvent belong to the corresponding phase

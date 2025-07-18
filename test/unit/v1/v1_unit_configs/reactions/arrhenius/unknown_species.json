@@ -21,10 +21,11 @@
   "reactions": [
     {
       "type": "ARRHENIUS",
+      "name": "Arrhenius",
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A"
+          "species name": "D"
         }
       ],
       "products": [
