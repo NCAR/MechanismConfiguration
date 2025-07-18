@@ -1,0 +1,12 @@
+camp-data:
+- name: invaild yield name
+  reactions:
+  - MUSICA name: foo
+    __my comment: {}
+    products:
+      bar:
+        Yield: 1.0
+    reactants:
+      foo: {}
+    type: USER_DEFINED
+  type: MECHANISM

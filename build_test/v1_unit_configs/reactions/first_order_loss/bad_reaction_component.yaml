@@ -1,0 +1,15 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  reactants:
+  - Species name: C
+  type: FIRST_ORDER_LOSS
+species:
+- name: A
+- name: B
+version: 1.0.0

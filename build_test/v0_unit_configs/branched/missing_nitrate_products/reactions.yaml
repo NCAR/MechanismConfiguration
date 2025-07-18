@@ -1,0 +1,11 @@
+camp-data:
+- name: Branched missing nitrate products
+  reactions:
+  - alkoxy products:
+      foo: {}
+    reactants:
+      bar: {}
+      baz:
+        qty: 2
+    type: WENNBERG_NO_RO2
+  type: MECHANISM

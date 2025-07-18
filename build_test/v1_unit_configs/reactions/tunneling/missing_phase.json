@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type" : "TUNNELING",
+      "gas phase": "gas",
+      "A" : 123.45,
+      "B"  : 1200.0,
+      "C"  : 1.0e8,
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

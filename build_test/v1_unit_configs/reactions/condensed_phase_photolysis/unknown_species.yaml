@@ -1,0 +1,19 @@
+name: Unknown species
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+reactions:
+- aqueous phase: aqueous
+  products:
+  - coefficient: 0.2
+    species name: C
+  reactants:
+  - coefficient: 1.2
+    species name: A
+  type: CONDENSED_PHASE_PHOTOLYSIS
+species:
+- name: A
+- name: B
+version: 1.0.0

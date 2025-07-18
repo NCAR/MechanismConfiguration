@@ -1,0 +1,6 @@
+camp-data:
+- name: Emission missing MUSICA name
+  reactions:
+  - species: bar
+    type: EMISSION
+  type: MECHANISM

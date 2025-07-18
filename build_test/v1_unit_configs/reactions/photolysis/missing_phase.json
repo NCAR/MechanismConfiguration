@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type": "PHOTOLYSIS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        "C",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aqueous phase": "aqueous",
+      "reactants": [
+        {
+          "species name": "A",
+          "Coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

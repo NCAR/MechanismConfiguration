@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type": "HL_PHASE_TRANSFER",
+      "gas": {
+        "name": "gas",
+        "species": ["A"]
+      },
+      "particle": {
+        "phase": "aqueous",
+        "solutes": ["B"],
+        "solvent": "H2O"
+      },
+      "name": "my henry's law"
+    }
+  ]
+}

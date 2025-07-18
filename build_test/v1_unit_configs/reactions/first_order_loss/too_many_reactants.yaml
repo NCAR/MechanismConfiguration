@@ -1,0 +1,20 @@
+name: Too many reactants
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+reactions:
+- gas phase: gas
+  reactants:
+  - coefficient: 1
+    species name: C
+  - coefficient: 1
+    species name: B
+  type: FIRST_ORDER_LOSS
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

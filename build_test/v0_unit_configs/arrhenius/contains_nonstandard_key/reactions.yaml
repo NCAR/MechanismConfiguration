@@ -1,0 +1,15 @@
+camp-data:
+- name: nonstandard key
+  reactions:
+  - a: 32.1
+    b: -2.3
+    c: 102.3
+    products:
+      bar:
+        yield: 0.5
+      foo: {}
+    reactants:
+      bar: {}
+      baz: {}
+    type: ARRHENIUS
+  type: MECHANISM

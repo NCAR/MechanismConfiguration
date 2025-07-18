@@ -1,0 +1,16 @@
+name: Duplicate phases configuration
+phases:
+- name: gas
+  species:
+  - A
+  - B
+- name: gas
+  species:
+  - A
+  - B
+reactions: []
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

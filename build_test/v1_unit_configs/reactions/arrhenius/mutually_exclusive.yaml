@@ -1,0 +1,19 @@
+name: Mutually Exclusive
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- C: 10
+  Ea: 0.5
+  gas phase: gas
+  products:
+  - species name: B
+  reactants:
+  - species name: A
+  type: ARRHENIUS
+species:
+- name: A
+- name: B
+version: 1.0.0

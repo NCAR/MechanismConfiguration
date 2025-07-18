@@ -1,0 +1,26 @@
+name: Valid surface
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+reactions:
+- __comment: Strawberries are the superior fruit
+  gas phase: gas
+  name: my first order loss
+  reactants:
+  - coefficient: 1
+    species name: C
+  scaling factor: 12.3
+  type: FIRST_ORDER_LOSS
+- gas phase: gas
+  reactants:
+  - coefficient: 1
+    species name: C
+  type: FIRST_ORDER_LOSS
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

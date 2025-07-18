@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "TROE",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "Species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "B"
+        }
+      ]
+    }
+  ]
+}

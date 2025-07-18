@@ -1,0 +1,19 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - coefficient: 0.2
+    species name: C
+  reactants:
+  - coefficient: 1.2
+    species name: B
+  type: PHOTOLYSIS
+species:
+- name: A
+- name: B
+version: 1.0.0

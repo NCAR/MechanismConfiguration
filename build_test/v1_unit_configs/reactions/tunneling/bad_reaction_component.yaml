@@ -1,0 +1,17 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - species name: B
+  reactants:
+  - Species name: A
+  type: TUNNELING
+species:
+- name: A
+- name: B
+version: 1.0.0

@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species configuration",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "D"
+      ],
+      "__other": "key"
+    }
+   ],
+  "reactions": [ ]
+}

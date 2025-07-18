@@ -1,0 +1,12 @@
+camp-data:
+- name: Photolysis missing MUSICA name
+  reactions:
+  - products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    reactants:
+      foo: {}
+    type: PHOTOLYSIS
+  type: MECHANISM

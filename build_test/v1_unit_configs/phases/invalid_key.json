@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "name": "Invalid key configuration",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ],
+      "other": "key"
+    }
+   ],
+  "reactions": [ ]
+}

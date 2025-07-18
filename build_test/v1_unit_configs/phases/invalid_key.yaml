@@ -1,0 +1,13 @@
+name: Invalid key configuration
+phases:
+- name: gas
+  other: key
+  species:
+  - A
+  - B
+reactions: []
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type": "FIRST_ORDER_LOSS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

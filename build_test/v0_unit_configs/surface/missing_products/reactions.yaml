@@ -1,0 +1,7 @@
+camp-data:
+- name: Surface missing products
+  reactions:
+  - MUSICA name: kfoo
+    gas-phase reactant: foo
+    type: SURFACE
+  type: MECHANISM

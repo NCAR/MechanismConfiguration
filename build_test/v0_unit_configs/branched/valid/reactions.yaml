@@ -1,0 +1,36 @@
+camp-data:
+- name: Valid brancehd reactions
+  reactions:
+  - X: 12.3
+    Y: 42.3
+    __my comment: {}
+    a0: 1.0e-05
+    alkoxy products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    n: 3
+    nitrate products:
+      quz:
+        yield: 1.0
+    reactants:
+      foo: {}
+      quz:
+        qty: 2
+    type: BRANCHED
+  - X: 0.32
+    Y: 230000000.0
+    a0: 0.423
+    alkoxy products:
+      baz: {}
+    n: 6
+    nitrate products:
+      bar:
+        yield: 0.5
+      foo: {}
+    reactants:
+      bar: {}
+      baz: {}
+    type: WENNBERG_NO_RO2
+  type: MECHANISM

@@ -1,0 +1,7 @@
+name: Invalid key
+phases: []
+reactions: []
+species:
+- _absolute tolerance: 1.0e-30
+  name: A
+version: 1.0.0

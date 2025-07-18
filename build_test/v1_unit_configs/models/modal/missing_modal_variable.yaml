@@ -1,0 +1,103 @@
+version: 1.0.0
+name: Missing modal member variable
+
+species:
+  - name: SO2
+    molecular weight [kg mol-1]: 0.06407
+    density [kg m-3]: 2.628
+    __absolute tolerance: 1.0e-20
+
+  - name: H2O2
+    HLC(298K) [mol m-3 Pa-1]: 1.011596348
+    HLC exponential factor [K]: 6340
+    diffusion coefficient [m2 s-1]: 1.46E-05
+    N star: 1.74
+    molecular weight [kg mol-1]: 0.0340147
+    density [kg m-3]: 1000.0
+    __absolute tolerance: 1.0e-10
+
+  - name: O3
+    molecular weight [kg mol-1]: 0.0479982
+    density [kg m-3]: 2.144
+    __absolute tolerance: 1.0e-20
+
+  - name: H2O
+    molecular weight [kg mol-1]: 0.01801528
+    density [kg m-3]: 997.0
+    __absolute tolerance: 1.0e-20
+
+  - name: H2SO4
+    molecular weight [kg mol-1]: 0.098079
+    density [kg m-3]: 1830.0
+    __absolute tolerance: 1.0e-20
+
+  - name: SO4
+    molecular weight [kg mol-1]: 0.09606
+    density [kg m-3]: 1769.0
+    __absolute tolerance: 1.0e-20
+
+  - name: organic carbon
+    molecular weight [kg mol-1]: 0.150
+    density [kg m-3]: 1200
+    __absolute tolerance: 1.0e-20
+
+phases:
+  - name: gas
+    species:
+      - SO2
+      - H2O2
+      - H2SO4
+      - O3
+
+  - name: aqueous
+    species:
+      - SO4
+      - H2O2
+      - H2SO4
+      - H2O
+      - O3
+      - H2O2
+
+models:
+  - name: aqueous
+    type: MODAL
+    modes:
+      - name: aitken
+        geometric mean diameter [m]: 2.6e-8
+        phases: 
+          - aqueous
+        __comment: Aitken mode
+
+      - name: accumulation
+        geometric mean diameter [m]: 1.1e-7
+        phases: 
+          - aqueous
+
+reactions:
+  - type: HL_PHASE_TRANSFER
+    gas:
+      name: gas
+      species:
+        - SO2
+        - H2O2
+    particle:
+      phase: aqueous
+      solutes:
+        - SO4
+        - H2O2
+      solvent: H2O
+    __comment: SO4 aqueous phase production due to H2O2 (kg/m2/s)
+
+  - type: HL_PHASE_TRANSFER
+    gas:
+      name: gas
+      species:
+        - SO2
+        - O3
+    particle:
+      phase: aqueous
+      solutes:
+        - SO4
+        - O3
+      solvent: H2O
+    __comment: SO4 aqueous phase production due to O3 (kg/m2/s)

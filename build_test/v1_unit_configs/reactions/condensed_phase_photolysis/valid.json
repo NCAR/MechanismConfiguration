@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "name": "Valid surface",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        "C",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aqueous phase": "aqueous",
+      "__comment": "hi",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
+      "name": "my condensed phase photolysis",
+      "scaling factor": 12.3
+    },
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "aqueous phase": "aqueous",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

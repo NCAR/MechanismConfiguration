@@ -1,0 +1,15 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - Species name: C
+  type: EMISSION
+species:
+- name: A
+- name: B
+version: 1.0.0

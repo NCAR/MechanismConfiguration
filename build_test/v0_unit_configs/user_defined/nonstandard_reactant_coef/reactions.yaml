@@ -1,0 +1,12 @@
+camp-data:
+- name: invalid quantity name
+  reactions:
+  - MUSICA name: foo
+    __my comment: {}
+    products:
+      bar: {}
+    reactants:
+      foo:
+        Qty: 2.0
+    type: USER_DEFINED
+  type: MECHANISM

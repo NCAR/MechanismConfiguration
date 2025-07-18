@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "name": "Mutually Exclusive",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "ARRHENIUS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "B"
+        }
+      ],
+      "C": 10,
+      "Ea": 0.5
+    }
+  ]
+}

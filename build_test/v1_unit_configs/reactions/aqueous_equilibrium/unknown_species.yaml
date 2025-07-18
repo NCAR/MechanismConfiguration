@@ -1,0 +1,22 @@
+name: Unknown species
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+reactions:
+- aqueous phase: aqueous
+  k_reverse: 0.32
+  products:
+  - coefficient: 1
+    species name: B
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 2
+    species name: A
+  type: AQUEOUS_EQUILIBRIUM
+species:
+- name: A
+- name: B
+version: 1.0.0

@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "PHOTOLYSIS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A",
+          "Coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

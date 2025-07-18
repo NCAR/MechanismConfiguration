@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "name": "Valid surface",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "FIRST_ORDER_LOSS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
+      "name": "my first order loss",
+      "scaling factor": 12.3,
+      "__comment": "Strawberries are the superior fruit"
+    },
+    {
+      "type": "FIRST_ORDER_LOSS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+}

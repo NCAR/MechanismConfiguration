@@ -1,0 +1,12 @@
+camp-data:
+- name: captial Q
+  reactions:
+  - MUSICA name: jfoo
+    __my comment: {}
+    products:
+      bar: {}
+    reactants:
+      foo:
+        Qty: 2.0
+    type: PHOTOLYSIS
+  type: MECHANISM

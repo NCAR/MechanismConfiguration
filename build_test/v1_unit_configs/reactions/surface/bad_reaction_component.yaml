@@ -1,0 +1,27 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+- name: surface reacting phase
+  species:
+  - A
+  - B
+reactions:
+- __coment: key lime pie is superior to all other pies
+  aqueous phase: surface reacting phase
+  gas phase: gas
+  gas-phase products:
+  - Species name: B
+    coefficient: 1
+  - coefficient: 1
+    species name: B
+  gas-phase species: A
+  name: my surface
+  reaction probability: 0.02
+  type: SURFACE
+species:
+- name: A
+- name: B
+version: 1.0.0

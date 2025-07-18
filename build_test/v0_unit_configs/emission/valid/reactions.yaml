@@ -1,0 +1,12 @@
+camp-data:
+- name: Valid emissions
+  reactions:
+  - MUSICA name: foo
+    __my comment: {}
+    species: foo
+    type: EMISSION
+  - MUSICA name: bar
+    scaling factor: 2.5
+    species: bar
+    type: EMISSION
+  type: MECHANISM

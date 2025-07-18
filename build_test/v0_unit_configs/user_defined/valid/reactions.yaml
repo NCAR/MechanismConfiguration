@@ -1,0 +1,23 @@
+camp-data:
+- name: Valid user-defined reaction
+  reactions:
+  - MUSICA name: foo
+    __my comment: {}
+    products:
+      baz:
+        yield: 1.4
+      foo: {}
+    reactants:
+      foo: {}
+      bar:
+        qty: 2
+    type: USER_DEFINED
+  - MUSICA name: bar
+    products:
+      bar: {}
+    reactants:
+      foo:
+        qty: 2
+    scaling factor: 2.5
+    type: USER_DEFINED
+  type: MECHANISM

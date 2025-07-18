@@ -1,0 +1,12 @@
+name: Missing phase
+phases: []
+reactions:
+- gas phase: gas
+  products:
+  - species name: C
+  type: EMISSION
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

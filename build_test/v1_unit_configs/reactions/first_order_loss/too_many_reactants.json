@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "name": "Too many reactants",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "FIRST_ORDER_LOSS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "C",
+          "coefficient": 1
+        },
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+}

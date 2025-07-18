@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "name": "Mutually Exclusive",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "aqueous phase": "aqueous",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "B"
+        }
+      ],
+      "C": 10,
+      "Ea": 0.5
+    }
+  ]
+}

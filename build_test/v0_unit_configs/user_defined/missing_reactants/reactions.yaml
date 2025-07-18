@@ -1,0 +1,10 @@
+camp-data:
+- name: User defined reaction missing products
+  reactions:
+  - MUSICA name: foo
+    products:
+      bar:
+        yield: 2.2
+      foo: {}
+    type: USER_DEFINED
+  type: MECHANISM

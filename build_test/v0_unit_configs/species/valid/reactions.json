@@ -1,0 +1,10 @@
+{
+  "camp-data": [
+    {
+      "name": "Valid surface reactions",
+      "type": "MECHANISM",
+      "reactions": [
+      ]
+    }
+  ]
+}

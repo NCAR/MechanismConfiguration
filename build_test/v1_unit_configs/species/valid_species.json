@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "name": "Valid species configuration",
+  "species": [
+    {
+      "name": "A",
+      "__absolute tolerance": 1.0e-30,
+      "tracer type": "AEROSOL",
+      "__long name": "ozone"
+    },
+    {
+      "name": "H2O2",
+      "HLC(298K) [mol m-3 Pa-1]": 1.011596348,
+      "HLC exponential factor [K]": 6340,
+      "diffusion coefficient [m2 s-1]": 1.46E-05,
+      "N star": 1.74,
+      "molecular weight [kg mol-1]": 0.0340147,
+      "density [kg m-3]": 1000.0,
+      "__absolute tolerance": 1.0e-10
+    },
+    {
+      "name": "aerosol stuff",
+      "molecular weight [kg mol-1]": 0.5,
+      "density [kg m-3]": 1000.0,
+      "__absolute tolerance": 1.0e-20
+    }
+  ],
+  "phases": [ ],
+  "reactions": [ ]
+}

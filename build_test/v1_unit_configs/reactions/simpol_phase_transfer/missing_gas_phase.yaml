@@ -1,0 +1,21 @@
+name: Missing gas phase
+phases:
+- name: aqueous
+  species:
+  - B
+reactions:
+- B:
+  - -1970.0
+  - 2.91
+  - 0.00196
+  - -0.496
+  aqueous phase: aqueous
+  aqueous-phase species: B
+  gas phase: gas
+  gas-phase species: A
+  name: my simpol
+  type: SIMPOL_PHASE_TRANSFER
+species:
+- name: A
+- name: B
+version: 1.0.0

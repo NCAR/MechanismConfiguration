@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "name": "Invalid key",
+  "species": [
+    {
+      "name": "A",
+      "_absolute tolerance": 1.0e-30
+    }
+  ],
+  "phases": [ ],
+  "reactions": [ ]
+}

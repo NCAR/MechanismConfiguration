@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "name": "Duplicate phases configuration",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+   ],
+  "reactions": [ ]
+}

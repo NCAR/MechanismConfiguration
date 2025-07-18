@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "name": "Valid phases configuration",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ],
+      "__other": "key"
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        "C"
+      ],
+      "__other1": "key1",
+      "__other2": "key2"
+    }
+   ],
+  "reactions": [ ]
+}

@@ -1,0 +1,11 @@
+camp-data:
+- name: invaild yield name
+  reactions:
+  - __my comment: {}
+    products:
+      bar:
+        Yield: 1.0
+    reactants:
+      foo: {}
+    type: ARRHENIUS
+  type: MECHANISM

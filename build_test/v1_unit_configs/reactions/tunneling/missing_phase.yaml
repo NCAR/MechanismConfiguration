@@ -1,0 +1,18 @@
+name: Missing phase
+phases: []
+reactions:
+- A: 123.45
+  B: 1200.0
+  C: 100000000.0
+  gas phase: gas
+  products:
+  - species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  type: TUNNELING
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

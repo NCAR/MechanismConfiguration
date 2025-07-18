@@ -1,0 +1,15 @@
+camp-data:
+- name: Invalid quantity name
+  reactions:
+  - __my comment: {}
+    products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    reactants:
+      foo: {}
+      quz:
+        Qty: 2
+    type: TERNARY_CHEMICAL_ACTIVATION
+  type: MECHANISM

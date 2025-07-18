@@ -1,0 +1,12 @@
+name: Missing phase
+phases: []
+reactions:
+- gas phase: gas
+  reactants:
+  - species name: C
+  type: FIRST_ORDER_LOSS
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

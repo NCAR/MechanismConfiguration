@@ -1,0 +1,12 @@
+camp-data:
+- name: Invalid yield name
+  reactions:
+  - MUSICA name: kbar
+    gas-phase products:
+      bar:
+        Yield: 0.5
+      foo: {}
+    gas-phase reactant: bar
+    reaction probability: 0.5
+    type: SURFACE
+  type: MECHANISM

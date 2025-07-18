@@ -1,0 +1,70 @@
+{
+  "version": "1.0.0",
+  "name": "Valid photolysis",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "name": "surface reacting phase",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "PHOTOLYSIS",
+      "gas phase": "gas",
+      "__comment": "hi",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
+      "name": "my photolysis",
+      "scaling factor": 12.3
+    },
+    {
+      "type": "PHOTOLYSIS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

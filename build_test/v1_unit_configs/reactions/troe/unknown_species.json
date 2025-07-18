@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "__my comment": {},
+      "type": "TROE",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

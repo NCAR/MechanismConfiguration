@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "name": "Valid tunneling",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type" : "TUNNELING",
+      "gas phase": "gas",
+      "A" : 123.45,
+      "B"  : 1200.0,
+      "C"  : 1.0e8,
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    },
+    {
+      "type" : "TUNNELING",
+      "gas phase": "gas",
+      "name" : "my tunneling",
+      "reactants": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "A",
+          "coefficient": 0.2,
+          "__optional thing": "hello"
+        },
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+camp-data:
+- name: invalid quantity name
+  reactions:
+  - __my comment: {}
+    products:
+      bar: {}
+    reactants:
+      foo:
+        Qty: 2.0
+    type: ARRHENIUS
+  type: MECHANISM

@@ -1,0 +1,6 @@
+name: Missing required phases key configuration
+phases:
+- name: gas
+reactions: []
+species: []
+version: 1.0.0

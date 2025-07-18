@@ -1,0 +1,22 @@
+camp-data:
+- name: Valid photolysis reactions
+  reactions:
+  - MUSICA name: jfoo
+    products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    reactants:
+      foo: {}
+    type: PHOTOLYSIS
+  - MUSICA name: jbar
+    products:
+      bar:
+        yield: 0.5
+      foo: {}
+    reactants:
+      bar: {}
+    scaling factor: 2.5
+    type: PHOTOLYSIS
+  type: MECHANISM

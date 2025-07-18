@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "name": "Duplicate Species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "A"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [ ]
+}

@@ -1,0 +1,13 @@
+camp-data:
+- name: nonstandard key
+  reactions:
+  - MUSICA name: kfoo
+    Reaction probability: 0.5
+    gas-phase products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    gas-phase reactant: foo
+    type: SURFACE
+  type: MECHANISM

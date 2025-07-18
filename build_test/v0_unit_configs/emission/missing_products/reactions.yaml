@@ -1,0 +1,6 @@
+camp-data:
+- name: Emission missing products
+  reactions:
+  - MUSICA name: foo
+    type: EMISSION
+  type: MECHANISM

@@ -1,0 +1,30 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- X: 0.00012
+  Y: 167
+  __comment: thing
+  a0: 0.15
+  alkoxy products:
+  - coefficient: 0.2
+    species name: B
+  - coefficient: 1.2
+    species name: A
+  gas phase: gas
+  n: 9
+  name: my branched
+  nitrate products:
+  - __thing: hi
+    coefficient: 1.2
+    species name: C
+  reactants:
+  - species name: A
+  type: BRANCHED_NO_RO2
+species:
+- name: A
+- name: B
+version: 1.0.0

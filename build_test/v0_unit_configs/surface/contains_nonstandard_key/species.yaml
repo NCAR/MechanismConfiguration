@@ -1,0 +1,13 @@
+camp-data:
+- diffusion coefficient [m2 s-1]: 0.00023
+  molecular weight [kg mol-1]: 0.123
+  name: foo
+  type: CHEM_SPEC
+- diffusion coefficient [m2 s-1]: 4.0e-06
+  molecular weight [kg mol-1]: 0.321
+  name: bar
+  type: CHEM_SPEC
+- name: baz
+  type: CHEM_SPEC
+- name: quz
+  type: CHEM_SPEC

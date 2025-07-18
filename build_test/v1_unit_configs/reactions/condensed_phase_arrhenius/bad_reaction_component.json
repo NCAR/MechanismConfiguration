@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_ARRHENIUS",
+      "aqueous phase": "aqueous",
+      "reactants": [
+        {
+          "Species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "B"
+        }
+      ]
+    }
+  ]
+}

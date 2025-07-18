@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "EMISSION",
+      "gas phase": "gas",
+      "products": [
+        {
+          "Species name": "C"
+        }
+      ]
+    }
+  ]
+}

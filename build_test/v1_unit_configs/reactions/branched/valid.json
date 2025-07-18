@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "name": "Valid branched",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "BRANCHED_NO_RO2",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "alkoxy products": [
+        {
+          "species name": "B",
+          "coefficient": 0.2
+        },
+        {
+          "species name": "A",
+          "coefficient": 1.2
+        }
+      ],
+      "nitrate products": [
+        {
+          "species name": "C",
+          "coefficient": 1.2,
+          "__thing": "hi"
+        }
+      ],
+      "X": 1.2e-4,
+      "Y": 167,
+      "a0": 0.15,
+      "n": 9,
+      "name": "my branched",
+      "__comment": "thing"
+    }
+  ]
+}

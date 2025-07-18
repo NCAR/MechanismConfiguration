@@ -1,0 +1,37 @@
+name: Valid photolysis
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+- name: surface reacting phase
+  species:
+  - A
+  - B
+  - C
+reactions:
+- __comment: hi
+  gas phase: gas
+  name: my photolysis
+  products:
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  scaling factor: 12.3
+  type: PHOTOLYSIS
+- gas phase: gas
+  products:
+  - coefficient: 0.2
+    species name: C
+  reactants:
+  - coefficient: 1.2
+    species name: B
+  type: PHOTOLYSIS
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

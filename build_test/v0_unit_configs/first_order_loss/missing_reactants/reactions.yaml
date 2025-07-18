@@ -1,0 +1,6 @@
+camp-data:
+- name: First-order loss missing reactants
+  reactions:
+  - MUSICA name: foo
+    type: FIRST_ORDER_LOSS
+  type: MECHANISM

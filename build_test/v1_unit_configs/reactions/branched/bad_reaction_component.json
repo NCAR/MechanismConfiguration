@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "BRANCHED_NO_RO2",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "Species name": "A"
+        }
+      ],
+      "alkoxy products": [
+        {
+          "species name": "B",
+          "coefficient": 0.2
+        },
+        {
+          "species name": "A",
+          "coefficient": 1.2
+        }
+      ],
+      "nitrate products": [
+        {
+          "species name": "C",
+          "coefficient": 1.2,
+          "__thing": "hi"
+        }
+      ],
+      "X": 1.2e-4,
+      "Y": 167,
+      "a0": 0.15,
+      "n": 9,
+      "name": "my branched",
+      "__comment": "thing"
+    }
+  ]
+}

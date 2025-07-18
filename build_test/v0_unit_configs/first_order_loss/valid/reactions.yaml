@@ -1,0 +1,12 @@
+camp-data:
+- name: Valid first-order-loss
+  reactions:
+  - MUSICA name: foo
+    __my comment: {}
+    species: foo
+    type: FIRST_ORDER_LOSS
+  - MUSICA name: bar
+    scaling factor: 2.5
+    species: bar
+    type: FIRST_ORDER_LOSS
+  type: MECHANISM

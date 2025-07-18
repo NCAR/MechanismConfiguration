@@ -1,0 +1,18 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- __my comment: {}
+  gas phase: gas
+  products:
+  - species name: C
+  reactants:
+  - species name: A
+  type: TUNNELING
+species:
+- name: A
+- name: B
+version: 1.0.0

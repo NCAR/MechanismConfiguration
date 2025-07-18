@@ -1,0 +1,6 @@
+name: Invalid key
+phases: []
+reactions: []
+species:
+- Name: A
+version: 1.0.0

@@ -1,0 +1,71 @@
+{
+  "version": "1.0.0",
+  "name": "Valid troe",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "__my object": {"a": 1.0},
+      "type": "TROE",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    },
+    {
+      "type": "TROE",
+      "gas phase": "gas",
+      "name": "my troe",
+      "reactants": [
+        {
+          "species name": "C"
+        }
+      ],
+      "products": [
+        {
+          "species name": "A",
+          "coefficient": 0.2,
+          "__optional thing": "hello"
+        },
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        }
+      ],
+      "k0_A": 32.1,
+      "k0_B": -2.3,
+      "k0_C": 102.3,
+      "kinf_A": 63.4,
+      "kinf_B": -1.3,
+      "kinf_C": 908.5,
+      "Fc": 1.3,
+      "N": 32.1
+    }
+  ]
+}

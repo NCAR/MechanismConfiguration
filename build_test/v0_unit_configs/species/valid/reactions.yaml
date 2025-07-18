@@ -1,0 +1,4 @@
+camp-data:
+- name: Valid surface reactions
+  reactions:
+  type: MECHANISM

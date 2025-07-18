@@ -1,0 +1,6 @@
+camp-data:
+- name: First-order loss missing MUSICA name
+  reactions:
+  - species: bar
+    type: FIRST_ORDER_LOSS
+  type: MECHANISM

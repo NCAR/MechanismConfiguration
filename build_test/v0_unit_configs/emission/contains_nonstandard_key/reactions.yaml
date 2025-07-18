@@ -1,0 +1,8 @@
+camp-data:
+- name: nonstandard emission
+  reactions:
+  - MUSICA name: foo
+    mUSICA name: foo
+    species: foo
+    type: EMISSION
+  type: MECHANISM

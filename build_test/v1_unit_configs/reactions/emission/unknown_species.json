@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "EMISSION",
+      "gas phase": "gas",
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

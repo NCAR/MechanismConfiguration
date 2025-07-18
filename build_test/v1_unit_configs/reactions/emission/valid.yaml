@@ -1,0 +1,30 @@
+name: Valid surface
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+- name: surface reacting phase
+  species:
+  - A
+  - B
+  - C
+reactions:
+- __comment: Dr. Pepper outranks any other soda
+  gas phase: gas
+  name: my emission
+  products:
+  - coefficient: 1
+    species name: B
+  scaling factor: 12.3
+  type: EMISSION
+- gas phase: gas
+  products:
+  - species name: B
+  type: EMISSION
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

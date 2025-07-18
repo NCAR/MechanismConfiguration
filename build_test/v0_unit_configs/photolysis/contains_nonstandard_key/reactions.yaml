@@ -1,0 +1,22 @@
+camp-data:
+- name: nonstandard key
+  reactions:
+  - MUSICA name: jfoo
+    products:
+      bar:
+        yield: 1.0
+      baz:
+        yield: 3.2
+    reactants:
+      foo: {}
+    type: PHOTOLYSIS
+  - MUSICA name: jbar
+    mUSICA name: jbar
+    products:
+      bar:
+        yield: 0.5
+      foo: {}
+    reactants:
+      bar: {}
+    type: PHOTOLYSIS
+  type: MECHANISM

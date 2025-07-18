@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "name": "Valid surface",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "SIMPOL_PHASE_TRANSFER",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "aqueous phase": "aqueous",
+      "aqueous-phase species": "B",
+      "B": [
+        -1.97E+03,
+        2.91E+00,
+        1.96E-03,
+        -4.96E-01
+      ],
+      "name": "my simpol"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - species name: C
+  type: EMISSION
+species:
+- name: A
+- name: B
+version: 1.0.0

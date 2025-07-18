@@ -1,0 +1,10 @@
+camp-data:
+- name: missing reacants
+  reactions:
+  - alkoxy products:
+      foo:
+        yield: 2.3
+    nitrate products:
+      baz: {}
+    type: WENNBERG_NO_RO2
+  type: MECHANISM

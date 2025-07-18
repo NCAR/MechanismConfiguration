@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "name": "Valid surface",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "name": "surface reacting phase",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "EMISSION",
+      "gas phase": "gas",
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "name": "my emission",
+      "scaling factor": 12.3,
+      "__comment": "Dr. Pepper outranks any other soda"
+    },
+    {
+      "type": "EMISSION",
+      "gas phase": "gas",
+      "products": [
+        {
+          "species name": "B"
+        }
+      ]
+    }
+  ]
+}

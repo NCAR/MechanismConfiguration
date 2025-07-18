@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [ ],
+  "reactions": [
+    {
+      "type": "TROE",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "A"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

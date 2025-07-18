@@ -1,0 +1,18 @@
+camp-data:
+- name: captial Q
+  reactions:
+  - X: 12.3
+    Y: 42.3
+    __my comment: {}
+    a0: 1.0e-05
+    alkoxy products:
+      bar: {}
+    n: 3
+    nitrate products:
+      quz:
+        yield: 1.0
+    reactants:
+      foo:
+        Qty: 2.0
+    type: BRANCHED
+  type: MECHANISM

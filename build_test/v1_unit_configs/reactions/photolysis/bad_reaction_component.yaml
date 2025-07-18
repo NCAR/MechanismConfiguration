@@ -1,0 +1,19 @@
+name: Bad reaction component
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - coefficient: 0.2
+    species name: B
+  reactants:
+  - Coefficient: 1.2
+    species name: A
+  type: PHOTOLYSIS
+species:
+- name: A
+- name: B
+version: 1.0.0

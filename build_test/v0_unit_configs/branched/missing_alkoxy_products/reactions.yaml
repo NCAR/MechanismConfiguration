@@ -1,0 +1,11 @@
+camp-data:
+- name: Branched missing alkoxy products
+  reactions:
+  - nitrate products:
+      foo: {}
+    reactants:
+      bar: {}
+      baz:
+        qty: 2
+    type: BRANCHED
+  type: MECHANISM
