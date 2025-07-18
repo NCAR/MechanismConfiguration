@@ -9,8 +9,9 @@ reactions:
   products:
   - species name: C
   reactants:
-  - species name: A
+  - species name: D
   type: ARRHENIUS
+  name: Arrhenius
 species:
 - name: A
 - name: B

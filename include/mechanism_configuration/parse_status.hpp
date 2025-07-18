@@ -15,21 +15,20 @@ namespace mechanism_configuration
     InvalidKey,
     UnknownKey,
     InvalidFilePath,
-    FileNotFound,
     ObjectTypeNotFound,
     RequiredKeyNotFound,
     MutuallyExclusiveOption,
-    InvalidVersion,
     DuplicateSpeciesDetected,
     DuplicatePhasesDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,
-    RequestedAqueousSpeciesNotIncludedInAqueousPhase,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
     InvalidIonPair,
-    UnknownType
+    InvalidVersion,
+    UnknownType,
+    FileNotFound
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);
