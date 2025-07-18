@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/test_v0_parse_user_defined.dir/link.d CMakeFiles/test_v0_parse_user_defined.dir/test_user_defined_config.cpp.o -o ../../../test_v0_parse_user_defined  ../../../lib/libmechanism_configuration.a ../../../lib/libgtest_main.a ../../../_deps/yaml-cpp-build/libyaml-cpp.a ../../../lib/libgtest.a

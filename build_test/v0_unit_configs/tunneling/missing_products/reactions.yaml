@@ -1,9 +1,0 @@
-camp-data:
-- name: Tunneling missing products
-  reactions:
-  - reactants:
-      bar: {}
-      baz:
-        qty: 2
-    type: TUNNELING
-  type: MECHANISM

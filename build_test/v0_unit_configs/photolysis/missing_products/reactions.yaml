@@ -1,8 +1,0 @@
-camp-data:
-- name: Photolysis missing products
-  reactions:
-  - MUSICA name: jfoo
-    reactants:
-      foo: {}
-    type: PHOTOLYSIS
-  type: MECHANISM

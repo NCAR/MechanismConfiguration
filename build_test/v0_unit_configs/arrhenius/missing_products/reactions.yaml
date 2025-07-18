@@ -1,9 +1,0 @@
-camp-data:
-- name: missing products
-  reactions:
-  - reactants:
-      bar: {}
-      baz:
-        qty: 2
-    type: ARRHENIUS
-  type: MECHANISM

@@ -1,9 +1,0 @@
-camp-data:
-- name: nonstandard user-defined reaction
-  reactions:
-  - MUSICA name: foo
-    mUSICA name: foo
-    products: {}
-    reactants: {}
-    type: USER_DEFINED
-  type: MECHANISM

@@ -1,9 +1,0 @@
-camp-data:
-- name: Ternary missing products
-  reactions:
-  - reactants:
-      bar: {}
-      baz:
-        qty: 2
-    type: TERNARY_CHEMICAL_ACTIVATION
-  type: MECHANISM
