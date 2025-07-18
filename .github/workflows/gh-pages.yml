@@ -88,6 +88,39 @@ jobs:
           make clean
           make html
           
+          # Update switcher.json to include the new version
+          python3 << EOF
+import json
+import os
+
+# Read the current switcher.json
+with open('build/html/_static/switcher.json', 'r') as f:
+    switcher = json.load(f)
+
+# Update the stable version reference
+version = "${VERSION}"
+for item in switcher:
+    if "stable" in item.get("name", ""):
+        item["name"] = f"v{version} (stable)"
+        item["version"] = f"v{version} (stable)"
+        break
+
+# Add the new version if it doesn't exist
+version_exists = any(item.get("version") == version for item in switcher)
+if not version_exists:
+    new_entry = {
+        "name": f"v{version}",
+        "version": version,
+        "url": f"https://ncar.github.io/MechanismConfiguration/versions/{version}"
+    }
+    # Insert before the dev entry (which should be last)
+    switcher.insert(-1, new_entry)
+
+# Write the updated switcher.json
+with open('build/html/_static/switcher.json', 'w') as f:
+    json.dump(switcher, f, indent=2)
+EOF
+          
           # Delete everything under _gh-pages/ that is from the primary deployment
           # but preserve dev/ and versions/ directories
           find ../_gh-pages/ -mindepth 1 ! -path '../_gh-pages/dev*' ! -path '../_gh-pages/versions*' -delete
