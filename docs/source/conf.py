@@ -14,7 +14,7 @@ copyright = f"2022-{current_year}, OpenAtmos"
 author = 'OpenAtmos'
 
 suffix = os.getenv("SWITCHER_SUFFIX", "")
-version = 'v0.3.0'
+version = os.getenv("VERSION", "v0.3.0")
 release = f'{version}{suffix}'
 
 # -- General configuration ---------------------------------------------------

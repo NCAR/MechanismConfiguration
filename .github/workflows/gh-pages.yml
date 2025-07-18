@@ -65,6 +65,7 @@ jobs:
           set -x
           cd docs
           export SWITCHER_SUFFIX=" (dev)"
+          export VERSION="v0.3.0"
           make html
           ls -l
           ls -l build/html
@@ -78,13 +79,14 @@ jobs:
           set -x
           cd docs
           # Extract version from tag (remove 'v' prefix if present)
-          VERSION="${GITHUB_REF#refs/tags/}"
-          VERSION="${VERSION#v}"
-          echo "Building documentation for version: $VERSION"
+          TAG_VERSION="${GITHUB_REF#refs/tags/}"
+          TAG_VERSION="${TAG_VERSION#v}"
+          echo "Building documentation for version: $TAG_VERSION"
           
           # Build two copies: one for stable and one for the specific version
           # First, build the stable version
           export SWITCHER_SUFFIX=" (stable)"
+          export VERSION="v${TAG_VERSION}"
           make clean
           make html
           
@@ -98,7 +100,7 @@ with open('build/html/_static/switcher.json', 'r') as f:
     switcher = json.load(f)
 
 # Update the stable version reference
-version = "${VERSION}"
+version = "${TAG_VERSION}"
 for item in switcher:
     if "stable" in item.get("name", ""):
         item["name"] = f"v{version} (stable)"
@@ -128,10 +130,11 @@ EOF
           
           # Now build the versioned copy
           export SWITCHER_SUFFIX=""
+          export VERSION="v${TAG_VERSION}"
           make clean
           make html
-          mkdir -p ../_gh-pages/versions/${VERSION}
-          cp -r build/html/* ../_gh-pages/versions/${VERSION}/
+          mkdir -p ../_gh-pages/versions/${TAG_VERSION}
+          cp -r build/html/* ../_gh-pages/versions/${TAG_VERSION}/
 
       # If a push and not on default branch, build dev documentation for testing
       - name: Build documentation (pull request)
