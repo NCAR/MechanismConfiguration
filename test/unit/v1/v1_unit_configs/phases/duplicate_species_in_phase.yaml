@@ -1,0 +1,13 @@
+version: 1.0.0
+name: Duplicate species in phase configuration
+species:
+  - name: O2
+  - name: N2
+  - name: CO2
+phases:
+  - name: gas
+    species:
+      - O2
+      - N2
+      - O2  # duplicate O2
+reactions: []
