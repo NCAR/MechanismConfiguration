@@ -22,6 +22,7 @@ namespace mechanism_configuration
     InvalidVersion,
     DuplicateSpeciesDetected,
     DuplicatePhasesDetected,
+    DuplicateSpeciesInPhaseDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,
