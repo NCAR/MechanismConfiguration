@@ -22,23 +22,36 @@ namespace mechanism_configuration
 {
   namespace v1
   {
+    struct DuplicateEntryInfo
+    {
+      std::string name;
+      std::vector<YAML::Node> nodes;
+    };
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
     template<typename T>
-    bool ContainsUniqueObjectsByName(const std::vector<T>& collection)
+    std::vector<DuplicateEntryInfo> 
+    FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
     {
-      for (size_t i = 0; i < collection.size(); ++i)
+      std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
+
+      for (const auto& [elem, node] : collection)
       {
-        for (size_t j = i + 1; j < collection.size(); ++j)
+        name_to_nodes[elem.name].push_back(node);
+      }
+
+      std::vector<DuplicateEntryInfo> duplicates;
+
+      for (const auto& [name, nodes] : name_to_nodes)
+      {
+        if (nodes.size() > 1)
         {
-          if (collection[i].name == collection[j].name)
-          {
-            return false;
-          }
+          duplicates.push_back({ name, nodes });
         }
       }
-      return true;
+
+      return duplicates;
     }
 
     template<typename SpeciesType>
