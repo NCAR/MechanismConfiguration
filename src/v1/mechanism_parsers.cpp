@@ -126,8 +126,11 @@ namespace mechanism_configuration
             {
               if (species[i] == species[j])
               {
-                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, 
-                                  "Duplicate species '" + species[i] + "' found in phase '" + name + "'." });
+                std::string line = std::to_string(object.Mark().line + 1);
+                std::string column = std::to_string(object.Mark().column + 1);
+                std::ostringstream oss;
+                oss << line << ":" << column << " error: Duplicate species '" << species[i] << "' found in '" << name << "' phase";
+                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str()});
               }
             }
           }
