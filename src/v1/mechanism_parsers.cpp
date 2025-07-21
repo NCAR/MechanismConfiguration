@@ -134,7 +134,6 @@ namespace mechanism_configuration
 
           std::vector<std::string> unknown_species = FindUnknownSpecies(species, existing_species);
           if (!unknown_species.empty())
-          if (RequiresUnknownSpecies(species, existing_species))
           {
             std::ostringstream oss;
             oss << " error: Phase '" << phase.name << "' requires unknown species: ";
