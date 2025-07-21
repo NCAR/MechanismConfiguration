@@ -11,10 +11,7 @@ An attempt at defining a model-independent configuration schema for atmospheric 
 [![codecov](https://codecov.io/gh/NCAR/MechanismConfiguration/branch/main/graph/badge.svg)](https://codecov.io/gh/NCAR/MechanismConfiguration)
 [![DOI](https://zenodo.org/badge/668458983.svg)](https://doi.org/10.5281/zenodo.15116380)
 
-Copyright (C) 2017–2025  
-&nbsp;&nbsp;&nbsp;&nbsp;University Corporation for Atmospheric Research  
-&nbsp;&nbsp;&nbsp;&nbsp;University of Illinois at Urbana–Champaign  
-&nbsp;&nbsp;&nbsp;&nbsp;Barcelona Supercomputing Center
+Copyright (C) 2017–2025 University Corporation for Atmospheric Research, University of Illinois at Urbana–Champaign, Barcelona Supercomputing Center
 
 The configuration documentation can be found [here](https://ncar.github.io/MechanismConfiguration/).
 
