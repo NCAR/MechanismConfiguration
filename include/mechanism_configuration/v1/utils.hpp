@@ -31,8 +31,7 @@ namespace mechanism_configuration
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
     template<typename T>
-    std::vector<DuplicateEntryInfo> 
-    FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
+    std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
     {
       std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
 

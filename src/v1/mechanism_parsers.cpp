@@ -16,7 +16,7 @@ namespace mechanism_configuration
   namespace v1
   {
     std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects)
-    
+
     {
       Errors errors;
       std::vector<types::Species> all_species;
@@ -78,10 +78,9 @@ namespace mechanism_configuration
             const auto& object = duplicate.nodes[i];
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            
+
             std::ostringstream oss;
-            oss << line << ":" << column << " error: Duplicate species name '" << duplicate.name
-             << "' found (" << (i + 1) << " of " << total << ")";
+            oss << line << ":" << column << " error: Duplicate species name '" << duplicate.name << "' found (" << (i + 1) << " of " << total << ")";
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, oss.str() });
           }
@@ -142,10 +141,9 @@ namespace mechanism_configuration
             const auto& object = duplicate.nodes[i];
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
-            
+
             std::ostringstream oss;
-            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name
-             << "' found (" << (i + 1) << " of " << total << ")";
+            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name << "' found (" << (i + 1) << " of " << total << ")";
 
             errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, oss.str() });
           }
