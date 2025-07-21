@@ -23,26 +23,31 @@ namespace mechanism_configuration
 {
   namespace v1
   {
+    struct DuplicateEntryInfo
+    {
+      std::string name;
+      std::vector<YAML::Node> nodes;
+    };
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
     template<typename T>
-    std::vector<std::string> FindDuplicateObjectsByName(const std::vector<T>& collection)
+    std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
     {
+      std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
 
-      std::unordered_map<std::string, size_t> name_count;
-      std::vector<std::string> duplicates;
-
-      for (const auto& elem : collection)
+      for (const auto& [elem, node] : collection)
       {
-        name_count[elem.name]++;
+        name_to_nodes[elem.name].push_back(node);
       }
 
-      for (const auto& pair : name_count)
+      std::vector<DuplicateEntryInfo> duplicates;
+
+      for (const auto& [name, nodes] : name_to_nodes)
       {
-        if (pair.second > 1)
+        if (nodes.size() > 1)
         {
-          duplicates.push_back(pair.first);
+          duplicates.push_back({ name, nodes });
         }
       }
 

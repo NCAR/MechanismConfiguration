@@ -57,8 +57,11 @@ TEST(ParserBase, DetectsDuplicateSpecies)
     std::string file = std::string("v1_unit_configs/species/duplicate_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors.size(), 4);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::DuplicateSpeciesDetected);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

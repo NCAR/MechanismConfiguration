@@ -1,4 +1,5 @@
 import datetime
+import re
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -11,7 +12,19 @@ project = 'Mechanism Configuration'
 current_year = datetime.datetime.now().year
 copyright = f"2022-{current_year}, OpenAtmos"
 author = 'OpenAtmos'
-version = 'v0.3.0'
+
+# Read version from CMakeLists.txt
+regex = r'project\(\w+\s+VERSION\s+([\d\.]+)'
+version = '0.0.0'
+# read the version from the cmake files
+with open('../../CMakeLists.txt', 'r') as f:
+    for line in f:
+        match = re.match(regex, line)
+        if match:
+            version = match.group(1)
+            break
+
+version = f'v{version}'
 release = version
 
 # -- General configuration ---------------------------------------------------
