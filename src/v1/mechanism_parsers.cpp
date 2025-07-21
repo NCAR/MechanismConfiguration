@@ -9,14 +9,18 @@
 #include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
+#include <sstream>
+
 namespace mechanism_configuration
 {
   namespace v1
   {
     std::pair<Errors, std::vector<v1::types::Species>> ParseSpecies(const YAML::Node& objects)
+    
     {
       Errors errors;
       std::vector<types::Species> all_species;
+      std::vector<std::pair<types::Species, YAML::Node>> species_node_pairs;
 
       for (const auto& object : objects)
       {
@@ -58,12 +62,30 @@ namespace mechanism_configuration
           species.unknown_properties = GetComments(object);
 
           all_species.push_back(species);
+          species_node_pairs.push_back({ species, object });
         }
       }
 
-      if (!ContainsUniqueObjectsByName<types::Species>(all_species))
+      std::vector<DuplicateEntryInfo> duplicates = FindDuplicateObjectsByName<types::Species>(species_node_pairs);
+      if (!duplicates.empty())
       {
-        errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, "Duplicate species detected." });
+        for (const auto& duplicate : duplicates)
+        {
+          size_t total = duplicate.nodes.size();
+
+          for (size_t i = 0; i < total; ++i)
+          {
+            const auto& object = duplicate.nodes[i];
+            std::string line = std::to_string(object.Mark().line + 1);
+            std::string column = std::to_string(object.Mark().column + 1);
+            
+            std::ostringstream oss;
+            oss << line << ":" << column << " error: Duplicate species name '" << duplicate.name
+             << "' found (" << (i + 1) << " of " << total << ")";
+
+            errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, oss.str() });
+          }
+        }
       }
 
       return { errors, all_species };
@@ -74,6 +96,8 @@ namespace mechanism_configuration
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
+      std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
+
       const std::vector<std::string> phase_required_keys = { validation::name, validation::species };
       const std::vector<std::string> phase_optional_keys = {};
 
@@ -100,16 +124,32 @@ namespace mechanism_configuration
           {
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, "Phase requires unknown species." });
           }
-          else
-          {
-            all_phases.push_back(phase);
-          }
+
+          all_phases.push_back(phase);
+          phase_node_pairs.push_back({ phase, object });
         }
       }
 
-      if (!ContainsUniqueObjectsByName<types::Phase>(all_phases))
+      std::vector<DuplicateEntryInfo> duplicates = FindDuplicateObjectsByName<types::Phase>(phase_node_pairs);
+      if (!duplicates.empty())
       {
-        errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, "Duplicate phases detected." });
+        for (const auto& duplicate : duplicates)
+        {
+          size_t total = duplicate.nodes.size();
+
+          for (size_t i = 0; i < total; ++i)
+          {
+            const auto& object = duplicate.nodes[i];
+            std::string line = std::to_string(object.Mark().line + 1);
+            std::string column = std::to_string(object.Mark().column + 1);
+            
+            std::ostringstream oss;
+            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name
+             << "' found (" << (i + 1) << " of " << total << ")";
+
+            errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, oss.str() });
+          }
+        }
       }
 
       return { errors, all_phases };
