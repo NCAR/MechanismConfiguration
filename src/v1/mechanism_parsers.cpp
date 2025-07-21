@@ -119,8 +119,22 @@ namespace mechanism_configuration
           phase.species = species;
           phase.unknown_properties = GetComments(object);
 
+          // Check for duplicate species within this phase
+          for (size_t i = 0; i < species.size(); ++i)
+          {
+            for (size_t j = i + 1; j < species.size(); ++j)
+            {
+              if (species[i] == species[j])
+              {
+                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, 
+                                  "Duplicate species '" + species[i] + "' found in phase '" + name + "'." });
+              }
+            }
+          }
+
           std::vector<std::string> unknown_species = FindUnknownSpecies(species, existing_species);
           if (!unknown_species.empty())
+          if (RequiresUnknownSpecies(species, existing_species))
           {
             std::ostringstream oss;
             oss << " error: Phase '" << phase.name << "' requires unknown species: ";

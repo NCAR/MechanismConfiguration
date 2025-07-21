@@ -20,6 +20,7 @@ namespace mechanism_configuration
     MutuallyExclusiveOption,
     DuplicateSpeciesDetected,
     DuplicatePhasesDetected,
+    DuplicateSpeciesInPhaseDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,

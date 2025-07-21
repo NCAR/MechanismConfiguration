@@ -20,6 +20,7 @@ namespace mechanism_configuration
       case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
       case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
       case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
+      case ConfigParseStatus::DuplicateSpeciesInPhaseDetected: return "DuplicateSpeciesInPhaseDetected";
       case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
       case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
       case ConfigParseStatus::UnknownPhase: return "UnknownPhase";

@@ -103,3 +103,21 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
     }
   }
 }
+
+TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
+{
+  v1::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    std::string file = std::string("v1_unit_configs/phases/duplicate_species_in_phase") + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+    for (auto& error : parsed.errors)
+    {
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    }
+  }
+}
