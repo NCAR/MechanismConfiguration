@@ -105,7 +105,6 @@ namespace mechanism_configuration
               {
                 errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, 
                                   "Duplicate species '" + species[i] + "' found in phase '" + name + "'." });
-                break;
               }
             }
           }
