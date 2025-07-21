@@ -126,8 +126,8 @@ namespace mechanism_configuration
             {
               if (species[i] == species[j])
               {
-                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, 
-                                  "Duplicate species '" + species[i] + "' found in phase '" + name + "'." });
+                errors.push_back(
+                    { ConfigParseStatus::DuplicateSpeciesInPhaseDetected, "Duplicate species '" + species[i] + "' found in phase '" + name + "'." });
               }
             }
           }
