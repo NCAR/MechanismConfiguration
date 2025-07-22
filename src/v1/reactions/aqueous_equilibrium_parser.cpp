@@ -85,7 +85,7 @@ namespace mechanism_configuration
           for (size_t i = 0; i < unknown_species.size(); i++)
           {
             oss << "'" << unknown_species[i] << "'";
-            if (i != unknown_species.size()-1)
+            if (i != unknown_species.size() - 1)
             {
               oss << ", ";
             }
@@ -108,12 +108,12 @@ namespace mechanism_configuration
             std::string line = std::to_string(object.Mark().line + 1);
             std::string column = std::to_string(object.Mark().column + 1);
             oss << line << ":" << column;
-            oss << " error: '" <<  phase_it->name << "' phase requires unknown '" <<  phase_it->name << "' species: ";
+            oss << " error: '" << phase_it->name << "' phase requires unknown '" << phase_it->name << "' species: ";
 
             for (size_t i = 0; i < unknown_species.size(); i++)
             {
               oss << "'" << unknown_species[i] << "'";
-              if (i != unknown_species.size()-1)
+              if (i != unknown_species.size() - 1)
               {
                 oss << ", ";
               }

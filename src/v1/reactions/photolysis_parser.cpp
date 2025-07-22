@@ -75,7 +75,7 @@ namespace mechanism_configuration
           for (size_t i = 0; i < unknown_species.size(); i++)
           {
             oss << "'" << unknown_species[i] << "'";
-            if (i != unknown_species.size()-1)
+            if (i != unknown_species.size() - 1)
             {
               oss << ", ";
             }

@@ -96,7 +96,7 @@ namespace mechanism_configuration
           for (size_t i = 0; i < unknown_species.size(); i++)
           {
             oss << "'" << unknown_species[i] << "'";
-            if (i != unknown_species.size()-1)
+            if (i != unknown_species.size() - 1)
             {
               oss << ", ";
             }
@@ -131,7 +131,7 @@ namespace mechanism_configuration
             for (size_t i = 0; i < unknown_species_gas.size(); i++)
             {
               oss << "'" << unknown_species_gas[i] << "'";
-              if (i != unknown_species_gas.size()-1)
+              if (i != unknown_species_gas.size() - 1)
               {
                 oss << ", ";
               }
@@ -183,7 +183,7 @@ namespace mechanism_configuration
             for (size_t i = 0; i < unknown_species_solutes.size(); i++)
             {
               oss << "'" << unknown_species_solutes[i] << "'";
-              if (i != unknown_species_solutes.size()-1)
+              if (i != unknown_species_solutes.size() - 1)
               {
                 oss << ", ";
               }
