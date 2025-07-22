@@ -26,14 +26,14 @@ jobs:
 
       - name: Setup Python
         if: matrix.architecture == 'Win32'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           architecture: 'x86'
 
       - name: Setup Python
         if: matrix.architecture == 'x64'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           architecture: 'x64'

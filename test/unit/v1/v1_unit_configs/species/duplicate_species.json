@@ -3,10 +3,25 @@
   "name": "Duplicate Species",
   "species": [
     {
-      "name": "A"
+      "name": "FOO"
     },
     {
-      "name": "A"
+      "name": "BAZ"
+    },
+    {
+      "name": "CYON"
+    },
+    {
+      "name": "QUIZ"
+    },
+    {
+      "name": "BAR"
+    },
+    {
+      "name": "FOO"
+    },
+    {
+      "name": "QUIZ"
     }
   ],
   "phases": [ ],
