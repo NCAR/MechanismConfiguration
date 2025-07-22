@@ -39,7 +39,7 @@ def update_switcher_json(switcher_path, version):
             break
 
     # Add the new version if it doesn't exist
-    version_exists = any(item.get("version") == version for item in switcher)
+    version_exists = any(item.get("version", "").lstrip("v") == version for item in switcher)
     if not version_exists:
         new_entry = {
             "name": f"v{version}",
