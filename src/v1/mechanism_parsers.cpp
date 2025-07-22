@@ -132,9 +132,20 @@ namespace mechanism_configuration
             }
           }
 
-          if (RequiresUnknownSpecies(species, existing_species))
+          std::vector<std::string> unknown_species = FindUnknownSpecies(species, existing_species);
+          if (!unknown_species.empty())
           {
-            errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, "Phase requires unknown species." });
+            std::ostringstream oss;
+            oss << " error: Phase '" << phase.name << "' requires unknown species: ";
+            for (size_t i = 0; i < unknown_species.size(); i++)
+            {
+              oss << "'" << unknown_species[i] << "'";
+              if (i != unknown_species.size()-1)
+              {
+                oss << ", ";
+              }
+            }
+            errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, oss.str() });
           }
 
           all_phases.push_back(phase);

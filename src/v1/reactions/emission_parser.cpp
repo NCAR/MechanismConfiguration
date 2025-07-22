@@ -48,11 +48,34 @@ namespace mechanism_configuration
           requested_species.push_back(spec.species_name);
         }
 
-        if (RequiresUnknownSpecies(requested_species, existing_species))
+        std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, existing_species);
+        if (!unknown_species.empty())
         {
+          std::ostringstream oss;
+
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Reaction requires unknown species" });
+          oss << line << ":" << column;
+
+          if (object[validation::name])
+          {
+            oss << " error: Reaction '" << object[validation::name].as<std::string>() << "' requires unknown species: ";
+          }
+          else
+          {
+            oss << " error: Reaction requires unknown species: ";
+          }
+
+          for (size_t i = 0; i < unknown_species.size(); i++)
+          {
+            oss << "'" << unknown_species[i] << "'";
+            if (i != unknown_species.size()-1)
+            {
+              oss << ", ";
+            }
+          }
+
+          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, oss.str() });
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();

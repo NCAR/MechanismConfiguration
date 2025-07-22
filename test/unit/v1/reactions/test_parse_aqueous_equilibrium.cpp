@@ -58,10 +58,10 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::PhaseRequiresUnknownSpecies);
     for (auto& error : parsed.errors)
     {
-      std::cout << error.second << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
