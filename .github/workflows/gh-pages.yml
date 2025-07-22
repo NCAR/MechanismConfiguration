@@ -82,17 +82,17 @@ jobs:
           contains(github.event_name, 'push') &&
           contains(github.ref, env.DEFAULT_BRANCH)
         run: |
-          set -x
-          cd docs
-          # Extract version from CMakeLists.txt for dev builds
-          CMAKE_VERSION=$(grep "project.*VERSION" ../CMakeLists.txt | sed -n 's/.*VERSION\s\+\([0-9.]\+\).*/\1/p')
-          export SWITCHER_SUFFIX=" (dev)"
-          export VERSION="v${CMAKE_VERSION}"
-          make html
-          ls -l
-          ls -l build/html
-          rm -rf ../_gh-pages/dev/*
-          cp -r build/html/* ../_gh-pages/dev/
+            set -x
+            cd docs
+            # Extract version from CMakeLists.txt for dev builds
+            CMAKE_VERSION=$(grep "project.*VERSION" ../CMakeLists.txt | sed -n 's/.*VERSION\s\+\([0-9.]\+\).*/\1/p')
+            export SWITCHER_SUFFIX=" (dev)"
+            export VERSION="v${CMAKE_VERSION}"
+            make html
+            ls -l
+            ls -l build/html
+            rm -rf ../_gh-pages/dev/*
+            cp -r build/html/* ../_gh-pages/dev/
 
       # If a release, build versioned documentation
       - name: Build and copy documentation (release)
