@@ -36,9 +36,19 @@ namespace mechanism_configuration
     {
       std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
 
-      for (const auto& [elem, node] : collection)
+      if constexpr (std::is_same<T, std::string>::value)
       {
-        name_to_nodes[elem.name].push_back(node);
+        for (const auto& [elem, node] : collection)
+        {
+          name_to_nodes[elem].push_back(node);
+        }
+      }
+      else 
+      {
+        for (const auto& [elem, node] : collection)
+        {
+          name_to_nodes[elem.name].push_back(node);
+        }
       }
 
       std::vector<DuplicateEntryInfo> duplicates;
