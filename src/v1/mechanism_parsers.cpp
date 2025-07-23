@@ -130,7 +130,7 @@ namespace mechanism_configuration
                 std::string column = std::to_string(object.Mark().column + 1);
                 std::ostringstream oss;
                 oss << line << ":" << column << " error: Duplicate species '" << species[i] << "' found in '" << name << "' phase";
-                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str()});
+                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str() });
               }
             }
           }
