@@ -43,7 +43,7 @@ namespace mechanism_configuration
           name_to_nodes[elem].push_back(node);
         }
       }
-      else 
+      else
       {
         for (const auto& [elem, node] : collection)
         {
