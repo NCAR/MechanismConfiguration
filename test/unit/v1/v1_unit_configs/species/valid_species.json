@@ -23,6 +23,7 @@
       "name": "aerosol stuff",
       "molecular weight [kg mol-1]": 0.5,
       "density [kg m-3]": 1000.0,
+      "constant mixing ratio [mol mol-1]": 1.0e-6,
       "__absolute tolerance": 1.0e-20
     }
   ],
