@@ -46,6 +46,8 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[2].molecular_weight.value(), 0.5);
     EXPECT_EQ(mechanism.species[2].density.has_value(), true);
     EXPECT_EQ(mechanism.species[2].density.value(), 1000.0);
+    EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.value(), 1.0e-6);
     EXPECT_EQ(mechanism.species[2].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"], "1.0e-20");
   }

@@ -31,6 +31,7 @@ namespace mechanism_configuration
       static constexpr const char* density = "density [kg m-3]";
       static constexpr const char* tracer_type = "tracer type";
       static constexpr const char* constant_concentration = "constant concentration [mol m-3]";
+      static constexpr const char* constant_mixing_ratio = "constant mixing ratio [mol mol-1]";
       static constexpr const char* is_third_body = "is third body";
       static constexpr const char* third_body = "THIRD_BODY";
 

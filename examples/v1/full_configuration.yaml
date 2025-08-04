@@ -16,6 +16,7 @@ species:
   N star: 1.74
   molecular weight [kg mol-1]: 0.0340147
   density [kg m-3]: 1000
+  constant mixing ratio [mol mol-1]: 1.0e-6
   __absolute tolerance: 1.0e-10
 - name: ethanol
   diffusion coefficient [m2 s-1]: 9.5e-06

@@ -18,5 +18,6 @@ species:
 - __absolute tolerance: 1.0e-20
   density [kg m-3]: 1000.0
   molecular weight [kg mol-1]: 0.5
+  constant mixing ratio [mol mol-1]: 1.0e-6
   name: aerosol stuff
 version: 1.0.0
