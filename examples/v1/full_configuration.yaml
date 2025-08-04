@@ -5,9 +5,9 @@ species:
 - name: A
   __absolute tolerance: 1.0e-30
 - name: B
-  tracer type: AEROSOL
+  constant concentration [mol m-3]: 1.0e19
 - name: C
-  tracer type: THIRD_BODY
+  is third body: true
 - name: M
 - name: H2O2
   HLC(298K) [mol m-3 Pa-1]: 1.011596348

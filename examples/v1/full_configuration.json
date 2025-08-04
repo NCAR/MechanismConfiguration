@@ -8,11 +8,11 @@
     },
     {
       "name": "B",
-      "tracer type": "AEROSOL"
+      "constant concentration [mol m-3]": 1.0e19
     },
     {
       "name": "C",
-      "tracer type": "THIRD_BODY"
+      "is third body": true
     },
     {
       "name": "M"

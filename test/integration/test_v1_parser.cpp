@@ -37,10 +37,10 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
 
-    EXPECT_EQ(mechanism.species[1].tracer_type.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].tracer_type.value(), "AEROSOL");
-    EXPECT_EQ(mechanism.species[2].tracer_type.has_value(), true);
-    EXPECT_EQ(mechanism.species[2].tracer_type.value(), "THIRD_BODY");
+    EXPECT_EQ(mechanism.species[1].constant_concentration.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].constant_concentration.value(), 1.0e19);
+    EXPECT_EQ(mechanism.species[2].is_third_body.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].is_third_body.value(), true);
 
     EXPECT_EQ(mechanism.version.major, 1);
     EXPECT_EQ(mechanism.version.minor, 0);

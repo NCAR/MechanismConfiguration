@@ -5,7 +5,7 @@
     {
       "name": "A",
       "__absolute tolerance": 1.0e-30,
-      "tracer type": "AEROSOL",
+      "is third body": true,
       "__long name": "ozone"
     },
     {
@@ -15,6 +15,7 @@
       "diffusion coefficient [m2 s-1]": 1.46E-05,
       "N star": 1.74,
       "molecular weight [kg mol-1]": 0.0340147,
+      "constant concentration [mol m-3]": 2.5E19,
       "density [kg m-3]": 1000.0,
       "__absolute tolerance": 1.0e-10
     },

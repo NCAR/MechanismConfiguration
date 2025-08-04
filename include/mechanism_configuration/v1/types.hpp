@@ -27,6 +27,8 @@ namespace mechanism_configuration
         std::optional<double> n_star;
         std::optional<double> density;
         std::optional<std::string> tracer_type;
+        std::optional<double> constant_concentration;
+        std::optional<bool> is_third_body;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
