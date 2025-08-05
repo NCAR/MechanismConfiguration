@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Missing aqueous phase",
+  "name": "Missing condensed phase",
   "species": [
     {
       "name": "A"
@@ -36,7 +36,7 @@
           "species name": "C"
         }
       ],
-      "aqueous phase": "surface reacting phase"
+      "condensed phase": "surface reacting phase"
     }
   ]
 }

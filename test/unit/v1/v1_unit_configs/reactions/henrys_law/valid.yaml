@@ -26,7 +26,7 @@ reactions:
         - B
       solvent: H2O
     name: my henry's law
-    __comment: B aqueous phase production (kg/m2/s)
+    __comment: B condensed phase production (kg/m2/s)
   - type: HL_PHASE_TRANSFER
     gas:
       name: gas

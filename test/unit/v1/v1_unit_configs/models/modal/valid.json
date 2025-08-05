@@ -57,7 +57,7 @@
         "H2O2",
         "H2SO4",
         "O3"
-      ] 
+      ]
     },
     {
       "name": "aqueous",
@@ -90,14 +90,19 @@
           "name": "aitken",
           "geometric mean diameter [m]": 2.6e-8,
           "geometric standard deviation": 1.6,
-          "phases": ["aqueous"],
+          "phases": [
+            "aqueous"
+          ],
           "__comment": "Aitken mode"
         },
         {
           "name": "accumulation",
           "geometric mean diameter [m]": 1.1e-7,
           "geometric standard deviation": 1.8,
-          "phases": ["aqueous", "organic"]
+          "phases": [
+            "aqueous",
+            "organic"
+          ]
         }
       ]
     }
@@ -105,33 +110,41 @@
   "reactions": [
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas": 
-      {
+      "gas": {
         "name": "gas",
-        "species": ["SO2", "H2O2"]
+        "species": [
+          "SO2",
+          "H2O2"
+        ]
       },
-      "particle":
-      {
+      "particle": {
         "phase": "aqueous",
-        "solutes": ["SO4", "H2O2"],
+        "solutes": [
+          "SO4",
+          "H2O2"
+        ],
         "solvent": "H2O"
       },
-      "__comment": "SO4 aqueous phase production due to H2O2 (kg/m2/s)"
+      "__comment": "SO4 condensed phase production due to H2O2 (kg/m2/s)"
     },
     {
       "type": "HL_PHASE_TRANSFER",
-      "gas":
-      {
+      "gas": {
         "name": "gas",
-        "species": ["SO2", "O3"]
+        "species": [
+          "SO2",
+          "O3"
+        ]
       },
-      "particle":
-      {
+      "particle": {
         "phase": "aqueous",
-        "solutes": ["SO4", "O3"],
+        "solutes": [
+          "SO4",
+          "O3"
+        ],
         "solvent": "H2O"
       },
-      "__comment": "SO4 aqueous phase production due to O3 (kg/m2/s)"
+      "__comment": "SO4 condensed phase production due to O3 (kg/m2/s)"
     }
   ]
 }

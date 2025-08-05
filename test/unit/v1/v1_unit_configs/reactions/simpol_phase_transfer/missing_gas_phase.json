@@ -22,8 +22,8 @@
       "type": "SIMPOL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": "B",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "B",
       "B": [
         -1.97E+03,
         2.91E+00,

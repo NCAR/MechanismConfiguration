@@ -122,7 +122,10 @@
           "name": "accumulation",
           "geometric mean diameter [m]": 1.1e-7,
           "geometric standard deviation": 1.8,
-          "phases": ["aqueous", "organic"]
+          "phases": [
+            "aqueous",
+            "organic"
+          ]
         }
       ]
     }
@@ -132,11 +135,15 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["H2O2"]
+        "species": [
+          "H2O2"
+        ]
       },
       "particle": {
         "phase": "aqueous",
-        "solutes": ["H2O2_aq"],
+        "solutes": [
+          "H2O2_aq"
+        ],
         "solvent": "H2O"
       },
       "name": "my henry's law"
@@ -145,8 +152,8 @@
       "type": "SIMPOL_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "ethanol",
-      "aqueous phase": "aqueous",
-      "aqueous-phase species": "ethanol_aq",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "ethanol_aq",
       "B": [
         -1.97E+03,
         2.91E+00,
@@ -157,7 +164,7 @@
     },
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "A": 1.14e-2,
       "C": 2300.0,
       "k_reverse": 0.32,
@@ -181,7 +188,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "A": 123.45,
       "Ea": 123.45,
       "B": 1.3,
@@ -207,7 +214,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "A": 123.45,
       "C": 123.45,
       "B": 1.3,
@@ -233,7 +240,7 @@
     },
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "H2O2_aq",
@@ -306,7 +313,7 @@
           "coefficient": 1
         }
       ],
-      "aqueous phase": "surface reacting phase",
+      "condensed phase": "surface reacting phase",
       "name": "my surface"
     },
     {
@@ -387,7 +394,7 @@
     },
     {
       "type": "WET_DEPOSITION",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "name": "rxn cloud",
       "scaling factor": 12.3
     },

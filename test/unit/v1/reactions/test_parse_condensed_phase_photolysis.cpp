@@ -16,7 +16,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis.size(), 2);
 
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].aqueous_phase, "aqueous");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].condensed_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].name, "my condensed phase photolysis");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].scaling_factor, 12.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].reactants.size(), 1);
@@ -28,7 +28,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[0].unknown_properties["__comment"], "hi");
 
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].aqueous_phase, "aqueous");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].condensed_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].scaling_factor, 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].reactants.size(), 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis[1].reactants[0].species_name, "B");

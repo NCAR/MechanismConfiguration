@@ -13,7 +13,7 @@ reactions:
   D: 63.4
   E: -1.3
   __solver_param: 0.1
-  aqueous phase: aqueous
+  condensed phase: aqueous
   name: my arrhenius
   products:
   - coefficient: 1.2
@@ -29,7 +29,7 @@ reactions:
   C: 12.3
   D: 6.4
   E: -0.3
-  aqueous phase: aqueous
+  condensed phase: aqueous
   name: my arrhenius2
   products:
   - __optional thing: hello
@@ -41,7 +41,7 @@ reactions:
   - coefficient: 0.1
     species name: B
   type: CONDENSED_PHASE_ARRHENIUS
-- aqueous phase: aqueous
+- condensed phase: aqueous
   products:
   - species name: C
   reactants:

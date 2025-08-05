@@ -72,7 +72,7 @@ namespace mechanism_configuration
       // Condensed Phase Arrhenius
       static constexpr const char* CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
       // also these
-      // aqueous phase
+      // condensed phase
       // A
       // B
       // C
@@ -112,7 +112,7 @@ namespace mechanism_configuration
       static constexpr const char* reaction_probability = "reaction probability";
       static constexpr const char* gas_phase_species = "gas-phase species";
       static constexpr const char* gas_phase_products = "gas-phase products";
-      static constexpr const char* aqueous_phase = "aqueous phase";
+      static constexpr const char* condensed_phase = "condensed phase";
 
       // Photolysis
       static constexpr const char* Photolysis_key = "PHOTOLYSIS";
@@ -122,7 +122,7 @@ namespace mechanism_configuration
       static constexpr const char* CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
       // also
       // scaling factor
-      // aqueous phase
+      // condensed phase
 
       // Emissions
       static constexpr const char* Emission_key = "EMISSION";
@@ -134,18 +134,18 @@ namespace mechanism_configuration
 
       // Simpol Phase Transfer
       static constexpr const char* SimpolPhaseTransfer_key = "SIMPOL_PHASE_TRANSFER";
-      static constexpr const char* aqueous_phase_species = "aqueous-phase species";
+      static constexpr const char* condensed_phase_species = "condensed-phase species";
       // also
       // gas phase
       // gas-phase species
-      // aqueous phase
-      // aqueous-phase species
+      // condensed phase
+      // condensed-phase species
       // B
 
       // Aqueous Equilibrium
       static constexpr const char* AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
       // also
-      // aqueous phase
+      // condensed phase
       // A
       // C
       static constexpr const char* k_reverse = "k_reverse";
@@ -154,7 +154,7 @@ namespace mechanism_configuration
       static constexpr const char* WetDeposition_key = "WET_DEPOSITION";
       // also
       // scaling factor
-      // aqueous phase
+      // condensed phase
 
       // Henry's Law Phase Transfer
       static constexpr const char* HenrysLaw_key = "HL_PHASE_TRANSFER";

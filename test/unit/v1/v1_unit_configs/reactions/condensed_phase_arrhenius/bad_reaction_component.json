@@ -25,7 +25,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "Species name": "A"

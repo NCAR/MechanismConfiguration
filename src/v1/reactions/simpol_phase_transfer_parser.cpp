@@ -23,7 +23,7 @@ namespace mechanism_configuration
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
       std::vector<std::string> required_keys = {
-        validation::type, validation::gas_phase, validation::gas_phase_species, validation::aqueous_phase, validation::aqueous_phase_species,
+        validation::type, validation::gas_phase, validation::gas_phase_species, validation::condensed_phase, validation::condensed_phase_species,
         validation::B
       };
       std::vector<std::string> optional_keys = { validation::name };
@@ -33,14 +33,14 @@ namespace mechanism_configuration
       if (validate.empty())
       {
         std::string gas_phase_species = object[validation::gas_phase_species].as<std::string>();
-        std::string aqueous_phase_species = object[validation::aqueous_phase_species].as<std::string>();
+        std::string condensed_phase_species = object[validation::condensed_phase_species].as<std::string>();
 
         if (object[validation::name])
         {
           simpol_phase_transfer.name = object[validation::name].as<std::string>();
         }
 
-        std::vector<std::string> requested_species{ gas_phase_species, aqueous_phase_species };
+        std::vector<std::string> requested_species{ gas_phase_species, condensed_phase_species };
         std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, existing_species);
         if (!unknown_species.empty())
         {
@@ -71,14 +71,14 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, oss.str() });
         }
 
-        std::string aqueous_phase = object[validation::aqueous_phase].as<std::string>();
+        std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
         auto aqueous_it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&aqueous_phase](const auto& phase) { return phase.name == aqueous_phase; });
+            std::find_if(existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
         if (aqueous_it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::aqueous_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::aqueous_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aqueous_phase });
+          std::string line = std::to_string(object[validation::condensed_phase].Mark().line + 1);
+          std::string column = std::to_string(object[validation::condensed_phase].Mark().column + 1);
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + condensed_phase });
         }
         else
         {
@@ -86,13 +86,13 @@ namespace mechanism_configuration
           auto spec_it = std::find_if(
               phase.species.begin(),
               phase.species.end(),
-              [&aqueous_phase_species](const std::string& species) { return species == aqueous_phase_species; });
+              [&condensed_phase_species](const std::string& species) { return species == condensed_phase_species; });
           if (spec_it == phase.species.end())
           {
-            std::string line = std::to_string(object[validation::aqueous_phase_species].Mark().line + 1);
-            std::string column = std::to_string(object[validation::aqueous_phase_species].Mark().column + 1);
+            std::string line = std::to_string(object[validation::condensed_phase_species].Mark().line + 1);
+            std::string column = std::to_string(object[validation::condensed_phase_species].Mark().column + 1);
             errors.push_back(
-                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + aqueous_phase_species });
+                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + condensed_phase_species });
           }
         }
 
@@ -130,10 +130,10 @@ namespace mechanism_configuration
         types::ReactionComponent gas_component;
         gas_component.species_name = gas_phase_species;
         simpol_phase_transfer.gas_phase_species = gas_component;
-        simpol_phase_transfer.aqueous_phase = aqueous_phase;
+        simpol_phase_transfer.condensed_phase = condensed_phase;
         types::ReactionComponent aqueous_component;
-        aqueous_component.species_name = aqueous_phase_species;
-        simpol_phase_transfer.aqueous_phase_species = aqueous_component;
+        aqueous_component.species_name = condensed_phase_species;
+        simpol_phase_transfer.condensed_phase_species = aqueous_component;
         simpol_phase_transfer.unknown_properties = GetComments(object);
         reactions.simpol_phase_transfer.push_back(simpol_phase_transfer);
       }

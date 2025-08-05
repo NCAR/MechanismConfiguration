@@ -22,7 +22,7 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::aqueous_phase };
+      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::condensed_phase };
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
@@ -71,7 +71,7 @@ namespace mechanism_configuration
           condensed_phase_arrhenius.name = object[validation::name].as<std::string>();
         }
 
-        std::string aqueous_phase = object[validation::aqueous_phase].as<std::string>();
+        std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
 
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)
@@ -114,12 +114,12 @@ namespace mechanism_configuration
         }
 
         auto phase_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&aqueous_phase](const types::Phase& phase) { return phase.name == aqueous_phase; });
+            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
 
         if (phase_it != existing_phases.end())
         {
-          std::vector<std::string> aqueous_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
-          std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, aqueous_phase_species);
+          std::vector<std::string> condensed_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
+          std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, condensed_phase_species);
           if (!unknown_species.empty())
           {
             std::ostringstream oss;
@@ -145,10 +145,10 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object.Mark().line + 1);
           std::string column = std::to_string(object.Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + aqueous_phase });
+          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + condensed_phase });
         }
 
-        condensed_phase_arrhenius.aqueous_phase = aqueous_phase;
+        condensed_phase_arrhenius.condensed_phase = condensed_phase;
         condensed_phase_arrhenius.products = products.second;
         condensed_phase_arrhenius.reactants = reactants.second;
         condensed_phase_arrhenius.unknown_properties = GetComments(object);

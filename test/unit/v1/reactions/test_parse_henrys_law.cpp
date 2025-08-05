@@ -27,7 +27,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent.species_name, "H2O");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "B aqueous phase production (kg/m2/s)");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "B condensed phase production (kg/m2/s)");
 
     EXPECT_EQ(mechanism.reactions.henrys_law[1].name, "");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas.name, "gas");

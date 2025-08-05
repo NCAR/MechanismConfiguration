@@ -5,7 +5,7 @@ phases:
   - A
   - B
 reactions:
-- aqueous phase: aqueous
+- condensed phase: aqueous
   products:
   - coefficient: 0.2
     species name: C
