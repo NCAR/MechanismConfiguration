@@ -144,6 +144,7 @@ namespace mechanism_configuration
 
       // Aqueous Equilibrium
       static constexpr const char* AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
+      static constexpr const char* condensed_phase_water = "condensed-phase water";
       // also
       // condensed phase
       // A

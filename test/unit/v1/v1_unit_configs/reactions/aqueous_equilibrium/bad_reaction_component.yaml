@@ -8,6 +8,7 @@ phases:
   - H2O
 reactions:
 - condensed phase: aqueous
+  condensed-phase water: H2O
   k_reverse: 0.32
   products:
   - Species name: B

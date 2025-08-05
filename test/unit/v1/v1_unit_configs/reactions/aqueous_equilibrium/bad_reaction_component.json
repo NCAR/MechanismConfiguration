@@ -30,6 +30,7 @@
     {
       "type": "AQUEOUS_EQUILIBRIUM",
       "condensed phase": "aqueous",
+      "condensed-phase water": "H2O",
       "k_reverse": 0.32,
       "reactants": [
         {

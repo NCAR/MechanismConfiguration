@@ -159,10 +159,10 @@ namespace mechanism_configuration
       {
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
         /// @brief An identifier for the condensed phase where this reaction occurs
         std::string condensed_phase;
+        /// @brief Name for condensed-phase water
+        std::string condensed_phase_water;
         /// @brief A list of reactants
         std::vector<ReactionComponent> reactants;
         /// @brief A list of products

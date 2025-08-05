@@ -2,6 +2,7 @@ name: Missing phase
 phases: []
 reactions:
 - condensed phase: aqueous
+  condensed-phase water: H2O
   k_reverse: 0.32
   products:
   - coefficient: 1

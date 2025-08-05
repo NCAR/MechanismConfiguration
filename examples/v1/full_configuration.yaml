@@ -112,6 +112,7 @@ reactions:
   name: my simpol
 - type: AQUEOUS_EQUILIBRIUM
   condensed phase: aqueous
+  condensed-phase water: H2O
   A: 0.0114
   C: 2300
   k_reverse: 0.32

@@ -11,6 +11,7 @@ reactions:
   C: 2300.0
   __comment: GIF is pronounced with a hard g
   condensed phase: aqueous
+  condensed-phase water: H2O
   k_reverse: 0.32
   name: my aqueous eq
   products:
@@ -23,6 +24,7 @@ reactions:
     species name: A
   type: AQUEOUS_EQUILIBRIUM
 - condensed phase: aqueous
+  condensed-phase water: H2O
   k_reverse: 0.32
   products:
   - coefficient: 1

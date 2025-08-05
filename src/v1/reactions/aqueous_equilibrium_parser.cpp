@@ -23,7 +23,7 @@ namespace mechanism_configuration
       types::AqueousEquilibrium aqueous_equilibrium;
 
       std::vector<std::string> required_keys = {
-        validation::type, validation::reactants, validation::products, validation::condensed_phase, validation::k_reverse
+        validation::type, validation::reactants, validation::products, validation::condensed_phase, validation::condensed_phase_water, validation::k_reverse
       };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
@@ -53,6 +53,7 @@ namespace mechanism_configuration
         }
 
         std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
+        std::string condensed_phase_water = object[validation::condensed_phase_water].as<std::string>();
 
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)
@@ -63,6 +64,7 @@ namespace mechanism_configuration
         {
           requested_species.push_back(spec.species_name);
         }
+        requested_species.push_back(condensed_phase_water);
 
         std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, existing_species);
         if (!unknown_species.empty())
@@ -130,6 +132,7 @@ namespace mechanism_configuration
         }
 
         aqueous_equilibrium.condensed_phase = condensed_phase;
+        aqueous_equilibrium.condensed_phase_water = condensed_phase_water;
         aqueous_equilibrium.products = products.second;
         aqueous_equilibrium.reactants = reactants.second;
         aqueous_equilibrium.unknown_properties = GetComments(object);
