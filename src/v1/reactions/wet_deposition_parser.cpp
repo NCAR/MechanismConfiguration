@@ -41,8 +41,8 @@ namespace mechanism_configuration
 
         std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
 
-        auto it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
+        auto it = std::find_if(
+            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
         if (it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::condensed_phase].Mark().line + 1);
