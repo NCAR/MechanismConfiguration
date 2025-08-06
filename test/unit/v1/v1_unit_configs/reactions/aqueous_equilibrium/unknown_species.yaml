@@ -5,7 +5,8 @@ phases:
   - A
   - B
 reactions:
-- aqueous phase: aqueous
+- condensed phase: aqueous
+  condensed-phase water: H2O
   k_reverse: 0.32
   products:
   - coefficient: 1

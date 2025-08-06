@@ -7,7 +7,7 @@ phases:
   - C
   - H2O
 reactions:
-- aqueous phase: aqueous
+- condensed phase: aqueous
   products:
   - coefficient: 0.2
     species name: B

@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius.size(), 3);
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].name, "my arrhenius");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].aqueous_phase, "aqueous");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].condensed_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].A, 32.1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].B, -2.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].C, 102.3);
@@ -35,7 +35,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[0].unknown_properties["__solver_param"], "0.1");
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].name, "my arrhenius2");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].aqueous_phase, "aqueous");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].condensed_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].A, 3.1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].B, -0.3);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].C, 12.3);
@@ -53,7 +53,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[1].products[0].unknown_properties["__optional thing"], "hello");
 
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].name, "");
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].aqueous_phase, "aqueous");
+    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].condensed_phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].A, 1);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].B, 0);
     EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius[2].C, 0);

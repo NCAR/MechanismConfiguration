@@ -41,7 +41,7 @@
           "coefficient": 1
         }
       ],
-      "aqueous phase": "surface reacting phase"
+      "condensed phase": "surface reacting phase"
     }
   ]
 }

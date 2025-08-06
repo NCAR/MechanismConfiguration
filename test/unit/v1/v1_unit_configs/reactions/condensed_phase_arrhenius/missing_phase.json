@@ -15,12 +15,11 @@
       "name": "H2O"
     }
   ],
-  "phases": [
-  ],
+  "phases": [],
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

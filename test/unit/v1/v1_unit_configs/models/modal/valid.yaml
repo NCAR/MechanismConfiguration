@@ -96,7 +96,7 @@ reactions:
         - SO4
         - H2O2
       solvent: H2O
-    __comment: SO4 aqueous phase production due to H2O2 (kg/m2/s)
+    __comment: SO4 condensed phase production due to H2O2 (kg/m2/s)
 
   - type: HL_PHASE_TRANSFER
     gas:
@@ -110,4 +110,4 @@ reactions:
         - SO4
         - O3
       solvent: H2O
-    __comment: SO4 aqueous phase production due to O3 (kg/m2/s)
+    __comment: SO4 condensed phase production due to O3 (kg/m2/s)

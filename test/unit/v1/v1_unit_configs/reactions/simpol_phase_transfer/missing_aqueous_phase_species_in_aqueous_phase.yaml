@@ -12,8 +12,8 @@ reactions:
   - 2.91
   - 0.00196
   - -0.496
-  aqueous phase: aqueous
-  aqueous-phase species: B
+  condensed phase: aqueous
+  condensed-phase species: B
   gas phase: gas
   gas-phase species: A
   name: my simpol

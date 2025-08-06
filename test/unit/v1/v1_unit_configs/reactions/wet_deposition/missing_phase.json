@@ -12,12 +12,11 @@
       "name": "C"
     }
   ],
-  "phases": [
-  ],
+  "phases": [],
   "reactions": [
     {
       "type": "WET_DEPOSITION",
-      "aqueous phase": "cloud",
+      "condensed phase": "cloud",
       "name": "rxn cloud"
     }
   ]

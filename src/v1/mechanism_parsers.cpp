@@ -33,7 +33,10 @@ namespace mechanism_configuration
                                                    validation::henrys_law_constant_exponential_factor,
                                                    validation::n_star,
                                                    validation::density,
-                                                   validation::tracer_type };
+                                                   validation::tracer_type,
+                                                   validation::constant_concentration,
+                                                   validation::constant_mixing_ratio,
+                                                   validation::is_third_body };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
@@ -58,6 +61,12 @@ namespace mechanism_configuration
             species.n_star = object[validation::n_star].as<double>();
           if (object[validation::density])
             species.density = object[validation::density].as<double>();
+          if (object[validation::constant_concentration])
+            species.constant_concentration = object[validation::constant_concentration].as<double>();
+          if (object[validation::constant_mixing_ratio])
+            species.constant_mixing_ratio = object[validation::constant_mixing_ratio].as<double>();
+          if (object[validation::is_third_body])
+            species.is_third_body = object[validation::is_third_body].as<bool>();
 
           species.unknown_properties = GetComments(object);
 

@@ -29,7 +29,8 @@
   "reactions": [
     {
       "type": "AQUEOUS_EQUILIBRIUM",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
+      "condensed-phase water": "H2O",
       "k_reverse": 0.32,
       "reactants": [
         {

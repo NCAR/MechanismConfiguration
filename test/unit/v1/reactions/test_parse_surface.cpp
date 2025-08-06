@@ -18,7 +18,7 @@ TEST(ParserBase, CanParseValidSurfaceReaction)
 
     EXPECT_EQ(mechanism.reactions.surface[0].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.surface[0].name, "my surface");
-    EXPECT_EQ(mechanism.reactions.surface[0].aqueous_phase, "surface reacting phase");
+    EXPECT_EQ(mechanism.reactions.surface[0].condensed_phase, "surface reacting phase");
     EXPECT_EQ(mechanism.reactions.surface[0].reaction_probability, 2.0e-2);
     EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_species.species_name, "A");
     EXPECT_EQ(mechanism.reactions.surface[0].gas_phase_species.coefficient, 1);
@@ -31,7 +31,7 @@ TEST(ParserBase, CanParseValidSurfaceReaction)
     EXPECT_EQ(mechanism.reactions.surface[0].unknown_properties["__comment"], "key lime pie is superior to all other pies");
 
     EXPECT_EQ(mechanism.reactions.surface[1].gas_phase, "gas");
-    EXPECT_EQ(mechanism.reactions.surface[1].aqueous_phase, "surface reacting phase");
+    EXPECT_EQ(mechanism.reactions.surface[1].condensed_phase, "surface reacting phase");
     EXPECT_EQ(mechanism.reactions.surface[1].reaction_probability, 1.0);
     EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_species.species_name, "A");
     EXPECT_EQ(mechanism.reactions.surface[1].gas_phase_species.coefficient, 1);

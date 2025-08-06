@@ -1,4 +1,4 @@
-name: Missing aqueous phase
+name: Missing condensed phase
 phases:
 - name: gas
   species:
@@ -6,7 +6,7 @@ phases:
   - B
   - C
 reactions:
-- aqueous phase: surface reacting phase
+- condensed phase: surface reacting phase
   gas phase: gas
   gas-phase products:
   - __optional thing: hello

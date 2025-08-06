@@ -36,28 +36,36 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["A"]
+        "species": [
+          "A"
+        ]
       },
       "particle": {
         "phase": "aqueous",
-        "solutes": ["B"],
+        "solutes": [
+          "B"
+        ],
         "solvent": "H2O"
       },
       "name": "my henry's law",
-      "__comment": "B aqueous phase production (kg/m2/s)"
+      "__comment": "B condensed phase production (kg/m2/s)"
     },
     {
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["A"]
+        "species": [
+          "A"
+        ]
       },
       "particle": {
         "phase": "aqueous",
-        "solutes": ["B", "C"],
+        "solutes": [
+          "B",
+          "C"
+        ],
         "solvent": "H2O"
       }
     }
-
   ]
 }
