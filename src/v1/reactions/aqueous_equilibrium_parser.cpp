@@ -23,7 +23,8 @@ namespace mechanism_configuration
       types::AqueousEquilibrium aqueous_equilibrium;
 
       std::vector<std::string> required_keys = {
-        validation::type, validation::reactants, validation::products, validation::condensed_phase, validation::condensed_phase_water, validation::k_reverse
+        validation::type,     validation::reactants, validation::products, validation::condensed_phase, validation::condensed_phase_water,
+        validation::k_reverse
       };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
