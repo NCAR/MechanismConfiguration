@@ -1,0 +1,595 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>SIMPOL.1 Phase-Transfer Reaction &#8212; Mechanism Configuration 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=562c65bd" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+
+    <script src="../_static/documentation_options.js?v=4ebf8126"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reactions/simpol_phase_transfer';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Surface (Heterogeneous) Reaction" href="surface.html" />
+    <link rel="prev" title="Photolysis" href="photolysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Mechanism Configuration 1.0.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../aerosol_phases/index.html">
+                        Aerosol Phases
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../aerosol_representations/index.html">
+                        Aerosol Representation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../bibliography.html">
+                        Bibliography
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../chemical_species/index.html">
+                        Chemical Species
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../mechanisms/index.html">
+                        Mechanisms
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="index.html">
+                        Reactions
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__kbd-shortcut">Search</span>
+    <span><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__kbd-shortcut">Search</span>
+    <span><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../aerosol_phases/index.html">
+                        Aerosol Phases
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../aerosol_representations/index.html">
+                        Aerosol Representation
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../bibliography.html">
+                        Bibliography
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../chemical_species/index.html">
+                        Chemical Species
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="../mechanisms/index.html">
+                        Mechanisms
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="index.html">
+                        Reactions
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="aqueous_equilibrium.html">Aqueous-Phase Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrhenius.html">Arrhenius Reaction Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="branched.html">Branched(Wennberg NO + RO2 Reaction)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmaq_H2O2.html">Special CMAQ Reaction for H2O2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmaq_OH_HNO3.html">Special CMAQ Reaction for OH+HNO3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="condensed_phase_arrhenius.html">Condensed-Phase Arrhenius Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="condensed_phase_photolysis.html">Condensed-Phase Photolysis Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="emission.html">Emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="first_order_loss.html">First-Order Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hl_phase_transfer.html">Henry’s Law Phase-Transfer Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photolysis.html">Photolysis</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">SIMPOL.1 Phase-Transfer Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface.html">Surface (Heterogeneous) Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ternary_chemical_activation.html">Ternary Chemical Activation Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troe.html">Troe Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tunneling.html">Wennberg Tunneling Reaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wet_deposition.html">Wet Deposition</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Reactions</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">SIMPOL.1 Phase-Transfer Reaction</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="simpol-1-phase-transfer-reaction">
+<h1>SIMPOL.1 Phase-Transfer Reaction<a class="headerlink" href="#simpol-1-phase-transfer-reaction" title="Link to this heading">#</a></h1>
+<p>SIMPOL phase transfer reactions are based on the SIMPOL.1 model calculations of vapor pressure described by Pankow and Asher (2008) <span id="id1">[<a class="reference internal" href="../bibliography.html#id11" title="J. F. Pankow and W. E. Asher. SIMPOL.1: a simple group contribution method for predicting vapor pressures and enthalpies of vaporization of multifunctional organic compounds. Atmospheric Chemistry and Physics, 8(10):2773–2796, may 2008. URL: http://www.atmos-chem-phys.net/8/2773/2008/, doi:10.5194/acp-8-2773-2008.">PA08</a>]</span>.</p>
+<p>Mass accommodation coefficients and condensation rate constants are calculated using the method of Ervans et al. (2003) <span id="id2">[<a class="reference internal" href="../bibliography.html#id5" title="B. Ervens. CAPRAM 2.4 (MODAC mechanism): An extended and condensed tropospheric aqueous phase mechanism and its application. Journal of Geophysical Research, 108(D14):4426, 2003. URL: http://doi.wiley.com/10.1029/2002JD002202, doi:10.1029/2002JD002202.">Erv03</a>]</span> and references therein. Mass accommodation coefficients (<span class="math notranslate nohighlight">\(\alpha\)</span>) are calculated as:</p>
+<div class="math notranslate nohighlight">
+\[\Delta H_{obs} = -10 \times (N^*-1) + 7.53 \times (N^{*2/3}-1) - 0.1 \times 10 \quad (\text{kcal}\,\text{M}^{-1})\]</div>
+<div class="math notranslate nohighlight">
+\[\Delta S_{obs} = -13 \times (N^*-1) - 19 \times (N^*-1) + 9.21 \times (N^{*2/3}-1) - 0.1 \times 13 \quad (\text{cal}\,\text{M}^{-1}\,\text{K}^{-1})\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\alpha}{1-\alpha} = e^{\frac{-\Delta G^{*}}{RT}}\]</div>
+<p>If <span class="math notranslate nohighlight">\(\Delta H\)</span> and <span class="math notranslate nohighlight">\(\Delta S\)</span> are not provided, the mass accommodation coefficient is assumed to be 0.1 <span id="id3">[<a class="reference internal" href="../bibliography.html#id14" title="Rahul A. Zaveri, Richard C. Easter, Jerome D. Fast, and Leonard K. Peters. Model for simulating aerosol interactions and chemistry (mosaic). Journal of Geophysical Research: Atmospheres, 113(D13):, 2008. URL: https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2007JD008782, arXiv:https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2007JD008782, doi:10.1029/2007JD008782.">ZEFP08</a>]</span>.</p>
+<p>Condensation rate constants are calculated following <span id="id4">[<a class="reference internal" href="../bibliography.html#id14" title="Rahul A. Zaveri, Richard C. Easter, Jerome D. Fast, and Leonard K. Peters. Model for simulating aerosol interactions and chemistry (mosaic). Journal of Geophysical Research: Atmospheres, 113(D13):, 2008. URL: https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2007JD008782, arXiv:https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2007JD008782, doi:10.1029/2007JD008782.">ZEFP08</a>]</span> as:</p>
+<div class="math notranslate nohighlight">
+\[k_c = 4 \pi r D_g f_{fs}( K_n, \alpha )\]</div>
+<p>where <span class="math notranslate nohighlight">\(r\)</span> is the radius of the particle(s) [m], <span class="math notranslate nohighlight">\(D_g\)</span> is the diffusion coefficient of the gas-phase species <span class="math notranslate nohighlight">\([\mathrm{m}^2\,\mathrm{s}^{-1}]\)</span>,
+<span class="math notranslate nohighlight">\(f_{fs}( K_n, \alpha )\)</span> is the Fuchs Sutugin transition regime correction factor [unitless], <span class="math notranslate nohighlight">\(K_n\)</span> is the Knudsen Number [unitless], and <span class="math notranslate nohighlight">\(\alpha\)</span> is the mass accommodation coefficient.</p>
+<p>Rates can be calculated as:</p>
+<div class="math notranslate nohighlight">
+\[r_c = [G] N_a k_c\]</div>
+<p>where <span class="math notranslate nohighlight">\([G]\)</span> is the gas-phase species concentration [ppm], <span class="math notranslate nohighlight">\(N_a\)</span> is the number concentration of particles
+<span class="math notranslate nohighlight">\([\mathrm{particle}\,\mathrm{m}^{-3}]\)</span>, and the rate <span class="math notranslate nohighlight">\(r_c\)</span> is in <span class="math notranslate nohighlight">\([\mathrm{ppm}\,\mathrm{s}^{-1}]\)</span>.</p>
+<p>The particle radius used to calculate <span class="math notranslate nohighlight">\(k_{f}\)</span> is the effective radius [<span class="math notranslate nohighlight">\(r_{eff}\)</span>], which is taken as the “least-wrong” choice for condensation rates, as it is weighted to surface area <span id="id5">[<a class="reference internal" href="../bibliography.html#id13" title="Charlie Zender. Particle size distributions: theory and application to aerosols, clouds, and soils. Particle Size Distributions: Theory and Applications to Aerosols, Clouds and Soils, 2013. URL: http://dust.ess.uci.edu/facts/psd/psd.pdf.">Zen13</a>]</span>.</p>
+<p>Input data for SIMPOL phase transfer reactions have the following format:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">YAML</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">JSON</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SIMPOL_PHASE_TRANSFER</span>
+<span class="nt">gas-phase species</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my gas spec</span>
+<span class="nt">aerosol phase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my aero phase</span>
+<span class="nt">aerosol-phase species</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my aero spec</span>
+<span class="nt">aerosol-phase activity coefficient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my aero act coeff</span>
+<span class="nt">B</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">123.2e3</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">-41.24</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2951.2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">-1.245e-4</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="nn">...</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SIMPOL_PHASE_TRANSFER&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;gas-phase species&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my gas spec&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;aerosol phase&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my aero phase&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;aerosol-phase species&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my aero spec&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;aerosol-phase activity coefficient&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my aero act coeff&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;B&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">123.2e3</span><span class="p">,</span><span class="w"> </span><span class="mf">-41.24</span><span class="p">,</span><span class="w"> </span><span class="mf">2951.2</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.245e-4</span><span class="w"> </span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></div>
+<p>The key-value pairs <code class="docutils literal notranslate"><span class="pre">gas-phase</span> <span class="pre">species</span></code>, <code class="docutils literal notranslate"><span class="pre">aerosol</span> <span class="pre">phase</span></code>, and <code class="docutils literal notranslate"><span class="pre">aerosol-phase</span> <span class="pre">species</span></code> are required.
+Only one gas-phase and one aerosol-phase species are allowed per phase-transfer reaction.
+The key-value pair <code class="docutils literal notranslate"><span class="pre">aerosol-phase</span> <span class="pre">activity</span> <span class="pre">coefficient</span></code> is optional.
+When included, its value must be the name of a species of type c ACTIVITY_COEFF that is present in the specified aerosol phase.
+When not included, activity coefficients are assumed to be 1.0.</p>
+<p>Gas-phase species must include parameters named <code class="docutils literal notranslate"><span class="pre">diffusion</span> <span class="pre">coeff</span> <span class="pre">[m2</span> <span class="pre">s-1]</span></code> , which specifies the diffusion coefficient in <span class="math notranslate nohighlight">\(\mathrm{m}^2\,\mathrm{s}^{-1}\)</span>,
+and <code class="docutils literal notranslate"><span class="pre">molecular</span> <span class="pre">weight</span> <span class="pre">[kg</span> <span class="pre">mol-1]</span></code>, which specifies the molecular weight of the species in <span class="math notranslate nohighlight">\([\mathrm{kg}\,\mathrm{mol}^{-1}]\)</span>.
+They may optionally include the parameter <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">star</span></code>, which will be used to calculate the mass accommodation coefficient. When this parameter is not included, the mass accommodation coefficient is assumed to be 1.0.</p>
+<p>The key-value pair <code class="docutils literal notranslate"><span class="pre">B</span></code> is also required and must have a value of an array of exactly four members that specifies the SIMPOL parameters for the partitioning species. The <code class="docutils literal notranslate"><span class="pre">B</span></code> parameters can be obtained by summing the contributions of each functional group present in the partitioning species to the overall <span class="math notranslate nohighlight">\(B_{n,i}\)</span> for species <span class="math notranslate nohighlight">\(i\)</span>, such that:</p>
+<div class="math notranslate nohighlight">
+\[B_{n,i} = \sum_{k} \nu_{k,i} B_{n,k} \forall n \in [1...4]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\nu_{k,i}\)</span> is the number of functional groups <span class="math notranslate nohighlight">\(k\)</span> in species <span class="math notranslate nohighlight">\(i\)</span>, and the parameters <span class="math notranslate nohighlight">\(B_{n,k}\)</span> for each functional group <span class="math notranslate nohighlight">\(k\)</span> can be found in table 5 of Pankow and Asher (2008) <span id="id6">[<a class="reference internal" href="../bibliography.html#id11" title="J. F. Pankow and W. E. Asher. SIMPOL.1: a simple group contribution method for predicting vapor pressures and enthalpies of vaporization of multifunctional organic compounds. Atmospheric Chemistry and Physics, 8(10):2773–2796, may 2008. URL: http://www.atmos-chem-phys.net/8/2773/2008/, doi:10.5194/acp-8-2773-2008.">PA08</a>]</span>.</p>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="photolysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Photolysis</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="surface.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Surface (Heterogeneous) Reaction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../_sources/reactions/simpol_phase_transfer.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022-2023, OpenAtmos.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
