@@ -91,6 +91,17 @@ namespace mechanism_configuration
       static constexpr const char* Fc = "Fc";
       static constexpr const char* N = "N";
 
+      // Ternary Chemical Activation
+      static constexpr const char* TernaryChemicalActivation_key = "TERNARY_CHEMICAL_ACTIVATION";
+      // also k0_A
+      // k0_B
+      // k0_C
+      // kinf_A
+      // kinf_B
+      // kinf_C
+      // Fc
+      // N
+
       // Branched
       static constexpr const char* Branched_key = "BRANCHED_NO_RO2";
       static constexpr const char* X = "X";
