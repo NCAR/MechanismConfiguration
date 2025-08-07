@@ -34,6 +34,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer.size(), 1);
     EXPECT_EQ(mechanism.reactions.surface.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
+    EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
 
