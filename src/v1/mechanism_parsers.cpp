@@ -254,6 +254,7 @@ namespace mechanism_configuration
       parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
       parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();
+      parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
       parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
       parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
 
