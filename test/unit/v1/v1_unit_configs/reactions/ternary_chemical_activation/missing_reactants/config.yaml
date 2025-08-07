@@ -15,6 +15,7 @@ phases:
   - quz
 reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
   products:
   - species name: bar
     yield: 1

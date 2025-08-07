@@ -29,6 +29,7 @@
   "reactions": [
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "foo",
@@ -52,6 +53,7 @@
     },
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "bar",
@@ -79,7 +81,8 @@
       "kinf_B": -1.3,
       "kinf_C": 908.5,
       "Fc": 1.3,
-      "N": 32.1
+      "N": 32.1,
+      "name": "my ternary chemical activation"
     }
   ]
 }

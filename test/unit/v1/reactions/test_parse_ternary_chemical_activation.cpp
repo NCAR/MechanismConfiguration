@@ -67,6 +67,7 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
       EXPECT_EQ(process_vector[1].kinf_C, 908.5);
       EXPECT_EQ(process_vector[1].Fc, 1.3);
       EXPECT_EQ(process_vector[1].N, 32.1);
+      EXPECT_EQ(process_vector[1].name, "my ternary chemical activation");
     }
   }
 }

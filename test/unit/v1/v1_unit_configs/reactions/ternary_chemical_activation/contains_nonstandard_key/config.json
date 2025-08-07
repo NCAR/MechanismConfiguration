@@ -29,6 +29,7 @@
   "reactions": [
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
       "Reactants": [
         {
           "species name": "foo",
@@ -52,6 +53,7 @@
     },
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "bar",
@@ -83,6 +85,7 @@
     },
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
       "reactants": [
         {
           "species name": "bar",

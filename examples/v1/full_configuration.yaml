@@ -222,6 +222,8 @@ reactions:
   N: 0.8
   name: my troe
 - type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
+  name: my ternary chemical activation
   reactants:
   - species name: bar
     coefficient: 1

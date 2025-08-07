@@ -15,6 +15,7 @@ phases:
   - quz
 reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
   Reactants:
   - species name: foo
     coefficient: 1
@@ -26,6 +27,7 @@ reactions:
   - species name: baz
     coefficient: 3.2
 - type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
   reactants:
   - species name: bar
     coefficient: 1
@@ -45,6 +47,7 @@ reactions:
   Fc: 1.3
   "N": 32.1
 - type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
   reactants:
   - species name: bar
     coefficient: 1
