@@ -15,7 +15,8 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/valid/config" + extension;
     auto parsed = parser.Parse(file);
-    if (!parsed) {
+    if (!parsed)
+    {
       for (auto& error : parsed.errors)
       {
         std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -101,7 +102,6 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
     }
   }
 }
-
 
 TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
 {
