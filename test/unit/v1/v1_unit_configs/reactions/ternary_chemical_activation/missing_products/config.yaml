@@ -1,0 +1,23 @@
+---
+version: 1.0.0
+name: Missing products
+species:
+- name: foo
+- name: bar
+- name: baz
+- name: quz
+phases:
+- name: gas
+  species:
+  - foo
+  - bar
+  - baz
+  - quz
+reactions:
+- type: TERNARY_CHEMICAL_ACTIVATION
+  gas phase: gas
+  reactants:
+  - species name: foo
+    coefficient: 1
+  - species name: quz
+    coefficient: 2
