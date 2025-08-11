@@ -10,7 +10,6 @@
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-
 namespace mechanism_configuration
 {
   namespace v1
@@ -19,8 +18,7 @@ namespace mechanism_configuration
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
-        types::Reactions& reactions
-    )
+        types::Reactions& reactions)
     {
       Errors errors;
 
