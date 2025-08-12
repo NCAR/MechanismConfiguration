@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  msvc:
     runs-on: windows-latest
     continue-on-error: true
     strategy:
@@ -48,3 +48,46 @@ jobs:
         run: |
           cd build
           ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
+
+  msys2:
+    runs-on: windows-latest
+    continue-on-error: true 
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            base-devel
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+          msystem: MINGW64
+
+      - name: Add MSYS2 mingw64 to PATH
+        shell: msys2 {0}
+        run: echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
+
+      - name: Configure with CMake
+        shell: msys2 {0}
+        run: |
+          cmake -S . -B build -G "MinGW Makefiles" \
+                              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                              -D CMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build the project
+        shell: msys2 {0}
+        run: cmake --build build  --verbose
+
+      - name: Run tests
+        shell: msys2 {0}
+        run: ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
+        working-directory: build
