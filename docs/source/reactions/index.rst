@@ -4,22 +4,18 @@
 Reactions
 #########
 
-These reactions are implemented in a few chemical solvers that read version |version| of the mechanism configuraiton.
+All of the reactions list below are implemented in `MICM <https://github.com/NCAR/micm>`_. Their configuration is defined in 
+this repository, as are the algorithms that micm implements.
 
-====================================== ============================================= ======================================= ===============================================
-Reaction Type                          `CAMP <https://github.com/open-atmos/camp>`_  `MICM <https://github.com/NCAR/micm>`_  `TCHEM <https://github.com/sandialabs/TChem>`_ 
-====================================== ============================================= ======================================= ===============================================
-arrhenius                              |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-branched                               |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-emission                               |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-first_order_loss                       |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-photolysis                             |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-surface                                |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-taylor_series                          |:x:|                                         |:white_check_mark:|                     |:question:|
-ternary_chemical_activation            |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-troe                                   |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-tunneling                              |:white_check_mark:|                          |:white_check_mark:|                     |:question:|                                   
-====================================== ============================================= ======================================= ===============================================
+* :doc:`arrhenius` - :cpp:class:`micm::ArrheniusRateConstant`
+* :doc:`branched` - :cpp:class:`micm::BranchedRateConstant`
+* :doc:`emission` - :cpp:class:`micm::UserDefinedRateConstant`
+* :doc:`first_order_loss` - :cpp:class:`micm::UserDefinedRateConstant`
+* :doc:`photolysis` - :cpp:class:`micm::UserDefinedRateConstant`
+* :doc:`surface` - :cpp:class:`micm::SurfaceRateConstant`
+* :doc:`ternary_chemical_activation` - :cpp:class:`micm::TernaryChemicalActivationRateConstant`
+* :doc:`troe` - :cpp:class:`micm::TroeRateConstant`
+* :doc:`tunneling` - :cpp:class:`micm::TunnelingRateConstant`
 
 
 
