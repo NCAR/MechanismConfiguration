@@ -1,5 +1,5 @@
 Taylor Series Reaction Rates
-========================
+============================
 
 Taylor Series-like reaction rate constant equations are calculated as follows:
 

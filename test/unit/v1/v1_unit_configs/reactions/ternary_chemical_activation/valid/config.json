@@ -52,6 +52,7 @@
       ]
     },
     {
+      "__optional thing": "hello",
       "type": "TERNARY_CHEMICAL_ACTIVATION",
       "gas phase": "gas",
       "reactants": [

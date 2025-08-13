@@ -47,6 +47,7 @@ extensions = [
     'sphinx_tabs.tabs',
     'sphinxcontrib.bibtex',
     'sphinxemoji.sphinxemoji',
+    'sphinx.ext.intersphinx'
 ]
 
 templates_path = ['_templates']
@@ -54,6 +55,13 @@ exclude_patterns = []
 
 bibtex_bibfiles = ['references.bib']
 suppress_warnings = ["bibtex.missing_field"]
+
+# -- Intersphinx mappings -------------
+intersphinx_mapping = {
+    'micm': ('https://ncar.github.io/micm/', None),
+    'musica': ('https://ncar.github.io/musica/', None),
+    'mb': ('https://ncar.github.io/music-box/', None)
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

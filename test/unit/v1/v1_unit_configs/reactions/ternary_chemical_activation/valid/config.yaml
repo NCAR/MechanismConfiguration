@@ -27,6 +27,7 @@ reactions:
   - species name: baz
     coefficient: 3.2
 - type: TERNARY_CHEMICAL_ACTIVATION
+  __optional thing: hello
   gas phase: gas
   reactants:
   - species name: bar
