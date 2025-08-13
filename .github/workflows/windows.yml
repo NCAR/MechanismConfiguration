@@ -89,5 +89,5 @@ jobs:
 
       - name: Run tests
         shell: msys2 {0}
-        run: ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
+        run: ctest --rerun-failed --output-on-failure . --verbose
         working-directory: build
