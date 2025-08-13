@@ -52,6 +52,8 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
 
     // second reaction
     {
+      EXPECT_EQ(process_vector[1].unknown_properties.size(), 1);
+      EXPECT_EQ(process_vector[1].unknown_properties["__optional thing"], "hello");
       EXPECT_EQ(process_vector[1].reactants.size(), 2);
       EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
       EXPECT_EQ(process_vector[1].reactants[1].species_name, "baz");

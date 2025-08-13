@@ -86,6 +86,7 @@ namespace mechanism_configuration
         parameters.gas_phase = gas_phase;
         parameters.reactants = reactants.second;
         parameters.products = products.second;
+        parameters.unknown_properties = GetComments(object);
         reactions.ternary_chemical_activation.push_back(parameters);
       }
 
