@@ -79,9 +79,9 @@ whose value is a string referencing a valid configuration class.
 The valid top-level configuration objects that can appear in the ``camp-data``
 array are described here:
 
-:ref:`chemical-species`
+:ref:`v0-chemical-species`
 
-:ref:`mechanisms`
+:ref:`v0-mechanisms`
 
 The arrangement of objects within the ``camp-data`` array and between input files is arbitrary.
 Additionally, some objects, such as chemical species and mechanisms may be split into
