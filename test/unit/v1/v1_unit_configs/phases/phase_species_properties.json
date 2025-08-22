@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "name": "Phase species properties test configuration",
+  "species": [
+    {"name": "foo"},
+    {"name": "bar"},
+    {"name": "baz"}
+  ],
+  "phases": [
+    {
+      "name": "my phase",
+      "species": [
+        {
+          "name": "foo",
+          "diffusion coefficient [m2 s-1]": 1.0
+        },
+        {
+          "name": "bar",
+          "__custom property": 0.5,
+          "__another custom property": "value"
+        },
+        "baz"
+      ],
+      "__my custom phase property": "custom value"
+    }
+  ],
+  "reactions": []
+}

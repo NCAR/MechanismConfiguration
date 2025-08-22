@@ -70,7 +70,8 @@ namespace mechanism_configuration
         // Check whether the species listed in the reactions are valid by
         // comparing them to the registered species
         std::vector<std::string> combined_species;
-        combined_species.insert(combined_species.end(), GetSpeciesNames(gas.species).begin(), GetSpeciesNames(gas.species).end());
+        std::vector<std::string> gas_species_names = GetSpeciesNames(gas.species);
+        combined_species.insert(combined_species.end(), gas_species_names.begin(), gas_species_names.end());
         for (const auto& solute : particle.solutes)
         {
           combined_species.push_back(solute.species_name);
