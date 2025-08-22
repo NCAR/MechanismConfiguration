@@ -143,7 +143,7 @@ TEST(ParserBase, CanParsePhaseSpeciesProperties)
     // Check first species with diffusion coefficient
     EXPECT_EQ(phase.species[0].name, "foo");
     EXPECT_TRUE(phase.species[0].diffusion_coefficient.has_value());
-    EXPECT_EQ(phase.species[0].diffusion_coefficient.value(), 1.0);
+    EXPECT_EQ(phase.species[0].diffusion_coefficient.value(), 4.23e-7);
     EXPECT_EQ(phase.species[0].unknown_properties.size(), 0);
 
     // Check second species with custom properties

@@ -12,7 +12,7 @@
       "species": [
         {
           "name": "foo",
-          "diffusion coefficient [m2 s-1]": 1.0
+          "diffusion coefficient [m2 s-1]": 4.23e-7
         },
         {
           "name": "bar",

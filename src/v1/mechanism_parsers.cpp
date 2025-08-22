@@ -11,6 +11,18 @@
 
 #include <sstream>
 
+namespace
+{
+  std::string FormatYamlError(const YAML::Node& node, const std::string& message)
+  {
+    std::string line = std::to_string(node.Mark().line + 1);
+    std::string column = std::to_string(node.Mark().column + 1);
+    std::ostringstream oss;
+    oss << line << ":" << column << message;
+    return oss.str();
+  }
+}
+
 namespace mechanism_configuration
 {
   namespace v1
@@ -151,11 +163,7 @@ namespace mechanism_configuration
             }
             else
             {
-              std::string line = std::to_string(spec.Mark().line + 1);
-              std::string column = std::to_string(spec.Mark().column + 1);
-              std::ostringstream oss;
-              oss << line << ":" << column << " error: Species must be either a string name or an object with properties";
-              errors.push_back({ ConfigParseStatus::InvalidKey, oss.str() });
+              errors.push_back({ ConfigParseStatus::InvalidKey, FormatYamlError(spec, "Species must be either a string name or an object with properties") });
               continue;
             }
             species.push_back(phase_species);
