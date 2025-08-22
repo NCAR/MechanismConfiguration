@@ -1,0 +1,11 @@
+---
+version: 1.0.0
+name: Invalid species object test - missing name
+species:
+- name: foo
+phases:
+- name: test phase
+  species:
+  - name: foo
+  - "diffusion coefficient [m2 s-1]": 1.0  # Missing name field
+reactions: []

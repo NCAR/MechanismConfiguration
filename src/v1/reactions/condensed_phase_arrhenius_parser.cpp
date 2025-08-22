@@ -118,7 +118,7 @@ namespace mechanism_configuration
 
         if (phase_it != existing_phases.end())
         {
-          std::vector<std::string> condensed_phase_species = { (*phase_it).species.begin(), (*phase_it).species.end() };
+          std::vector<std::string> condensed_phase_species = GetSpeciesNames((*phase_it).species);
           std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, condensed_phase_species);
           if (!unknown_species.empty())
           {

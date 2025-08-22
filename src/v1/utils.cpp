@@ -40,5 +40,16 @@ namespace mechanism_configuration
       return unknown_properties;
     }
 
+    std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species)
+    {
+      std::vector<std::string> names;
+      names.reserve(phase_species.size());
+      for (const auto& species : phase_species)
+      {
+        names.push_back(species.name);
+      }
+      return names;
+    }
+
   }  // namespace v1
 }  // namespace mechanism_configuration
