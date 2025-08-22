@@ -144,11 +144,7 @@ namespace mechanism_configuration
               // Complex species with properties
               if (!spec[validation::name])
               {
-                std::string line = std::to_string(spec.Mark().line + 1);
-                std::string column = std::to_string(spec.Mark().column + 1);
-                std::ostringstream oss;
-                oss << line << ":" << column << " error: Species object missing required 'name' field";
-                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, oss.str() });
+                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, FormatYamlError(spec, "Species object missing required 'name' field") });
                 continue;
               }
               
