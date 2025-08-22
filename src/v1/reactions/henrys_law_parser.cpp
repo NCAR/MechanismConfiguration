@@ -45,7 +45,9 @@ namespace mechanism_configuration
         gas.name = object[validation::gas][validation::name].as<std::string>();
         for (const auto& elem : object[validation::gas][validation::species])
         {
-          gas.species.push_back(elem.as<std::string>());
+          types::PhaseSpecies phase_species;
+          phase_species.name = elem.as<std::string>();
+          gas.species.push_back(phase_species);
         }
 
         types::Particle particle;
@@ -68,7 +70,7 @@ namespace mechanism_configuration
         // Check whether the species listed in the reactions are valid by
         // comparing them to the registered species
         std::vector<std::string> combined_species;
-        combined_species.insert(combined_species.end(), gas.species.begin(), gas.species.end());
+        combined_species.insert(combined_species.end(), GetSpeciesNames(gas.species).begin(), GetSpeciesNames(gas.species).end());
         for (const auto& solute : particle.solutes)
         {
           combined_species.push_back(solute.species_name);
@@ -117,8 +119,8 @@ namespace mechanism_configuration
         // Check whether the species belong to the corresponding phase in that reactions (mulitple phases)
         else
         {
-          std::vector<std::string> species_registered_in_phase = { it_found_gas_phase->species.begin(), it_found_gas_phase->species.end() };
-          std::vector<std::string> unknown_species_gas = FindUnknownSpecies(gas.species, species_registered_in_phase);
+          std::vector<std::string> species_registered_in_phase = GetSpeciesNames(it_found_gas_phase->species);
+          std::vector<std::string> unknown_species_gas = FindUnknownSpecies(GetSpeciesNames(gas.species), species_registered_in_phase);
           if (!unknown_species_gas.empty())
           {
             std::ostringstream oss;
@@ -163,7 +165,7 @@ namespace mechanism_configuration
         // Check whether the species in solutes belong to the corresponding phase
         else
         {
-          std::vector<std::string> species_registered_in_phase = { it_found_particle_phase->species.begin(), it_found_particle_phase->species.end() };
+          std::vector<std::string> species_registered_in_phase = GetSpeciesNames(it_found_particle_phase->species);
           std::vector<std::string> speices_in_solutes;
           for (const auto& elem : particle.solutes)
           {

@@ -118,10 +118,47 @@ namespace mechanism_configuration
         {
           std::string name = object[validation::name].as<std::string>();
 
-          std::vector<std::string> species{};
+          std::vector<types::PhaseSpecies> species{};
           for (const auto& spec : object[validation::species])
           {
-            species.push_back(spec.as<std::string>());
+            types::PhaseSpecies phase_species;
+            if (spec.IsScalar())
+            {
+              // Simple string species name
+              phase_species.name = spec.as<std::string>();
+            }
+            else if (spec.IsMap())
+            {
+              // Complex species with properties
+              if (!spec[validation::name])
+              {
+                std::string line = std::to_string(spec.Mark().line + 1);
+                std::string column = std::to_string(spec.Mark().column + 1);
+                std::ostringstream oss;
+                oss << line << ":" << column << " error: Species object missing required 'name' field";
+                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, oss.str() });
+                continue;
+              }
+              
+              phase_species.name = spec[validation::name].as<std::string>();
+              
+              // Parse standard properties
+              if (spec[validation::diffusion_coefficient])
+                phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+              
+              // Parse custom properties (those starting with __)
+              phase_species.unknown_properties = GetComments(spec);
+            }
+            else
+            {
+              std::string line = std::to_string(spec.Mark().line + 1);
+              std::string column = std::to_string(spec.Mark().column + 1);
+              std::ostringstream oss;
+              oss << line << ":" << column << " error: Species must be either a string name or an object with properties";
+              errors.push_back({ ConfigParseStatus::InvalidKey, oss.str() });
+              continue;
+            }
+            species.push_back(phase_species);
           }
 
           phase.name = name;
@@ -133,18 +170,23 @@ namespace mechanism_configuration
           {
             for (size_t j = i + 1; j < species.size(); ++j)
             {
-              if (species[i] == species[j])
+              if (species[i].name == species[j].name)
               {
                 std::string line = std::to_string(object.Mark().line + 1);
                 std::string column = std::to_string(object.Mark().column + 1);
                 std::ostringstream oss;
-                oss << line << ":" << column << " error: Duplicate species '" << species[i] << "' found in '" << name << "' phase";
+                oss << line << ":" << column << " error: Duplicate species '" << species[i].name << "' found in '" << name << "' phase";
                 errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str() });
               }
             }
           }
 
-          std::vector<std::string> unknown_species = FindUnknownSpecies(species, existing_species);
+          std::vector<std::string> species_names;
+          for (const auto& spec : species)
+          {
+            species_names.push_back(spec.name);
+          }
+          std::vector<std::string> unknown_species = FindUnknownSpecies(species_names, existing_species);
           if (!unknown_species.empty())
           {
             std::ostringstream oss;

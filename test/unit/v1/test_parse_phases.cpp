@@ -18,14 +18,14 @@ TEST(ParserBase, CanParseValidPhases)
 
     EXPECT_EQ(mechanism.phases[0].name, "gas");
     EXPECT_EQ(mechanism.phases[0].species.size(), 2);
-    EXPECT_EQ(mechanism.phases[0].species[0], "A");
-    EXPECT_EQ(mechanism.phases[0].species[1], "B");
+    EXPECT_EQ(mechanism.phases[0].species[0].name, "A");
+    EXPECT_EQ(mechanism.phases[0].species[1].name, "B");
     EXPECT_EQ(mechanism.phases[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.phases[0].unknown_properties["__other"], "key");
 
     EXPECT_EQ(mechanism.phases[1].name, "aqueous");
     EXPECT_EQ(mechanism.phases[1].species.size(), 1);
-    EXPECT_EQ(mechanism.phases[1].species[0], "C");
+    EXPECT_EQ(mechanism.phases[1].species[0].name, "C");
     EXPECT_EQ(mechanism.phases[1].unknown_properties.size(), 2);
     EXPECT_EQ(mechanism.phases[1].unknown_properties["__other1"], "key1");
     EXPECT_EQ(mechanism.phases[1].unknown_properties["__other2"], "key2");
