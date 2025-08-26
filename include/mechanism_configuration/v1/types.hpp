@@ -34,10 +34,18 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      struct PhaseSpecies
+      {
+        std::string name;
+        std::optional<double> diffusion_coefficient;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
       struct Phase
       {
         std::string name;
-        std::vector<std::string> species;
+        std::vector<PhaseSpecies> species;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

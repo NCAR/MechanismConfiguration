@@ -31,6 +31,9 @@ namespace mechanism_configuration
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
+    /// @brief Extract species names from a vector of PhaseSpecies
+    std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species);
+
     template<typename T>
     std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
     {
