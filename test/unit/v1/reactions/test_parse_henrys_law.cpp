@@ -19,7 +19,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].name, "my henry's law");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.name, "gas");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.species.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.species[0], "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.species[0].name, "A");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solutes.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solutes[0].species_name, "B");
@@ -32,7 +32,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[1].name, "");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas.name, "gas");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].gas.species.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].gas.species[0], "A");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].gas.species[0].name, "A");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.phase, "aqueous");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solutes.size(), 2);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solutes[0].species_name, "B");
