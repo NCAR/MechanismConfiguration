@@ -51,6 +51,9 @@ occupy a volume of arbitrary shape:
 
 
 The ``name`` of the phase is required and must be unique.
+As the current version of Mechanism Configuration only supports gas phases,
+a single phase named ``gas`` should be present in all configurations, and
+should contain all gas-phase species.
 
 The species array is required and must contain one or more elements.
 The ``name`` property is required for each element in the species

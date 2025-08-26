@@ -52,6 +52,7 @@ Input data for surface reactions have the following format:
 
          {
             "type": "SURFACE",
+            "name": "foo-surface",
             "gas phase": "gas",
             "gas-phase species": "foo",
             "gas-phase products": [
@@ -81,3 +82,5 @@ which specifies the molecular weight of the species in :math:`\mathrm{kg}\ \math
 The phase configuration must include the property ``diffusion coeff [m^2 s-1]`` for the
 gas-phase species, which specifies the diffusion coefficient for the reacting species in
 that phase in :math:`\mathrm{m}^2\ \mathrm{s}^{-1}`.
+
+Rate constants are in units of :math:`\mathrm{s}^{-1}`.

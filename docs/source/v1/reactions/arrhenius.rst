@@ -91,3 +91,5 @@ Note that either ``Ea`` or ``C`` may be included, but not both. When neither ``E
 included, they are assumed to be 0.0. When ``A`` is not included, it is assumed to be 1.0. When
 ``D`` is not included, it is assumed to be 300.0 K. When ``B`` is not included, it is assumed to be
 0.0. When ``E`` is not included, it is assumed to be 0.0.
+
+Rate constants are in units of :math:`\mathrm{(m^{3}\ mol^{-1})^{(n-1)}\ s^{-1}}` where :math:`n` is the total number of reactants.

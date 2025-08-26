@@ -24,6 +24,7 @@ Input data for first-order loss reactions have the following format:
             type: FIRST_ORDER_LOSS
             name: foo-loss
             scaling factor: 1.2
+            gas phase: foo-gas
             reactants:
               - species name: foo
 
@@ -36,12 +37,12 @@ Input data for first-order loss reactions have the following format:
                 "type": "FIRST_ORDER_LOSS",
                 "name": "foo-loss",
                 "scaling factor": 1.2,
+                "gas phase": "foo-gas",
                 "reactants": [
                     {
                         "species name": "foo"
                     }
-                ],
-                "scaling factor": 1.2
+                ]
             }
 
 The ``reactants`` key is required and must be set to a list of species being lost.

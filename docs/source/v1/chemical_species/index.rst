@@ -16,10 +16,10 @@ An object containing information about a chemical species has the following form
          species:
            - name: foo
            - name: bar
-             "tracer type": THIRD_BODY
+             "is third body": true
            - name: baz
              "molecular weight [kg mol-1]": 0.025
-             "diffusion coefficient [m2 s-1]": 2.3e2
+             "constant concentration [mol m-3]": 1.0e19
              "__my custom property": "custom value"
              "__my other custom property": 6.73
 
@@ -36,11 +36,12 @@ An object containing information about a chemical species has the following form
               },
               {
                 "name": "bar",
-                "tracer type": "THIRD_BODY"
+                "is third body": true
               },
               {
                 "name": "baz",
                 "molecular weight [kg mol-1]": 0.025,
+                "constant concentration [mol m-3]": 1.0e19,
                 "__my custom property": "custom value",
                 "__my other custom property": 6.73
               }
@@ -51,17 +52,19 @@ An object containing information about a chemical species has the following form
 The key-value pair ``name`` is required and must contain the unique name used for this
 species. All other key-value pairs are optional.
 
-When included, the key-value pair ``tracer type``, must be one of the following:
-
-- ``THIRD_BODY``
-
 Optional key-value pairs are used to define physical and chemical properties.
 These include:
 
 - ``"molecular weight [kg mol-1]"``: The molecular weight of the species.
+- ``"constant concentration [mol m-3]"``: The constant concentration of the species.
+- ``"constant mixing ratio [mol mol-1]"``: The constant volume mixing ratio of the species.
+- ``"is third body"``: When present and true, the species concentration calculated as the total air density.
 
 These optional properties are only required when a species participates in a
-reaction that requires that a particular property be defined (e.g., surface reactions).
+reaction that requires that a particular property be defined (e.g., surface reactions),
+or to specify how the species should be treated by the solver (e.g., as a constant species).
+Only one of ``"constant concentration [mol m-3]"``,
+``"constant mixing ratio [mol mol-1]"``, or ``"is third body"`` should be provided for a given species.
 
 Species configuration data can be decorated with custom properties that are prefixed with
 double underscores (e.g., ``__my custom property``). These custom properties can be used to

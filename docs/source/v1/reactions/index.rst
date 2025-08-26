@@ -17,6 +17,7 @@ Their configuration is defined in this repository, as are the algorithms that mi
 * :doc:`ternary_chemical_activation` - :cpp:class:`micm::TernaryChemicalActivationRateConstant`
 * :doc:`troe` - :cpp:class:`micm::TroeRateConstant`
 * :doc:`tunneling` - :cpp:class:`micm::TunnelingRateConstant`
+* :doc:`user_defined` - :cpp:class:`micm::UserDefinedRateConstant`
 
 
 
@@ -34,3 +35,4 @@ Their configuration is defined in this repository, as are the algorithms that mi
    ternary_chemical_activation
    troe
    tunneling
+   user_defined

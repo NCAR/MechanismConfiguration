@@ -41,6 +41,7 @@ Input data for Tunneling reactions have the following format:
 
             {
                 "type": "TUNNELING",
+                "name": "foo-tunneling",
                 "A": 123.45,
                 "B": 1200.0,
                 "C": 1.0e8,
@@ -64,3 +65,5 @@ takes place in. The reactants and products must be present in the specified phas
 When ``A`` is not included, it is assumed to be 1.0, when ``B`` is not
 included, it is assumed to be :math:`0.0\ \mathrm{K}`, and when ``C`` is not included, it is
 assumed to be :math:`0.0\ \mathrm{K}^3`.
+
+Rate constants are in units of :math:`\mathrm{(m^{3}\ mol^{-1})^{(n-1)}\ s^{-1}}` where :math:`n` is the total number of reactants.

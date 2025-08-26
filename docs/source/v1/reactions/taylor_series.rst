@@ -96,3 +96,5 @@ included, they are assumed to be 0.0. When ``A`` is not included, it is assumed 
 ``D`` is not included, it is assumed to be 300.0 K. When ``B`` is not included, it is assumed to be
 0.0. When ``E`` is not included, it is assumed to be 0.0. When ``taylor coefficients`` are not included,
 the order of the Taylor series is assumed to be 0.
+
+Rate constants are in units of :math:`\mathrm{(m^{3}\ mol^{-1})^{(n-1)}\ s^{-1}}` where :math:`n` is the total number of reactants.

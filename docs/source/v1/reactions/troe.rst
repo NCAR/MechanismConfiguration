@@ -91,3 +91,5 @@ takes place in. The reactants and products must be present in the specified phas
 The two sets of parameters beginning with ``k0_`` and ``kinf_`` are the `Arrhenius` parameters for the
 :math:`k_0` and :math:`k_{\infty}` rate constants, respectively. When not present, ``_A`` parameters are
 assumed to be 1.0, ``_B`` to be 0.0, ``_C`` to be 0.0, ``Fc`` to be 0.6, and ``N`` to be 1.0.
+
+Rate constants are in units of :math:`\mathrm{(m^{3}\ mol^{-1})^{(n-1)}\ s^{-1}}` where :math:`n` is the total number of reactants.

@@ -64,6 +64,7 @@ Input data for Branched reactions have the following format:
 
             {
                 "type": "BRANCHED_NO_RO2",
+                "name": "foo-branched",
                 "X": 123.45,
                 "Y": 1200.0,
                 "a0": 1.0e8,
@@ -94,3 +95,4 @@ When ``X`` is not included, it is assumed to be 1.0, when ``Y`` is not
 included, it is assumed to be 0.0 K, when ``a0`` is not included, it is
 assumed to be 1.0, and when ``n`` is not included, it is assumed to be 0.
 
+Rate constants are in units of :math:`\mathrm{(m^{3}\ mol^{-1})^{(n-1)}\ s^{-1}}` where :math:`n` is the total number of reactants.
