@@ -21,7 +21,7 @@ namespace
     oss << line << ":" << column << message;
     return oss.str();
   }
-}
+}  // namespace
 
 namespace mechanism_configuration
 {
@@ -147,19 +147,20 @@ namespace mechanism_configuration
                 errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, FormatYamlError(spec, "Species object missing required 'name' field") });
                 continue;
               }
-              
+
               phase_species.name = spec[validation::name].as<std::string>();
-              
+
               // Parse standard properties
               if (spec[validation::diffusion_coefficient])
                 phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
-              
+
               // Parse custom properties (those starting with __)
               phase_species.unknown_properties = GetComments(spec);
             }
             else
             {
-              errors.push_back({ ConfigParseStatus::InvalidKey, FormatYamlError(spec, "Species must be either a string name or an object with properties") });
+              errors.push_back(
+                  { ConfigParseStatus::InvalidKey, FormatYamlError(spec, "Species must be either a string name or an object with properties") });
               continue;
             }
             species.push_back(phase_species);

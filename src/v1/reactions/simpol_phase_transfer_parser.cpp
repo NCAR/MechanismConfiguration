@@ -109,7 +109,9 @@ namespace mechanism_configuration
         {
           auto phase = *gas_it;
           auto spec_it = std::find_if(
-              phase.species.begin(), phase.species.end(), [&gas_phase_species](const types::PhaseSpecies& species) { return species.name == gas_phase_species; });
+              phase.species.begin(),
+              phase.species.end(),
+              [&gas_phase_species](const types::PhaseSpecies& species) { return species.name == gas_phase_species; });
           if (spec_it == phase.species.end())
           {
             std::string line = std::to_string(object[validation::gas_phase_species].Mark().line + 1);
