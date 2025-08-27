@@ -24,7 +24,7 @@ where ``N_a`` is the number concentration of particles :math:`[\mathrm{particles
 
 where ``R`` is the ideal gas constant :math:`[\mathrm{J} \mathrm{K}^{-1} \mathrm{mol}^{-1}]`, ``T`` is temperature :math:`[\mathrm{K}]`, and ``MW`` is the molecular weight of the gas-phase reactant :math:`[\mathrm{kg}\ \mathrm{mol}^{-1}]`.
 
-A conforming implementation of version |version| of the configuration will provide ways to specify the particle effective radius and number concentration.
+A conforming implementation of version 1.0 of the configuration will provide ways to specify the particle effective radius and number concentration.
 
 Input data for surface reactions have the following format:
 

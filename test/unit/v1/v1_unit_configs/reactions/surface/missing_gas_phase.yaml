@@ -1,8 +1,7 @@
 name: Missing condensed phase
 phases: []
 reactions:
-- condensed phase: surface reacting phase
-  gas phase: gas
+- gas phase: gas
   gas-phase products:
   - __optional thing: hello
     species name: B
