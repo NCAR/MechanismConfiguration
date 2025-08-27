@@ -1,0 +1,16 @@
+name: Missing condensed phase
+phases: []
+reactions:
+- condensed phase: surface reacting phase
+  gas phase: gas
+  gas-phase products:
+  - __optional thing: hello
+    species name: B
+  - species name: C
+  gas-phase species: A
+  type: SURFACE
+species:
+- name: A
+- name: B
+- name: C
+version: 2.0.0

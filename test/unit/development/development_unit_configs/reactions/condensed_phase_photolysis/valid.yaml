@@ -1,0 +1,34 @@
+name: Valid surface
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+  - C
+  - H2O
+reactions:
+- __comment: hi
+  condensed phase: aqueous
+  name: my condensed phase photolysis
+  products:
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  scaling factor: 12.3
+  type: CONDENSED_PHASE_PHOTOLYSIS
+- condensed phase: aqueous
+  products:
+  - coefficient: 0.2
+    species name: C
+  reactants:
+  - coefficient: 1.2
+    species name: B
+  type: CONDENSED_PHASE_PHOTOLYSIS
+species:
+- name: A
+- name: B
+- name: C
+- name: H2O
+version: 2.0.0

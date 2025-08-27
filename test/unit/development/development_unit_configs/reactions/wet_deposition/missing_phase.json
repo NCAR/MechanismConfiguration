@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "name": "Missing phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [],
+  "reactions": [
+    {
+      "type": "WET_DEPOSITION",
+      "condensed phase": "cloud",
+      "name": "rxn cloud"
+    }
+  ]
+}

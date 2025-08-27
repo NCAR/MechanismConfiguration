@@ -1,0 +1,17 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  products:
+  - species name: C
+  reactants:
+  - species name: A
+  type: TAYLOR_SERIES
+species:
+- name: A
+- name: B
+version: 2.0.0

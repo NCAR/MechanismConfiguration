@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
 {
@@ -32,6 +33,7 @@ namespace mechanism_configuration
         std::optional<bool> is_third_body;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
+        Errors validate();
       };
 
       struct PhaseSpecies

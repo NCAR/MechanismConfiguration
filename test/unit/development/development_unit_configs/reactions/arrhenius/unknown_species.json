@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "ARRHENIUS",
+      "name": "Arrhenius",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "species name": "D"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C"
+        }
+      ]
+    }
+  ]
+}

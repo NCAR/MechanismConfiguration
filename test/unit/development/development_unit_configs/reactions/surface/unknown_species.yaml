@@ -1,0 +1,25 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+  - B
+- name: surface reacting phase
+  species:
+  - A
+  - B
+reactions:
+- condensed phase: surface reacting phase
+  gas phase: gas
+  gas-phase products:
+  - coefficient: 1
+    species name: B
+  - coefficient: 1
+    species name: C
+  gas-phase species: A
+  reaction probability: 0.02
+  type: SURFACE
+species:
+- name: A
+- name: B
+version: 2.0.0

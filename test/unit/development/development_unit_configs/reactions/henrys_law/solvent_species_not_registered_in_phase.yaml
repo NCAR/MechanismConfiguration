@@ -1,0 +1,29 @@
+version: "2.0.0"
+name: "Solvent species in not registered in the corresponding phase"
+species:
+  - name: "A"
+  - name: "B"
+  - name: "C"
+  - name: "H2O"
+phases:
+  - name: "gas"
+    species:
+      - "A"
+      - "B"
+  - name: "aqueous"
+    species:
+      - "H2O"
+      - "C"
+reactions:
+  - type: "HL_PHASE_TRANSFER"
+    gas:
+      name: "gas"
+      species:
+        - "A"
+    particle:
+      phase: "aqueous"
+      solutes:
+        - "C"
+      solvent: "B"
+    name: "my henry's law"
+    __comment: "hi"

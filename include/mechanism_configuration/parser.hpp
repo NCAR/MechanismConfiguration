@@ -5,6 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/parser_result.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 
@@ -35,6 +36,15 @@ namespace mechanism_configuration
         return result;
       }
 
+      development::Parser dev_parser;
+      auto dev_result = dev_parser.Parse(config_path);
+
+      if (dev_result)
+      {
+        result.mechanism = std::move(dev_result.mechanism);
+        return result;
+      }
+
       v0::Parser v0_parser;
       auto v0_result = v0_parser.Parse(config_path);
 
@@ -45,6 +55,7 @@ namespace mechanism_configuration
       }
 
       result.errors = v1_result.errors;
+      result.errors.insert(result.errors.end(), dev_result.errors.begin(), dev_result.errors.end());
       result.errors.insert(result.errors.end(), v0_result.errors.begin(), v0_result.errors.end());
       return result;
     }

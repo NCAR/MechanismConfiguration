@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "name": "Duplicate Species",
+  "species": [
+    {
+      "name": "FOO"
+    },
+    {
+      "name": "BAZ"
+    },
+    {
+      "name": "CYON"
+    },
+    {
+      "name": "QUIZ"
+    },
+    {
+      "name": "BAR"
+    },
+    {
+      "name": "FOO"
+    },
+    {
+      "name": "QUIZ"
+    }
+  ],
+  "phases": [],
+  "reactions": []
+}
