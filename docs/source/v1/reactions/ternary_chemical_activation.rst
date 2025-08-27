@@ -10,7 +10,7 @@ Ternary Chemical Activation reaction rate constant equations take the form:
 where:
 
 - :math:`k_0` is the low-pressure limiting rate constant (:math:`(\mbox{mol}\,\mathrm{m}^{-3})^{-(n-1)}\,\mathrm{s}^{-1}`),
-- :math:`k_{\\infty}` is the high-pressure limiting rate constant (:math:`(\mbox{mol}\,\mathrm{m}^{-3})^{-(n-1)}\,\mathrm{s}^{-1}`),
+- :math:`k_{\infty}` is the high-pressure limiting rate constant (:math:`(\mbox{mol}\,\mathrm{m}^{-3})^{-(n-1)}\,\mathrm{s}^{-1}`),
 - :math:`[\mathrm{M}]` is the density of air (:math:`\mathrm{mol}\,\mathrm{m}^{-3}`),
 - :math:`F_C` and :math:`N` are parameters that determine the shape of the fall-off curve,
   and are typically 0.6 and 1.0, respectively :cite:`JPL15`.

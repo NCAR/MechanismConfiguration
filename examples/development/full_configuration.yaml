@@ -232,7 +232,7 @@ reactions:
   - species name: bar
     coefficient: 0.5
   - species name: foo
-    coefficient: 0
+    coefficient: 1
   k0_A: 32.1
   k0_B: -2.3
   k0_C: 102.3
