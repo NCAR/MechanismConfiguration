@@ -46,7 +46,6 @@
           "coefficient": 1
         }
       ],
-      "condensed phase": "surface reacting phase",
       "name": "my surface",
       "__comment": "key lime pie is superior to all other pies"
     },
@@ -62,8 +61,7 @@
         {
           "species name": "C"
         }
-      ],
-      "condensed phase": "surface reacting phase"
+      ]
     }
   ]
 }

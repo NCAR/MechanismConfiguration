@@ -12,24 +12,16 @@
 .. ~ for subsubsubsections
 .. " for paragraphs
 
-.. |project_version| replace:: 1.0.0
-
-###############################################################
-Welcome to the OpenAtmos Mechanism Configuration documentation!
-###############################################################
+###########
+Version 1.0
+###########
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
-   v0/index
-   v1/index
-   bibliography
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   overview
+   chemical_species/index
+   phases/index
+   reactions/index
+   examples/index

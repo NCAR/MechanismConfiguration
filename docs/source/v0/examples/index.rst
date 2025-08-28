@@ -16,10 +16,10 @@ Top Level Config
 .. raw:: html
 
     <div class="download-div">
-    <a href="../_static/examples/yaml/chapman/chapman.zip" download>
+    <a href="../../_static/examples/v0/yaml/chapman/chapman.zip" download>
        <button class="download-button">Download yaml ZIP</button>
     </a>
-    <a href="../_static/examples/json/chapman/chapman.zip" download>
+    <a href="../../_static/examples/v0/json/chapman/chapman.zip" download>
        <button class="download-button">Download json ZIP</button>
     </a>
     </div>
@@ -29,12 +29,12 @@ Top Level Config
 
     .. tab-item:: YAML
 
-        .. literalinclude:: ../_static/examples/yaml/chapman/config.yaml
+        .. literalinclude:: ../../_static/examples/v0/yaml/chapman/config.yaml
             :language: yaml
 
     .. tab-item:: JSON
 
-        .. literalinclude:: ../_static/examples/json/chapman/config.json
+        .. literalinclude:: ../../_static/examples/v0/json/chapman/config.json
             :language: json
     
 
@@ -45,12 +45,12 @@ Reactions
 
     .. tab-item:: YAML
 
-        .. literalinclude:: ../_static/examples/yaml/chapman/reactions.yaml
+        .. literalinclude:: ../../_static/examples/v0/yaml/chapman/reactions.yaml
             :language: yaml
 
     .. tab-item:: JSON
 
-        .. literalinclude:: ../_static/examples/json/chapman/reactions.json
+        .. literalinclude:: ../../_static/examples/v0/json/chapman/reactions.json
             :language: json
 
 Species
@@ -60,10 +60,10 @@ Species
 
     .. tab-item:: YAML
 
-        .. literalinclude:: ../_static/examples/yaml/chapman/species.yaml
+        .. literalinclude:: ../../_static/examples/v0/yaml/chapman/species.yaml
             :language: yaml
 
     .. tab-item:: JSON
 
-        .. literalinclude:: ../_static/examples/json/chapman/species.json
+        .. literalinclude:: ../../_static/examples/v0/json/chapman/species.json
             :language: json
