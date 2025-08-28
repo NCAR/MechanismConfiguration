@@ -82,13 +82,13 @@ TEST(ParserBase, SurfaceDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, SurfaceDetectsUnknownAqueousPhase)
+TEST(ParserBase, SurfaceDetectsUnknownCondensedPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/surface/missing_aqueous_phase") + extension;
+    std::string file = std::string("development_unit_configs/reactions/surface/missing_condensed_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);

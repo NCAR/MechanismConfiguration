@@ -68,47 +68,6 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
-      struct CondensedPhaseArrhenius
-      {
-        /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
-        double A{ 1 };
-        /// @brief Unitless exponential factor
-        double B{ 0 };
-        /// @brief Activation threshold, expected to be the negative activation energy divided by the boltzman constant
-        ///        [-E_a / k_b), K]
-        double C{ 0 };
-        /// @brief A factor that determines temperature dependence [K]
-        double D{ 300 };
-        /// @brief A factor that determines pressure dependence [Pa-1]
-        double E{ 0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct CondensedPhasePhotolysis
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
       struct Emission
       {
         /// @brief Scaling factor to apply to user-provided rate constants
@@ -133,70 +92,6 @@ namespace mechanism_configuration
         std::string name;
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct SimpolPhaseTransfer
-      {
-        /// @brief An identifier indicating which gas phase this reaction takes place in
-        std::string gas_phase;
-        /// @brief The species in the gas phase participating in this reaction
-        ReactionComponent gas_phase_species;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
-        /// @brief The species in the condensed phase participating in this reaction
-        ReactionComponent condensed_phase_species;
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief The 4 SIMPOL parameters
-        std::array<double, 4> B;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct AqueousEquilibrium
-      {
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
-        /// @brief Name for condensed-phase water
-        std::string condensed_phase_water;
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
-        /// @brief A list of products
-        std::vector<ReactionComponent> products;
-        /// @brief Pre-exponential factor (s-1)
-        double A{ 1 };
-        /// @brief A constant
-        double C{ 0 };
-        /// @brief Reverse reation rate constant (s-1)
-        double k_reverse{ 0 };
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct WetDeposition
-      {
-        /// @brief Scaling factor to apply to user-provided rate constants
-        double scaling_factor{ 1.0 };
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct HenrysLaw
-      {
-        /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
-        /// @brief Represents the composition of a gas mixture
-        Phase gas;
-        /// @brief Represents a particle within a solution, including its phase and chemical composition
-        Particle particle;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
@@ -361,14 +256,8 @@ namespace mechanism_configuration
       {
         std::vector<Arrhenius> arrhenius;
         std::vector<Branched> branched;
-        std::vector<CondensedPhaseArrhenius> condensed_phase_arrhenius;
-        std::vector<CondensedPhasePhotolysis> condensed_phase_photolysis;
         std::vector<Emission> emission;
         std::vector<FirstOrderLoss> first_order_loss;
-        std::vector<SimpolPhaseTransfer> simpol_phase_transfer;
-        std::vector<AqueousEquilibrium> aqueous_equilibrium;
-        std::vector<WetDeposition> wet_deposition;
-        std::vector<HenrysLaw> henrys_law;
         std::vector<Photolysis> photolysis;
         std::vector<Surface> surface;
         std::vector<TaylorSeries> taylor_series;

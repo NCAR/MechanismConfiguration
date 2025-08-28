@@ -6,7 +6,6 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parse_status.hpp>
-#include <mechanism_configuration/v1/model_types.hpp>
 #include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 #include <mechanism_configuration/v1/validation.hpp>

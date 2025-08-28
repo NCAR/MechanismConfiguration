@@ -26,7 +26,7 @@ namespace mechanism_configuration
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       std::vector<std::string> mechanism_required_keys = { validation::version, validation::species, validation::phases, validation::reactions };
-      std::vector<std::string> mechanism_optional_keys = { validation::name, validation::models };
+      std::vector<std::string> mechanism_optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
@@ -56,14 +56,6 @@ namespace mechanism_configuration
       auto phases_parsing = ParsePhases(object[validation::phases], species_parsing.second);
       result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
       mechanism->phases = phases_parsing.second;
-
-      YAML::Node models_node = object[validation::models];
-      if (models_node && !models_node.IsNull())
-      {
-        auto models_parsing = ParseModels(models_node, phases_parsing.second);
-        result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
-        mechanism->models = models_parsing.second;
-      }
 
       auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());

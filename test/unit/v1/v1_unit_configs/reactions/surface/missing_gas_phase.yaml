@@ -1,4 +1,4 @@
-name: Missing condensed phase
+name: Missing gas phase
 phases: []
 reactions:
 - gas phase: gas

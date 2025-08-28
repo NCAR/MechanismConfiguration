@@ -84,16 +84,28 @@ namespace mechanism_configuration
         }
 
         std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
-        auto it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
-        if (it == existing_phases.end())
         {
-          std::string line = std::to_string(object[validation::condensed_phase].Mark().line + 1);
-          std::string column = std::to_string(object[validation::condensed_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + condensed_phase });
+          auto it = std::find_if(
+              existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
+          if (it == existing_phases.end())
+          {
+            std::string line = std::to_string(object[validation::condensed_phase].Mark().line + 1);
+            std::string column = std::to_string(object[validation::condensed_phase].Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + condensed_phase });
+          }
         }
-
-        surface.gas_phase = object[validation::gas_phase].as<std::string>();
+        std::string gas_phase = object[validation::gas_phase].as<std::string>();
+        {
+          auto it = std::find_if(
+              existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+          if (it == existing_phases.end())
+          {
+            std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
+            std::string column = std::to_string(object[validation::gas_phase].Mark().column + 1);
+            errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
+          }
+        }
+        surface.gas_phase = gas_phase;
         surface.condensed_phase = condensed_phase;
         surface.gas_phase_products = products.second;
         types::ReactionComponent component;

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "name": "Missing condensed phase",
+  "name": "Missing gas phase",
   "species": [
     {
       "name": "A"
@@ -12,7 +12,19 @@
       "name": "C"
     }
   ],
-  "phases": [],
+  "phases": [
+    {
+      "name": "surface reacting phase",
+      "species": [
+        {
+          "name": "B"
+        },
+        {
+          "name": "C"
+        }
+      ]
+    }
+  ],
   "reactions": [
     {
       "type": "SURFACE",
