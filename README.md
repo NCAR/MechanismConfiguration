@@ -19,7 +19,7 @@ The configuration documentation can be found [here](https://ncar.github.io/Mecha
 
 With python and pip installed, go to the `docs/` folder and run:
 ```
-pip install -r requirements
+pip install -r requirements.txt
 make html
 ```
 

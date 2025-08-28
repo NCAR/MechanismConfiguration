@@ -1,4 +1,4 @@
-.. _mechanisms:
+.. _v0-mechanisms:
 
 ##########
 Mechanisms
@@ -47,4 +47,4 @@ Mechanisms are collections of reactions and have the following format:
 The ``name`` is required and must be unique.
 Mechanisms with the same name will be merged into a single mechanism.
 The ``type`` is also required and must be ``MECHANISM``.
-The ``reactions`` should be an array of :ref:`reactions`.
+The ``reactions`` should be an array of :ref:`v0-reactions`.

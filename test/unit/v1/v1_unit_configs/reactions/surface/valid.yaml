@@ -12,7 +12,6 @@ phases:
   - C
 reactions:
 - __comment: key lime pie is superior to all other pies
-  condensed phase: surface reacting phase
   gas phase: gas
   gas-phase products:
   - coefficient: 1
@@ -23,8 +22,7 @@ reactions:
   name: my surface
   reaction probability: 0.02
   type: SURFACE
-- condensed phase: surface reacting phase
-  gas phase: gas
+- gas phase: gas
   gas-phase products:
   - __optional thing: hello
     species name: B

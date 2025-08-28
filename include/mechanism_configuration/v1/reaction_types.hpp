@@ -229,8 +229,6 @@ namespace mechanism_configuration
         std::string name;
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
-        /// @brief An identifier for the condensed phase where this reaction occurs
-        std::string condensed_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };
