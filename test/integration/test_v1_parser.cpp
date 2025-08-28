@@ -37,7 +37,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.value(), 1.0e-20);
     EXPECT_EQ(mechanism.species[3].is_third_body.has_value(), true);
     EXPECT_EQ(mechanism.species[3].is_third_body.value(), true);
-    
+
     EXPECT_EQ(mechanism.version.major, 1);
     EXPECT_EQ(mechanism.version.minor, 0);
     EXPECT_EQ(mechanism.version.patch, 0);
