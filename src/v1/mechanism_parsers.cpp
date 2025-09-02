@@ -37,10 +37,9 @@ namespace mechanism_configuration
       {
         types::Species species;
         std::vector<std::string> required_keys = { validation::name };
-        std::vector<std::string> optional_keys = { validation::molecular_weight,
-                                                   validation::constant_concentration,
-                                                   validation::constant_mixing_ratio,
-                                                   validation::is_third_body };
+        std::vector<std::string> optional_keys = {
+          validation::molecular_weight, validation::constant_concentration, validation::constant_mixing_ratio, validation::is_third_body
+        };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())

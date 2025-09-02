@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>
 

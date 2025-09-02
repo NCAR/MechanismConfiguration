@@ -4,11 +4,12 @@
 
 #pragma once
 
+#include <mechanism_configuration/errors.hpp>
+
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
 {

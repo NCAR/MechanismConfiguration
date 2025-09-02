@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/development/model_types.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -20,7 +20,9 @@ namespace mechanism_configuration
   {
     std::pair<Errors, std::vector<types::Species>> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<development::types::Species> existing_species);
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(
+        const YAML::Node& objects,
+        const std::vector<development::types::Species> existing_species);
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
