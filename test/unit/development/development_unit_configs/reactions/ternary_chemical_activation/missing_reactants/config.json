@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "name": "Missing reactants",
+  "species": [
+    {
+      "name": "foo"
+    },
+    {
+      "name": "bar"
+    },
+    {
+      "name": "baz"
+    },
+    {
+      "name": "quz"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "foo",
+        "bar",
+        "baz",
+        "quz"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
+      "products": [
+        {
+          "species name": "bar",
+          "yield": 1.0
+        },
+        {
+          "species name": "baz",
+          "yield": 3.2
+        }
+      ]
+    }
+  ]
+}

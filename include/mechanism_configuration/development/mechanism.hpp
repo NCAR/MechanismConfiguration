@@ -1,0 +1,40 @@
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
+
+#include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/development/model_types.hpp>
+#include <mechanism_configuration/development/reaction_types.hpp>
+#include <mechanism_configuration/development/types.hpp>
+
+#include <string>
+#include <vector>
+
+namespace mechanism_configuration
+{
+  namespace development
+  {
+    namespace types
+    {
+
+      struct Mechanism : public ::mechanism_configuration::Mechanism
+      {
+        /// @brief Mechanism name
+        /// @note  This is optional.
+        std::string name;
+        /// @brief Represents species
+        std::vector<Species> species;
+        /// @brief Represents phases
+        std::vector<Phase> phases;
+        /// @brief Represents a general model
+        /// @note  This is optional. It can be omitted if no model is defined.
+        Models models;
+        /// @brief Represents a collection of different reaction types, each stored in a vector
+        ///        corresponding to a specific mechanism
+        Reactions reactions;
+      };
+    }  // namespace types
+  }  // namespace development
+}  // namespace mechanism_configuration

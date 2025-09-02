@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Missing condensed phase",
+  "name": "Missing gas phase",
   "species": [
     {
       "name": "A"

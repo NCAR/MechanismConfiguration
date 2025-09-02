@@ -1,0 +1,24 @@
+name: Unknown species
+phases:
+- name: gas
+  species:
+  - A
+- name: aqueous
+  species:
+  - B
+reactions:
+- B:
+  - -1970.0
+  - 2.91
+  - 0.00196
+  - -0.496
+  condensed phase: aqueous
+  condensed-phase species: B
+  gas phase: gas
+  gas-phase species: C
+  name: my simpol
+  type: SIMPOL_PHASE_TRANSFER
+species:
+- name: A
+- name: B
+version: 2.0.0

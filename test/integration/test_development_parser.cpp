@@ -1,20 +1,20 @@
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/types.hpp>
+#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/types.hpp>
 
 #include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, ParsesFullV1Configuration)
+TEST(ParserBase, ParsesFullDevelopmentConfiguration)
 {
-  v1::Parser parser;
+  development::Parser parser;
   std::vector<std::string> extensions = { ".json" };
   for (auto& extension : extensions)
   {
     std::string path = "examples/development/full_configuration" + extension;
     auto parsed = parser.Parse(path);
     EXPECT_TRUE(parsed);
-    v1::types::Mechanism mechanism = *parsed;
+    development::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.name, "Full Configuration");
     EXPECT_EQ(mechanism.species.size(), 11);
     EXPECT_EQ(mechanism.phases.size(), 4);
@@ -45,7 +45,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_EQ(mechanism.species[4].constant_mixing_ratio.has_value(), true);
     EXPECT_EQ(mechanism.species[4].constant_mixing_ratio.value(), 1.0e-6);
 
-    EXPECT_EQ(mechanism.version.major, 1);
+    EXPECT_EQ(mechanism.version.major, 2);
     EXPECT_EQ(mechanism.version.minor, 0);
     EXPECT_EQ(mechanism.version.patch, 0);
   }
@@ -53,7 +53,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
 
 TEST(ParserBase, ParserReportsBadFiles)
 {
-  v1::Parser parser;
+  development::Parser parser;
   std::vector<std::string> extensions = { ".yaml", ".json" };
   for (auto& extension : extensions)
   {
@@ -67,7 +67,7 @@ TEST(ParserBase, ParserReportsBadFiles)
 
 TEST(ParserBase, ParserReportsDirectory)
 {
-  v1::Parser parser;
+  development::Parser parser;
   std::string path = "examples/";
   auto parsed = parser.Parse(path);
   EXPECT_FALSE(parsed);

@@ -5,7 +5,6 @@
 #pragma once
 
 #include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/v1/model_types.hpp>
 #include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
@@ -28,9 +27,6 @@ namespace mechanism_configuration
         std::vector<Species> species;
         /// @brief Represents phases
         std::vector<Phase> phases;
-        /// @brief Represents a general model
-        /// @note  This is optional. It can be omitted if no model is defined.
-        Models models;
         /// @brief Represents a collection of different reaction types, each stored in a vector
         ///        corresponding to a specific mechanism
         Reactions reactions;

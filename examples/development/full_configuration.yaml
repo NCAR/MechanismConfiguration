@@ -1,5 +1,5 @@
 ---
-version: 1.0.0
+version: 2.0.0
 name: Full Configuration
 species:
 - name: A
@@ -200,6 +200,7 @@ reactions:
     coefficient: 1
   - species name: C
     coefficient: 1
+  condensed phase: surface reacting phase
   name: my surface
 - type: TROE
   gas phase: gas
@@ -232,7 +233,7 @@ reactions:
   - species name: bar
     coefficient: 0.5
   - species name: foo
-    coefficient: 1
+    coefficient: 0
   k0_A: 32.1
   k0_B: -2.3
   k0_C: 102.3

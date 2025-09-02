@@ -5,5 +5,4 @@ target_sources(mechanism_configuration
     utils.cpp
 )
 
-add_subdirectory(models)
 add_subdirectory(reactions)

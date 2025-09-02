@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/v1/mechanism_parsers.hpp>
-#include <mechanism_configuration/v1/model_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
@@ -38,14 +37,7 @@ namespace mechanism_configuration
       {
         types::Species species;
         std::vector<std::string> required_keys = { validation::name };
-        std::vector<std::string> optional_keys = { validation::absolute_tolerance,
-                                                   validation::diffusion_coefficient,
-                                                   validation::molecular_weight,
-                                                   validation::henrys_law_constant_298,
-                                                   validation::henrys_law_constant_exponential_factor,
-                                                   validation::n_star,
-                                                   validation::density,
-                                                   validation::tracer_type,
+        std::vector<std::string> optional_keys = { validation::molecular_weight,
                                                    validation::constant_concentration,
                                                    validation::constant_mixing_ratio,
                                                    validation::is_third_body };
@@ -56,23 +48,8 @@ namespace mechanism_configuration
           std::string name = object[validation::name].as<std::string>();
           species.name = name;
 
-          if (object[validation::tracer_type])
-            species.tracer_type = object[validation::tracer_type].as<std::string>();
-
-          if (object[validation::absolute_tolerance])
-            species.absolute_tolerance = object[validation::absolute_tolerance].as<double>();
-          if (object[validation::diffusion_coefficient])
-            species.diffusion_coefficient = object[validation::diffusion_coefficient].as<double>();
           if (object[validation::molecular_weight])
             species.molecular_weight = object[validation::molecular_weight].as<double>();
-          if (object[validation::henrys_law_constant_298])
-            species.henrys_law_constant_298 = object[validation::henrys_law_constant_298].as<double>();
-          if (object[validation::henrys_law_constant_exponential_factor])
-            species.henrys_law_constant_exponential_factor = object[validation::henrys_law_constant_exponential_factor].as<double>();
-          if (object[validation::n_star])
-            species.n_star = object[validation::n_star].as<double>();
-          if (object[validation::density])
-            species.density = object[validation::density].as<double>();
           if (object[validation::constant_concentration])
             species.constant_concentration = object[validation::constant_concentration].as<double>();
           if (object[validation::constant_mixing_ratio])
@@ -288,13 +265,8 @@ namespace mechanism_configuration
 
       std::map<std::string, std::unique_ptr<IReactionParser>> parsers;
       parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
-      parsers[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
-      parsers[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
-      parsers[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
-      parsers[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
       parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
       parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
-      parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
       parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
       parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
       parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
@@ -302,7 +274,6 @@ namespace mechanism_configuration
       parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();
       parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
-      parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
       parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
 
       for (const auto& object : objects)
@@ -323,35 +294,6 @@ namespace mechanism_configuration
       }
 
       return { errors, reactions };
-    }
-
-    std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases)
-    {
-      Errors errors;
-      types::Models models;
-
-      std::map<std::string, std::unique_ptr<IModelParser>> parsers;
-      parsers[validation::GasModel_key] = std::make_unique<GasModelParser>();
-      parsers[validation::ModalModel_key] = std::make_unique<ModalModelParser>();
-
-      for (const auto& object : objects)
-      {
-        std::string type = object[validation::type].as<std::string>();
-        auto it = parsers.find(type);
-        if (it != parsers.end())
-        {
-          auto parse_errors = it->second->parse(object, existing_phases, models);
-          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-        }
-        else
-        {
-          std::string line = std::to_string(object[validation::type].Mark().line + 1);
-          std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
-        }
-      }
-
-      return { errors, models };
     }
 
   }  // namespace v1

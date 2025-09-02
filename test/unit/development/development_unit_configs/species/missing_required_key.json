@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "name": "Invalid key",
+  "species": [
+    {
+      "Name": "A"
+    }
+  ],
+  "phases": [],
+  "reactions": []
+}

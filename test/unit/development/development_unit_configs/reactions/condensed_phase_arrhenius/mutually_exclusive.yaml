@@ -1,0 +1,21 @@
+name: Mutually Exclusive
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+  - H2O
+reactions:
+- C: 10
+  Ea: 0.5
+  condensed phase: aqueous
+  products:
+  - species name: B
+  reactants:
+  - species name: A
+  type: CONDENSED_PHASE_ARRHENIUS
+species:
+- name: A
+- name: B
+- name: H2O
+version: 2.0.0

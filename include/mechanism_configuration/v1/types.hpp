@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
 {
@@ -19,14 +20,7 @@ namespace mechanism_configuration
       struct Species
       {
         std::string name;
-        std::optional<double> absolute_tolerance;
-        std::optional<double> diffusion_coefficient;
         std::optional<double> molecular_weight;
-        std::optional<double> henrys_law_constant_298;
-        std::optional<double> henrys_law_constant_exponential_factor;
-        std::optional<double> n_star;
-        std::optional<double> density;
-        std::optional<std::string> tracer_type;
         std::optional<double> constant_concentration;
         std::optional<double> constant_mixing_ratio;
         std::optional<bool> is_third_body;
@@ -54,18 +48,6 @@ namespace mechanism_configuration
       {
         std::string species_name;
         double coefficient{ 1.0 };
-        /// @brief Unknown properties, prefixed with two underscores (__)
-        std::unordered_map<std::string, std::string> unknown_properties;
-      };
-
-      struct Particle
-      {
-        /// @brief Describes the physical state of the particle
-        std::string phase;
-        /// @brief Lists the chemical species dissolved in the solvent
-        std::vector<ReactionComponent> solutes;
-        /// @brief Specifies the liquid medium in which solutes are dissolved
-        ReactionComponent solvent;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

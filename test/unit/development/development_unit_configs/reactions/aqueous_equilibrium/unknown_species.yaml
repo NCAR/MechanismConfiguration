@@ -1,0 +1,23 @@
+name: Unknown species
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+reactions:
+- condensed phase: aqueous
+  condensed-phase water: H2O
+  k_reverse: 0.32
+  products:
+  - coefficient: 1
+    species name: B
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 2
+    species name: A
+  type: AQUEOUS_EQUILIBRIUM
+species:
+- name: A
+- name: B
+version: 2.0.0

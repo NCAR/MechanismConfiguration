@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "name": "more than one reactant",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        "C",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "condensed phase": "aqueous",
+      "reactants": [
+        {
+          "species name": "A"
+        },
+        {
+          "species name": "B"
+        }
+      ],
+      "products": [
+        {
+          "species name": "C",
+          "coefficient": 0.2
+        }
+      ]
+    }
+  ]
+}

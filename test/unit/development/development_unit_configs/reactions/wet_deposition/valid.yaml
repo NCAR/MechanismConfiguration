@@ -1,0 +1,21 @@
+name: Valid wet deposition
+phases:
+- name: cloud
+  species:
+  - A
+  - B
+  - C
+reactions:
+- __comment: Tuxedo cats are the best
+  condensed phase: cloud
+  name: rxn cloud
+  scaling factor: 12.3
+  type: WET_DEPOSITION
+- condensed phase: cloud
+  name: rxn cloud2
+  type: WET_DEPOSITION
+species:
+- name: A
+- name: B
+- name: C
+version: 2.0.0

@@ -19,23 +19,12 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 2);
     EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0e-30");
     EXPECT_EQ(mechanism.species[0].unknown_properties["__long name"], "ozone");
-    EXPECT_EQ(mechanism.species[0].tracer_type.has_value(), false);
     EXPECT_EQ(mechanism.species[0].is_third_body.has_value(), true);
     EXPECT_EQ(mechanism.species[0].is_third_body.value(), true);
 
     EXPECT_EQ(mechanism.species[1].name, "H2O2");
-    EXPECT_EQ(mechanism.species[1].henrys_law_constant_298.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].henrys_law_constant_298.value(), 1.011596348);
-    EXPECT_EQ(mechanism.species[1].henrys_law_constant_exponential_factor.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].henrys_law_constant_exponential_factor.value(), 6340);
-    EXPECT_EQ(mechanism.species[1].diffusion_coefficient.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].diffusion_coefficient.value(), 1.46e-05);
-    EXPECT_EQ(mechanism.species[1].n_star.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].n_star.value(), 1.74);
     EXPECT_EQ(mechanism.species[1].molecular_weight.has_value(), true);
     EXPECT_EQ(mechanism.species[1].molecular_weight.value(), 0.0340147);
-    EXPECT_EQ(mechanism.species[1].density.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].density.value(), 1000.0);
     EXPECT_EQ(mechanism.species[1].constant_concentration.has_value(), true);
     EXPECT_EQ(mechanism.species[1].constant_concentration.value(), 2.5e19);
     EXPECT_EQ(mechanism.species[1].unknown_properties.size(), 1);
@@ -44,8 +33,6 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[2].name, "aerosol stuff");
     EXPECT_EQ(mechanism.species[2].molecular_weight.has_value(), true);
     EXPECT_EQ(mechanism.species[2].molecular_weight.value(), 0.5);
-    EXPECT_EQ(mechanism.species[2].density.has_value(), true);
-    EXPECT_EQ(mechanism.species[2].density.value(), 1000.0);
     EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.has_value(), true);
     EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.value(), 1.0e-6);
     EXPECT_EQ(mechanism.species[2].unknown_properties.size(), 1);
