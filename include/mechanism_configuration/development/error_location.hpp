@@ -35,13 +35,3 @@ namespace std {
     }
   };
 }
-
-    // template<>
-    // struct std::formatter<ErrorLocation> : std::formatter<std::string>
-    // {
-    //   auto format(const ErrorLocation& loc, format_context& ctx) const
-    //   {
-    //     return std::formatter<std::string>::format(
-    //       std::format("{}:{}", loc.line, loc.column), ctx);
-    //   }
-    // };
