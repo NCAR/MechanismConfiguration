@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <string>
 #include <format>
+#include <string>
 
 namespace mechanism_configuration
 {
@@ -19,19 +19,22 @@ namespace mechanism_configuration
       /// @param line_number 0-based line number (e.g., from YAML::Mark)
       /// @param column_number 0-based column number
       ErrorLocation(int line_number, int column_number)
-        : line(line_number + 1), column(column_number + 1) {}
+          : line(line_number + 1),
+            column(column_number + 1)
+      {
+      }
     };
   }  // namespace development
 }  // namespace mechanism_configuration
 
-namespace std {
+namespace std
+{
   template<>
   struct formatter<mechanism_configuration::development::ErrorLocation> : std::formatter<std::string>
   {
     auto format(const mechanism_configuration::development::ErrorLocation& loc, format_context& ctx) const
     {
-      return formatter<std::string>::format(
-        std::format("{}:{}", loc.line, loc.column), ctx);
+      return formatter<std::string>::format(std::format("{}:{}", loc.line, loc.column), ctx);
     }
   };
-}
+}  // namespace std

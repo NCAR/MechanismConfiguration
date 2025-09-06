@@ -14,12 +14,6 @@ namespace mechanism_configuration
   {
 
     Errors ValidateSpecies(const YAML::Node& species_list);
-    // Errors ValidatePhases(const std::vector<types::Phase>& phases, const std::vector<types::Species>& species);
-    // Errors ValidateModels(const std::vector<types::Model>& models, const std::vector<types::Phase>& phases);
-    // Errors ValidateReactions(const std::vector<types::Reaction>& reactions, const std::vector<types::Species>& species, const std::vector<types::Phase>& phases);
-    // Errors ValidateVersion(const Version& version);
-    // Errors Validate(const types::Mechanism& mechanism);
-
 
   }  // namespace development
 }  // namespace mechanism_configuration
