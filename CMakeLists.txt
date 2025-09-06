@@ -2,6 +2,9 @@
 # Preamble
 cmake_minimum_required(VERSION 3.21)
 
+
+set(CMAKE_CXX_STANDARD 20)
+
 # must be on the same line so that pyproject.toml can correctly identify the version
 project(mechanism_configuration VERSION 0.3.0 LANGUAGES CXX)
 
