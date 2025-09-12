@@ -28,20 +28,9 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    std::pair<Errors, std::vector<development::types::Species>> ParseSpecies(const YAML::Node& objects)
-
+    std::vector<types::Species> ParseSpecies(const YAML::Node& objects)
     {
-      Errors errors;
       std::vector<types::Species> all_species;
-
-      auto validation_error = ValidateSpecies(objects);
-
-      if (!validation_error.empty())
-      {
-        errors.insert(errors.end(), validation_error.begin(), validation_error.end());
-        return { errors, all_species };
-      }
-
       for (const auto& object : objects)
       {
         types::Species species;
@@ -76,10 +65,10 @@ namespace mechanism_configuration
         all_species.push_back(species);
 
       }
-      return { errors, all_species };
+      return all_species;
     }
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species)
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species>& existing_species)
     {
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;

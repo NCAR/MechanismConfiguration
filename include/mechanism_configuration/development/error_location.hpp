@@ -16,8 +16,8 @@ namespace mechanism_configuration
       int line, column;
 
       /// @brief Constructor that adjusts 0-based indices to 1-based
-      /// @param line_number 0-based line number (e.g., from YAML::Mark)
-      /// @param column_number 0-based column number
+      /// @param line_number 0-based line number (from YAML::Mark)
+      /// @param column_number 0-based column number (from YAML::Mark)
       ErrorLocation(int line_number, int column_number)
           : line(line_number + 1),
             column(column_number + 1)

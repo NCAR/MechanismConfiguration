@@ -6,6 +6,7 @@
 #include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/development/validator.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <yaml-cpp/yaml.h>
@@ -49,11 +50,18 @@ namespace mechanism_configuration
       std::string name = object[validation::name].as<std::string>();
       mechanism->name = name;
 
-      auto species_parsing = ParseSpecies(object[validation::species]);
-      result.errors.insert(result.errors.end(), species_parsing.first.begin(), species_parsing.first.end());
-      mechanism->species = species_parsing.second;
+      auto validation_error = ValidateSpecies(object[validation::species]);
+      if (!validation_error.empty())
+      {
+        result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
+        return result;
+      }
+      validation_error.clear();
 
-      auto phases_parsing = ParsePhases(object[validation::phases], species_parsing.second);
+      auto parsed_species = ParseSpecies(object[validation::species]);
+      mechanism->species = parsed_species;
+
+      auto phases_parsing = ParsePhases(object[validation::phases], parsed_species);
       result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
       mechanism->phases = phases_parsing.second;
 
@@ -65,7 +73,7 @@ namespace mechanism_configuration
         mechanism->models = models_parsing.second;
       }
 
-      auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
+      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, phases_parsing.second);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
       mechanism->reactions = reactions_parsing.second;
 
@@ -76,6 +84,7 @@ namespace mechanism_configuration
       }
 
       result.mechanism = std::move(mechanism);
+
       return result;
     }
   }  // namespace development
