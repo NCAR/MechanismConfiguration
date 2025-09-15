@@ -56,7 +56,6 @@ namespace mechanism_configuration
         result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
         return result;
       }
-      validation_error.clear();
 
       auto parsed_species = ParseSpecies(object[validation::species]);
       mechanism->species = parsed_species;
