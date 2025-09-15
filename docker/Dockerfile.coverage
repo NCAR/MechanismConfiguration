@@ -13,7 +13,6 @@ COPY . /mechanism_configuration/
 
 # Clean up old coverage and build artifacts
 RUN set -euo pipefail && \
-    make clean && \
     find . -name "*.gcno" -delete && \
     find . -name "*.gcda" -delete && \
     find . -name "*.info" -delete
