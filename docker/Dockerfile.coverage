@@ -12,6 +12,7 @@ RUN dnf -y update \
 COPY . /mechanism_configuration/
 
 ENV CXX=g++
+ENV CC=gcc
 
 RUN mkdir /build \
       && cd /build \
