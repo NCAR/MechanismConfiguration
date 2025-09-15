@@ -1,0 +1,6 @@
+*.gcno
+*.gcda
+*.info
+/build*
+CMakeFiles
+CMakeCache.txt

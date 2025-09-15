@@ -1,4 +1,4 @@
-FROM fedora:39
+FROM fedora:latest
 
 RUN dnf -y update \
     && dnf -y install \
@@ -10,12 +10,6 @@ RUN dnf -y update \
     && dnf clean all
 
 COPY . /mechanism_configuration/
-
-# Clean up old coverage and build artifacts
-RUN set -euo pipefail && \
-    find . -name "*.gcno" -delete && \
-    find . -name "*.gcda" -delete && \
-    find . -name "*.info" -delete
 
 ENV CXX=g++
 ENV CC=gcc
