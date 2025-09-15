@@ -17,7 +17,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        xcode: ['16.4']
+        xcode: ['15.2']
         build_type: [Release]
         compiler:
           - { cpp: g++-13, c: gcc-13 }

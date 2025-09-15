@@ -37,6 +37,7 @@ jobs:
       - uses: docker/setup-buildx-action@v2
 
       - name: Cache Docker layers
+        if: matrix.dockerfile != 'Dockerfile.coverage'
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
@@ -47,6 +48,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            ${{ matrix.dockerfile == 'Dockerfile.coverage' && '--no-cache' || '' }} \
             -t mechanism_configuration:${{ matrix.dockerfile }} \
             -f docker/${{ matrix.dockerfile }} .
 
