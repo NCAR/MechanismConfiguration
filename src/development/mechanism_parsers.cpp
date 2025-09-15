@@ -63,7 +63,6 @@ namespace mechanism_configuration
         species.unknown_properties = GetComments(object);
 
         all_species.push_back(species);
-
       }
       return all_species;
     }
