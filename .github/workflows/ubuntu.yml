@@ -18,11 +18,12 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - { cpp: g++-13 }
-          - { cpp: g++-14 }
-          - { cpp: clang++ }
+          - { cpp: g++-13, c: gcc-13 }
+          - { cpp: g++-14, c: gcc-14 }
+          - { cpp: clang++, c: clang }
         build_type: [Release]
     env:
+      CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
     steps:
       - name: Checkout code
