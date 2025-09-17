@@ -140,6 +140,18 @@ jobs:
           cd docs
           make html
 
+      - name: Build docs and run switcher update
+        if: github.event_name == 'pull_request'
+        run: |
+          set -x
+          cd docs
+          make html
+          export TAG_VERSION="pr-test"
+          python3 ../tools/update_switcher.py \
+            --switcher-path build/html/_static/switcher.json \
+            --version "${TAG_VERSION}"
+
+
       # Add the .nojekyll file
       - name: nojekyll
         if: ${{ github.event_name == 'push' || github.event_name == 'release' }}
