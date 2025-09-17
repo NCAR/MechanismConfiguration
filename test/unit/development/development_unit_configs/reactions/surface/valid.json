@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "name": "Valid surface",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "name": "surface reacting phase",
+      "species": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "SURFACE",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "reaction probability": 2.0e-2,
+      "gas-phase products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "C",
+          "coefficient": 1
+        }
+      ],
+      "condensed phase": "surface reacting phase",
+      "name": "my surface",
+      "__comment": "key lime pie is superior to all other pies"
+    },
+    {
+      "type": "SURFACE",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "gas-phase products": [
+        {
+          "species name": "B",
+          "__optional thing": "hello"
+        },
+        {
+          "species name": "C"
+        }
+      ],
+      "condensed phase": "surface reacting phase"
+    }
+  ]
+}

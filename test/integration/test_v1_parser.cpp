@@ -16,27 +16,27 @@ TEST(ParserBase, ParsesFullV1Configuration)
     EXPECT_TRUE(parsed);
     v1::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.name, "Full Configuration");
-    EXPECT_EQ(mechanism.species.size(), 11);
-    EXPECT_EQ(mechanism.phases.size(), 4);
-    EXPECT_EQ(mechanism.reactions.aqueous_equilibrium.size(), 1);
+    EXPECT_EQ(mechanism.species.size(), 7);
+    EXPECT_EQ(mechanism.phases.size(), 1);
+
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 2);
     EXPECT_EQ(mechanism.reactions.branched.size(), 1);
-    EXPECT_EQ(mechanism.reactions.condensed_phase_arrhenius.size(), 2);
-    EXPECT_EQ(mechanism.reactions.condensed_phase_photolysis.size(), 1);
     EXPECT_EQ(mechanism.reactions.emission.size(), 1);
     EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law.size(), 1);
     EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
-    EXPECT_EQ(mechanism.reactions.simpol_phase_transfer.size(), 1);
     EXPECT_EQ(mechanism.reactions.surface.size(), 1);
+    EXPECT_EQ(mechanism.reactions.taylor_series.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
+    EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
 
-    EXPECT_EQ(mechanism.species[1].tracer_type.has_value(), true);
-    EXPECT_EQ(mechanism.species[1].tracer_type.value(), "AEROSOL");
-    EXPECT_EQ(mechanism.species[2].tracer_type.has_value(), true);
-    EXPECT_EQ(mechanism.species[2].tracer_type.value(), "THIRD_BODY");
+    EXPECT_EQ(mechanism.species[1].constant_concentration.has_value(), true);
+    EXPECT_EQ(mechanism.species[1].constant_concentration.value(), 1.0e19);
+    EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.has_value(), true);
+    EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.value(), 1.0e-20);
+    EXPECT_EQ(mechanism.species[3].is_third_body.has_value(), true);
+    EXPECT_EQ(mechanism.species[3].is_third_body.value(), true);
 
     EXPECT_EQ(mechanism.version.major, 1);
     EXPECT_EQ(mechanism.version.minor, 0);

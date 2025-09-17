@@ -1,5 +1,5 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
@@ -15,21 +15,21 @@ namespace mechanism_configuration
     InvalidKey,
     UnknownKey,
     InvalidFilePath,
-    FileNotFound,
     ObjectTypeNotFound,
     RequiredKeyNotFound,
     MutuallyExclusiveOption,
-    InvalidVersion,
     DuplicateSpeciesDetected,
     DuplicatePhasesDetected,
+    DuplicateSpeciesInPhaseDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
     UnknownPhase,
-    RequestedAqueousSpeciesNotIncludedInAqueousPhase,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
     InvalidIonPair,
-    UnknownType
+    InvalidVersion,
+    UnknownType,
+    FileNotFound
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);

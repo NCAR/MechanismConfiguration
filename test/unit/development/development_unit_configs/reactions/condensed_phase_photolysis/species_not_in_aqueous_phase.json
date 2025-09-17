@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "name": "Condensed phase photolysis using species not in its requested condensed phase",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "C"
+    },
+    {
+      "name": "H2O"
+    }
+  ],
+  "phases": [
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "C",
+        "H2O"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "CONDENSED_PHASE_PHOTOLYSIS",
+      "condensed phase": "aqueous",
+      "reactants": [
+        {
+          "species name": "A",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 1.2
+        },
+        {
+          "species name": "C",
+          "coefficient": 0.3
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,7 @@
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
 #include <mechanism_configuration/parse_status.hpp>
 
 namespace mechanism_configuration
@@ -16,10 +20,11 @@ namespace mechanism_configuration
       case ConfigParseStatus::MutuallyExclusiveOption: return "MutuallyExclusiveOption";
       case ConfigParseStatus::DuplicateSpeciesDetected: return "DuplicateSpeciesDetected";
       case ConfigParseStatus::DuplicatePhasesDetected: return "DuplicatePhasesDetected";
+      case ConfigParseStatus::DuplicateSpeciesInPhaseDetected: return "DuplicateSpeciesInPhaseDetected";
       case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
       case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
       case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
-      case ConfigParseStatus::RequestedAqueousSpeciesNotIncludedInAqueousPhase: return "RequestedAqueousSpeciesNotIncludedInAqueousPhase";
+      case ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase: return "RequestedSpeciesNotRegisteredInPhase";
       case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
       case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";
       case ConfigParseStatus::InvalidVersion: return "InvalidVersion";

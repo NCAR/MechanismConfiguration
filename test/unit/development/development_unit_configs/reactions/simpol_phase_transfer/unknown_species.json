@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "name": "Unknown species",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A"
+      ]
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "SIMPOL_PHASE_TRANSFER",
+      "gas phase": "gas",
+      "gas-phase species": "C",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "B",
+      "B": [
+        -1.97E+03,
+        2.91E+00,
+        1.96E-03,
+        -4.96E-01
+      ],
+      "name": "my simpol"
+    }
+  ]
+}

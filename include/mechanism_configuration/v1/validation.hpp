@@ -1,11 +1,8 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
-
-#include <string>
-#include <vector>
 
 namespace mechanism_configuration
 {
@@ -23,16 +20,13 @@ namespace mechanism_configuration
       static constexpr const char* reactions = "reactions";
 
       // Species
-      static constexpr const char* absolute_tolerance = "absolute tolerance";
-      static constexpr const char* diffusion_coefficient = "diffusion coefficient [m2 s-1]";
       static constexpr const char* molecular_weight = "molecular weight [kg mol-1]";
-      static constexpr const char* henrys_law_constant_298 = "HLC(298K) [mol m-3 Pa-1]";
-      static constexpr const char* henrys_law_constant_exponential_factor = "HLC exponential factor [K]";
-      static constexpr const char* phase = "phase";
-      static constexpr const char* n_star = "N star";
-      static constexpr const char* density = "density [kg m-3]";
-      static constexpr const char* tracer_type = "tracer type";
-      static constexpr const char* third_body = "THIRD_BODY";
+      static constexpr const char* constant_concentration = "constant concentration [mol m-3]";
+      static constexpr const char* constant_mixing_ratio = "constant mixing ratio [mol mol-1]";
+      static constexpr const char* is_third_body = "is third body";
+
+      // Phase-species
+      static constexpr const char* diffusion_coefficient = "diffusion coefficient [m2 s-1]";
 
       // Reactions
       static constexpr const char* reactants = "reactants";
@@ -44,6 +38,10 @@ namespace mechanism_configuration
       static constexpr const char* species_name = "species name";
       static constexpr const char* coefficient = "coefficient";
 
+      // ----------------------------------------
+      // Reaction types
+      // ----------------------------------------
+
       // Arrhenius
       static constexpr const char* Arrhenius_key = "ARRHENIUS";
       static constexpr const char* A = "A";
@@ -53,10 +51,10 @@ namespace mechanism_configuration
       static constexpr const char* E = "E";
       static constexpr const char* Ea = "Ea";
 
-      // Condensed Phase Arrhenius
-      static constexpr const char* CondensedPhaseArrhenius_key = "CONDENSED_PHASE_ARRHENIUS";
+      // TaylorSeries
+      static constexpr const char* TaylorSeries_key = "TAYLOR_SERIES";
+      static constexpr const char* taylor_coefficients = "taylor coefficients";
       // also these
-      // aqueous phase
       // A
       // B
       // C
@@ -74,6 +72,17 @@ namespace mechanism_configuration
       static constexpr const char* kinf_C = "kinf_C";
       static constexpr const char* Fc = "Fc";
       static constexpr const char* N = "N";
+
+      // Ternary Chemical Activation
+      static constexpr const char* TernaryChemicalActivation_key = "TERNARY_CHEMICAL_ACTIVATION";
+      // also k0_A
+      // k0_B
+      // k0_C
+      // kinf_A
+      // kinf_B
+      // kinf_C
+      // Fc
+      // N
 
       // Branched
       static constexpr const char* Branched_key = "BRANCHED_NO_RO2";
@@ -96,17 +105,10 @@ namespace mechanism_configuration
       static constexpr const char* reaction_probability = "reaction probability";
       static constexpr const char* gas_phase_species = "gas-phase species";
       static constexpr const char* gas_phase_products = "gas-phase products";
-      static constexpr const char* aqueous_phase = "aqueous phase";
 
       // Photolysis
       static constexpr const char* Photolysis_key = "PHOTOLYSIS";
       static constexpr const char* scaling_factor = "scaling factor";
-
-      // Condensed Phae Photolysis
-      static constexpr const char* CondensedPhasePhotolysis_key = "CONDENSED_PHASE_PHOTOLYSIS";
-      // also
-      // scaling factor
-      // aqueous phase
 
       // Emissions
       static constexpr const char* Emission_key = "EMISSION";
@@ -115,40 +117,6 @@ namespace mechanism_configuration
       // First Order Loss
       static constexpr const char* FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
-
-      // Simpol Phase Transfer
-      static constexpr const char* SimpolPhaseTransfer_key = "SIMPOL_PHASE_TRANSFER";
-      static constexpr const char* aqueous_phase_species = "aqueous-phase species";
-      // also
-      // gas phase
-      // gas-phase species
-      // aqueous phase
-      // aqueous-phase species
-      // B
-
-      // Aqueous Equilibrium
-      static constexpr const char* AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
-      // also
-      // aqueous phase
-      // A
-      // C
-      static constexpr const char* k_reverse = "k_reverse";
-
-      // Wet Deposition
-      static constexpr const char* WetDeposition_key = "WET_DEPOSITION";
-      // also
-      // scaling factor
-      // aqueous phase
-
-      // Henry's Law Phase Transfer
-      static constexpr const char* HenrysLaw_key = "HL_PHASE_TRANSFER";
-      static constexpr const char* gas = "gas";
-      static constexpr const char* particle = "particle";
-      static constexpr const char* solutes = "solutes";
-      static constexpr const char* solvent = "solvent";
-      // also
-      // phase
-      // species
 
       // User Defined
       static constexpr const char* UserDefined_key = "USER_DEFINED";

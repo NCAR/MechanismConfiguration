@@ -1,7 +1,7 @@
 name: Missing phase
 phases: []
 reactions:
-- aqueous phase: cloud
+- condensed phase: cloud
   name: rxn cloud
   type: WET_DEPOSITION
 species:

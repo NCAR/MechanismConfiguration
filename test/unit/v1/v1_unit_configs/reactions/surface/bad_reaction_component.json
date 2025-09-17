@@ -41,9 +41,8 @@
           "coefficient": 1
         }
       ],
-      "aqueous phase": "surface reacting phase",
       "name": "my surface",
-      "__coment" : "key lime pie is superior to all other pies"
+      "__coment": "key lime pie is superior to all other pies"
     }
   ]
 }

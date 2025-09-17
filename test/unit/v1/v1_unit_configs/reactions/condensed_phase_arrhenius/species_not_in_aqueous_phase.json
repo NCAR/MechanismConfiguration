@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase arrhenius using species not in its requested aqueous phase",
+  "name": "Condensed phase arrhenius using species not in its requested condensed phase",
   "species": [
     {
       "name": "A"
@@ -28,7 +28,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A",
@@ -55,7 +55,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A",
@@ -82,7 +82,7 @@
     },
     {
       "type": "CONDENSED_PHASE_ARRHENIUS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

@@ -2,6 +2,11 @@ name: Duplicate Species
 phases: []
 reactions: []
 species:
-- name: A
-- name: A
+- name: FOO
+- name: BAZ
+- name: CYON
+- name: QUIZ
+- name: BAR
+- name: FOO
+- name: QUIZ
 version: 1.0.0

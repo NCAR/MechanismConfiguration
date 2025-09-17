@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase photolysis using species not in its requested aqueous phase",
+  "name": "Condensed phase photolysis using species not in its requested condensed phase",
   "species": [
     {
       "name": "A"
@@ -28,7 +28,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A",

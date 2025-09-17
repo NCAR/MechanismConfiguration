@@ -6,7 +6,7 @@ phases:
   - B
   - H2O
 reactions:
-- aqueous phase: aqueous
+- condensed phase: aqueous
   products:
   - species name: B
   reactants:

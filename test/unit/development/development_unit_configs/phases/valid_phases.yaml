@@ -1,0 +1,18 @@
+name: Valid phases configuration
+phases:
+- __other: key
+  name: gas
+  species:
+  - A
+  - B
+- __other1: key1
+  __other2: key2
+  name: aqueous
+  species:
+  - C
+reactions: []
+species:
+- name: A
+- name: B
+- name: C
+version: 2.0.0

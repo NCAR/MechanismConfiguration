@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "name": "Bad reaction component",
+  "species": [
+    {
+      "name": "A"
+    },
+    {
+      "name": "B"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "name": "surface reacting phase",
+      "species": [
+        "A",
+        "B"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "SURFACE",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "reaction probability": 2.0e-2,
+      "gas-phase products": [
+        {
+          "Species name": "B",
+          "coefficient": 1
+        },
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ],
+      "condensed phase": "surface reacting phase",
+      "name": "my surface",
+      "__coment": "key lime pie is superior to all other pies"
+    }
+  ]
+}

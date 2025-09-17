@@ -1,0 +1,27 @@
+name: Bad reaction component
+phases:
+- name: aqueous
+  species:
+  - A
+  - B
+  - C
+  - H2O
+reactions:
+- condensed phase: aqueous
+  condensed-phase water: H2O
+  k_reverse: 0.32
+  products:
+  - Species name: B
+    coefficient: 1
+  - Species name: C
+    coefficient: 1
+  reactants:
+  - Species name: A
+    coefficient: 2
+  type: AQUEOUS_EQUILIBRIUM
+species:
+- name: A
+- name: B
+- name: C
+- name: H2O
+version: 2.0.0

@@ -33,6 +33,7 @@ target_include_directories(mechanism_configuration
 
 add_subdirectory(v0)
 add_subdirectory(v1)
+add_subdirectory(development)
 
 target_link_libraries(mechanism_configuration 
   PUBLIC 

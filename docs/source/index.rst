@@ -22,13 +22,9 @@ Welcome to the OpenAtmos Mechanism Configuration documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   overview
-   chemical_species/index
-   mechanisms/index
-   reactions/index
-   examples/index
+   v0/index
+   v1/index
    bibliography
-
 
 
 Indices and tables

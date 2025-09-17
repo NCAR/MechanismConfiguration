@@ -29,7 +29,7 @@
   "reactions": [
     {
       "type": "CONDENSED_PHASE_PHOTOLYSIS",
-      "aqueous phase": "aqueous",
+      "condensed phase": "aqueous",
       "reactants": [
         {
           "species name": "A"

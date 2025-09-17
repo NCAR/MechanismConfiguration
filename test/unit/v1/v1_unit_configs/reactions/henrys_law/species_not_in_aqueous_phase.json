@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "Condensed phase arrhenius using species not in its requested aqueous phase",
+  "name": "Condensed phase arrhenius using species not in its requested condensed phase",
   "species": [
     {
       "name": "A"
@@ -32,11 +32,15 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": ["A"]
+        "species": [
+          "A"
+        ]
       },
       "particle": {
         "phase": "aqueous",
-        "solutes": ["B"],
+        "solutes": [
+          "B"
+        ],
         "solvent": "H2O"
       },
       "name": "my henry's law",

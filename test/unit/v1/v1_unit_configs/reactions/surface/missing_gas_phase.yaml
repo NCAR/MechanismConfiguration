@@ -1,8 +1,7 @@
-name: Missing aqueous phase
+name: Missing gas phase
 phases: []
 reactions:
-- aqueous phase: surface reacting phase
-  gas phase: gas
+- gas phase: gas
   gas-phase products:
   - __optional thing: hello
     species name: B
