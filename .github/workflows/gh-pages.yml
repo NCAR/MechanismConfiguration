@@ -113,7 +113,7 @@ jobs:
           make html
           
           # Update switcher.json to include the new version
-          python3 ../../tools/update_switcher.py \
+          python3 ../tools/update_switcher.py \
             --switcher-path build/html/_static/switcher.json \
             --version "${TAG_VERSION}"
           
