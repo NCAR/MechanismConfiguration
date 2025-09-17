@@ -1,6 +1,6 @@
 ################################################################################
 # Preamble
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,13 +47,18 @@ add_subdirectory(src)
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   # Test code coverage
   if(MECH_CONFIG_ENABLE_COVERAGE)
+    # include(cmake/CodeCoverage.cmake)
     include(CodeCoverage)
     append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
         NAME coverage
         EXECUTABLE "ctest"
         EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
+                # "*CMakeCXXCompilerId.cpp"
+        # BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
+        # BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/coverage_base"
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        LCOV_ARGS --rc geninfo_ignore_errors=mismatch --rc derive_function_end_line=0)
     
   endif()
 

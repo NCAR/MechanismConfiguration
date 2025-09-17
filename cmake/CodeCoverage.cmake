@@ -264,11 +264,16 @@ function(setup_target_for_coverage_lcov)
         -b ${BASEDIR} --zerocounters
     )
     # Create baseline to make sure untouched files show up in the report
+    # set(LCOV_BASELINE_CMD 
+    #     ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} -c -i -d . -b 
+    #     ${BASEDIR} -o ${Coverage_NAME}.base
+    # )
+    # Create baseline to make sure untouched files show up in the report
     set(LCOV_BASELINE_CMD 
         ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} -c -i -d . -b 
         ${BASEDIR} -o ${Coverage_NAME}.base
     )
-    # Run tests
+
     set(LCOV_EXEC_TESTS_CMD 
         ${Coverage_EXECUTABLE} ${Coverage_EXECUTABLE_ARGS}
     )    
@@ -279,7 +284,7 @@ function(setup_target_for_coverage_lcov)
     )
     # add baseline counters
     set(LCOV_BASELINE_COUNT_CMD
-        ${LCOV_PATH} ${Coverage_LCOV_ARGS} --gcov-tool ${GCOV_PATH} -a ${Coverage_NAME}.base 
+        ${LCOV_PATH} ${Coverage_LCOV_ARGS} --ignore-errors mismatch --gcov-tool ${GCOV_PATH} -a ${Coverage_NAME}.base 
         -a ${Coverage_NAME}.capture --output-file ${Coverage_NAME}.total
     ) 
     # filter collected data to final coverage report
