@@ -9,15 +9,15 @@ extern "C" {
 
   const char* getVersionString()
   {
-    return "0.3.0";
+    return "1.0.0";
   }
   unsigned getVersionMajor()
   {
-    return 0;
+    return 1;
   }
   unsigned getVersionMinor()
   {
-    return 3+0;
+    return 0+0;
   }
   unsigned getVersionPatch()
   {
