@@ -9,12 +9,6 @@ RUN dnf -y update \
         make \
     && dnf clean all
 
-    # Install lcov from source (clean upstream version)
-# RUN git clone https://github.com/linux-test-project/lcov.git /tmp/lcov && \
-#     cd /tmp/lcov && \
-#     make install && \
-#     rm -rf /tmp/lcov
-
 COPY . /mechanism_configuration/
 
 ENV CXX=g++

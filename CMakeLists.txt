@@ -47,28 +47,22 @@ add_subdirectory(src)
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   # Test code coverage
   if(MECH_CONFIG_ENABLE_COVERAGE)
-    # include(cmake/CodeCoverage.cmake)
-    include(CodeCoverage)
+    include(cmake/CodeCoverage.cmake)
     append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
         NAME coverage
-        EXECUTABLE "ctest"
+        EXECUTABLE "ctest" -j 4
         EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
-                # "*CMakeCXXCompilerId.cpp"
-        # BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
-        # BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/coverage_base"
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}"
-        LCOV_ARGS --rc geninfo_ignore_errors=mismatch --rc derive_function_end_line=0)
-    
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
   endif()
 
   enable_testing()
   add_subdirectory(test)
 
   # Copy example folder to use as test data
-
   add_custom_target(copy_example_configs ALL ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_BINARY_DIR}/examples)
+
 endif()
 
 ################################################################################

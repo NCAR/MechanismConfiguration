@@ -1,50 +1,25 @@
-FROM fedora:latest
+FROM fedora:40
 
 RUN dnf -y update \
     && dnf -y install \
         cmake \
         gcc-c++ \
         git \
-        make \
         lcov \
+        make \
     && dnf clean all
 
 COPY . /mechanism_configuration/
 
 ENV CXX=g++
 ENV CC=gcc
-# ENV LCOV_GENINFO_OPTIONS="--ignore-errors mismatch"
 
-# RUN mkdir /build \
-#       && cd /build \
-#       && cmake \
-#         -D CMAKE_BUILD_TYPE=debug \
-#         -D MECH_CONFIG_ENABLE_COVERAGE:BOOL=TRUE \
-#         -DCMAKE_CXX_FLAGS="--coverage -O0 -g" \
-#         ../mechanism_configuration
-#     #   && make install -j 8
-#     #   && ctest \
-#     #   && make coverage
-
-# WORKDIR /build
-
-# 🔧 Create a temporary directory to symlink both include/ and src/
-RUN mkdir /mechanism_configuration/coverage_base && \
-    ln -s /mechanism_configuration/include /mechanism_configuration/coverage_base/include && \
-    ln -s /mechanism_configuration/src /mechanism_configuration/coverage_base/src
-
-# 🔧 Build
-RUN mkdir /build && cd /build && \
-    cmake \
+RUN mkdir /build \
+      && cd /build \
+      && cmake \
         -D CMAKE_BUILD_TYPE=debug \
         -D MECH_CONFIG_ENABLE_COVERAGE:BOOL=TRUE \
-        -D CMAKE_CXX_FLAGS="--coverage -O0 -g" \
-        # -D BASE_DIRECTORY="/mechanism_configuration/coverage_base" \
-        ../mechanism_configuration
-
-# You can uncomment these to build and test immediately in Docker
-# RUN make -j$(nproc)
-# RUN ctest --output-on-failure
-# RUN make coverage
+        ../mechanism_configuration \
+      && make install -j 8
 
 WORKDIR /build
