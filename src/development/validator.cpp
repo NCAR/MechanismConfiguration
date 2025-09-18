@@ -58,9 +58,9 @@ namespace mechanism_configuration
       {
         for (const auto& duplicate : duplicates)
         {
-          int total = duplicate.nodes.size();
+          size_t total = duplicate.nodes.size();
 
-          for (int i = 0; i < total; ++i)
+          for (size_t i = 0; i < total; ++i)
           {
             const auto& object = duplicate.nodes[i];
             ErrorLocation error_location {object.Mark().line, object.Mark().column};
