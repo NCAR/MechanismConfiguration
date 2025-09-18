@@ -3,6 +3,7 @@ target_sources(mechanism_configuration
     parser.cpp
     mechanism_parsers.cpp
     utils.cpp
+    validator.cpp
 )
 
 add_subdirectory(models)
