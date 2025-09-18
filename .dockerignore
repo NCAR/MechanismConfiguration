@@ -1,6 +1,7 @@
-# *.gcno
-# *.gcda
-# *.info
-/build*
-# CMakeFiles
-# CMakeCache.txt
+.DS_Store
+.vscode
+docs/build*
+build*
+.github/*
+
+__pycache__
