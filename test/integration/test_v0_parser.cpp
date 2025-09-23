@@ -30,6 +30,22 @@ TEST(ParserBase, ParsesFullv0Configuration)
   }
 }
 
+TEST(ParserBase, ParsesSurface)
+{
+  v0::Parser parser;
+  std::string path = "examples/v0/surface/config.json";
+  auto parsed = parser.Parse(path);
+  EXPECT_TRUE(parsed);
+
+  for (auto& error : parsed.errors)
+  {
+    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+  }
+
+  v0::types::Mechanism mechanism = *parsed;
+  EXPECT_EQ(mechanism.reactions.surface.size(), 1);
+}
+
 TEST(ParserBase, ParserReportsBadFiles)
 {
   v0::Parser parser;

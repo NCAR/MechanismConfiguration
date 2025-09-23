@@ -65,4 +65,23 @@ namespace mechanism_configuration
 
     return errors;
   }
+
+  Errors ValidateObjectType(const YAML::Node& object, const std::string& key, ObjectType type) {
+    // assume the key exists and that ValidateSchema has been called
+    Errors errors;
+
+    bool ok = false;
+    switch (type) {
+      case ObjectType::String:
+        ok = object.IsScalar();
+        break;
+    }
+
+    if (!ok) {
+      std::string line = std::to_string(object[key].Mark().line + 1);
+      std::string column = std::to_string(object[key].Mark().column + 1);
+      errors.push_back({ ConfigParseStatus::InvalidObject, line + ":" + column + ": error: Key '" + key + "' is not of expected type" });
+    }
+  }
+
 }  // namespace mechanism_configuration

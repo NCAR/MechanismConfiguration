@@ -14,5 +14,10 @@
 
 namespace mechanism_configuration
 {
+  enum ObjectType {
+    String,
+  };
+
   Errors ValidateSchema(const YAML::Node& object, const std::vector<std::string>& required_keys, const std::vector<std::string>& optional_keys);
+  Errors ValidateObjectType(const YAML::Node& object, const std::string& key, ObjectType type);
 }  // namespace mechanism_configuration

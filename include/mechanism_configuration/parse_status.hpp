@@ -29,7 +29,8 @@ namespace mechanism_configuration
     InvalidIonPair,
     InvalidVersion,
     UnknownType,
-    FileNotFound
+    FileNotFound,
+    InvalidObject
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);

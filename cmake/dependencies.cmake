@@ -39,6 +39,6 @@ FetchContent_Declare(yaml-cpp
     FIND_PACKAGE_ARGS NAMES yaml-cpp
 )
 
-set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+set(YAML_CPP_BUILD_TOOLS ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(yaml-cpp)
