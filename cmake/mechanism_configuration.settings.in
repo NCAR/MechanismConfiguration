@@ -23,9 +23,8 @@ Shared library: @CMAKE_BUILD_SHARED@
 --------------
 
 Tests:      @MECH_CONFIG_ENABLE_TESTS@
-Python Library:     @MECH_CONFIG_ENABLE_PYTHON_LIBRARY@
+
 
 ## Dependencies:
 ----------------
 
-PyBind11:           @MUSICA_ENABLE_PYTHON_LIBRARY_INFO@
