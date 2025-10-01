@@ -1,0 +1,90 @@
+$ DISABLED: This workflow has been renamed to prevent it from running.
+# # Note (Jiwon): Introducing C++ std::format features requires updating the compiler version,
+# and currently, the code coverage test is broken.
+# Will work on this as a separate task.
+
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  docker-build-and-test:
+    name: Build and Test - ${{ matrix.dockerfile }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        dockerfile:
+          - Dockerfile
+          - Dockerfile.coverage
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      # Remove large tools
+      - name: Free up disk space
+        run: rm -rf /opt/hostedtoolcache || true
+
+      # Enable Docker BuildKit and caching
+      - uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        if: matrix.dockerfile != 'Dockerfile.coverage'
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.dockerfile }}-${{ hashFiles('docker/${{ matrix.dockerfile }}') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.dockerfile }}-
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            ${{ matrix.dockerfile == 'Dockerfile.coverage' && '--no-cache' || '' }} \
+            -t mechanism_configuration:${{ matrix.dockerfile }} \
+            -f docker/${{ matrix.dockerfile }} .
+
+      - name: Run tests in container
+        # only run this if we are not running coverage tests or have built the cuda files
+        if: matrix.dockerfile == 'Dockerfile'
+        run: |
+          docker run --name test-container-${{ matrix.dockerfile }} \
+            -t mechanism_configuration:${{ matrix.dockerfile }} \
+            bash -c 'make test ARGS="--rerun-failed --output-on-failure -j8"'
+
+      - name: Run coverage tests in container
+        if: matrix.dockerfile == 'Dockerfile.coverage'
+        run: |
+          docker run --name test-container-${{ matrix.dockerfile }} \
+            -t mechanism_configuration:${{ matrix.dockerfile }} \
+            bash -c 'make coverage ARGS="--rerun-failed --output-on-failure -j8"'
+
+      - name: Copy coverage from container
+        if: matrix.dockerfile == 'Dockerfile.coverage'
+        run: docker cp test-container-${{ matrix.dockerfile }}:build/coverage.info .
+
+      - name: Upload coverage report to Codecov
+        if: matrix.dockerfile == 'Dockerfile.coverage'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.info
+
+      - name: Cleanup Docker
+        run: |
+          docker rm -f test-container-${{ matrix.dockerfile }} || true
+          docker rmi mechanism_configuration:${{ matrix.dockerfile }} || true
+          docker system prune -af || true
