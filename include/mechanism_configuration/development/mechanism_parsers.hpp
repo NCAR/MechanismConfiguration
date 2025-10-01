@@ -25,9 +25,7 @@ namespace mechanism_configuration
     /// @return vector of parsed species
     std::vector<types::Species> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(
-        const YAML::Node& objects,
-        const std::vector<types::Species>& existing_species);
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species>& existing_species);
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
