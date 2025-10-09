@@ -8,7 +8,8 @@ using namespace mechanism_configuration;
 TEST(ParserBase, ParsesFullDevelopmentConfiguration)
 {
   development::Parser parser;
-  std::vector<std::string> extensions = { ".json" };
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
     std::string path = "examples/development/full_configuration" + extension;
