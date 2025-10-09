@@ -2,9 +2,9 @@ name: Unknown species
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - H2O
+  - name: A
+  - name: B
+  - name: H2O
 reactions:
 - condensed phase: aqueous
   products:

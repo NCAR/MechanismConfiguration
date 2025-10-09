@@ -2,10 +2,10 @@ name: Valid surface
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - C
-  - H2O
+  - name: A
+  - name: B
+  - name: C
+  - name: H2O
 reactions:
 - __comment: hi
   condensed phase: aqueous

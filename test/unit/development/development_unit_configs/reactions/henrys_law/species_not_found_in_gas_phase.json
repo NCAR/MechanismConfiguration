@@ -16,14 +16,20 @@
     {
       "name": "gas",
       "species": [
-        "A"
+        {
+          "name": "A"
+        }
       ]
     },
     {
       "name": "aqueous",
       "species": [
-        "B",
-        "H2O"
+        {
+          "name": "B"
+        },
+        {
+          "name": "H2O"
+        }
       ]
     }
   ],

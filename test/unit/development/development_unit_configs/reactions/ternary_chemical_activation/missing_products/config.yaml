@@ -9,10 +9,10 @@ species:
 phases:
 - name: gas
   species:
-  - foo
-  - bar
-  - baz
-  - quz
+  - name: foo
+  - name: bar
+  - name: baz
+  - name: quz
 reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas

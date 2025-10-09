@@ -2,9 +2,9 @@ name: Valid branched
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
+    - name: A
+    - name: B
+    - name: C
 reactions:
 - X: 0.00012
   Y: 167

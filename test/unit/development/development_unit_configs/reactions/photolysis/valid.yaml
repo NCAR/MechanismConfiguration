@@ -2,14 +2,14 @@ name: Valid photolysis
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 - name: surface reacting phase
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 reactions:
 - __comment: hi
   gas phase: gas

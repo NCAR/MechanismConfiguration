@@ -2,9 +2,9 @@ name: Valid taylor_series
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 reactions:
 - A: 32.1
   B: -2.3

@@ -19,10 +19,18 @@
     {
       "name": "gas",
       "species": [
-        "foo",
-        "bar",
-        "baz",
-        "quz"
+        {
+          "name": "foo"
+        },
+        {
+          "name": "bar"
+        },
+        {
+          "name": "baz"
+        },
+        {
+          "name": "quz"
+    }
       ]
     }
   ],

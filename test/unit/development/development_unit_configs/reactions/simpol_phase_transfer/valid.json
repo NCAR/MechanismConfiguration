@@ -13,13 +13,17 @@
     {
       "name": "gas",
       "species": [
-        "A"
+        {
+          "name": "A"
+        }
       ]
     },
     {
       "name": "aqueous",
       "species": [
-        "B"
+        {
+          "name": "B"
+        }
       ]
     }
   ],
