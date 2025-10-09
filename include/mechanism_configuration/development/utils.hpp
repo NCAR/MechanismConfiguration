@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <filesystem>
 
 namespace mechanism_configuration
 {
@@ -34,6 +35,8 @@ namespace mechanism_configuration
       std::string name;
       std::vector<YAML::Node> nodes;
     };
+
+    void AppendFilePath(const std::filesystem::path& config_path, Errors& errors);
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 

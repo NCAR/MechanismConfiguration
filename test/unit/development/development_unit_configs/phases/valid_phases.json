@@ -16,18 +16,26 @@
     {
       "name": "gas",
       "species": [
-        "A",
-        "B"
+        {
+          "name": "A",
+          "diffusion coefficient [m2 s-1]": 4.23e-7
+        },
+        {
+          "name": "B"
+        }
       ],
-      "__other": "key"
+      "__other": "This is a comment."
     },
     {
       "name": "aqueous",
       "species": [
-        "C"
+        {
+          "name": "C",
+          "diffusion coefficient [m2 s-1]": 4.23e-7
+        }
       ],
-      "__other1": "key1",
-      "__other2": "key2"
+      "__other1": "This is another comment.",
+      "__other2": "This is again a comment."
     }
   ],
   "reactions": []

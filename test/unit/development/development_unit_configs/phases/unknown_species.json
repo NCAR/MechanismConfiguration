@@ -16,8 +16,12 @@
     {
       "name": "gas",
       "species": [
-        "A",
-        "D"
+        {
+          "name": "A"
+        },
+        {
+          "name": "D"
+        },
       ],
       "__other": "key"
     }

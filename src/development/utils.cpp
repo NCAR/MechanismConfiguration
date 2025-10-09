@@ -10,6 +10,15 @@ namespace mechanism_configuration
 {
   namespace development
   {
+
+    void AppendFilePath(const std::filesystem::path& config_path, Errors& errors)
+    {
+      for (auto& error : errors)
+      {
+        error.second = config_path.string() + ":" + error.second;
+      }
+    }
+
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object)
     {
       std::unordered_map<std::string, std::string> unknown_properties;

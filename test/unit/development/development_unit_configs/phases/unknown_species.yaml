@@ -1,13 +1,16 @@
-name: Unknown species configuration
-phases:
-- __other: key
-  name: gas
-  species:
-  - A
-  - D
-reactions: []
-species:
-- name: A
-- name: B
-- name: C
 version: 2.0.0
+name: Unknown species configuration
+
+species:
+  - name: A
+  - name: B
+  - name: C
+
+phases:
+  - name: gas
+    species:
+      - name: A
+      - name: D
+    __other: key
+
+reactions: []

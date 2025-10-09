@@ -13,6 +13,6 @@ phases:
   - name: bar
     "__custom property": 0.5
     "__another custom property": "value"
-  - baz  # Simple string species still supported
+  - name: baz
   "__my custom phase property": "custom value"
 reactions: []

@@ -32,8 +32,9 @@ namespace mechanism_configuration
                                                        validation::constant_concentration,
                                                        validation::constant_mixing_ratio,
                                                        validation::is_third_body };
-
       Errors errors;
+      bool is_valid = true;
+
       std::vector<std::pair<types::Species, YAML::Node>> species_node_pairs;
 
       for (const auto& object : species_list)
@@ -42,6 +43,7 @@ namespace mechanism_configuration
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+          is_valid = false;
           continue;
         }
 
@@ -51,6 +53,9 @@ namespace mechanism_configuration
 
         species_node_pairs.emplace_back(species, object);
       }
+
+      if (!is_valid)
+        return errors;
 
       std::vector<DuplicateEntryInfo> duplicates = FindDuplicateObjectsByName<types::Species>(species_node_pairs);
       if (!duplicates.empty())
@@ -86,21 +91,32 @@ namespace mechanism_configuration
       const std::vector<std::string> species_optional_keys = { validation::diffusion_coefficient };
 
       Errors errors;
+      bool is_valid = true;
+      
       std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 
       for (const auto& object : phases_list)
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validation_errors.empty())
+        {
+          is_valid = false;
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
 
-        auto species_validation_errors =ValidateSchema(
-          object[validation::species], species_required_keys, species_optional_keys);
-        if (!species_validation_errors.empty())
-          errors.insert(errors.end(), species_validation_errors.begin(), species_validation_errors.end());
+        for (const auto& spec : object[validation::species])
+        {
+          auto species_validation_errors =ValidateSchema(
+            spec, species_required_keys, species_optional_keys);
+          if (!species_validation_errors.empty())
+          {
+            is_valid = false;
+            errors.insert(errors.end(), species_validation_errors.begin(), species_validation_errors.end());
+          }
+        }
 
-        if (!validation_errors.empty() || !species_validation_errors.empty())
-          continue;
+        if (!is_valid)
+          return errors;
 
         types::Phase phase;
         phase.name = object[validation::name].as<std::string>();
