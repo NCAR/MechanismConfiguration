@@ -73,19 +73,19 @@ namespace mechanism_configuration
       auto parsed_phases = ParsePhases(object[validation::phases]);
       mechanism->phases = parsed_phases;
 
-      // // Models
-      // YAML::Node models_node = object[validation::models];
-      // if (models_node && !models_node.IsNull())
-      // {
-      //   auto models_parsing = ParseModels(models_node, parsed_phases);
-      //   result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
-      //   mechanism->models = models_parsing.second;
-      // }
+      // Models
+      YAML::Node models_node = object[validation::models];
+      if (models_node && !models_node.IsNull())
+      {
+        auto models_parsing = ParseModels(models_node, parsed_phases);
+        result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
+        mechanism->models = models_parsing.second;
+      }
 
-      // // Reactions
-      // auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
-      // result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
-      // mechanism->reactions = reactions_parsing.second;
+      // Reactions
+      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
+      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
+      mechanism->reactions = reactions_parsing.second;
 
       result.mechanism = std::move(mechanism);
 

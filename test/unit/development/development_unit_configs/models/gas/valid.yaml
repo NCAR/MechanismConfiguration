@@ -11,13 +11,13 @@ species:
 phases:
   - name: gas
     species:
-      - SO2
-      - O3
+      - name: SO2
+      - name: O3
   - name: organic
     species:
-      - SO4
-      - H2O2
-      - H2O
+      - name: SO4
+      - name: H2O2
+      - name: H2O
 
 models:
   - name: gas
