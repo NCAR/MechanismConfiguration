@@ -23,6 +23,12 @@ namespace mechanism_configuration
 {
   namespace development
   {
+    struct NodeInfo
+    {
+      std::string name;
+      YAML::Node nodes;
+    };
+
     struct DuplicateEntryInfo
     {
       std::string name;
@@ -39,7 +45,7 @@ namespace mechanism_configuration
     {
       std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
 
-      if constexpr (std::is_same<T, std::string>::value)
+      if constexpr (std::is_same_v<T, std::string>)
       {
         for (const auto& [elem, node] : collection)
         {
@@ -67,12 +73,62 @@ namespace mechanism_configuration
       return duplicates;
     }
 
+    template<typename ExistingType, typename RequestedType>
+    std::vector<NodeInfo> FindUnknownObjectsByName(
+      const std::vector<ExistingType>& existing_objects,
+      std::vector<std::pair<RequestedType, YAML::Node>>& requested_objects)
+    {
+      std::unordered_set<std::string> existing_names;
+
+      if constexpr (std::is_same_v<ExistingType, std::string>)
+      {
+        for (const auto& name : existing_objects)
+        {
+          existing_names.insert(name);
+        }
+      }
+      else
+      {
+        for (const auto& object : existing_objects)
+        {
+          existing_names.insert(object.name);
+        }
+      }
+
+      std::vector<NodeInfo> unknowns;
+      
+      if constexpr (std::is_same_v<RequestedType, std::string>)
+      {
+        for (const auto& [name, node] : requested_objects)
+        {
+          if (existing_names.find(name) == existing_names.end())
+          {
+            unknowns.emplace_back(name, node);
+          }
+        }
+      }
+      else
+      {
+        for (const auto& [elem, node] : requested_objects)
+        {
+          const auto& name = elem.name;
+          if (existing_names.find(name) == existing_names.end())
+          {
+            unknowns.emplace_back(name, node);
+          }
+        }
+      }
+
+      return unknowns;
+    }
+
+    // TODO - Remove?
     template<typename SpeciesType>
     std::vector<std::string> FindUnknownSpecies(const std::vector<std::string>& requested_species, const std::vector<SpeciesType>& existing_species)
     {
       std::unordered_set<std::string> existing_names;
 
-      if constexpr (std::is_same<SpeciesType, std::string>::value)
+      if constexpr (std::is_same_v<SpeciesType, std::string>)
       {
         for (const auto& species : existing_species)
         {

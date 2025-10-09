@@ -21,11 +21,17 @@ namespace mechanism_configuration
     /// @brief Parses a YAML node into a vector of Species
     ///        The input must be validated using ValidateSpecies().
     ///        This function assumes the structure and types are correct.
-    /// @param objects - YAML node representing species list
-    /// @return vector of parsed species
+    /// @param objects YAML node representing species list
+    /// @return A vector of parsed species
     std::vector<types::Species> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species>& existing_species);
+
+    /// @brief Parses a YAML node into a vector of Phases
+    ///        Extracts each phase's name and its associated species (including optional properties).
+    ///        Assumes the input YAML has already been validated for required structure and keys.
+    /// @param objects YAML node representing phase list
+    /// @return A vector of parsed Phases
+    std::vector<types::Phase> ParsePhases(const YAML::Node& objects);
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
