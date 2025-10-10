@@ -25,7 +25,6 @@ namespace mechanism_configuration
     /// @return A vector of parsed species
     std::vector<types::Species> ParseSpecies(const YAML::Node& objects);
 
-
     /// @brief Parses a YAML node into a vector of Phases
     ///        Extracts each phase's name and its associated species (including optional properties).
     ///        Assumes the input YAML has already been validated for required structure and keys.

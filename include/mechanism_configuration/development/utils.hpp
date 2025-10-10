@@ -13,12 +13,12 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <filesystem>
 
 namespace mechanism_configuration
 {
@@ -78,8 +78,8 @@ namespace mechanism_configuration
 
     template<typename ExistingType, typename RequestedType>
     std::vector<NodeInfo> FindUnknownObjectsByName(
-      const std::vector<ExistingType>& existing_objects,
-      std::vector<std::pair<RequestedType, YAML::Node>>& requested_objects)
+        const std::vector<ExistingType>& existing_objects,
+        std::vector<std::pair<RequestedType, YAML::Node>>& requested_objects)
     {
       std::unordered_set<std::string> existing_names;
 
@@ -99,7 +99,7 @@ namespace mechanism_configuration
       }
 
       std::vector<NodeInfo> unknowns;
-      
+
       if constexpr (std::is_same_v<RequestedType, std::string>)
       {
         for (const auto& [name, node] : requested_objects)

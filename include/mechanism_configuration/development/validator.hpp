@@ -30,9 +30,7 @@ namespace mechanism_configuration
     /// @param phases_list YAML node containing the list of phase entries
     /// @param existing_species List of defined species to validate against
     /// @return List of validation errors, or empty if all entries are valid
-    Errors ValidatePhases(
-      const YAML::Node& phases_list, 
-      const std::vector<types::Species>& existing_species);
+    Errors ValidatePhases(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species);
 
   }  // namespace development
 }  // namespace mechanism_configuration
