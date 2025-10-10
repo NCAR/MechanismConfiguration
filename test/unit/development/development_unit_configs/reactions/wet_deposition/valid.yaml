@@ -2,9 +2,9 @@ name: Valid wet deposition
 phases:
 - name: cloud
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 reactions:
 - __comment: Tuxedo cats are the best
   condensed phase: cloud

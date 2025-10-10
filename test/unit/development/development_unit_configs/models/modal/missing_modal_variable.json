@@ -53,20 +53,38 @@
     {
       "name": "gas",
       "species": [
-        "SO2",
-        "H2O2",
-        "H2SO4",
-        "O3"
+        {
+          "name": "SO2"
+        },
+        {
+          "name": "H2O2"
+        },
+        {
+          "name": "H2SO4"
+        },
+        {
+          "name": "O3"
+        }
       ]
     },
     {
       "name": "aqueous",
       "species": [
-        "SO4",
-        "H2O2",
-        "H2SO4",
-        "H2O",
-        "O3"
+        {
+          "name": "SO4"
+        },
+        {
+          "name": "H2O2"
+        },
+        {
+          "name": "H2SO4"
+        },
+        {
+          "name": "H2O"
+        },
+        {
+          "name": "O3"
+        }
       ]
     }
   ],

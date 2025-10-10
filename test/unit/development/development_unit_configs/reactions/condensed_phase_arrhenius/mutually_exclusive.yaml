@@ -2,9 +2,9 @@ name: Mutually Exclusive
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - H2O
+  - name: A
+  - name: B
+  - name: H2O
 reactions:
 - C: 10
   Ea: 0.5

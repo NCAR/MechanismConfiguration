@@ -45,27 +45,27 @@ species:
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
-  - ethanol
-  - H2O2
+  - name: A
+  - name: B
+  - name: C
+  - name: ethanol
+  - name: H2O2
 - name: aqueous
   species:
-  - H2O2_aq
-  - H2O
-  - ethanol_aq
-  - A
-  - B
-  - C
+  - name: H2O2_aq
+  - name: H2O
+  - name: ethanol_aq
+  - name: A
+  - name: B
+  - name: C
 - name: surface reacting phase
   species:
-  - aerosol stuff
-  - more aerosol stuff
+    - name: aerosol stuff
+    - name: more aerosol stuff
 - name: cloud
   species:
-  - B
-  - C
+    - name: B
+    - name: C
 
 models:
 - name: gas

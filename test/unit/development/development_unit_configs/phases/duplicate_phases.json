@@ -16,21 +16,31 @@
     {
       "name": "gas",
       "species": [
-        "A",
-        "B"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        }
       ]
     },
     {
       "name": "gas",
       "species": [
-        "A",
-        "B"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        }
       ]
     },
     {
       "name": "aqueos",
       "species": [
-        "C"
+        {
+          "name": "C"
+        }
       ]
     }
   ],

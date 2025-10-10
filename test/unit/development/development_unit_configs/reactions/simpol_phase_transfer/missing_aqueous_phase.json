@@ -13,7 +13,9 @@
     {
       "name": "gas",
       "species": [
-        "A"
+        {
+          "name": "A"
+        }
       ]
     }
   ],

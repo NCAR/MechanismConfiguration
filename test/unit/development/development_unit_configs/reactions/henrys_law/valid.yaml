@@ -8,12 +8,12 @@ species:
 phases:
   - name: gas
     species:
-      - A
+      - name: A
   - name: aqueous
     species:
-      - B
-      - H2O
-      - C
+      - name: B
+      - name: H2O
+      - name: C
 reactions:
   - type: HL_PHASE_TRANSFER
     gas:

@@ -2,10 +2,10 @@ name: Missing gas phase
 phases:
 - name: gas
   species:
-  - A
+  - name: A
 - name: aqueous
   species:
-  - A
+  - name: A
 reactions:
 - B:
   - -1970.0

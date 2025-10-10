@@ -19,16 +19,21 @@ TEST(ParserBase, CanParseValidPhases)
     EXPECT_EQ(mechanism.phases[0].name, "gas");
     EXPECT_EQ(mechanism.phases[0].species.size(), 2);
     EXPECT_EQ(mechanism.phases[0].species[0].name, "A");
+    EXPECT_TRUE(mechanism.phases[0].species[0].diffusion_coefficient.has_value());
+    EXPECT_DOUBLE_EQ(mechanism.phases[0].species[0].diffusion_coefficient.value(), 4.23e-7);
     EXPECT_EQ(mechanism.phases[0].species[1].name, "B");
+    EXPECT_FALSE(mechanism.phases[0].species[1].diffusion_coefficient.has_value());
     EXPECT_EQ(mechanism.phases[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.phases[0].unknown_properties["__other"], "key");
+    EXPECT_EQ(mechanism.phases[0].unknown_properties["__other"], "This is a comment.");
 
     EXPECT_EQ(mechanism.phases[1].name, "aqueous");
     EXPECT_EQ(mechanism.phases[1].species.size(), 1);
     EXPECT_EQ(mechanism.phases[1].species[0].name, "C");
+    EXPECT_TRUE(mechanism.phases[1].species[0].diffusion_coefficient.has_value());
+    EXPECT_DOUBLE_EQ(mechanism.phases[1].species[0].diffusion_coefficient.value(), 4.23e-7);
     EXPECT_EQ(mechanism.phases[1].unknown_properties.size(), 2);
-    EXPECT_EQ(mechanism.phases[1].unknown_properties["__other1"], "key1");
-    EXPECT_EQ(mechanism.phases[1].unknown_properties["__other2"], "key2");
+    EXPECT_EQ(mechanism.phases[1].unknown_properties["__other1"], "This is another comment.");
+    EXPECT_EQ(mechanism.phases[1].unknown_properties["__other2"], "This is again a comment.");
   }
 }
 
@@ -43,6 +48,7 @@ TEST(ParserBase, DetectsDuplicatePhases)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicatePhasesDetected);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicatePhasesDetected);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -113,8 +119,9 @@ TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
     std::string file = std::string("development_unit_configs/phases/duplicate_species_in_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

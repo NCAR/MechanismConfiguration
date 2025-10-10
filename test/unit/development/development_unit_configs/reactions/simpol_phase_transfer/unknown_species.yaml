@@ -2,10 +2,10 @@ name: Unknown species
 phases:
 - name: gas
   species:
-  - A
+  - name: A
 - name: aqueous
   species:
-  - B
+  - name: B
 reactions:
 - B:
   - -1970.0

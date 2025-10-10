@@ -2,10 +2,10 @@ name: Valid aqueous equilibrium
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - C
-  - H2O
+    - name: A
+    - name: B
+    - name: C
+    - name: H2O
 reactions:
 - A: 0.0114
   C: 2300.0

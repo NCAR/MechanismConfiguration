@@ -60,136 +60,43 @@ namespace mechanism_configuration
         if (object[validation::is_third_body])
           species.is_third_body = object[validation::is_third_body].as<bool>();
 
-        species.unknown_properties = GetComments(object);
+        species.unknown_properties = std::move(GetComments(object));
 
         all_species.push_back(species);
       }
       return all_species;
     }
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species>& existing_species)
+    std::vector<types::Phase> ParsePhases(const YAML::Node& objects)
     {
-      Errors errors;
-      ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
-      std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
-
-      const std::vector<std::string> phase_required_keys = { validation::name, validation::species };
-      const std::vector<std::string> phase_optional_keys = {};
-
       for (const auto& object : objects)
       {
         types::Phase phase;
-        auto validate = ValidateSchema(object, phase_required_keys, phase_optional_keys);
-        errors.insert(errors.end(), validate.begin(), validate.end());
-        if (validate.empty())
+        phase.name = object[validation::name].as<std::string>();
+
+        std::vector<types::PhaseSpecies> species;
+
+        for (const auto& spec : object[validation::species])
         {
-          std::string name = object[validation::name].as<std::string>();
+          types::PhaseSpecies phase_species;
 
-          std::vector<types::PhaseSpecies> species{};
-          for (const auto& spec : object[validation::species])
+          phase_species.name = spec[validation::name].as<std::string>();
+          if (spec[validation::diffusion_coefficient])
           {
-            types::PhaseSpecies phase_species;
-            if (spec.IsScalar())
-            {
-              // Simple string species name
-              phase_species.name = spec.as<std::string>();
-            }
-            else if (spec.IsMap())
-            {
-              // Complex species with properties
-              if (!spec[validation::name])
-              {
-                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, FormatYamlError(spec, "Species object missing required 'name' field") });
-                continue;
-              }
-
-              phase_species.name = spec[validation::name].as<std::string>();
-
-              // Parse standard properties
-              if (spec[validation::diffusion_coefficient])
-                phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
-
-              // Parse custom properties (those starting with __)
-              phase_species.unknown_properties = GetComments(spec);
-            }
-            else
-            {
-              errors.push_back(
-                  { ConfigParseStatus::InvalidKey, FormatYamlError(spec, "Species must be either a string name or an object with properties") });
-              continue;
-            }
-            species.push_back(phase_species);
+            phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
           }
+          phase_species.unknown_properties = std::move(GetComments(spec));
 
-          phase.name = name;
-          phase.species = species;
-          phase.unknown_properties = GetComments(object);
-
-          // Check for duplicate species within this phase
-          for (size_t i = 0; i < species.size(); ++i)
-          {
-            for (size_t j = i + 1; j < species.size(); ++j)
-            {
-              if (species[i].name == species[j].name)
-              {
-                std::string line = std::to_string(object.Mark().line + 1);
-                std::string column = std::to_string(object.Mark().column + 1);
-                std::ostringstream oss;
-                oss << line << ":" << column << " error: Duplicate species '" << species[i].name << "' found in '" << name << "' phase";
-                errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str() });
-              }
-            }
-          }
-
-          std::vector<std::string> species_names;
-          for (const auto& spec : species)
-          {
-            species_names.push_back(spec.name);
-          }
-          std::vector<std::string> unknown_species = FindUnknownSpecies(species_names, existing_species);
-          if (!unknown_species.empty())
-          {
-            std::ostringstream oss;
-            oss << " error: Phase '" << phase.name << "' requires unknown species: ";
-            for (size_t i = 0; i < unknown_species.size(); i++)
-            {
-              oss << "'" << unknown_species[i] << "'";
-              if (i != unknown_species.size() - 1)
-              {
-                oss << ", ";
-              }
-            }
-            errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, oss.str() });
-          }
-
-          all_phases.push_back(phase);
-          phase_node_pairs.push_back({ phase, object });
+          species.emplace_back(phase_species);
         }
+
+        phase.species = species;
+        phase.unknown_properties = std::move(GetComments(object));
+        all_phases.emplace_back(phase);
       }
 
-      std::vector<DuplicateEntryInfo> duplicates = FindDuplicateObjectsByName<types::Phase>(phase_node_pairs);
-      if (!duplicates.empty())
-      {
-        for (const auto& duplicate : duplicates)
-        {
-          size_t total = duplicate.nodes.size();
-
-          for (size_t i = 0; i < total; ++i)
-          {
-            const auto& object = duplicate.nodes[i];
-            std::string line = std::to_string(object.Mark().line + 1);
-            std::string column = std::to_string(object.Mark().column + 1);
-
-            std::ostringstream oss;
-            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name << "' found (" << (i + 1) << " of " << total << ")";
-
-            errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, oss.str() });
-          }
-        }
-      }
-
-      return { errors, all_phases };
+      return all_phases;
     }
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)

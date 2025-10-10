@@ -21,5 +21,18 @@ namespace mechanism_configuration
     /// @return List of validation errors, or empty if all entries are valid
     Errors ValidateSpecies(const YAML::Node& species_list);
 
+    /// @brief Validates the structure and content of phase definitions in a YAML node.
+    ///        Performs schema validation for each phase and its associated species.
+    ///        - All required keys are present
+    ///        - Detects duplicate species within a single phase
+    ///        - Detects species not defined in the existing_species list
+    ///        - Detects duplicate phase names
+    /// @param phases_list YAML node containing the list of phase entries
+    /// @param existing_species List of defined species to validate against
+    /// @return List of validation errors, or empty if all entries are valid
+    Errors ValidatePhases(
+      const YAML::Node& phases_list, 
+      const std::vector<types::Species>& existing_species);
+
   }  // namespace development
 }  // namespace mechanism_configuration

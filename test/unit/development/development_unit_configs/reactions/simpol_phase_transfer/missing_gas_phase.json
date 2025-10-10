@@ -13,7 +13,9 @@
     {
       "name": "aqueous",
       "species": [
-        "B"
+        {
+          "name": "B"
+        }
       ]
     }
   ],

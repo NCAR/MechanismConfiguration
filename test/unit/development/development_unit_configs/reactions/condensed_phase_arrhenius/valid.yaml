@@ -2,10 +2,10 @@ name: Valid condensed phase arrhenius
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - C
-  - H2O
+  - name: A
+  - name: B
+  - name: C
+  - name: H2O
 reactions:
 - A: 32.1
   B: -2.3

@@ -50,6 +50,7 @@ namespace mechanism_configuration
       std::string name = object[validation::name].as<std::string>();
       mechanism->name = name;
 
+      // Species
       auto validation_error = ValidateSpecies(object[validation::species]);
       if (!validation_error.empty())
       {
@@ -60,27 +61,31 @@ namespace mechanism_configuration
       auto parsed_species = ParseSpecies(object[validation::species]);
       mechanism->species = parsed_species;
 
-      auto phases_parsing = ParsePhases(object[validation::phases], parsed_species);
-      result.errors.insert(result.errors.end(), phases_parsing.first.begin(), phases_parsing.first.end());
-      mechanism->phases = phases_parsing.second;
+      // Phases
+      validation_error = ValidatePhases(object[validation::phases], parsed_species);
+      if (!validation_error.empty())
+      {
+        AppendFilePath(config_path, validation_error);
+        result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
+        return result;
+      }
 
+      auto parsed_phases = ParsePhases(object[validation::phases]);
+      mechanism->phases = parsed_phases;
+
+      // Models
       YAML::Node models_node = object[validation::models];
       if (models_node && !models_node.IsNull())
       {
-        auto models_parsing = ParseModels(models_node, phases_parsing.second);
+        auto models_parsing = ParseModels(models_node, parsed_phases);
         result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
         mechanism->models = models_parsing.second;
       }
 
-      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, phases_parsing.second);
+      // Reactions
+      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
       mechanism->reactions = reactions_parsing.second;
-
-      // prepend the file name to the error messages
-      for (auto& error : result.errors)
-      {
-        error.second = config_path.string() + ":" + error.second;
-      }
 
       result.mechanism = std::move(mechanism);
 
