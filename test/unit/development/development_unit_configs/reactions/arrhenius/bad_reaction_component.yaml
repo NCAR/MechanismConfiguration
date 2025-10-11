@@ -7,7 +7,7 @@ phases:
 reactions:
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
   - Species name: A
   type: ARRHENIUS

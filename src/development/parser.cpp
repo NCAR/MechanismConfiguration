@@ -83,9 +83,16 @@ namespace mechanism_configuration
       }
 
       // Reactions
-      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
-      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
-      mechanism->reactions = reactions_parsing.second;
+      validation_error = ValidateReactions(object[validation::reactions], parsed_species, parsed_phases);
+      if (!validation_error.empty())
+      {
+        AppendFilePath(config_path, validation_error);
+        result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
+        return result;
+      }
+
+      auto parsed_reactions = ParseReactions(object[validation::reactions]);
+      mechanism->reactions = parsed_reactions;
 
       result.mechanism = std::move(mechanism);
 
