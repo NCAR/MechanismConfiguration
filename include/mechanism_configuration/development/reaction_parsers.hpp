@@ -6,6 +6,7 @@
 
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>
@@ -21,6 +22,23 @@ namespace mechanism_configuration
     class IReactionParser
     {
      public:
+
+      virtual Errors Validate(
+        const YAML::Node& object,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
+      {
+        return Errors();
+      }
+
+
+      // Optional during the development: can be overridden by derived classes
+      virtual void Parse(const YAML::Node& object, types::Reactions& reactions)
+      {
+        // Default: do nothing
+      }
+
+      // TODO - remove in progress
       /// @brief Parses a YAML node representing a chemical reaction
       /// @param object The YAML node containing reaction information
       /// @param existing_species A list of species previously defined in the mechanism
@@ -31,7 +49,10 @@ namespace mechanism_configuration
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
           const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) = 0;
+          types::Reactions& reactions)
+      {
+        return Errors();
+      }
 
       /// @brief Destructor
       virtual ~IReactionParser() = default;
@@ -40,12 +61,13 @@ namespace mechanism_configuration
     class ArrheniusParser : public IReactionParser
     {
      public:
-      /// @brief Parser for Arrhenius reactions
-      Errors parse(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+
+      Errors Validate(
+        const YAML::Node& object,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
     class BranchedParser : public IReactionParser
@@ -224,5 +246,40 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
+
+    // Helper function
+
+    //
+    // in progress - helper
+    //
+    inline std::map<std::string, std::unique_ptr<IReactionParser>>& GetReactionParserMap()
+    {
+      static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers;
+
+      static bool initialized = false;
+      if (!initialized) 
+      {
+        reaction_parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
+        reaction_parsers[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
+        reaction_parsers[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
+        reaction_parsers[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
+        reaction_parsers[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
+        reaction_parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
+        reaction_parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
+        reaction_parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
+        reaction_parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
+        reaction_parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
+        reaction_parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
+        reaction_parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
+        reaction_parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
+        reaction_parsers[validation::Troe_key] = std::make_unique<TroeParser>();
+        reaction_parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
+        reaction_parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
+        reaction_parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+        
+        initialized = true;
+      }
+      return reaction_parsers;
+    }
   }  // namespace development
 }  // namespace mechanism_configuration

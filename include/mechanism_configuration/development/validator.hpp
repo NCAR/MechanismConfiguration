@@ -5,6 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/development/types.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -34,17 +35,14 @@ namespace mechanism_configuration
       const YAML::Node& phases_list, 
       const std::vector<types::Species>& existing_species);
 
-    // TODO
-    Errors ValidateReactionComponent(const YAML::Node& object);
-
-    // TODO
+          // TODO
     Errors ValidateReactantsOrProducts(const YAML::Node& object, const std::string& key);
-
+    
     // TODO
     Errors ValidateReactions(
       const YAML::Node& reactions_list, 
       const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phases>& existing_phases
+      const std::vector<types::Phase>& existing_phases
     );
   }  // namespace development
 }  // namespace mechanism_configuration

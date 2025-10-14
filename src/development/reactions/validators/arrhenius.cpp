@@ -6,19 +6,28 @@
 #include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
+#include <mechanism_configuration/development/validator.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/validation_errors_schema.hpp>
+#include <mechanism_configuration/development/error_location.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {
   namespace development
   {
+    /// @brief Validates a YAML-defined Arrhenius reaction entry
+    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
+    ///        ensures all referenced species and phases exist, and collects any errors found.
+    /// @param object The YAML node representing the reaction
+    /// @param existing_species The list of known species used for validation
+    /// @param existing_phases The list of known phases used for validation
+    /// @return A list of validation errors, if any
     Errors ArrheniusParser::Validate(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, 
+      std::vector<std::string> required_keys = { validation::reactants, validation::products,
                                                  validation::type, validation::gas_phase };
       std::vector<std::string> optional_keys = { validation::A, validation::B, validation::C,
                                                  validation::D, validation::E, validation::Ea, 
@@ -26,20 +35,22 @@ namespace mechanism_configuration
 
       Errors errors;
       bool is_valid = true;
-
+      
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        return errors;
         is_valid = false;
-        continue;
       }
 
       if (!is_valid)
         return errors;
-     
+
       // Reactants
-      validation_errors = ValidateReactantsOrProducts(object, validation::reactants);
+      validation_errors = ValidateReactantsOrProducts(
+        object[validation::reactants], validation::reactants);
+
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -47,10 +58,25 @@ namespace mechanism_configuration
       }
 
       // Products
-      validation_errors = ValidateReactantsOrProducts(object, validation::products);
+      validation_errors = ValidateReactantsOrProducts(
+        object[validation::products], validation::products);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        is_valid = false;
+      }
+
+      std::cout << " ValidateSchem cc" << std::endl;
+      if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined()) 
+      {
+        const auto& node = object[validation::Ea];
+        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+        std::string message = std::format(
+          "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.", 
+          error_location, object[validation::type].as<std::string>());
+
+        errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, message });
         is_valid = false;
       }
 
@@ -62,13 +88,13 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::reactants])
       {
         types::ReactionComponent component;
-        component.species_name = obj[validation::species_name].as<std::string>();
+        component.name = obj[validation::name].as<std::string>();
         species_node_pairs.emplace_back(component, obj);
       }
       for (const auto& obj : object[validation::products])
       {
         types::ReactionComponent component;
-        component.species_name = obj[validation::species_name].as<std::string>();
+        component.name = obj[validation::name].as<std::string>();
         species_node_pairs.emplace_back(component, obj);
       }
 
@@ -80,7 +106,7 @@ namespace mechanism_configuration
         {
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format("{} error: Unknown species name '{}' found in '{}' reaction", 
+          std::string message = std::format("{} error: Unknown species name '{}' found in '{}' reaction.", 
             error_location, name, object[validation::type].as<std::string>());
 
           errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, message });
@@ -90,13 +116,14 @@ namespace mechanism_configuration
       // Check for unknown phase
       const auto& phase_node = object[validation::gas_phase];
       std::string gas_phase = phase_node.as<std::string>();
-      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), 
+        [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
 
       if (it == existing_phases.end())
       {
-        ErrorLocation error_location{ phase_nodee.Mark().line, phase_node.Mark().column };
+        ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
-        std::string message = std::format("{} error: Unknown phase name '{}' found in '{}' reaction", 
+        std::string message = std::format("{} error: Unknown phase name '{}' found in '{}' reaction.", 
           error_location, gas_phase, object[validation::type].as<std::string>());
 
         errors.push_back({ ConfigParseStatus::UnknownPhase, message });
@@ -104,5 +131,6 @@ namespace mechanism_configuration
 
       return errors;
     }
+
   }  // namespace development
 }  // namespace mechanism_configuration

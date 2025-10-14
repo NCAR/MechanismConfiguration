@@ -6,6 +6,7 @@
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -185,6 +186,68 @@ namespace mechanism_configuration
             errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, message });
           }
         }
+      }
+      return errors;
+    }
+
+
+    Errors ValidateReactantsOrProducts(const YAML::Node& list, const std::string& key)
+    {
+      const std::vector<std::string> required_keys = { validation::name };
+      const std::vector<std::string> optional_keys = { validation::coefficient };
+
+      Errors errors;
+
+      for (const auto& object : list)
+      {
+        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+       }
+       return errors;
+    }
+
+    Errors ValidateReactions(
+      const YAML::Node& reactions_list, 
+      const std::vector<types::Species>& existing_species,
+      const std::vector<types::Phase>& existing_phases)
+    {
+      Errors errors;
+
+      for (const auto& object : reactions_list)
+      {
+        std::string type = object[validation::type].as<std::string>();
+
+        auto& parsers = GetReactionParserMap();
+       
+        auto it = parsers.find(type);
+        if (it == parsers.end())
+        {
+          const auto& node = object[validation::type]; 
+          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+          std::string message = std::format(
+            "{} error: Unknown reaction type '{}' found", error_location, type);
+
+          errors.push_back({ ConfigParseStatus::UnknownType, message });
+          continue;
+        }
+
+        // TODO (In progress) – Check the 'arrhenius' key, as this validation currently 
+        // only supports Arrhenius.
+        // This is a work-in-progress and will be extended to handle more reaction types.
+        if (type == validation::Arrhenius_key)
+        {
+          auto validation_errors = it->second->Validate(object, existing_species, existing_phases);
+          // auto validation_errors = parsers[type]->Validate(object, existing_species, existing_phases);
+          if (!validation_errors.empty())
+          {
+            errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+          }
+        }
+
       }
       return errors;
     }
