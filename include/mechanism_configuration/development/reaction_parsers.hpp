@@ -31,14 +31,13 @@ namespace mechanism_configuration
         return Errors();
       }
 
-
-      // Optional during the development: can be overridden by derived classes
+      // Optional during the development
       virtual void Parse(const YAML::Node& object, types::Reactions& reactions)
       {
         // Default: do nothing
       }
 
-      // TODO - remove in progress
+      // TODO(in progress) - Will remove this
       /// @brief Parses a YAML node representing a chemical reaction
       /// @param object The YAML node containing reaction information
       /// @param existing_species A list of species previously defined in the mechanism
@@ -247,11 +246,8 @@ namespace mechanism_configuration
     };
 
 
-    // Helper function
-
-    //
-    // in progress - helper
-    //
+    /// @brief Returns a static map of reaction type keys to their parser instances.
+    ///        Initializes the parser map on first call and reuses it.
     inline std::map<std::string, std::unique_ptr<IReactionParser>>& GetReactionParserMap()
     {
       static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers;

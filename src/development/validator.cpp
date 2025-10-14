@@ -190,7 +190,7 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors ValidateReactantsOrProducts(const YAML::Node& list, const std::string& key)
+    Errors ValidateReactantsOrProducts(const YAML::Node& list)
     {
       const std::vector<std::string> required_keys = { validation::name };
       const std::vector<std::string> optional_keys = { validation::coefficient };
@@ -214,39 +214,53 @@ namespace mechanism_configuration
       const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
+      bool is_valid = true;
+
+      auto& parsers = GetReactionParserMap();
+
+      // Cache valid (reaction, parser) pairs
+      std::vector<std::pair<YAML::Node, IReactionParser*>> valid_reactions;
 
       for (const auto& object : reactions_list)
       {
+        if (!object[validation::type].IsDefined())
+        {
+          ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+          std::string message = std::format(
+            "{} error: Missing 'type' object in reaction.", error_location);
+          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+          is_valid = false;
+          continue;
+        }
+
         std::string type = object[validation::type].as<std::string>();
 
-        auto& parsers = GetReactionParserMap();
-       
         auto it = parsers.find(type);
         if (it == parsers.end())
         {
           const auto& node = object[validation::type]; 
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
           std::string message = std::format(
-            "{} error: Unknown reaction type '{}' found", error_location, type);
-
+            "{} error: Unknown reaction type '{}' found.", error_location, type);
           errors.push_back({ ConfigParseStatus::UnknownType, message });
+          is_valid = false;
           continue;
         }
-
-        // TODO (In progress) – Check the 'arrhenius' key, as this validation currently 
-        // only supports Arrhenius.
-        // This is a work-in-progress and will be extended to handle more reaction types.
-        if (type == validation::Arrhenius_key)
-        {
-          auto validation_errors = it->second->Validate(object, existing_species, existing_phases);
-          if (!validation_errors.empty())
-          {
-            errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-          }
-        }
-
+        valid_reactions.emplace_back(object, it->second.get());
       }
+
+      if (!is_valid)
+        return errors;
+
+      for (const auto& [reaction_node, parser] : valid_reactions)
+      {
+        auto validation_errors = parser->Validate(reaction_node, existing_species, existing_phases);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+      }
+
       return errors;
     }
 

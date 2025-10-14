@@ -48,8 +48,7 @@ namespace mechanism_configuration
         return errors;
 
       // Reactants
-      validation_errors = ValidateReactantsOrProducts(
-        object[validation::reactants], validation::reactants);
+      validation_errors = ValidateReactantsOrProducts(object[validation::reactants]);
 
       if (!validation_errors.empty())
       {
@@ -58,8 +57,7 @@ namespace mechanism_configuration
       }
 
       // Products
-      validation_errors = ValidateReactantsOrProducts(
-        object[validation::products], validation::products);
+      validation_errors = ValidateReactantsOrProducts(object[validation::products]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

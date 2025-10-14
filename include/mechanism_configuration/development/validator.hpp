@@ -35,14 +35,24 @@ namespace mechanism_configuration
       const YAML::Node& phases_list, 
       const std::vector<types::Species>& existing_species);
 
-          // TODO
-    Errors ValidateReactantsOrProducts(const YAML::Node& object, const std::string& key);
-    
-    // TODO
+    /// @brief Validates the content of reactants or products definitions in a YAML node
+    /// @param list YAML node representing a sequence of reactants or products.
+    /// @return List of validation errors, or empty if all entries are valid
+    Errors ValidateReactantsOrProducts(const YAML::Node& object);
+
+    /// @brief Validates a YAML list of reactions for type correctness and supported schema.
+    ///        Performs a two-pass validation over the reaction list. The first pass checks that each
+    ///        reaction has a defined and recognized type. The second pass validates the content of
+    ///        reactions using their respective parser.
+    /// @param reactions_list YAML node containing the list of reactions
+    /// @param existing_species List of known species to validate species references
+    /// @param existing_phases List of known phases to validate phase references
+    /// @return list of validation errors, if any
     Errors ValidateReactions(
       const YAML::Node& reactions_list, 
       const std::vector<types::Species>& existing_species,
       const std::vector<types::Phase>& existing_phases
     );
+
   }  // namespace development
 }  // namespace mechanism_configuration
