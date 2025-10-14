@@ -31,13 +31,12 @@ namespace mechanism_configuration
         return Errors();
       }
 
-      // Optional during the development
       virtual void Parse(const YAML::Node& object, types::Reactions& reactions)
       {
-        // Default: do nothing
+        // Optional during the development
       }
 
-      // TODO(in progress) - Will remove this
+      // TODO(in progress) - Will remove this function when the issue 148 is complete
       /// @brief Parses a YAML node representing a chemical reaction
       /// @param object The YAML node containing reaction information
       /// @param existing_species A list of species previously defined in the mechanism

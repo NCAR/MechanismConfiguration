@@ -32,7 +32,6 @@ namespace mechanism_configuration
       std::vector<std::string> optional_keys = { validation::A, validation::B, validation::C,
                                                  validation::D, validation::E, validation::Ea, 
                                                  validation::name };
-
       Errors errors;
       bool is_valid = true;
       
@@ -40,8 +39,8 @@ namespace mechanism_configuration
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        return errors;
         is_valid = false;
+        continue;
       }
 
       if (!is_valid)
@@ -49,7 +48,6 @@ namespace mechanism_configuration
 
       // Reactants
       validation_errors = ValidateReactantsOrProducts(object[validation::reactants]);
-
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -64,7 +62,6 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
-      std::cout << " ValidateSchem cc" << std::endl;
       if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined()) 
       {
         const auto& node = object[validation::Ea];

@@ -31,21 +31,13 @@ namespace mechanism_configuration
     /// @param objects YAML node representing phase list
     /// @return A vector of parsed Phases
     std::vector<types::Phase> ParsePhases(const YAML::Node& objects);
-
-    // TODO(in progress) - Added 'V2' suffix to avoid the name collsion during the refactoring.
-    //                     Once the refactoring is complete, the suffix will be removed
-    types::ReactionComponent ParseReactionComponentV2(const YAML::Node& object);
-
-    // TODO(in progress) - Added 'V2' suffix to avoid the name collsion during the refactoring.
-    //                     Once the refactoring is complete, the suffix will be removed
-    std::vector<types::ReactionComponent> ParseReactantsOrProductsV2(const std::string& key, const YAML::Node& object);
-    
+ 
     // TODO (in progress) - Once the separating parsing from the validation for all reactions, 
-    //                      This will be removed 
+    //                      This will be updated. 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
     
     // TODO (in progress) - Once the separating parsing from the validation for all reactions, 
-    //                      This will be removed 
+    //                      This will be updated.
     std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
 
     std::pair<Errors, types::Reactions> ParseReactions(
@@ -54,7 +46,6 @@ namespace mechanism_configuration
       const std::vector<types::Phase>& existing_phases);
 
     std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases);
-
 
   }  // namespace development
 }  // namespace mechanism_configuration

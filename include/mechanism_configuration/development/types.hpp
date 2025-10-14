@@ -55,8 +55,8 @@ namespace mechanism_configuration
 
       struct ReactionComponent
       {
-        // TODO - replace species_name wit name. This is temporary and will be 
-        //         removed once the decoupling is complete
+        // TODO - Replace `species_name` with `name`.
+        //        This will be removed once the decoupling is complete
         std::string species_name;
         std::string name;
         double coefficient{ 1.0 };

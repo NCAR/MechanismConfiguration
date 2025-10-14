@@ -218,7 +218,6 @@ namespace mechanism_configuration
 
       auto& parsers = GetReactionParserMap();
 
-      // Cache valid (reaction, parser) pairs
       std::vector<std::pair<YAML::Node, IReactionParser*>> valid_reactions;
 
       for (const auto& object : reactions_list)
