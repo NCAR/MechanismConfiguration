@@ -244,37 +244,33 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
-
-    /// @brief Returns a static map of reaction type keys to their parser instances.
-    ///        Initializes the parser map on first call and reuses it.
+    /// @brief Returns a static map of reaction type keys to their parser instances
     inline std::map<std::string, std::unique_ptr<IReactionParser>>& GetReactionParserMap()
     {
-      static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers;
-
-      static bool initialized = false;
-      if (!initialized) 
-      {
-        reaction_parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
-        reaction_parsers[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
-        reaction_parsers[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
-        reaction_parsers[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
-        reaction_parsers[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
-        reaction_parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
-        reaction_parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
-        reaction_parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
-        reaction_parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
-        reaction_parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
-        reaction_parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
-        reaction_parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
-        reaction_parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
-        reaction_parsers[validation::Troe_key] = std::make_unique<TroeParser>();
-        reaction_parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
-        reaction_parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
-        reaction_parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
-        
-        initialized = true;
-      }
+      static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers = [] {
+        std::map<std::string, std::unique_ptr<IReactionParser>> map;
+        map[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
+        map[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
+        map[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
+        map[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
+        map[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
+        map[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
+        map[validation::Emission_key] = std::make_unique<EmissionParser>();
+        map[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
+        map[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
+        map[validation::Surface_key] = std::make_unique<SurfaceParser>();
+        map[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
+        map[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
+        map[validation::Branched_key] = std::make_unique<BranchedParser>();
+        map[validation::Troe_key] = std::make_unique<TroeParser>();
+        map[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
+        map[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
+        map[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+        return map;
+      }();
+      
       return reaction_parsers;
     }
+
   }  // namespace development
 }  // namespace mechanism_configuration
