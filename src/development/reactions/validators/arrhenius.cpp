@@ -33,19 +33,16 @@ namespace mechanism_configuration
                                                  validation::D, validation::E, validation::Ea, 
                                                  validation::name };
       Errors errors;
-      bool is_valid = true;
       
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
-        continue;
+        return errors;
       }
 
-      if (!is_valid)
-        return errors;
-
+      bool is_valid = true;
+      
       // Reactants
       validation_errors = ValidateReactantsOrProducts(object[validation::reactants]);
       if (!validation_errors.empty())
