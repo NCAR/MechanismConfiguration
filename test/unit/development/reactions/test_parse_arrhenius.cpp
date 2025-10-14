@@ -1,4 +1,5 @@
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -84,6 +85,38 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
+  }
+}
+
+TEST(ArrheniusParserTest, MutuallyExclusiveEaAndCFailsValidation)
+{
+  using namespace development;
+
+  YAML::Node reaction_node;
+  reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
+  reaction_node["products"] = YAML::Load("[{ name: bar }]");
+  reaction_node["type"] = "Arrhenius";
+  reaction_node["gas phase"] = "gas";
+
+  // Specify both Ea and C to trigger validation error
+  reaction_node["Ea"] = 0.5;
+  reaction_node["C"] = 10.0;
+
+  std::vector<types::Species> existing_species = {
+      types::Species{ .name = "foo" },
+      types::Species{ .name = "bar" }
+  };
+  std::vector<types::Phase> existing_phases = {
+      types::Phase{ .name = "gas" }
+  };
+
+  ArrheniusParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  ASSERT_FALSE(errors.empty());
+  EXPECT_EQ(errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
+  for (auto& error : errors)
+  {
+    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
   }
 }
 
