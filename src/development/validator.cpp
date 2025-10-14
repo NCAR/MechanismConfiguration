@@ -190,7 +190,6 @@ namespace mechanism_configuration
       return errors;
     }
 
-
     Errors ValidateReactantsOrProducts(const YAML::Node& list, const std::string& key)
     {
       const std::vector<std::string> required_keys = { validation::name };
@@ -241,7 +240,6 @@ namespace mechanism_configuration
         if (type == validation::Arrhenius_key)
         {
           auto validation_errors = it->second->Validate(object, existing_species, existing_phases);
-          // auto validation_errors = parsers[type]->Validate(object, existing_species, existing_phases);
           if (!validation_errors.empty())
           {
             errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
