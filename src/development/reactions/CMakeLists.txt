@@ -1,7 +1,6 @@
 target_sources(mechanism_configuration
   PRIVATE
     aqueous_equilibrium_parser.cpp
-    arrhenius_parser.cpp
     branched_parser.cpp
     condensed_phase_arrhenius_parser.cpp
     condensed_phase_photolysis_parser.cpp
@@ -18,3 +17,6 @@ target_sources(mechanism_configuration
     wet_deposition_parser.cpp
     user_defined_parser.cpp
 )
+
+add_subdirectory(parsers)
+add_subdirectory(validators)

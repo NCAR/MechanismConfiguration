@@ -143,30 +143,15 @@ namespace mechanism_configuration
       return { errors, result };
     }
 
-    std::pair<Errors, types::Reactions>
-    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+    std::pair<Errors, types::Reactions> ParseReactions(
+      const YAML::Node& objects, 
+      const std::vector<types::Species>& existing_species, 
+      const std::vector<types::Phase>& existing_phases )
     {
       Errors errors;
-      types::Reactions reactions;
 
-      std::map<std::string, std::unique_ptr<IReactionParser>> parsers;
-      parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
-      parsers[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
-      parsers[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
-      parsers[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
-      parsers[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
-      parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
-      parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
-      parsers[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
-      parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
-      parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
-      parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
-      parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
-      parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
-      parsers[validation::Troe_key] = std::make_unique<TroeParser>();
-      parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
-      parsers[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
-      parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+      auto& parsers =  GetReactionParserMap();
+      types::Reactions reactions;
 
       for (const auto& object : objects)
       {
@@ -174,8 +159,16 @@ namespace mechanism_configuration
         auto it = parsers.find(type);
         if (it != parsers.end())
         {
-          auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
-          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+          // TODO - This is temporary until the decoupling is complete
+          if (type == validation::Arrhenius_key)
+          {
+            it->second->Parse(object, reactions);
+          }
+          else
+          {
+            auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
+            errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+          }
         }
         else
         {

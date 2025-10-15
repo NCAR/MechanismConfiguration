@@ -6,6 +6,7 @@
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -186,6 +187,79 @@ namespace mechanism_configuration
           }
         }
       }
+      return errors;
+    }
+
+    Errors ValidateReactantsOrProducts(const YAML::Node& list)
+    {
+      const std::vector<std::string> required_keys = { validation::name };
+      const std::vector<std::string> optional_keys = { validation::coefficient };
+
+      Errors errors;
+
+      for (const auto& object : list)
+      {
+        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+       }
+       return errors;
+    }
+
+    Errors ValidateReactions(
+      const YAML::Node& reactions_list, 
+      const std::vector<types::Species>& existing_species,
+      const std::vector<types::Phase>& existing_phases)
+    {
+      Errors errors;
+      bool is_valid = true;
+
+      auto& parsers = GetReactionParserMap();
+
+      std::vector<std::pair<YAML::Node, IReactionParser*>> valid_reactions;
+
+      for (const auto& object : reactions_list)
+      {
+        if (!object[validation::type].IsDefined())
+        {
+          ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+          std::string message = std::format(
+            "{} error: Missing 'type' object in reaction.", error_location);
+          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+          is_valid = false;
+          continue;
+        }
+
+        std::string type = object[validation::type].as<std::string>();
+
+        auto it = parsers.find(type);
+        if (it == parsers.end())
+        {
+          const auto& node = object[validation::type]; 
+          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+          std::string message = std::format(
+            "{} error: Unknown reaction type '{}' found.", error_location, type);
+          errors.push_back({ ConfigParseStatus::UnknownType, message });
+          is_valid = false;
+          continue;
+        }
+        valid_reactions.emplace_back(object, it->second.get());
+      }
+
+      if (!is_valid)
+        return errors;
+
+      for (const auto& [reaction_node, parser] : valid_reactions)
+      {
+        auto validation_errors = parser->Validate(reaction_node, existing_species, existing_phases);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+      }
+
       return errors;
     }
 

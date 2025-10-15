@@ -28,12 +28,12 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "B"
+          "name": "B"
         }
       ],
       "C": 10,

@@ -51,10 +51,10 @@ namespace mechanism_configuration
       mechanism->name = name;
 
       // Species
-      auto validation_error = ValidateSpecies(object[validation::species]);
-      if (!validation_error.empty())
+      auto validation_errors = ValidateSpecies(object[validation::species]);
+      if (!validation_errors.empty())
       {
-        result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
+        result.errors.insert(result.errors.end(), validation_errors.begin(), validation_errors.end());
         return result;
       }
 
@@ -62,11 +62,11 @@ namespace mechanism_configuration
       mechanism->species = parsed_species;
 
       // Phases
-      validation_error = ValidatePhases(object[validation::phases], parsed_species);
-      if (!validation_error.empty())
+      validation_errors = ValidatePhases(object[validation::phases], parsed_species);
+      if (!validation_errors.empty())
       {
-        AppendFilePath(config_path, validation_error);
-        result.errors.insert(result.errors.end(), validation_error.begin(), validation_error.end());
+        AppendFilePath(config_path, validation_errors);
+        result.errors.insert(result.errors.end(), validation_errors.begin(), validation_errors.end());
         return result;
       }
 
@@ -83,9 +83,19 @@ namespace mechanism_configuration
       }
 
       // Reactions
-      auto reactions_parsing = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
-      result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
-      mechanism->reactions = reactions_parsing.second;
+      validation_errors = ValidateReactions(object[validation::reactions], parsed_species, parsed_phases);
+      if (!validation_errors.empty())
+      {
+        AppendFilePath(config_path, validation_errors);
+        result.errors.insert(result.errors.end(), validation_errors.begin(), validation_errors.end());
+        return result;
+      }
+
+      // TODO(in progress) This will the API when the list issue 148 is complete
+      // auto parsed_reactions = ParseReactions(object[validation::reactions]);
+      auto parsed_reactions = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
+      result.errors.insert(result.errors.end(), parsed_reactions.first.begin(), parsed_reactions.first.end());
+      mechanism->reactions = parsed_reactions.second;
 
       result.mechanism = std::move(mechanism);
 

@@ -277,10 +277,10 @@ reactions:
 - type: ARRHENIUS
   gas phase: gas
   reactants:
-  - species name: B
+  - name: B
     coefficient: 1
   products:
-  - species name: C
+  - name: C
     coefficient: 1
   A: 32.1
   B: -2.3
@@ -291,10 +291,10 @@ reactions:
 - type: ARRHENIUS
   gas phase: gas
   reactants:
-  - species name: A
+  - name: A
     coefficient: 1
   products:
-  - species name: B
+  - name: B
     coefficient: 1.2
   A: 29.3
   B: -1.5

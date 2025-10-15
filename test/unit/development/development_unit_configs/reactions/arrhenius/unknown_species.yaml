@@ -7,9 +7,9 @@ phases:
 reactions:
 - gas phase: gas
   products:
-  - species name: C
+  - name: C
   reactants:
-  - species name: D
+  - name: D
   type: ARRHENIUS
   name: Arrhenius
 species:

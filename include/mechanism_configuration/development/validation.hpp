@@ -42,8 +42,10 @@ namespace mechanism_configuration
       static constexpr const char* gas_phase = "gas phase";
 
       // Reactant and product
+      // TODO(in progress) species_name will be replaced by name
       static constexpr const char* species_name = "species name";
       static constexpr const char* coefficient = "coefficient";
+      // also name
 
       // ----------------------------------------
       // Reaction types
