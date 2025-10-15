@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -31,9 +31,7 @@ namespace mechanism_configuration
     /// @param phases_list YAML node containing the list of phase entries
     /// @param existing_species List of defined species to validate against
     /// @return List of validation errors, or empty if all entries are valid
-    Errors ValidatePhases(
-      const YAML::Node& phases_list, 
-      const std::vector<types::Species>& existing_species);
+    Errors ValidatePhases(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species);
 
     /// @brief Validates the content of reactants or products definitions in a YAML node
     /// @param list YAML node representing a sequence of reactants or products.
@@ -49,10 +47,9 @@ namespace mechanism_configuration
     /// @param existing_phases List of known phases to validate phase references
     /// @return list of validation errors, if any
     Errors ValidateReactions(
-      const YAML::Node& reactions_list, 
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases
-    );
+        const YAML::Node& reactions_list,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases);
 
   }  // namespace development
 }  // namespace mechanism_configuration

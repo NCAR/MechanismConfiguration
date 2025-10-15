@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/development/error_location.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -204,14 +204,14 @@ namespace mechanism_configuration
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
         }
-       }
-       return errors;
+      }
+      return errors;
     }
 
     Errors ValidateReactions(
-      const YAML::Node& reactions_list, 
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases)
+        const YAML::Node& reactions_list,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
       bool is_valid = true;
@@ -225,8 +225,7 @@ namespace mechanism_configuration
         if (!object[validation::type].IsDefined())
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-          std::string message = std::format(
-            "{} error: Missing 'type' object in reaction.", error_location);
+          std::string message = std::format("{} error: Missing 'type' object in reaction.", error_location);
           errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
           is_valid = false;
           continue;
@@ -237,10 +236,9 @@ namespace mechanism_configuration
         auto it = parsers.find(type);
         if (it == parsers.end())
         {
-          const auto& node = object[validation::type]; 
+          const auto& node = object[validation::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-          std::string message = std::format(
-            "{} error: Unknown reaction type '{}' found.", error_location, type);
+          std::string message = std::format("{} error: Unknown reaction type '{}' found.", error_location, type);
           errors.push_back({ ConfigParseStatus::UnknownType, message });
           is_valid = false;
           continue;

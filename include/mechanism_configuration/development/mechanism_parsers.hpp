@@ -31,19 +31,17 @@ namespace mechanism_configuration
     /// @param objects YAML node representing phase list
     /// @return A vector of parsed Phases
     std::vector<types::Phase> ParsePhases(const YAML::Node& objects);
- 
-    // TODO (in progress) - Once the separating parsing from the validation for all reactions, 
-    //                      This will be updated. 
+
+    // TODO (in progress) - Once the separating parsing from the validation for all reactions,
+    //                      This will be updated.
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
-    
-    // TODO (in progress) - Once the separating parsing from the validation for all reactions, 
+
+    // TODO (in progress) - Once the separating parsing from the validation for all reactions,
     //                      This will be updated.
     std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
 
-    std::pair<Errors, types::Reactions> ParseReactions(
-      const YAML::Node& objects, 
-      const std::vector<types::Species>& existing_species, 
-      const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Reactions>
+    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
 
     std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases);
 

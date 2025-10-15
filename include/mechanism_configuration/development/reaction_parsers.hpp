@@ -22,11 +22,8 @@ namespace mechanism_configuration
     class IReactionParser
     {
      public:
-
-      virtual Errors Validate(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases)
+      virtual Errors
+      Validate(const YAML::Node& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
       {
         return Errors();
       }
@@ -59,11 +56,8 @@ namespace mechanism_configuration
     class ArrheniusParser : public IReactionParser
     {
      public:
-
-      Errors Validate(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+      Errors Validate(const YAML::Node& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+          override;
 
       void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
@@ -247,7 +241,8 @@ namespace mechanism_configuration
     /// @brief Returns a static map of reaction type keys to their parser instances
     inline std::map<std::string, std::unique_ptr<IReactionParser>>& GetReactionParserMap()
     {
-      static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers = [] {
+      static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers = []
+      {
         std::map<std::string, std::unique_ptr<IReactionParser>> map;
         map[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
         map[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
@@ -268,7 +263,7 @@ namespace mechanism_configuration
         map[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
         return map;
       }();
-      
+
       return reaction_parsers;
     }
 
