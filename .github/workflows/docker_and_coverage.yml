@@ -1,8 +1,3 @@
-$ DISABLED: This workflow has been renamed to prevent it from running.
-# # Note (Jiwon): Introducing C++ std::format features requires updating the compiler version,
-# and currently, the code coverage test is broken.
-# Will work on this as a separate task.
-
 name: Docker CI
 
 on:

@@ -53,7 +53,8 @@ if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
         NAME coverage
         EXECUTABLE "ctest" -j 4
         EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
+        LCOV_ARGS --ignore-errors mismatch)
   endif()
 
   enable_testing()
