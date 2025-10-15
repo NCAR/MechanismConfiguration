@@ -102,13 +102,8 @@ TEST(ArrheniusParserTest, MutuallyExclusiveEaAndCFailsValidation)
   reaction_node["Ea"] = 0.5;
   reaction_node["C"] = 10.0;
 
-  std::vector<types::Species> existing_species = {
-      types::Species{ .name = "foo" },
-      types::Species{ .name = "bar" }
-  };
-  std::vector<types::Phase> existing_phases = {
-      types::Phase{ .name = "gas" }
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
   ArrheniusParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);

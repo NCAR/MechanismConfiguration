@@ -143,14 +143,12 @@ namespace mechanism_configuration
       return { errors, result };
     }
 
-    std::pair<Errors, types::Reactions> ParseReactions(
-      const YAML::Node& objects, 
-      const std::vector<types::Species>& existing_species, 
-      const std::vector<types::Phase>& existing_phases )
+    std::pair<Errors, types::Reactions>
+    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
 
-      auto& parsers =  GetReactionParserMap();
+      auto& parsers = GetReactionParserMap();
       types::Reactions reactions;
 
       for (const auto& object : objects)

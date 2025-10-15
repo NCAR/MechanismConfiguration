@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/development/error_location.hpp>
 #include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
-#include <mechanism_configuration/development/validator.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/development/error_location.hpp>
+#include <mechanism_configuration/development/validator.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
@@ -27,13 +27,11 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { validation::reactants, validation::products,
-                                                 validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::A, validation::B, validation::C,
-                                                 validation::D, validation::E, validation::Ea, 
-                                                 validation::name };
+      std::vector<std::string> required_keys = { validation::reactants, validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
+                                                 validation::E, validation::Ea, validation::name };
       Errors errors;
-      
+
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
       if (!validation_errors.empty())
       {
@@ -42,7 +40,7 @@ namespace mechanism_configuration
       }
 
       bool is_valid = true;
-      
+
       // Reactants
       validation_errors = ValidateReactantsOrProducts(object[validation::reactants]);
       if (!validation_errors.empty())
@@ -59,14 +57,15 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
-      if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined()) 
+      if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined())
       {
         const auto& node = object[validation::Ea];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = std::format(
-          "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.", 
-          error_location, object[validation::type].as<std::string>());
+            "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
+            error_location,
+            object[validation::type].as<std::string>());
 
         errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, message });
         is_valid = false;
@@ -98,8 +97,8 @@ namespace mechanism_configuration
         {
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format("{} error: Unknown species name '{}' found in '{}' reaction.", 
-            error_location, name, object[validation::type].as<std::string>());
+          std::string message = std::format(
+              "{} error: Unknown species name '{}' found in '{}' reaction.", error_location, name, object[validation::type].as<std::string>());
 
           errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, message });
         }
@@ -108,15 +107,14 @@ namespace mechanism_configuration
       // Check for unknown phase
       const auto& phase_node = object[validation::gas_phase];
       std::string gas_phase = phase_node.as<std::string>();
-      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), 
-        [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
 
       if (it == existing_phases.end())
       {
         ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
-        std::string message = std::format("{} error: Unknown phase name '{}' found in '{}' reaction.", 
-          error_location, gas_phase, object[validation::type].as<std::string>());
+        std::string message = std::format(
+            "{} error: Unknown phase name '{}' found in '{}' reaction.", error_location, gas_phase, object[validation::type].as<std::string>());
 
         errors.push_back({ ConfigParseStatus::UnknownPhase, message });
       }
