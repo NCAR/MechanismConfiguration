@@ -70,7 +70,8 @@ TEST(ParserBase, HenrysLawDetectsGasSpeciesInReactionNotFoundInGasPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/henrys_law/species_not_found_in_gas_phase") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/henrys_law/species_not_found_in_gas_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
@@ -126,7 +127,8 @@ TEST(ParserBase, HenrysLawDetectsWhenRequestedSolventIsNotRegisteredInCorrectPha
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/henrys_law/solvent_species_not_registered_in_phase") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/henrys_law/solvent_species_not_registered_in_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);

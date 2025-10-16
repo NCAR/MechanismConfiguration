@@ -67,7 +67,9 @@ namespace mechanism_configuration
     }
 
     template<typename SpeciesType>
-    std::vector<std::string> FindUnknownSpecies(const std::vector<std::string>& requested_species, const std::vector<SpeciesType>& existing_species)
+    std::vector<std::string> FindUnknownSpecies(
+        const std::vector<std::string>& requested_species,
+        const std::vector<SpeciesType>& existing_species)
     {
       std::unordered_set<std::string> existing_names;
 

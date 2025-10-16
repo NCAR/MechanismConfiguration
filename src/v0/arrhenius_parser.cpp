@@ -62,7 +62,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
             std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
+            errors.push_back(
+                { ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
           }
           else
           {

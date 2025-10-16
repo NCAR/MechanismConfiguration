@@ -22,7 +22,9 @@ namespace mechanism_configuration
       Errors errors;
       types::UserDefined user_defined;
 
-      std::vector<std::string> required_keys = { validation::reactants, validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string> required_keys = {
+        validation::reactants, validation::products, validation::type, validation::gas_phase
+      };
       std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -85,7 +87,10 @@ namespace mechanism_configuration
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
-        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);

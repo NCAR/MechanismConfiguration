@@ -37,9 +37,10 @@ namespace mechanism_configuration
       {
         types::Species species;
         std::vector<std::string> required_keys = { validation::name };
-        std::vector<std::string> optional_keys = {
-          validation::molecular_weight, validation::constant_concentration, validation::constant_mixing_ratio, validation::is_third_body
-        };
+        std::vector<std::string> optional_keys = { validation::molecular_weight,
+                                                   validation::constant_concentration,
+                                                   validation::constant_mixing_ratio,
+                                                   validation::is_third_body };
         auto validate = ValidateSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
@@ -77,7 +78,8 @@ namespace mechanism_configuration
             std::string column = std::to_string(object.Mark().column + 1);
 
             std::ostringstream oss;
-            oss << line << ":" << column << " error: Duplicate species name '" << duplicate.name << "' found (" << (i + 1) << " of " << total << ")";
+            oss << line << ":" << column << " error: Duplicate species name '" << duplicate.name << "' found (" << (i + 1)
+                << " of " << total << ")";
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, oss.str() });
           }
@@ -87,7 +89,9 @@ namespace mechanism_configuration
       return { errors, all_species };
     }
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<types::Species> existing_species)
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(
+        const YAML::Node& objects,
+        const std::vector<types::Species> existing_species)
     {
       Errors errors;
       ConfigParseStatus status = ConfigParseStatus::Success;
@@ -120,7 +124,8 @@ namespace mechanism_configuration
               // Complex species with properties
               if (!spec[validation::name])
               {
-                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, FormatYamlError(spec, "Species object missing required 'name' field") });
+                errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
+                                   FormatYamlError(spec, "Species object missing required 'name' field") });
                 continue;
               }
 
@@ -136,7 +141,8 @@ namespace mechanism_configuration
             else
             {
               errors.push_back(
-                  { ConfigParseStatus::InvalidKey, FormatYamlError(spec, "Species must be either a string name or an object with properties") });
+                  { ConfigParseStatus::InvalidKey,
+                    FormatYamlError(spec, "Species must be either a string name or an object with properties") });
               continue;
             }
             species.push_back(phase_species);
@@ -156,7 +162,8 @@ namespace mechanism_configuration
                 std::string line = std::to_string(object.Mark().line + 1);
                 std::string column = std::to_string(object.Mark().column + 1);
                 std::ostringstream oss;
-                oss << line << ":" << column << " error: Duplicate species '" << species[i].name << "' found in '" << name << "' phase";
+                oss << line << ":" << column << " error: Duplicate species '" << species[i].name << "' found in '" << name
+                    << "' phase";
                 errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, oss.str() });
               }
             }
@@ -202,7 +209,8 @@ namespace mechanism_configuration
             std::string column = std::to_string(object.Mark().column + 1);
 
             std::ostringstream oss;
-            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name << "' found (" << (i + 1) << " of " << total << ")";
+            oss << line << ":" << column << " error: Duplicate phase name '" << duplicate.name << "' found (" << (i + 1)
+                << " of " << total << ")";
 
             errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, oss.str() });
           }
@@ -240,7 +248,9 @@ namespace mechanism_configuration
       return { errors, component };
     }
 
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object)
+    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
+        const std::string& key,
+        const YAML::Node& object)
     {
       Errors errors;
       std::vector<types::ReactionComponent> result{};
@@ -256,8 +266,10 @@ namespace mechanism_configuration
       return { errors, result };
     }
 
-    std::pair<Errors, types::Reactions>
-    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+    std::pair<Errors, types::Reactions> ParseReactions(
+        const YAML::Node& objects,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
       types::Reactions reactions;
@@ -288,7 +300,8 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::type].Mark().line + 1);
           std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
+          errors.push_back(
+              { ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
         }
       }
 

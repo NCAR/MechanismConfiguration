@@ -27,7 +27,9 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { validation::reactants, validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string> required_keys = {
+        validation::reactants, validation::products, validation::type, validation::gas_phase
+      };
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
       Errors errors;
@@ -98,7 +100,10 @@ namespace mechanism_configuration
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
           std::string message = std::format(
-              "{} error: Unknown species name '{}' found in '{}' reaction.", error_location, name, object[validation::type].as<std::string>());
+              "{} error: Unknown species name '{}' found in '{}' reaction.",
+              error_location,
+              name,
+              object[validation::type].as<std::string>());
 
           errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, message });
         }
@@ -107,14 +112,20 @@ namespace mechanism_configuration
       // Check for unknown phase
       const auto& phase_node = object[validation::gas_phase];
       std::string gas_phase = phase_node.as<std::string>();
-      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+      auto it = std::find_if(
+          existing_phases.begin(),
+          existing_phases.end(),
+          [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
 
       if (it == existing_phases.end())
       {
         ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
         std::string message = std::format(
-            "{} error: Unknown phase name '{}' found in '{}' reaction.", error_location, gas_phase, object[validation::type].as<std::string>());
+            "{} error: Unknown phase name '{}' found in '{}' reaction.",
+            error_location,
+            gas_phase,
+            object[validation::type].as<std::string>());
 
         errors.push_back({ ConfigParseStatus::UnknownPhase, message });
       }

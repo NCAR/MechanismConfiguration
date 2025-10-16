@@ -22,7 +22,9 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::condensed_phase };
+      std::vector<std::string> required_keys = {
+        validation::products, validation::reactants, validation::type, validation::condensed_phase
+      };
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
@@ -61,7 +63,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
             std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
+            errors.push_back(
+                { ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
           }
           condensed_phase_arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
         }
@@ -114,7 +117,9 @@ namespace mechanism_configuration
         }
 
         auto phase_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
 
         if (phase_it != existing_phases.end())
         {

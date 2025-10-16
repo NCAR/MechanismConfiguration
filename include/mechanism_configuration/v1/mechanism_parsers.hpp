@@ -19,14 +19,20 @@ namespace mechanism_configuration
   {
     std::pair<Errors, std::vector<types::Species>> ParseSpecies(const YAML::Node& objects);
 
-    std::pair<Errors, std::vector<types::Phase>> ParsePhases(const YAML::Node& objects, const std::vector<v1::types::Species> existing_species);
+    std::pair<Errors, std::vector<types::Phase>> ParsePhases(
+        const YAML::Node& objects,
+        const std::vector<v1::types::Species> existing_species);
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
+    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
+        const std::string& key,
+        const YAML::Node& object);
 
-    std::pair<Errors, types::Reactions>
-    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Reactions> ParseReactions(
+        const YAML::Node& objects,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases);
 
   }  // namespace v1
 }  // namespace mechanism_configuration
