@@ -14,9 +14,9 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    /// @brief Validates a YAML-defined Arrhenius reaction entry
-    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
-    ///        ensures all referenced species and phases exist, and collects any errors found.
+    /// @brief Validates a YAML-defined Branched reaction entry
+    ///        Performs schema validation, ensures all referenced species and phases exist, 
+    ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
     /// @param existing_phases The list of known phases used for validation
@@ -53,7 +53,7 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
-      // Products
+      // Alkoxy products
       validation_errors = ValidateReactantsOrProducts(object[validation::alkoxy_products]);
       if (!validation_errors.empty())
       {
@@ -61,6 +61,7 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
+      // Nitrate products
       validation_errors = ValidateReactantsOrProducts(object[validation::nitrate_products]);
       if (!validation_errors.empty())
       {
