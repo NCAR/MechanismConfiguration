@@ -48,7 +48,8 @@ namespace mechanism_configuration
         if (object[validation::henrys_law_constant_298])
           species.henrys_law_constant_298 = object[validation::henrys_law_constant_298].as<double>();
         if (object[validation::henrys_law_constant_exponential_factor])
-          species.henrys_law_constant_exponential_factor = object[validation::henrys_law_constant_exponential_factor].as<double>();
+          species.henrys_law_constant_exponential_factor =
+              object[validation::henrys_law_constant_exponential_factor].as<double>();
         if (object[validation::n_star])
           species.n_star = object[validation::n_star].as<double>();
         if (object[validation::density])
@@ -127,7 +128,9 @@ namespace mechanism_configuration
       return { errors, component };
     }
 
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object)
+    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
+        const std::string& key,
+        const YAML::Node& object)
     {
       Errors errors;
       std::vector<types::ReactionComponent> result{};
@@ -143,8 +146,10 @@ namespace mechanism_configuration
       return { errors, result };
     }
 
-    std::pair<Errors, types::Reactions>
-    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+    std::pair<Errors, types::Reactions> ParseReactions(
+        const YAML::Node& objects,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
 
@@ -172,7 +177,8 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::type].Mark().line + 1);
           std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
+          errors.push_back(
+              { ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
         }
       }
 
@@ -201,7 +207,8 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::type].Mark().line + 1);
           std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
+          errors.push_back(
+              { ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
         }
       }
 

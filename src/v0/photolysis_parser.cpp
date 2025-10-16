@@ -12,7 +12,9 @@ namespace mechanism_configuration
     {
       Errors errors;
 
-      std::vector<std::string> required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME };
+      std::vector<std::string> required = {
+        validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME
+      };
       std::vector<std::string> optional = { validation::SCALING_FACTOR };
 
       auto validate = ValidateSchema(object, required, optional);
@@ -31,7 +33,9 @@ namespace mechanism_configuration
         double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
 
         std::string name = "PHOTO." + object[validation::MUSICA_NAME].as<std::string>();
-        types::UserDefined user_defined = { .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name };
+        types::UserDefined user_defined = {
+          .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
+        };
         mechanism->reactions.user_defined.push_back(user_defined);
       }
 

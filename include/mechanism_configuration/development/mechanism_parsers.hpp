@@ -38,12 +38,18 @@ namespace mechanism_configuration
 
     // TODO (in progress) - Once the separating parsing from the validation for all reactions,
     //                      This will be updated.
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(const std::string& key, const YAML::Node& object);
+    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
+        const std::string& key,
+        const YAML::Node& object);
 
-    std::pair<Errors, types::Reactions>
-    ParseReactions(const YAML::Node& objects, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Reactions> ParseReactions(
+        const YAML::Node& objects,
+        const std::vector<types::Species>& existing_species,
+        const std::vector<types::Phase>& existing_phases);
 
-    std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases);
+    std::pair<Errors, types::Models> ParseModels(
+        const YAML::Node& objects,
+        const std::vector<types::Phase>& existing_phases);
 
   }  // namespace development
 }  // namespace mechanism_configuration

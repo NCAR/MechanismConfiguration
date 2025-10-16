@@ -22,7 +22,9 @@ namespace mechanism_configuration
       Errors errors;
       types::Arrhenius arrhenius;
 
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::gas_phase };
+      std::vector<std::string> required_keys = {
+        validation::products, validation::reactants, validation::type, validation::gas_phase
+      };
       std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
@@ -61,7 +63,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
             std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, line + ":" + column + ": Mutually exclusive option: Ea and C" });
+            errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption,
+                               line + ":" + column + ": Mutually exclusive option: Ea and C" });
           }
           arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
         }
@@ -112,7 +115,10 @@ namespace mechanism_configuration
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
-        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);

@@ -83,7 +83,8 @@ TEST(ParserBase, PhaseInModeNotFoundInRegisteredPhase)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/modal/mode_phase_not_found_in_phases") + extension);
+    auto parsed =
+        parser.Parse(std::string("development_unit_configs/models/modal/mode_phase_not_found_in_phases") + extension);
     EXPECT_FALSE(parsed);
     development::types::Mechanism mechanism = *parsed;
 

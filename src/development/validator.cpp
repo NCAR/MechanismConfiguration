@@ -70,7 +70,8 @@ namespace mechanism_configuration
             const auto& object = duplicate.nodes[i];
             ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
-            std::string message = std::format("{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+            std::string message = std::format(
+                "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, message });
           }
@@ -144,8 +145,8 @@ namespace mechanism_configuration
               const auto& duplicate_obj = duplicate.nodes[i];
               ErrorLocation error_location{ duplicate_obj.Mark().line, duplicate_obj.Mark().column };
 
-              std::string message =
-                  std::format("{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+              std::string message = std::format(
+                  "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
 
               errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, message });
             }
@@ -160,7 +161,8 @@ namespace mechanism_configuration
           {
             ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-            std::string message = std::format("{} error: Unknown species name '{}' found in '{}' phase", error_location, name, phase.name);
+            std::string message =
+                std::format("{} error: Unknown species name '{}' found in '{}' phase", error_location, name, phase.name);
 
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, message });
           }
@@ -181,7 +183,8 @@ namespace mechanism_configuration
             const auto& duplicate_object = duplicate.nodes[i];
             ErrorLocation error_location{ duplicate_object.Mark().line, duplicate_object.Mark().column };
 
-            std::string message = std::format("{} error: Duplicate phase name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+            std::string message = std::format(
+                "{} error: Duplicate phase name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, message });
           }

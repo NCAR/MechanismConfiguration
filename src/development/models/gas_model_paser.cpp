@@ -13,7 +13,8 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    Errors GasModelParser::parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
+    Errors
+    GasModelParser::parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
     {
       Errors errors;
       types::GasModel model;
@@ -33,8 +34,10 @@ namespace mechanism_configuration
 
         // Check whether the phase for the model is valid by comparing it to the initialized phases
         std::string model_phase = object[validation::phase].as<std::string>();
-        auto it_found_phase =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&model_phase](const auto& phase) { return phase.name == model_phase; });
+        auto it_found_phase = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&model_phase](const auto& phase) { return phase.name == model_phase; });
         if (it_found_phase == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::phase].Mark().line + 1);

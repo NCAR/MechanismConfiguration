@@ -22,8 +22,10 @@ namespace mechanism_configuration
     class IReactionParser
     {
      public:
-      virtual Errors
-      Validate(const YAML::Node& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
+      virtual Errors Validate(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases)
       {
         return Errors();
       }
@@ -56,8 +58,10 @@ namespace mechanism_configuration
     class ArrheniusParser : public IReactionParser
     {
      public:
-      Errors Validate(const YAML::Node& object, const std::vector<types::Species>& existing_species, const std::vector<types::Phase>& existing_phases)
-          override;
+      Errors Validate(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases) override;
 
       void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };

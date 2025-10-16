@@ -128,7 +128,9 @@ namespace mechanism_configuration
     // TODO (In Progress): This function will be removed and replaced by the one above
     //                     once parsing and validation for all the configurations are fully decoupled.
     template<typename SpeciesType>
-    std::vector<std::string> FindUnknownSpecies(const std::vector<std::string>& requested_species, const std::vector<SpeciesType>& existing_species)
+    std::vector<std::string> FindUnknownSpecies(
+        const std::vector<std::string>& requested_species,
+        const std::vector<SpeciesType>& existing_species)
     {
       std::unordered_set<std::string> existing_names;
 
