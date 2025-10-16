@@ -292,7 +292,7 @@
       "gas phase": "gas",
       "products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],

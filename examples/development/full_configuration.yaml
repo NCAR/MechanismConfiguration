@@ -170,7 +170,7 @@ reactions:
 - type: EMISSION
   gas phase: gas
   products:
-  - species name: B
+  - name: B
     coefficient: 1
   name: my emission
   scaling factor: 12.3

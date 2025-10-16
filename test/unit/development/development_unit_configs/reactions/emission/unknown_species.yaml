@@ -7,7 +7,7 @@ phases:
 reactions:
 - gas phase: gas
   products:
-  - species name: C
+  - name: C
   type: EMISSION
 species:
 - name: A
