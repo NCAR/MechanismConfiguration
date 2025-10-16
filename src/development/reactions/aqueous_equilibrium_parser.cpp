@@ -22,10 +22,12 @@ namespace mechanism_configuration
       Errors errors;
       types::AqueousEquilibrium aqueous_equilibrium;
 
-      std::vector<std::string> required_keys = {
-        validation::type,     validation::reactants, validation::products, validation::condensed_phase, validation::condensed_phase_water,
-        validation::k_reverse
-      };
+      std::vector<std::string> required_keys = { validation::type,
+                                                 validation::reactants,
+                                                 validation::products,
+                                                 validation::condensed_phase,
+                                                 validation::condensed_phase_water,
+                                                 validation::k_reverse };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -98,7 +100,9 @@ namespace mechanism_configuration
         }
 
         auto phase_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
 
         if (phase_it != existing_phases.end())
         {

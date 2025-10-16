@@ -22,7 +22,9 @@ namespace mechanism_configuration
       Errors errors;
       types::CondensedPhasePhotolysis condensed_phase_photolysis;
 
-      std::vector<std::string> required_keys = { validation::reactants, validation::products, validation::type, validation::condensed_phase };
+      std::vector<std::string> required_keys = {
+        validation::reactants, validation::products, validation::type, validation::condensed_phase
+      };
       std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -90,11 +92,14 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::reactants].Mark().line + 1);
           std::string column = std::to_string(object[validation::reactants].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
+          errors.push_back(
+              { ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
         }
 
         auto phase_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&condensed_phase](const types::Phase& phase) { return phase.name == condensed_phase; });
 
         if (phase_it != existing_phases.end())
         {

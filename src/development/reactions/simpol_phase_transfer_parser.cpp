@@ -22,10 +22,12 @@ namespace mechanism_configuration
       Errors errors;
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
-      std::vector<std::string> required_keys = {
-        validation::type, validation::gas_phase, validation::gas_phase_species, validation::condensed_phase, validation::condensed_phase_species,
-        validation::B
-      };
+      std::vector<std::string> required_keys = { validation::type,
+                                                 validation::gas_phase,
+                                                 validation::gas_phase_species,
+                                                 validation::condensed_phase,
+                                                 validation::condensed_phase_species,
+                                                 validation::B };
       std::vector<std::string> optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
@@ -73,7 +75,9 @@ namespace mechanism_configuration
 
         std::string condensed_phase = object[validation::condensed_phase].as<std::string>();
         auto aqueous_it = std::find_if(
-            existing_phases.begin(), existing_phases.end(), [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&condensed_phase](const auto& phase) { return phase.name == condensed_phase; });
         if (aqueous_it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::condensed_phase].Mark().line + 1);
@@ -86,19 +90,22 @@ namespace mechanism_configuration
           auto spec_it = std::find_if(
               phase.species.begin(),
               phase.species.end(),
-              [&condensed_phase_species](const types::PhaseSpecies& species) { return species.name == condensed_phase_species; });
+              [&condensed_phase_species](const types::PhaseSpecies& species)
+              { return species.name == condensed_phase_species; });
           if (spec_it == phase.species.end())
           {
             std::string line = std::to_string(object[validation::condensed_phase_species].Mark().line + 1);
             std::string column = std::to_string(object[validation::condensed_phase_species].Mark().column + 1);
-            errors.push_back(
-                { ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + condensed_phase_species });
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                               line + ":" + column + ": Unknown species: " + condensed_phase_species });
           }
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
-        auto gas_it =
-            std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto gas_it = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (gas_it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
@@ -116,7 +123,8 @@ namespace mechanism_configuration
           {
             std::string line = std::to_string(object[validation::gas_phase_species].Mark().line + 1);
             std::string column = std::to_string(object[validation::gas_phase_species].Mark().column + 1);
-            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, line + ":" + column + ": Unknown species: " + gas_phase_species });
+            errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                               line + ":" + column + ": Unknown species: " + gas_phase_species });
           }
         }
 

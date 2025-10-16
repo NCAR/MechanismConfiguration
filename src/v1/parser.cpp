@@ -25,7 +25,9 @@ namespace mechanism_configuration
       YAML::Node object = YAML::LoadFile(config_path.string());
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
-      std::vector<std::string> mechanism_required_keys = { validation::version, validation::species, validation::phases, validation::reactions };
+      std::vector<std::string> mechanism_required_keys = {
+        validation::version, validation::species, validation::phases, validation::reactions
+      };
       std::vector<std::string> mechanism_optional_keys = { validation::name };
 
       auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);

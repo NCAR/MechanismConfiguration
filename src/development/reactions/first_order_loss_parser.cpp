@@ -79,7 +79,10 @@ namespace mechanism_configuration
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
-        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
@@ -91,7 +94,8 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::reactants].Mark().line + 1);
           std::string column = std::to_string(object[validation::reactants].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
+          errors.push_back(
+              { ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
         }
 
         first_order_loss.gas_phase = gas_phase;

@@ -13,7 +13,10 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    Errors ModalModelParser::parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
+    Errors ModalModelParser::parse(
+        const YAML::Node& object,
+        const std::vector<types::Phase>& existing_phases,
+        types::Models& models)
     {
       Errors errors;
       types::ModalModel model;
@@ -40,7 +43,8 @@ namespace mechanism_configuration
       bool no_errors_in_second_level_keys = true;
       for (const auto& mode_object : object[validation::modes])
       {
-        auto has_error_second_level_keys = ValidateSchema(mode_object, required_second_level_keys, optional_second_level_keys);
+        auto has_error_second_level_keys =
+            ValidateSchema(mode_object, required_second_level_keys, optional_second_level_keys);
         errors.insert(errors.end(), has_error_second_level_keys.begin(), has_error_second_level_keys.end());
 
         if (!has_error_second_level_keys.empty())
@@ -69,8 +73,10 @@ namespace mechanism_configuration
           for (const auto& phase_object : mode_object[validation::phases])
           {
             std::string mode_phase = phase_object.as<std::string>();
-            auto it_found_phase =
-                std::find_if(existing_phases.begin(), existing_phases.end(), [&mode_phase](const auto& phase) { return phase.name == mode_phase; });
+            auto it_found_phase = std::find_if(
+                existing_phases.begin(),
+                existing_phases.end(),
+                [&mode_phase](const auto& phase) { return phase.name == mode_phase; });
             if (it_found_phase == existing_phases.end())
             {
               std::string line = std::to_string(phase_object.Mark().line + 1);

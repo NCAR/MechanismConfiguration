@@ -11,7 +11,9 @@ namespace mechanism_configuration
     {
       Errors errors;
       std::vector<std::string> required = { validation::NAME, validation::TYPE };
-      std::vector<std::string> optional = { validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT };
+      std::vector<std::string> optional = {
+        validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT
+      };
 
       auto validate = ValidateSchema(object, required, optional);
       errors.insert(errors.end(), validate.begin(), validate.end());

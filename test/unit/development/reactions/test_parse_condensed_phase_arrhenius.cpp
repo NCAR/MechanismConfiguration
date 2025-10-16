@@ -10,7 +10,8 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/reactions/condensed_phase_arrhenius/valid") + extension);
+    auto parsed =
+        parser.Parse(std::string("development_unit_configs/reactions/condensed_phase_arrhenius/valid") + extension);
     EXPECT_TRUE(parsed);
     development::types::Mechanism mechanism = *parsed;
 
@@ -74,7 +75,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/condensed_phase_arrhenius/unknown_species") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/condensed_phase_arrhenius/unknown_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
@@ -93,7 +95,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
@@ -111,7 +114,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
@@ -130,7 +134,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueo
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_EQ(parsed.errors.size(), 2);
     EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::PhaseRequiresUnknownSpecies);

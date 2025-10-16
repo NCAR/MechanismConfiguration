@@ -81,7 +81,8 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
+    std::string file =
+        "./development_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 12);
@@ -111,7 +112,8 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
+    std::string file =
+        "./development_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.errors)
@@ -127,7 +129,8 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
+    std::string file =
+        "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.errors)

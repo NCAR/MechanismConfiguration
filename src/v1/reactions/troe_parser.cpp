@@ -22,9 +22,12 @@ namespace mechanism_configuration
       Errors errors;
       types::Troe troe;
 
-      std::vector<std::string> required_keys = { validation::products, validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B, validation::k0_C, validation::kinf_A,
-                                                 validation::kinf_B, validation::kinf_C, validation::Fc,   validation::N };
+      std::vector<std::string> required_keys = {
+        validation::products, validation::reactants, validation::type, validation::gas_phase
+      };
+      std::vector<std::string> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B,
+                                                 validation::k0_C,   validation::kinf_A, validation::kinf_B,
+                                                 validation::kinf_C, validation::Fc,     validation::N };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
@@ -114,7 +117,10 @@ namespace mechanism_configuration
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
-        auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+        auto it = std::find_if(
+            existing_phases.begin(),
+            existing_phases.end(),
+            [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
         if (it == existing_phases.end())
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
