@@ -2,7 +2,6 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/development/error_location.hpp>
 #include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
@@ -22,7 +21,7 @@ namespace mechanism_configuration
     /// @param existing_species The list of known species used for validation
     /// @param existing_phases The list of known phases used for validation
     /// @return A list of validation errors, if any
-    Errors ArrheniusParser::Validate(
+    Errors BranchedParser::Validate(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)

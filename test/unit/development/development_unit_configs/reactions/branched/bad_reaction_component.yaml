@@ -4,6 +4,7 @@ phases:
   species:
     - name: A
     - name: B
+    - name: C
 reactions:
 - X: 0.00012
   Y: 167
@@ -27,4 +28,5 @@ reactions:
 species:
 - name: A
 - name: B
+- name: C
 version: 2.0.0

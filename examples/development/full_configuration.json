@@ -414,19 +414,19 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 1
         }
       ],
       "alkoxy products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "nitrate products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],

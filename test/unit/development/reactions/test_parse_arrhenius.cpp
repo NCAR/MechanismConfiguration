@@ -88,33 +88,6 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
   }
 }
 
-TEST(ArrheniusParserTest, MutuallyExclusiveEaAndCFailsValidation)
-{
-  using namespace development;
-
-  YAML::Node reaction_node;
-  reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
-  reaction_node["products"] = YAML::Load("[{ name: bar }]");
-  reaction_node["type"] = "Arrhenius";
-  reaction_node["gas phase"] = "gas";
-
-  // Specify both Ea and C to trigger validation error
-  reaction_node["Ea"] = 0.5;
-  reaction_node["C"] = 10.0;
-
-  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
-  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
-
-  ArrheniusParser parser;
-  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-  ASSERT_FALSE(errors.empty());
-  EXPECT_EQ(errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
-  for (auto& error : errors)
-  {
-    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-  }
-}
-
 TEST(ParserBase, ArrheniusDetectsMutuallyExclusiveOptions)
 {
   development::Parser parser;
@@ -167,5 +140,32 @@ TEST(ParserBase, ArrheniusDetectsUnknownPhase)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
+  }
+}
+
+TEST(ParserBase, ArrheniusMutuallyExclusiveEaAndCFailsValidation)
+{
+  using namespace development;
+
+  YAML::Node reaction_node;
+  reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
+  reaction_node["products"] = YAML::Load("[{ name: bar }]");
+  reaction_node["type"] = "ARRHENIUS";
+  reaction_node["gas phase"] = "gas";
+
+  // Specify both Ea and C to trigger validation error
+  reaction_node["Ea"] = 0.5;
+  reaction_node["C"] = 10.0;
+
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
+
+  ArrheniusParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  ASSERT_FALSE(errors.empty());
+  EXPECT_EQ(errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
+  for (auto& error : errors)
+  {
+    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
   }
 }
