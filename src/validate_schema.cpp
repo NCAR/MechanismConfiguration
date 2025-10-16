@@ -51,7 +51,7 @@ namespace mechanism_configuration
     for (const auto& key : missing_keys)
     {
       std::string message = std::format(
-          "{} error: Missing required key '{}' found'.", error_location, key);
+          "{} error: Required key '{}' is missing.", error_location, key);
       errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
     }
 
