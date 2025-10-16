@@ -28,22 +28,22 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "alkoxy products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 0.2
         },
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 1.2
         }
       ],
       "nitrate products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1.2,
           "__thing": "hi"
         }
