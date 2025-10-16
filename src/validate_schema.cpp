@@ -78,7 +78,7 @@ namespace mechanism_configuration
       if (key.find("__") == std::string::npos)
       {
         std::string message = std::format(
-            "{} error: Non-standard key '{}' found'.", error_location, key);
+            "{} error: Non-standard key '{}' found.", error_location, key);
         errors.push_back({ ConfigParseStatus::InvalidKey, message });
       }
     }
