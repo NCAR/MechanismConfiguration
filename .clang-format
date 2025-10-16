@@ -12,7 +12,7 @@ BreakBeforeBraces: Allman
 BinPackArguments: 'false'
 BinPackParameters: 'false'
 Cpp11BracedListStyle: 'false'
-ColumnLimit: 150
+ColumnLimit: 125
 IndentWidth: 2
 IndentPPDirectives: AfterHash
 NamespaceIndentation: All
