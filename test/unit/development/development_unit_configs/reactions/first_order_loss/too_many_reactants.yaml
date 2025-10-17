@@ -9,9 +9,9 @@ reactions:
 - gas phase: gas
   reactants:
   - coefficient: 1
-    species name: C
+    name: C
   - coefficient: 1
-    species name: B
+    name: B
   type: FIRST_ORDER_LOSS
 species:
 - name: A

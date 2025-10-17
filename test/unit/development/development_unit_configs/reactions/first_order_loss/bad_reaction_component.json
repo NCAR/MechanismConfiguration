@@ -28,7 +28,7 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "Species name": "C"
+          "Name": "C"
         }
       ]
     }

@@ -177,7 +177,7 @@ reactions:
 - type: FIRST_ORDER_LOSS
   gas phase: gas
   reactants:
-  - species name: C
+  - name: C
     coefficient: 1
   name: my first order loss
   scaling factor: 12.3
