@@ -4,7 +4,7 @@
   "species": [
     {
       "name": "M",
-      "tracer type": "THIRD_BODY"
+      "is third body": true,
     },
     {
       "name": "O2"
@@ -27,11 +27,11 @@
     {
       "name": "gas",
       "species": [
-        "M",
-        "O",
-        "O2",
-        "O3",
-        "O1D"
+        { "name": "M"},
+        { "name": "O"},
+        { "name": "O2"},
+        { "name": "O3"},
+        { "name": "O1D"}
       ]
     }
   ],
@@ -39,7 +39,8 @@
      {
       "type": "PHOTOLYSIS",
       "name": "jO2->O(3P)",
-      "scaling_factor": 1,
+      "scaling factor": 1,
+      "gas phase": "gas",
       "reactants": [
         { "species name": "O2" }
       ],
@@ -50,7 +51,8 @@
     {
       "type": "PHOTOLYSIS",
       "name": "jO3->O(1D)",
-      "scaling_factor": 1,
+      "scaling factor": 1,
+      "gas phase": "gas",
       "reactants": [
         { "species name": "O3" }
       ],
@@ -60,9 +62,10 @@
       ]
     },
     {
+      "gas phase": "gas",
       "type": "PHOTOLYSIS",
       "name": "jO3->O(3P)",
-      "scaling_factor": 1,
+      "scaling factor": 1,
       "reactants": [
         { "species name": "O3" }
       ],
@@ -72,6 +75,7 @@
       ]
     },
     {
+      "gas phase": "gas",
       "type": "ARRHENIUS",
       "name": "O1D + M -> O + M",
       "A": 1.29476e7,
@@ -89,6 +93,7 @@
       ]
     },
     {
+      "gas phase": "gas",
       "type": "ARRHENIUS",
       "name": "O1D + O2 -> O + O2",
       "A": 1.98731e7,
@@ -106,6 +111,7 @@
       ]
     },
     {
+      "gas phase": "gas",
       "type": "ARRHENIUS",
       "name": "O + O3 -> 2 O2",
       "A": 4.81771e6,
@@ -122,6 +128,7 @@
       ]
     },
     {
+      "gas phase": "gas",
       "type": "ARRHENIUS",
       "name": "O + O2 + M -> O3 + M",
       "A": 2.17597e2,

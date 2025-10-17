@@ -1,9 +1,9 @@
-.. OpenAtmos Mechanism Configuration documentation master file, created by
+.. NSF NCAR Mechanism Configuration documentation master file, created by
    sphinx-quickstart on Fri Jul 21 21:05:33 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. open atmos mechanism configuration documentation HTML titles
+.. nsf ncar mechanism configuration documentation HTML titles
 ..
 .. # (over and under) for module headings
 .. = for sections
@@ -15,7 +15,7 @@
 .. |project_version| replace:: 1.0.0
 
 ###############################################################
-Welcome to the OpenAtmos Mechanism Configuration documentation!
+Welcome to the NSF NCAR Mechanism Configuration documentation!
 ###############################################################
 
 .. toctree::
