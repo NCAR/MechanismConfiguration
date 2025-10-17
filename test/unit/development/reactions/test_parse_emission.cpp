@@ -93,10 +93,7 @@ TEST(ParserBase, EmissionUnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "foo" }, 
-    types::Species{ .name = "bar" }
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
   YAML::Node reaction_node;
