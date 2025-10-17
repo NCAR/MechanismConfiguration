@@ -2,12 +2,12 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
@@ -15,7 +15,7 @@ namespace mechanism_configuration
   namespace development
   {
     /// @brief Validates a YAML-defined Emission reaction entry.
-    ///        Performs schema validation, ensures all referenced species and phases exist, 
+    ///        Performs schema validation, ensures all referenced species and phases exist,
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
@@ -27,7 +27,7 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string> required_keys = { validation::products, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor};
+      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       Errors errors;
 
@@ -69,7 +69,10 @@ namespace mechanism_configuration
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
           std::string message = std::format(
-              "{} error: Unknown species name '{}' found in '{}' reaction.", error_location, name, object[validation::type].as<std::string>());
+              "{} error: Unknown species name '{}' found in '{}' reaction.",
+              error_location,
+              name,
+              object[validation::type].as<std::string>());
 
           errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, message });
         }
@@ -78,14 +81,20 @@ namespace mechanism_configuration
       // Check for unknown phase
       const auto& phase_node = object[validation::gas_phase];
       std::string gas_phase = phase_node.as<std::string>();
-      auto it = std::find_if(existing_phases.begin(), existing_phases.end(), [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
+      auto it = std::find_if(
+          existing_phases.begin(),
+          existing_phases.end(),
+          [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
 
       if (it == existing_phases.end())
       {
         ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
         std::string message = std::format(
-            "{} error: Unknown phase name '{}' found in '{}' reaction.", error_location, gas_phase, object[validation::type].as<std::string>());
+            "{} error: Unknown phase name '{}' found in '{}' reaction.",
+            error_location,
+            gas_phase,
+            object[validation::type].as<std::string>());
 
         errors.push_back({ ConfigParseStatus::UnknownPhase, message });
       }

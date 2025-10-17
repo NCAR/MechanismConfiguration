@@ -50,8 +50,7 @@ namespace mechanism_configuration
 
     for (const auto& key : missing_keys)
     {
-      std::string message = std::format(
-          "{} error: Required key '{}' is missing.", error_location, key);
+      std::string message = std::format("{} error: Required key '{}' is missing.", error_location, key);
       errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
     }
 
@@ -77,8 +76,7 @@ namespace mechanism_configuration
     {
       if (key.find("__") == std::string::npos)
       {
-        std::string message = std::format(
-            "{} error: Non-standard key '{}' found.", error_location, key);
+        std::string message = std::format("{} error: Non-standard key '{}' found.", error_location, key);
         errors.push_back({ ConfigParseStatus::InvalidKey, message });
       }
     }
