@@ -50,11 +50,15 @@ TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -68,11 +72,15 @@ TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -86,11 +94,15 @@ TEST(ParserBase, PhotolysisDetectsUnknownPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -104,11 +116,15 @@ TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::TooManyReactionComponents);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -131,13 +147,17 @@ TEST(ParserBase, PhotolysisInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsV
 
   PhotolysisParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-  ASSERT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 3);
-  EXPECT_EQ(errors[0].first, ConfigParseStatus::TooManyReactionComponents);
-  EXPECT_EQ(errors[1].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-  EXPECT_EQ(errors[2].first, ConfigParseStatus::UnknownPhase);
-  for (auto& error : errors)
+  
+  std::multiset<ConfigParseStatus> expected = { 
+    ConfigParseStatus::TooManyReactionComponents,
+    ConfigParseStatus::ReactionRequiresUnknownSpecies,
+    ConfigParseStatus::UnknownPhase };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
   {
-    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
+  EXPECT_EQ(actual, expected);
 }

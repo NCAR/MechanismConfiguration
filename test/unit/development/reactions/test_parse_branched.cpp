@@ -51,11 +51,15 @@ TEST(ParserBase, BranchedDetectsUnknownSpecies)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -69,12 +73,17 @@ TEST(ParserBase, BranchedDetectsBadReactionComponent)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { 
+      ConfigParseStatus::RequiredKeyNotFound,
+      ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -88,11 +97,15 @@ TEST(ParserBase, BranchedDetectsUnknownPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -116,14 +129,18 @@ TEST(ParserBase, BranchedMissingRequiredKeyFailsValidation)
 
   BranchedParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-  ASSERT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 2);
-  EXPECT_EQ(errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-  EXPECT_EQ(errors[1].first, ConfigParseStatus::InvalidKey);
-  for (auto& error : errors)
+
+  std::multiset<ConfigParseStatus> expected = { 
+    ConfigParseStatus::RequiredKeyNotFound,
+    ConfigParseStatus::InvalidKey };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
   {
-    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
+  EXPECT_EQ(actual, expected);
 }
 
 TEST(ParserBase, BranchedUnknownSpeciesAndUnknownPhaseFailsValidation)
@@ -149,12 +166,16 @@ TEST(ParserBase, BranchedUnknownSpeciesAndUnknownPhaseFailsValidation)
 
   BranchedParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-  ASSERT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 2);
-  EXPECT_EQ(errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-  EXPECT_EQ(errors[1].first, ConfigParseStatus::UnknownPhase);
-  for (auto& error : errors)
+
+  std::multiset<ConfigParseStatus> expected = { 
+    ConfigParseStatus::ReactionRequiresUnknownSpecies,
+    ConfigParseStatus::UnknownPhase };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
   {
-    std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
+  EXPECT_EQ(actual, expected);
 }
