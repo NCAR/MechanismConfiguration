@@ -11,8 +11,8 @@ import re
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 project = 'Mechanism Configuration'
 current_year = datetime.datetime.now().year
-copyright = f"2022-{current_year}, OpenAtmos"
-author = 'OpenAtmos'
+copyright = f"2022-{current_year}, NSF NCAR"
+author = 'NSF NCAR'
 
 # Read version from environment variable or CMakeLists.txt
 version = os.environ.get('VERSION')
@@ -77,7 +77,10 @@ html_theme_options = {
         "version_match": release,
     },
    "pygments_light_style": "tango",
-   "pygments_dark_style": "monokai"
+   "pygments_dark_style": "monokai",
+   "logo": {
+        "text": "Mechanism Configuration",
+   },
 }
 
 html_static_path = ['_static']
