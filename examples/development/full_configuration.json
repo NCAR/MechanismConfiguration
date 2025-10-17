@@ -316,13 +316,13 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],

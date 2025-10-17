@@ -6,14 +6,15 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {
   namespace development
   {
-    void FirstOrderLossParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    void PhotolysisParser::Parse(const YAML::Node& object, types::Reactions& reactions)
     {
-      types::FirstOrderLoss first_order_loss;
+      types::Photolysis photolysis;
 
       for (const auto& elem : object[validation::reactants])
       {
@@ -24,22 +25,34 @@ namespace mechanism_configuration
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
-        first_order_loss.reactants.emplace_back(std::move(component));
+        photolysis.reactants.emplace_back(std::move(component));
+      }
+
+      for (const auto& elem : object[validation::products])
+      {
+        types::ReactionComponent component;
+        component.name = elem[validation::name].as<std::string>();
+        component.unknown_properties = GetComments(elem);
+        if (elem[validation::coefficient].IsDefined())
+        {
+          component.coefficient = elem[validation::coefficient].as<double>();
+        }
+        photolysis.products.emplace_back(std::move(component));
       }
 
       if (object[validation::scaling_factor].IsDefined())
       {
-        first_order_loss.scaling_factor = object[validation::scaling_factor].as<double>();
+        photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
       }
       if (object[validation::name].IsDefined())
       {
-        first_order_loss.name = object[validation::name].as<std::string>();
+        photolysis.name = object[validation::name].as<std::string>();
       }
 
-      first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
-      first_order_loss.unknown_properties = GetComments(object);
-
-      reactions.first_order_loss.emplace_back(std::move(first_order_loss));
+      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
+      photolysis.unknown_properties = GetComments(object);
+      
+      reactions.photolysis.emplace_back(std::move(photolysis));
     }
 
   }  // namespace development

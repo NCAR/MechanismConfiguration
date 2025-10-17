@@ -108,7 +108,7 @@ TEST(ParserBase, FirstOrderLossDetectsMoreThanOneSpecies)
   }
 }
 
-TEST(ParserBase, FirstOrderLossUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ParserBase, FirstOrderLossInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 

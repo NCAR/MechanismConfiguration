@@ -16,19 +16,19 @@ reactions:
   name: my photolysis
   products:
   - coefficient: 1
-    species name: C
+    name: C
   reactants:
-  - species name: B
-  - species name: A
+  - name: B
+  - name: A
   scaling factor: 12.3
   type: PHOTOLYSIS
 - gas phase: gas
   products:
   - coefficient: 0.2
-    species name: C
+    name: C
   reactants:
   - coefficient: 1.2
-    species name: B
+    name: B
   type: PHOTOLYSIS
 species:
 - name: A

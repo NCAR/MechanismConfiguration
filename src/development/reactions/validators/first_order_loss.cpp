@@ -10,6 +10,8 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
+#include <format>
+
 namespace mechanism_configuration
 {
   namespace development
@@ -71,7 +73,8 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>(),
             species_node_pairs.size());
 
-        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
+        errors.push_back(
+            { ConfigParseStatus::TooManyReactionComponents, message });
       }
 
       // Check for unknown species in reactants and products

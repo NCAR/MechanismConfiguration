@@ -6,7 +6,6 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {

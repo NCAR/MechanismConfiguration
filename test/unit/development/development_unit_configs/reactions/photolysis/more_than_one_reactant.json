@@ -49,15 +49,15 @@
       "__comment": "hi",
       "reactants": [
         {
-          "species name": "B"
+          "name": "B"
         },
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],
@@ -69,13 +69,13 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.2
         }
       ]
