@@ -1,0 +1,112 @@
+version: 1.0.0
+name: Chapman
+species:
+- name: M
+  is third body: true
+- name: O2
+- name: O
+- name: O1D
+- name: O3
+  molecular weight [kg mol-1]: 0.048
+  __long name: ozone
+  __atoms: 3
+  __do advect: true
+phases:
+- name: gas
+  species:
+  - name: M
+  - name: O
+  - name: O2
+  - name: O3
+  - name: O1D
+reactions:
+  - type: PHOTOLYSIS
+    gas phase: gas
+    name: jO2->O(3P)
+    scaling factor: 1
+    reactants:
+      - species name: O2
+    products:
+      - species name: O
+        coefficient: 2
+
+  - type: PHOTOLYSIS
+    gas phase: gas
+    name: jO3->O(1D)
+    scaling factor: 1
+    reactants:
+      - species name: O3
+    products:
+      - species name: O1D
+      - species name: O2
+
+  - type: PHOTOLYSIS
+    gas phase: gas
+    name: jO3->O(3P)
+    scaling factor: 1
+    reactants:
+      - species name: O3
+    products:
+      - species name: O
+      - species name: O2
+
+  - type: ARRHENIUS
+    gas phase: gas
+    name: O1D + M -> O + M
+    A: 1.29476e7
+    Ea: -1.518e-21
+    B: 0
+    D: 300
+    E: 0
+    reactants:
+      - species name: O1D
+      - species name: M
+    products:
+      - species name: O
+      - species name: M
+
+  - type: ARRHENIUS
+    gas phase: gas
+    name: O1D + O2 -> O + O2
+    A: 1.98731e7
+    Ea: -7.59e-22
+    B: 0
+    D: 300
+    E: 0
+    reactants:
+      - species name: O1D
+      - species name: O2
+    products:
+      - species name: O
+      - species name: O2
+
+  - type: ARRHENIUS
+    gas phase: gas
+    name: O + O3 -> 2 O2
+    A: 4.81771e6
+    Ea: 2.8428e-20
+    B: 0
+    D: 300
+    E: 0
+    reactants:
+      - species name: O
+      - species name: O3
+    products:
+      - species name: O2
+        coefficient: 2
+
+  - type: ARRHENIUS
+    gas phase: gas
+    name: O + O2 + M -> O3 + M
+    A: 2.17597e2
+    Ea: 0
+    B: -2.4
+    D: 300
+    E: 0
+    reactants:
+      - species name: O
+      - species name: O2
+      - species name: M
+    products:
+      - species name: O3
+      - species name: M
