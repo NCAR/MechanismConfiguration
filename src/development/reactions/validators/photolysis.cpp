@@ -28,8 +28,9 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { 
-        validation::reactants, validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string> required_keys = {
+        validation::reactants, validation::products, validation::type, validation::gas_phase
+      };
       std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       Errors errors;
@@ -84,8 +85,7 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>(),
             species_node_pairs.size());
 
-        errors.push_back(
-            { ConfigParseStatus::TooManyReactionComponents, message });
+        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
       }
 
       for (const auto& obj : object[validation::products])
