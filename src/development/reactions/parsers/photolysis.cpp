@@ -6,7 +6,6 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {
@@ -51,7 +50,7 @@ namespace mechanism_configuration
 
       photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
       photolysis.unknown_properties = GetComments(object);
-
+      
       reactions.photolysis.emplace_back(std::move(photolysis));
     }
 
