@@ -11,6 +11,8 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
+#include <format>
+
 namespace mechanism_configuration
 {
   namespace development

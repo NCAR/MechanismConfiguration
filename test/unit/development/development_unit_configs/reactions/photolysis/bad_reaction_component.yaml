@@ -8,10 +8,10 @@ reactions:
 - gas phase: gas
   products:
   - coefficient: 0.2
-    species name: B
+    name: B
   reactants:
   - Coefficient: 1.2
-    species name: A
+    name: A
   type: PHOTOLYSIS
 species:
 - name: A

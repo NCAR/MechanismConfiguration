@@ -184,10 +184,10 @@ reactions:
 - type: PHOTOLYSIS
   gas phase: gas
   reactants:
-  - species name: B
+  - name: B
     coefficient: 1
   products:
-  - species name: C
+  - name: C
     coefficient: 1
   name: photo B
   scaling factor: 12.3

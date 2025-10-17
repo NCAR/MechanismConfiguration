@@ -4,4 +4,5 @@ target_sources(mechanism_configuration
     branched.cpp
     emission.cpp
     first_order_loss.cpp
+    photolysis.cpp
 )

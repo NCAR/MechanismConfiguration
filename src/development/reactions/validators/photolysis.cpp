@@ -16,26 +16,21 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    /// @brief Validates a YAML-defined Branched reaction entry
+    /// @brief Validates a YAML-defined Photolysis reaction entry.
     ///        Performs schema validation, ensures all referenced species and phases exist,
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
     /// @param existing_phases The list of known phases used for validation
     /// @return A list of validation errors, if any
-    Errors BranchedParser::Validate(
+    Errors PhotolysisParser::Validate(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { validation::type,
-                                                 validation::gas_phase,
-                                                 validation::reactants,
-                                                 validation::alkoxy_products,
-                                                 validation::nitrate_products };
-      std::vector<std::string> optional_keys = {
-        validation::name, validation::X, validation::Y, validation::a0, validation::n
-      };
+      std::vector<std::string> required_keys = { 
+        validation::reactants, validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
 
       Errors errors;
 
@@ -56,16 +51,8 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
-      // Alkoxy products
-      validation_errors = ValidateReactantsOrProducts(object[validation::alkoxy_products]);
-      if (!validation_errors.empty())
-      {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
-      }
-
-      // Nitrate products
-      validation_errors = ValidateReactantsOrProducts(object[validation::nitrate_products]);
+      // Products
+      validation_errors = ValidateReactantsOrProducts(object[validation::products]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -83,13 +70,25 @@ namespace mechanism_configuration
         component.name = obj[validation::name].as<std::string>();
         species_node_pairs.emplace_back(component, obj);
       }
-      for (const auto& obj : object[validation::alkoxy_products])
+
+      // Validates the number of reactants
+      // This must be done before collecting errors from the products
+      if (species_node_pairs.size() > 1)
       {
-        types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
-        species_node_pairs.emplace_back(component, obj);
+        const auto& node = object[validation::reactants];
+        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+        std::string message = std::format(
+            "{} error: '{}' reaction requires one reactant, but {} were provided.",
+            error_location,
+            object[validation::type].as<std::string>(),
+            species_node_pairs.size());
+
+        errors.push_back(
+            { ConfigParseStatus::TooManyReactionComponents, message });
       }
-      for (const auto& obj : object[validation::nitrate_products])
+
+      for (const auto& obj : object[validation::products])
       {
         types::ReactionComponent component;
         component.name = obj[validation::name].as<std::string>();
