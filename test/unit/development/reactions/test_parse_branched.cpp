@@ -73,7 +73,7 @@ TEST(ParserBase, BranchedDetectsBadReactionComponent)
     EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
     for (auto& error : parsed.errors)
     {
-      std::cout <<  error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
   }
 }
@@ -100,11 +100,9 @@ TEST(ParserBase, BranchedMissingRequiredKeyFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "foo" }, 
-    types::Species{ .name = "bar" }, 
-    types::Species{ .name = "quiz" } 
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" },
+                                                   types::Species{ .name = "bar" },
+                                                   types::Species{ .name = "quiz" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
   YAML::Node reaction_node;
@@ -132,11 +130,9 @@ TEST(ParserBase, BranchedUnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "foo" }, 
-    types::Species{ .name = "bar" }, 
-    types::Species{ .name = "quiz" } 
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" },
+                                                   types::Species{ .name = "bar" },
+                                                   types::Species{ .name = "quiz" } };
 
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
