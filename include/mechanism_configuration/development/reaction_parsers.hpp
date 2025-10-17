@@ -113,12 +113,12 @@ namespace mechanism_configuration
     class FirstOrderLossParser : public IReactionParser
     {
      public:
-      /// @brief Parser for first-order loss reactions
-      Errors parse(
+      Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+          const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
     class SimpolPhaseTransferParser : public IReactionParser

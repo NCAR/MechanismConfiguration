@@ -34,7 +34,7 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],
@@ -47,7 +47,7 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ]

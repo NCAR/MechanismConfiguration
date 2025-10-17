@@ -11,13 +11,13 @@ reactions:
   name: my first order loss
   reactants:
   - coefficient: 1
-    species name: C
+    name: C
   scaling factor: 12.3
   type: FIRST_ORDER_LOSS
 - gas phase: gas
   reactants:
   - coefficient: 1
-    species name: C
+    name: C
   type: FIRST_ORDER_LOSS
 species:
 - name: A

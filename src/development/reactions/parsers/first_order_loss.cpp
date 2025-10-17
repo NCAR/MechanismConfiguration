@@ -12,11 +12,11 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    void EmissionParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    void FirstOrderLossParser::Parse(const YAML::Node& object, types::Reactions& reactions)
     {
-      types::Emission emission;
+      types::FirstOrderLoss first_order_loss;
 
-      for (const auto& elem : object[validation::products])
+      for (const auto& elem : object[validation::reactants])
       {
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
@@ -25,22 +25,22 @@ namespace mechanism_configuration
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
-        emission.products.emplace_back(std::move(component));
+        first_order_loss.reactants.emplace_back(std::move(component));
       }
 
       if (object[validation::scaling_factor].IsDefined())
       {
-        emission.scaling_factor = object[validation::scaling_factor].as<double>();
+        first_order_loss.scaling_factor = object[validation::scaling_factor].as<double>();
       }
       if (object[validation::name].IsDefined())
       {
-        emission.name = object[validation::name].as<std::string>();
+        first_order_loss.name = object[validation::name].as<std::string>();
       }
 
-      emission.gas_phase = object[validation::gas_phase].as<std::string>();
-      emission.unknown_properties = GetComments(object);
+      first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
+      first_order_loss.unknown_properties = GetComments(object);
 
-      reactions.emission.emplace_back(std::move(emission));
+      reactions.first_order_loss.emplace_back(std::move(first_order_loss));
     }
 
   }  // namespace development

@@ -7,7 +7,7 @@ phases:
 reactions:
 - gas phase: gas
   reactants:
-  - Species name: C
+  - Name: C
   type: FIRST_ORDER_LOSS
 species:
 - name: A
