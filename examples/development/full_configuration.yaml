@@ -245,13 +245,13 @@ reactions:
 - type: BRANCHED_NO_RO2
   gas phase: gas
   reactants:
-  - species name: A
+  - name: A
     coefficient: 1
   alkoxy products:
-  - species name: B
+  - name: B
     coefficient: 1
   nitrate products:
-  - species name: C
+  - name: C
     coefficient: 1
   X: 0.00012
   Y: 167
