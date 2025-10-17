@@ -16,12 +16,12 @@ reactions:
   name: my emission
   products:
   - coefficient: 1
-    species name: B
+    name: B
   scaling factor: 12.3
   type: EMISSION
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   type: EMISSION
 species:
 - name: A

@@ -19,7 +19,7 @@
       "gas phase": "gas",
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }
