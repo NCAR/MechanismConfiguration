@@ -3,7 +3,6 @@ target_sources(mechanism_configuration
     aqueous_equilibrium_parser.cpp
     condensed_phase_arrhenius_parser.cpp
     condensed_phase_photolysis_parser.cpp
-    first_order_loss_parser.cpp
     henrys_law_parser.cpp
     photolysis_parser.cpp
     simpol_phase_transfer_parser.cpp
