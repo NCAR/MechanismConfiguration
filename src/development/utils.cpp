@@ -5,6 +5,9 @@
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+#include <mechanism_configuration/error_location.hpp>
+
+#include <format>
 
 namespace mechanism_configuration
 {
@@ -58,6 +61,59 @@ namespace mechanism_configuration
         names.push_back(species.name);
       }
       return names;
+    }
+
+    void ReportUnknownSpecies(
+      const YAML::Node& object,
+      const std::vector<NodeInfo>& unknown_species,
+      Errors& errors,
+      const ConfigParseStatus& parser_status)
+    {
+      if (unknown_species.empty()) return;
+
+      for (const auto& [name, node] : unknown_species)
+      {
+        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+        std::string message = std::format(
+            "{} error: Unknown species name '{}' found in '{}'.",
+            error_location,
+            name,
+            object[validation::type].as<std::string>());
+
+        errors.push_back({ parser_status, message });
+      }
+    }
+
+    void CheckPhaseExists(
+      const YAML::Node& object,
+      const std::string& phase_key,
+      const std::vector<types::Phase>& existing_phases,
+      Errors& errors,
+      const ConfigParseStatus& parser_status)
+    {
+      if (!object[phase_key]) return;
+
+      const auto& phase_node = object[phase_key];
+      std::string phase_name = phase_node.as<std::string>();
+
+      auto it = std::find_if(
+          existing_phases.begin(),
+          existing_phases.end(),
+          [&phase_name](const auto& phase) { return phase.name == phase_name; });
+
+      if (it == existing_phases.end())
+      {
+        ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
+
+        std::string message = std::format(
+            "{} error: Unknown phase name '{}' found in '{}'.",
+            error_location,
+            phase_name,
+            object[validation::type].as<std::string>());
+
+        errors.push_back({ parser_status, message });
+      }
     }
 
   }  // namespace development

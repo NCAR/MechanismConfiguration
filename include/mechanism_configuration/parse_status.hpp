@@ -24,6 +24,7 @@ namespace mechanism_configuration
     DuplicateSpeciesInPhaseDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
+    UnknownSpecies,
     UnknownPhase,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,

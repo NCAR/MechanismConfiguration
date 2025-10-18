@@ -10,9 +10,11 @@ reactions:
   gas phase: gas
   gas-phase products:
   - __optional thing: hello
-    species name: B
-  - species name: C
-  gas-phase species: A
+    name: B
+  - name: C
+  gas-phase species:
+    - name: "A"
+      coefficient: 1
   type: SURFACE
 species:
 - name: A

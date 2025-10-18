@@ -11,11 +11,11 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    void PhotolysisParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    void SurfaceParser::Parse(const YAML::Node& object, types::Reactions& reactions)
     {
-      types::Photolysis photolysis;
+      types::Surface surface;
 
-      for (const auto& elem : object[validation::reactants])
+      for (const auto& elem : object[validation::gas_phase_species])
       {
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
@@ -24,10 +24,10 @@ namespace mechanism_configuration
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
-        photolysis.reactants.emplace_back(std::move(component));
+        surface.gas_phase_species.emplace_back(std::move(component));
       }
 
-      for (const auto& elem : object[validation::products])
+      for (const auto& elem : object[validation::gas_phase_products])
       {
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
@@ -36,22 +36,22 @@ namespace mechanism_configuration
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
-        photolysis.products.emplace_back(std::move(component));
+        surface.gas_phase_products.emplace_back(std::move(component));
       }
 
-      if (object[validation::scaling_factor].IsDefined())
+      if (object[validation::reaction_probability].IsDefined())
       {
-        photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
+        surface.reaction_probability = object[validation::reaction_probability].as<double>();
       }
       if (object[validation::name].IsDefined())
       {
-        photolysis.name = object[validation::name].as<std::string>();
+        surface.name = object[validation::name].as<std::string>();
       }
 
-      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
-      photolysis.unknown_properties = GetComments(object);
-      
-      reactions.photolysis.emplace_back(std::move(photolysis));
+      surface.gas_phase = object[validation::gas_phase].as<std::string>();
+      surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      surface.unknown_properties = GetComments(object);
+      reactions.surface.emplace_back(std::move(surface));
     }
 
   }  // namespace development

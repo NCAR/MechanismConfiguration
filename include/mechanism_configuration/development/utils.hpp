@@ -43,6 +43,19 @@ namespace mechanism_configuration
     /// @brief Extract species names from a vector of PhaseSpecies
     std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species);
 
+    void ReportUnknownSpecies(
+      const YAML::Node& object,
+      const std::vector<NodeInfo>& unknown_species,
+      Errors& errors,
+      const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownSpecies);
+
+    void CheckPhaseExists(
+      const YAML::Node& object,
+      const std::string& phase_key,
+      const std::vector<types::Phase>& existing_phases,
+      Errors& errors,
+      const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase);
+
     template<typename T>
     std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
     {

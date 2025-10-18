@@ -1,38 +1,47 @@
-name: Valid surface
-phases:
-- name: gas
-  species:
-  - name: A
-  - name: B
-  - name: C
-- name: surface reacting phase
-  species:
-  - name: A
-  - name: B
-  - name: C
-reactions:
-- __comment: key lime pie is superior to all other pies
-  condensed phase: surface reacting phase
-  gas phase: gas
-  gas-phase products:
-  - coefficient: 1
-    species name: B
-  - coefficient: 1
-    species name: C
-  gas-phase species: A
-  name: my surface
-  reaction probability: 0.02
-  type: SURFACE
-- condensed phase: surface reacting phase
-  gas phase: gas
-  gas-phase products:
-  - __optional thing: hello
-    species name: B
-  - species name: C
-  gas-phase species: A
-  type: SURFACE
+version: "2.0.0"
+name: "Valid surface"
+
 species:
-- name: A
-- name: B
-- name: C
-version: 2.0.0
+  - name: "A"
+  - name: "B"
+  - name: "C"
+
+phases:
+  - name: "gas"
+    species:
+      - name: "A"
+      - name: "B"
+      - name: "C"
+
+  - name: "surface reacting phase"
+    species:
+      - name: "A"
+      - name: "B"
+      - name: "C"
+
+reactions:
+  - type: "SURFACE"
+    gas phase: "gas"
+    gas-phase species:
+      - name: "A"
+        coefficient: 1
+    reaction probability: 2.0e-2
+    gas-phase products:
+      - name: "B"
+        coefficient: 1
+      - name: "C"
+        coefficient: 1
+    condensed phase: "surface reacting phase"
+    name: "my surface"
+    __comment: "key lime pie is superior to all other pies"
+
+  - type: "SURFACE"
+    gas phase: "gas"
+    gas-phase species:
+      - name: "A"
+        coefficient: 1
+    gas-phase products:
+      - name: "B"
+        __optional thing: "hello"
+      - name: "C"
+    condensed phase: "surface reacting phase"
