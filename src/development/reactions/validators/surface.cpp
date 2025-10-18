@@ -95,11 +95,11 @@ namespace mechanism_configuration
         species_node_pairs.emplace_back(component, obj);
       }
 
-      // Check for unknown species in reactants and products
+      // Check for unknown species in a reactant and products
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
       ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
 
-      // Check for unknown phase
+      // Check for unknown phases
       CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
       CheckPhaseExists(object, validation::condensed_phase, existing_phases, errors);
 

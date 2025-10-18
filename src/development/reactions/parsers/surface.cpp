@@ -7,7 +7,6 @@
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 
-
 namespace mechanism_configuration
 {
   namespace development
@@ -16,10 +15,8 @@ namespace mechanism_configuration
     {
       types::Surface surface;
 
-      // {
       for (const auto& elem : object[validation::gas_phase_species])
       {
-        // const auto& elem = object[validation::gas_phase_species];
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);

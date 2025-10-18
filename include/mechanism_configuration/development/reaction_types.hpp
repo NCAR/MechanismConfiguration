@@ -221,7 +221,7 @@ namespace mechanism_configuration
       {
         /// @brief Reaction probability (0-1) [unitless]
         double reaction_probability{ 1.0 };
-        // @brief A list of reactants
+        /// @brief A list of reactants
         std::vector<ReactionComponent> gas_phase_species;
         /// @brief A list of products
         std::vector<ReactionComponent> gas_phase_products;
