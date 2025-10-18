@@ -336,7 +336,7 @@
         {
           "name": "A",
           "coefficient": 1
-        },
+        }
       ],
       "reaction probability": 2.0e-2,
       "gas-phase products": [
