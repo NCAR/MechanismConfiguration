@@ -9,8 +9,7 @@ using namespace mechanism_configuration;
 TEST(ParserBase, CanParseValidSurfaceReaction)
 {
   development::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-    std::vector<std::string> extensions = { ".json"};
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/reactions/surface/valid") + extension);
