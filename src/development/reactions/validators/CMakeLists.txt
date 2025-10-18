@@ -5,4 +5,5 @@ target_sources(mechanism_configuration
     emission.cpp
     first_order_loss.cpp
     photolysis.cpp
+    surface.cpp
 )

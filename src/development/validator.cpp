@@ -208,6 +208,7 @@ namespace mechanism_configuration
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
         }
       }
+
       return errors;
     }
 

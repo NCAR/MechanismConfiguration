@@ -22,8 +22,9 @@ namespace mechanism_configuration
     DuplicateSpeciesDetected,
     DuplicatePhasesDetected,
     DuplicateSpeciesInPhaseDetected,
-    PhaseRequiresUnknownSpecies,
-    ReactionRequiresUnknownSpecies,
+    PhaseRequiresUnknownSpecies,    // TODO: remove
+    ReactionRequiresUnknownSpecies, // TODO: remove
+    UnknownSpecies,
     UnknownPhase,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
