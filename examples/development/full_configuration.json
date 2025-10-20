@@ -401,7 +401,7 @@
           "coefficient": 0.5
         },
         {
-          "sname": "foo",
+          "name": "foo",
           "coefficient": 0.0
         }
       ],
