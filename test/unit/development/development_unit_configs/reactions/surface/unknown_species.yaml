@@ -13,10 +13,12 @@ reactions:
   gas phase: gas
   gas-phase products:
   - coefficient: 1
-    species name: B
+    name: B
   - coefficient: 1
-    species name: C
-  gas-phase species: A
+    name: C
+  gas-phase species:
+    - name: "A"
+      coefficient: 1
   reaction probability: 0.02
   type: SURFACE
 species:
