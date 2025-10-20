@@ -16,8 +16,8 @@ namespace mechanism_configuration
   namespace development
   {
     /// @brief Validates a YAML-defined Troe reaction entry
-    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
-    ///        ensures all referenced species and phases exist, and collects any errors found.
+    ///        Performs schema validation, ensures all referenced species and phases exist, 
+    ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
     /// @param existing_phases The list of known phases used for validation
