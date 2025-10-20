@@ -207,12 +207,12 @@ reactions:
 - type: TROE
   gas phase: gas
   reactants:
-  - species name: B
+  - name: B
     coefficient: 1
-  - species name: M
+  - name: M
     coefficient: 1
   products:
-  - species name: C
+  - name: C
     coefficient: 1
   k0_A: 1.2e-12
   k0_B: 167

@@ -74,6 +74,7 @@ namespace mechanism_configuration
       {
         taylor_series.taylor_coefficients = object[validation::taylor_coefficients].as<std::vector<double>>();
       }
+
       if (object[validation::name].IsDefined())
       {
         taylor_series.name = object[validation::name].as<std::string>();
@@ -81,6 +82,7 @@ namespace mechanism_configuration
 
       taylor_series.gas_phase = object[validation::gas_phase].as<std::string>();
       taylor_series.unknown_properties = GetComments(object);
+
       reactions.taylor_series.emplace_back(std::move(taylor_series));
     }
 
