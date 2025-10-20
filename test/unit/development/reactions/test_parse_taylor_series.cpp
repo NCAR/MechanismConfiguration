@@ -1,6 +1,9 @@
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
+
+#include <set>
 
 using namespace mechanism_configuration;
 
@@ -28,12 +31,12 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
     EXPECT_EQ(mechanism.reactions.taylor_series[0].taylor_coefficients[1], 2.0);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].taylor_coefficients[2], 3.0);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.taylor_series[0].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.taylor_series[0].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.taylor_series[0].reactants[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].products.size(), 2);
-    EXPECT_EQ(mechanism.reactions.taylor_series[0].products[0].species_name, "B");
+    EXPECT_EQ(mechanism.reactions.taylor_series[0].products[0].name, "B");
     EXPECT_EQ(mechanism.reactions.taylor_series[0].products[0].coefficient, 1.2);
-    EXPECT_EQ(mechanism.reactions.taylor_series[0].products[1].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.taylor_series[0].products[1].name, "C");
     EXPECT_EQ(mechanism.reactions.taylor_series[0].products[1].coefficient, 0.3);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].unknown_properties["__solver_param"], "0.1");
@@ -48,12 +51,12 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
     EXPECT_EQ(mechanism.reactions.taylor_series[1].taylor_coefficients.size(), 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[1].taylor_coefficients[0], 10.5);
     EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants.size(), 2);
-    EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[0].coefficient, 2);
-    EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[1].species_name, "B");
+    EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[1].name, "B");
     EXPECT_EQ(mechanism.reactions.taylor_series[1].reactants[1].coefficient, 0.1);
     EXPECT_EQ(mechanism.reactions.taylor_series[1].products.size(), 1);
-    EXPECT_EQ(mechanism.reactions.taylor_series[1].products[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.taylor_series[1].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.taylor_series[1].products[0].coefficient, 0.5);
     EXPECT_EQ(mechanism.reactions.taylor_series[1].products[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[1].products[0].unknown_properties["__optional thing"], "hello");
@@ -68,10 +71,10 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
     EXPECT_EQ(mechanism.reactions.taylor_series[2].taylor_coefficients.size(), 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].taylor_coefficients[0], 1.0);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.taylor_series[2].reactants[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.taylor_series[2].products.size(), 1);
-    EXPECT_EQ(mechanism.reactions.taylor_series[2].products[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.taylor_series[2].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.taylor_series[2].products[0].coefficient, 1);
   }
 }
@@ -86,11 +89,15 @@ TEST(ParserBase, TaylorSeriesDetectsUnknownSpecies)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -104,11 +111,15 @@ TEST(ParserBase, TaylorSeriesDetectsMutuallyExclusiveOptions)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -122,12 +133,16 @@ TEST(ParserBase, TaylorSeriesDetectsBadReactionComponent)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, 
+                                                  ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -141,10 +156,45 @@ TEST(ParserBase, TaylorSeriesDetectsUnknownPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
+}
+
+TEST(ParserBase, TaylorSeriesMutuallyExclusiveEaAndCFailsValidation)
+{
+  using namespace development;
+  
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
+
+  YAML::Node reaction_node;
+  reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
+  reaction_node["products"] = YAML::Load("[{ name: bar }]");
+  reaction_node["type"] = "TAYLOR_SERIES";
+  reaction_node["gas phase"] = "gas";
+
+  // Specify both Ea and C to trigger validation error
+  reaction_node["Ea"] = 0.5;
+  reaction_node["C"] = 10.0;
+
+  TaylorSeriesParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
 }

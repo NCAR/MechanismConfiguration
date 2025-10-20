@@ -7,11 +7,11 @@ phases:
 reactions:
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
-  - Species name: A
+  - name: A
   type: TAYLOR_SERIES
 species:
-- name: A
+- Name: A
 - name: B
 version: 2.0.0

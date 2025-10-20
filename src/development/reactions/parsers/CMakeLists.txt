@@ -6,4 +6,5 @@ target_sources(mechanism_configuration
     first_order_loss.cpp
     photolysis.cpp
     surface.cpp
+    taylor_series.cpp
 )
