@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "name": "Valid",
+  "name": "Contains Nonstandard Key",
   "species": [
     {
       "name": "foo"
@@ -38,48 +38,47 @@
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
       "gas phase": "gas",
-      "reactants": [
+      "Reactants": [
         {
-          "species name": "foo",
+          "name": "foo",
           "coefficient": 1
         },
         {
-          "species name": "quz",
+          "name": "quz",
           "coefficient": 2
         }
       ],
       "products": [
         {
-          "species name": "bar",
+          "name": "bar",
           "coefficient": 1.0
         },
         {
-          "species name": "baz",
+          "name": "baz",
           "coefficient": 3.2
         }
       ]
     },
     {
-      "__optional thing": "hello",
       "type": "TERNARY_CHEMICAL_ACTIVATION",
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "bar",
+          "name": "bar",
           "coefficient": 1
         },
         {
-          "species name": "baz",
+          "name": "baz",
           "coefficient": 1
         }
       ],
-      "products": [
+      "Products": [
         {
-          "species name": "bar",
+          "name": "bar",
           "coefficient": 0.5
         },
         {
-          "species name": "foo",
+          "name": "foo",
           "coefficient": 0.0
         }
       ],
@@ -90,8 +89,39 @@
       "kinf_B": -1.3,
       "kinf_C": 908.5,
       "Fc": 1.3,
-      "N": 32.1,
-      "name": "my ternary chemical activation"
+      "N": 32.1
+    },
+    {
+      "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "name": "bar",
+          "coefficient": 1
+        },
+        {
+          "name": "baz",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "name": "bar",
+          "coefficient": 0.5
+        },
+        {
+          "name": "foo",
+          "coefficient": 0.0
+        }
+      ],
+      "k0_a": 32.1,
+      "k0_b": -2.3,
+      "k0_c": 102.3,
+      "kinf_a": 63.4,
+      "kinf_b": -1.3,
+      "kinf_c": 908.5,
+      "fc": 1.3,
+      "n": 32.1
     }
   ]
 }

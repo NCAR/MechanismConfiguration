@@ -17,7 +17,7 @@ reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas
   reactants:
-  - species name: foo
+  - name: foo
     coefficient: 1
-  - species name: quz
+  - name: quz
     coefficient: 2

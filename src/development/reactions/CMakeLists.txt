@@ -5,7 +5,6 @@ target_sources(mechanism_configuration
     condensed_phase_photolysis_parser.cpp
     henrys_law_parser.cpp
     simpol_phase_transfer_parser.cpp
-    ternary_chemical_activation_parser.cpp
     wet_deposition_parser.cpp
 )
 

@@ -1,27 +1,20 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/conversions.hpp>
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
+#include <set>
 
 using namespace mechanism_configuration;
 
-TEST(TernaryChemicalActivationConfig, ParseValidConfig)
+TEST(ParserBase, TernaryParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
   {
-    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/valid/config" + extension;
+    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/valid" + extension;
     auto parsed = parser.Parse(file);
-    if (!parsed)
-    {
-      for (auto& error : parsed.errors)
-      {
-        std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-      }
-    }
     EXPECT_TRUE(parsed);
     development::types::Mechanism mechanism = *parsed;
 
@@ -29,113 +22,162 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction
-    {
-      EXPECT_EQ(process_vector[0].reactants.size(), 2);
-      EXPECT_EQ(process_vector[0].reactants[0].species_name, "foo");
-      EXPECT_EQ(process_vector[0].reactants[0].coefficient, 1.0);
-      EXPECT_EQ(process_vector[0].reactants[1].species_name, "quz");
-      EXPECT_EQ(process_vector[0].reactants[1].coefficient, 2.0);
-      EXPECT_EQ(process_vector[0].products.size(), 2);
-      EXPECT_EQ(process_vector[0].products[0].species_name, "bar");
-      EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
-      EXPECT_EQ(process_vector[0].products[1].species_name, "baz");
-      EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
-      EXPECT_EQ(process_vector[0].k0_A, 1.0);
-      EXPECT_EQ(process_vector[0].k0_B, 0.0);
-      EXPECT_EQ(process_vector[0].k0_C, 0.0);
-      EXPECT_EQ(process_vector[0].kinf_A, 1.0);
-      EXPECT_EQ(process_vector[0].kinf_B, 0.0);
-      EXPECT_EQ(process_vector[0].kinf_C, 0.0);
-      EXPECT_EQ(process_vector[0].Fc, 0.6);
-      EXPECT_EQ(process_vector[0].N, 1.0);
-    }
+    EXPECT_EQ(process_vector[0].reactants.size(), 2);
+    EXPECT_EQ(process_vector[0].reactants[0].name, "foo");
+    EXPECT_EQ(process_vector[0].reactants[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[0].reactants[1].name, "quz");
+    EXPECT_EQ(process_vector[0].reactants[1].coefficient, 2.0);
+    EXPECT_EQ(process_vector[0].products.size(), 2);
+    EXPECT_EQ(process_vector[0].products[0].name, "bar");
+    EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
+    EXPECT_EQ(process_vector[0].products[1].name, "baz");
+    EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
+    EXPECT_EQ(process_vector[0].k0_A, 1.0);
+    EXPECT_EQ(process_vector[0].k0_B, 0.0);
+    EXPECT_EQ(process_vector[0].k0_C, 0.0);
+    EXPECT_EQ(process_vector[0].kinf_A, 1.0);
+    EXPECT_EQ(process_vector[0].kinf_B, 0.0);
+    EXPECT_EQ(process_vector[0].kinf_C, 0.0);
+    EXPECT_EQ(process_vector[0].Fc, 0.6);
+    EXPECT_EQ(process_vector[0].N, 1.0);
+
 
     // second reaction
-    {
-      EXPECT_EQ(process_vector[1].unknown_properties.size(), 1);
-      EXPECT_EQ(process_vector[1].unknown_properties["__optional thing"], "hello");
-      EXPECT_EQ(process_vector[1].reactants.size(), 2);
-      EXPECT_EQ(process_vector[1].reactants[0].species_name, "bar");
-      EXPECT_EQ(process_vector[1].reactants[1].species_name, "baz");
-      EXPECT_EQ(process_vector[1].products.size(), 2);
-      EXPECT_EQ(process_vector[1].products[0].species_name, "bar");
-      EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
-      EXPECT_EQ(process_vector[1].products[1].species_name, "foo");
-      EXPECT_EQ(process_vector[1].products[1].coefficient, 0.0);
-      EXPECT_EQ(process_vector[1].k0_A, 32.1);
-      EXPECT_EQ(process_vector[1].k0_B, -2.3);
-      EXPECT_EQ(process_vector[1].k0_C, 102.3);
-      EXPECT_EQ(process_vector[1].kinf_A, 63.4);
-      EXPECT_EQ(process_vector[1].kinf_B, -1.3);
-      EXPECT_EQ(process_vector[1].kinf_C, 908.5);
-      EXPECT_EQ(process_vector[1].Fc, 1.3);
-      EXPECT_EQ(process_vector[1].N, 32.1);
-      EXPECT_EQ(process_vector[1].name, "my ternary chemical activation");
-    }
+    EXPECT_EQ(process_vector[1].unknown_properties.size(), 1);
+    EXPECT_EQ(process_vector[1].unknown_properties["__optional thing"], "hello");
+    EXPECT_EQ(process_vector[1].reactants.size(), 2);
+    EXPECT_EQ(process_vector[1].reactants[0].name, "bar");
+    EXPECT_EQ(process_vector[1].reactants[1].name, "baz");
+    EXPECT_EQ(process_vector[1].products.size(), 2);
+    EXPECT_EQ(process_vector[1].products[0].name, "bar");
+    EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
+    EXPECT_EQ(process_vector[1].products[1].name, "foo");
+    EXPECT_EQ(process_vector[1].products[1].coefficient, 0.0);
+    EXPECT_EQ(process_vector[1].k0_A, 32.1);
+    EXPECT_EQ(process_vector[1].k0_B, -2.3);
+    EXPECT_EQ(process_vector[1].k0_C, 102.3);
+    EXPECT_EQ(process_vector[1].kinf_A, 63.4);
+    EXPECT_EQ(process_vector[1].kinf_B, -1.3);
+    EXPECT_EQ(process_vector[1].kinf_C, 908.5);
+    EXPECT_EQ(process_vector[1].Fc, 1.3);
+    EXPECT_EQ(process_vector[1].N, 32.1);
+    EXPECT_EQ(process_vector[1].name, "my ternary chemical activation");
+
   }
 }
 
-TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
+TEST(ParserBase, TernaryDetectsNonStandardKey)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file =
-        "./development_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
+        "./development_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 12);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[5].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[6].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[7].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[8].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[9].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[10].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[11].first, ConfigParseStatus::InvalidKey);
 
-    for (auto& error : parsed.errors)
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::RequiredKeyNotFound,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
+TEST(ParserBase, TernaryDetectsMissingProducts)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file =
-        "./development_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
+        "./development_unit_configs/reactions/ternary_chemical_activation/missing_products" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.errors.size(), 1);
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
+TEST(ParserBase, TernaryDetectsMissingReactants)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file =
-        "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
+        "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.errors.size(), 1);
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
+}
+
+
+TEST(ParserBase, TernaryUnknownSpeciesAndUnknownPhaseFailsValidation)
+{
+  using namespace development;
+
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" },
+                                                   types::Species{ .name = "bar" },
+                                                   types::Species{ .name = "quiz" } };
+
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
+
+  YAML::Node reaction_node;
+  reaction_node["type"] = "TERNARY_CHEMICAL_ACTIVATION";
+  reaction_node["products"] = YAML::Load("[{ name: quiz }]");
+
+  // Unknown species triggers validation error
+  reaction_node["reactants"] = YAML::Load("[{ name: bar }, { name: ABC }]");
+
+  // Unknown gas phase name triggers validation error
+  reaction_node["gas phase"] = "Gaseous Phase";
+
+  TernaryChemicalActivationParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 2);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                ConfigParseStatus::UnknownPhase };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
 }
