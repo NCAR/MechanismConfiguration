@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <set>
 
+#include <set>
+
 using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidArrheniusReaction)
@@ -81,9 +83,8 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { 
-      ConfigParseStatus::ReactionRequiresUnknownSpecies,
-      ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                  ConfigParseStatus::ReactionRequiresUnknownSpecies };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -127,9 +128,7 @@ TEST(ParserBase, ArrheniusDetectsBadReactionComponent)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { 
-      ConfigParseStatus::RequiredKeyNotFound,
-      ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {

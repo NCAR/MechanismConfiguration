@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <set>
 
+#include <set>
+
 using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidFirstOrderLossReaction)
@@ -69,9 +71,7 @@ TEST(ParserBase, FirstOrderLossDetectsBadReactionComponent)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { 
-      ConfigParseStatus::RequiredKeyNotFound,
-      ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -146,10 +146,9 @@ TEST(ParserBase, FirstOrderLossInvalidNumberReactantUnknownSpeciesUnknownPhaseFa
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 3);
 
-  std::multiset<ConfigParseStatus> expected = { 
-    ConfigParseStatus::TooManyReactionComponents,
-    ConfigParseStatus::ReactionRequiresUnknownSpecies,
-    ConfigParseStatus::UnknownPhase };
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents,
+                                                ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                ConfigParseStatus::UnknownPhase };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
   {

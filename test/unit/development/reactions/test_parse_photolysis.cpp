@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <set>
 
+#include <set>
+
 using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidPhotolysisReaction)
@@ -149,11 +151,10 @@ TEST(ParserBase, PhotolysisInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsV
   PhotolysisParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 3);
-  
-  std::multiset<ConfigParseStatus> expected = { 
-    ConfigParseStatus::TooManyReactionComponents,
-    ConfigParseStatus::ReactionRequiresUnknownSpecies,
-    ConfigParseStatus::UnknownPhase };
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents,
+                                                ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                ConfigParseStatus::UnknownPhase };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
   {
