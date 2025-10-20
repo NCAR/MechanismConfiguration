@@ -9,4 +9,5 @@ target_sources(mechanism_configuration
     taylor_series.cpp
     troe.cpp
     tunneling.cpp
+    user_defined.cpp
 )
