@@ -6,10 +6,10 @@ reactions:
   C: 100000000.0
   gas phase: gas
   products:
-  - species name: C
+  - name: C
   reactants:
   - coefficient: 1
-    species name: B
+    name: B
   type: TUNNELING
 species:
 - name: A

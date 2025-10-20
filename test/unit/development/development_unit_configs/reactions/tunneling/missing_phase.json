@@ -22,13 +22,13 @@
       "C": 1.0e8,
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }
