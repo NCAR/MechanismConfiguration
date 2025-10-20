@@ -2,7 +2,6 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
-#include <set>
 
 #include <set>
 

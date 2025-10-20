@@ -28,9 +28,11 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { 
-        validation::gas_phase_products, validation::gas_phase_species, validation::type,
-        validation::gas_phase, validation::condensed_phase };
+      std::vector<std::string> required_keys = { validation::gas_phase_products,
+                                                 validation::gas_phase_species,
+                                                 validation::type,
+                                                 validation::gas_phase,
+                                                 validation::condensed_phase };
       std::vector<std::string> optional_keys = { validation::name, validation::reaction_probability };
 
       Errors errors;
@@ -43,7 +45,7 @@ namespace mechanism_configuration
       }
 
       bool is_valid = true;
- 
+
       // Gas phase species reactant
       validation_errors = ValidateReactantsOrProducts(object[validation::gas_phase_species]);
       if (!validation_errors.empty())
