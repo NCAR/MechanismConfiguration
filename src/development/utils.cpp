@@ -4,8 +4,8 @@
 
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
 #include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 #include <format>
 
@@ -64,12 +64,13 @@ namespace mechanism_configuration
     }
 
     void ReportUnknownSpecies(
-      const YAML::Node& object,
-      const std::vector<NodeInfo>& unknown_species,
-      Errors& errors,
-      const ConfigParseStatus& parser_status)
+        const YAML::Node& object,
+        const std::vector<NodeInfo>& unknown_species,
+        Errors& errors,
+        const ConfigParseStatus& parser_status)
     {
-      if (unknown_species.empty()) return;
+      if (unknown_species.empty())
+        return;
 
       for (const auto& [name, node] : unknown_species)
       {
@@ -86,13 +87,14 @@ namespace mechanism_configuration
     }
 
     void CheckPhaseExists(
-      const YAML::Node& object,
-      const std::string& phase_key,
-      const std::vector<types::Phase>& existing_phases,
-      Errors& errors,
-      const ConfigParseStatus& parser_status)
+        const YAML::Node& object,
+        const std::string& phase_key,
+        const std::vector<types::Phase>& existing_phases,
+        Errors& errors,
+        const ConfigParseStatus& parser_status)
     {
-      if (!object[phase_key]) return;
+      if (!object[phase_key])
+        return;
 
       const auto& phase_node = object[phase_key];
       std::string phase_name = phase_node.as<std::string>();
