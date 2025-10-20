@@ -125,7 +125,7 @@ TEST(ParserBase, TunnelingUnknownSpeciesAndUnknownPhaseFailsValidation)
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
   YAML::Node reaction_node;
-  reaction_node["type"] = "TROE";
+  reaction_node["type"] = "TUNNELING";
   reaction_node["products"] = YAML::Load("[{ name: quiz }]");
 
   // Unknown species triggers validation error
