@@ -15,7 +15,7 @@ namespace mechanism_configuration
   {
     /// @brief Parses a YAML-defined Taylor Series reaction and appends it to the reaction list.
     ///        Extracts reactants, products, kinetic parameters (A–E, Ea), gas phase,
-    ///        optional metadata (name, comments), and constructs a `types::Taylor Series` object.
+    ///        optional metadata (name, comments), and constructs a `types::TaylorSeries` object.
     /// @param object The YAML node representing the reaction
     /// @param reactions The reactions container to append the parsed reaction to
     void TaylorSeriesParser::Parse(const YAML::Node& object, types::Reactions& reactions)
