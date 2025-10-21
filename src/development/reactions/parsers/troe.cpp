@@ -1,0 +1,87 @@
+// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/development/mechanism_parsers.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/development/reaction_types.hpp>
+#include <mechanism_configuration/development/utils.hpp>
+
+namespace mechanism_configuration
+{
+  namespace development
+  {
+    void TroeParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::Troe troe;
+
+      for (const auto& elem : object[validation::reactants])
+      {
+        types::ReactionComponent component;
+        component.name = elem[validation::name].as<std::string>();
+        component.unknown_properties = GetComments(elem);
+        if (elem[validation::coefficient].IsDefined())
+        {
+          component.coefficient = elem[validation::coefficient].as<double>();
+        }
+        troe.reactants.emplace_back(std::move(component));
+      }
+
+      for (const auto& elem : object[validation::products])
+      {
+        types::ReactionComponent component;
+        component.name = elem[validation::name].as<std::string>();
+        component.unknown_properties = GetComments(elem);
+        if (elem[validation::coefficient].IsDefined())
+        {
+          component.coefficient = elem[validation::coefficient].as<double>();
+        }
+        troe.products.emplace_back(std::move(component));
+      }
+
+      if (object[validation::k0_A].IsDefined())
+      {
+        troe.k0_A = object[validation::k0_A].as<double>();
+      }
+      if (object[validation::k0_B].IsDefined())
+      {
+        troe.k0_B = object[validation::k0_B].as<double>();
+      }
+      if (object[validation::k0_C].IsDefined())
+      {
+        troe.k0_C = object[validation::k0_C].as<double>();
+      }
+      if (object[validation::kinf_A].IsDefined())
+      {
+        troe.kinf_A = object[validation::kinf_A].as<double>();
+      }
+      if (object[validation::kinf_B].IsDefined())
+      {
+        troe.kinf_B = object[validation::kinf_B].as<double>();
+      }
+      if (object[validation::kinf_C].IsDefined())
+      {
+        troe.kinf_C = object[validation::kinf_C].as<double>();
+      }
+      if (object[validation::Fc].IsDefined())
+      {
+        troe.Fc = object[validation::Fc].as<double>();
+      }
+      if (object[validation::N].IsDefined())
+      {
+        troe.N = object[validation::N].as<double>();
+      }
+
+      if (object[validation::name].IsDefined())
+      {
+        troe.name = object[validation::name].as<std::string>();
+      }
+
+      troe.gas_phase = object[validation::gas_phase].as<std::string>();
+      troe.unknown_properties = GetComments(object);
+
+      reactions.troe.emplace_back(std::move(troe));
+    }
+
+  }  // namespace development
+}  // namespace mechanism_configuration

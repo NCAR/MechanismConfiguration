@@ -3,9 +3,9 @@ phases: []
 reactions:
 - gas phase: gas
   products:
-  - species name: C
+  - name: C
   reactants:
-  - species name: A
+  - name: A
   type: TROE
 species:
 - name: A

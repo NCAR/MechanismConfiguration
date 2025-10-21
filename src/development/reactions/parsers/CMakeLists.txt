@@ -7,4 +7,5 @@ target_sources(mechanism_configuration
     photolysis.cpp
     surface.cpp
     taylor_series.cpp
+    troe.cpp
 )
