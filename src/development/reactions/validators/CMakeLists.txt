@@ -8,4 +8,5 @@ target_sources(mechanism_configuration
     surface.cpp
     taylor_series.cpp
     troe.cpp
+    tunneling.cpp
 )

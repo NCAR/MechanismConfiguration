@@ -7,9 +7,9 @@ phases:
 reactions:
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
-  - Species name: A
+  - Name: A
   type: TUNNELING
 species:
 - name: A

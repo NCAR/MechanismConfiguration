@@ -267,10 +267,10 @@ reactions:
   B: 1200
   C: 100000000
   reactants:
-  - species name: B
+  - name: B
     coefficient: 1
   products:
-  - species name: C
+  - name: C
     coefficient: 1
 - type: WET_DEPOSITION
   condensed phase: cloud

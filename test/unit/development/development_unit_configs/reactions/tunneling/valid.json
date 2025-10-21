@@ -37,13 +37,13 @@
       "C": 1.0e8,
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     },
@@ -53,18 +53,18 @@
       "name": "my tunneling",
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 0.2,
           "__optional thing": "hello"
         },
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1.2
         }
       ]

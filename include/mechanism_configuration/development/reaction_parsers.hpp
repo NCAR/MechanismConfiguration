@@ -212,7 +212,6 @@ namespace mechanism_configuration
     class TernaryChemicalActivationParser : public IReactionParser
     {
      public:
-      /// @brief Parser for Ternary Chemical Activation reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
@@ -223,12 +222,12 @@ namespace mechanism_configuration
     class TunnelingParser : public IReactionParser
     {
      public:
-      /// @brief Parser for tunneling reactions
-      Errors parse(
+      Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+          const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
     class UserDefinedParser : public IReactionParser

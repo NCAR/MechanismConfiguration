@@ -6,7 +6,6 @@ target_sources(mechanism_configuration
     henrys_law_parser.cpp
     simpol_phase_transfer_parser.cpp
     ternary_chemical_activation_parser.cpp
-    tunneling_parser.cpp
     wet_deposition_parser.cpp
     user_defined_parser.cpp
 )
