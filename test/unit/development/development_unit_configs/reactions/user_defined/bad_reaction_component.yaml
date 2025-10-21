@@ -8,10 +8,10 @@ reactions:
 - gas phase: gas
   products:
   - coefficient: 0.2
-    species name: B
+    name: B
   reactants:
   - Coefficient: 1.2
-    species name: A
+    Name: A
   type: USER_DEFINED
   name: my bad reaction
 species:
