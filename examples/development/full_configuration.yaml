@@ -133,12 +133,12 @@ reactions:
   D: 300
   E: 6.0e-06
   reactants:
-  - species name: H2O2_aq
+  - name: H2O2_aq
     coefficient: 1
-  - species name: H2O
+  - name: H2O
     coefficient: 1
   products:
-  - species name: ethanol_aq
+  - name: ethanol_aq
     coefficient: 1
   name: my condensed arrhenius
 - type: CONDENSED_PHASE_ARRHENIUS
@@ -149,12 +149,12 @@ reactions:
   D: 300
   E: 6.0e-06
   reactants:
-  - species name: H2O2_aq
+  - name: H2O2_aq
     coefficient: 1
-  - species name: H2O
+  - name: H2O
     coefficient: 1
   products:
-  - species name: ethanol_aq
+  - name: ethanol_aq
     coefficient: 1
   name: my other condensed arrhenius
 - type: CONDENSED_PHASE_PHOTOLYSIS

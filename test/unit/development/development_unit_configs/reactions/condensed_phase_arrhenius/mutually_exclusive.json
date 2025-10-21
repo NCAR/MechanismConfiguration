@@ -34,12 +34,12 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "B"
+          "name": "B"
         }
       ],
       "C": 10,

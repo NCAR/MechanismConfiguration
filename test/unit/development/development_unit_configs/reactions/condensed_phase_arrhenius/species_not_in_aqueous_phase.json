@@ -37,17 +37,17 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1.2
         },
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.3
         }
       ],
@@ -64,17 +64,17 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 2
         },
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 0.1
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.5,
           "__optional thing": "hello"
         }
@@ -91,12 +91,12 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }
