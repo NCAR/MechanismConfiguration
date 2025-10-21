@@ -2,6 +2,7 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
+
 #include <set>
 
 using namespace mechanism_configuration;
@@ -76,7 +77,7 @@ TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 3);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, 
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey,
                                                   ConfigParseStatus::InvalidKey,
                                                   ConfigParseStatus::RequiredKeyNotFound };
     std::multiset<ConfigParseStatus> actual;

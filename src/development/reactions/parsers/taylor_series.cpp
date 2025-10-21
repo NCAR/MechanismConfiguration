@@ -8,7 +8,6 @@
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 
-
 namespace mechanism_configuration
 {
   namespace development
