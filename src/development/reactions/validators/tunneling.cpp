@@ -10,13 +10,12 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-
 namespace mechanism_configuration
 {
   namespace development
   {
     /// @brief Validates a YAML-defined Tunneling reaction entry
-    ///        Performs schema validation, ensures all referenced species and phases exist, 
+    ///        Performs schema validation, ensures all referenced species and phases exist,
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
@@ -31,7 +30,7 @@ namespace mechanism_configuration
         validation::reactants, validation::products, validation::type, validation::gas_phase
       };
       std::vector<std::string> optional_keys = { validation::name, validation::A, validation::B, validation::C };
-      
+
       Errors errors;
 
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
