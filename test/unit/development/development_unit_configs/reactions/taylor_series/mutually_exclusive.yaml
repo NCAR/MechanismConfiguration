@@ -9,9 +9,9 @@ reactions:
   Ea: 0.5
   gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
-  - species name: A
+  - name: A
   type: TAYLOR_SERIES
 species:
 - name: A

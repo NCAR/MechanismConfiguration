@@ -165,7 +165,7 @@ namespace mechanism_configuration
           // TODO - This is temporary until the decoupling is complete
           if (type == validation::Arrhenius_key || type == validation::Branched_key || type == validation::Emission_key ||
               type == validation::FirstOrderLoss_key || type == validation::Photolysis_key ||
-              type == validation::Surface_key)
+              type == validation::Surface_key  || type == validation::TaylorSeries_key)
           {
             it->second->Parse(object, reactions);
           }
