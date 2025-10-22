@@ -387,21 +387,21 @@
       "name": "my ternary chemical activation",
       "reactants": [
         {
-          "species name": "bar",
+          "name": "A",
           "coefficient": 1
         },
         {
-          "species name": "baz",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "bar",
+          "name": "A",
           "coefficient": 0.5
         },
         {
-          "species name": "foo",
+          "name": "C",
           "coefficient": 0.0
         }
       ],

@@ -17,7 +17,7 @@ reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas
   products:
-  - species name: bar
+  - name: bar
     yield: 1
-  - species name: baz
+  - name: baz
     yield: 3.2

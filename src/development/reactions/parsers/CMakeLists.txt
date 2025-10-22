@@ -7,6 +7,7 @@ target_sources(mechanism_configuration
     photolysis.cpp
     surface.cpp
     taylor_series.cpp
+    ternary_chemical_activation.cpp
     troe.cpp
     tunneling.cpp
     user_defined.cpp

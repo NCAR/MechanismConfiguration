@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "name": "Missing products",
+  "name": "Missing reactants",
   "species": [
     {
       "name": "foo"
@@ -38,14 +38,14 @@
     {
       "type": "TERNARY_CHEMICAL_ACTIVATION",
       "gas phase": "gas",
-      "reactants": [
+      "products": [
         {
-          "species name": "foo",
-          "coefficient": 1
+          "name": "bar",
+          "yield": 1.0
         },
         {
-          "species name": "quz",
-          "coefficient": 2
+          "name": "baz",
+          "yield": 3.2
         }
       ]
     }

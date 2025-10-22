@@ -17,26 +17,26 @@ reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas
   Reactants:
-  - species name: foo
+  - name: foo
     coefficient: 1
-  - species name: quz
+  - name: quz
     coefficient: 2
   products:
-  - species name: bar
+  - name: bar
     coefficient: 1
-  - species name: baz
+  - name: baz
     coefficient: 3.2
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas
   reactants:
-  - species name: bar
+  - name: bar
     coefficient: 1
-  - species name: baz
+  - name: baz
     coefficient: 1
   Products:
-  - species name: bar
+  - name: bar
     coefficient: 0.5
-  - species name: foo
+  - name: foo
     coefficient: 0
   k0_A: 32.1
   k0_B: -2.3
@@ -49,14 +49,14 @@ reactions:
 - type: TERNARY_CHEMICAL_ACTIVATION
   gas phase: gas
   reactants:
-  - species name: bar
+  - name: bar
     coefficient: 1
-  - species name: baz
+  - name: baz
     coefficient: 1
   products:
-  - species name: bar
+  - name: bar
     coefficient: 0.5
-  - species name: foo
+  - name: foo
     coefficient: 0
   k0_a: 32.1
   k0_b: -2.3
