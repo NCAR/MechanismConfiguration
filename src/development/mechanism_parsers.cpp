@@ -169,7 +169,7 @@ namespace mechanism_configuration
               type == validation::Troe_key || type == validation::Tunneling_key || 
               type == validation::TernaryChemicalActivation_key || type == validation::UserDefined_key ||
               type == validation::CondensedPhaseArrhenius_key || type == validation::CondensedPhasePhotolysis_key ||
-              type == validation::AqueousPhaseEquilibrium_key)
+              type == validation::AqueousPhaseEquilibrium_key || type == validation::SimpolPhaseTransfer_key)
           {
             it->second->Parse(object, reactions);
           }
