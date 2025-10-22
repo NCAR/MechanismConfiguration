@@ -8,6 +8,9 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <format>
+#include <unordered_set>
+#include <optional>
+#include <functional>
 
 namespace mechanism_configuration
 {
@@ -86,7 +89,7 @@ namespace mechanism_configuration
       }
     }
 
-    void CheckPhaseExists(
+    std::optional<std::reference_wrapper<const types::Phase>> CheckPhaseExists(
         const YAML::Node& object,
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
@@ -94,7 +97,18 @@ namespace mechanism_configuration
         const ConfigParseStatus& parser_status)
     {
       if (!object[phase_key])
-        return;
+      {
+        ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+
+        std::string message = std::format(
+            "{} error: Invalid phase name '{}'. This phase was not found in the object of type '{}'.",
+            error_location,
+            phase_key,
+            object[validation::type].as<std::string>());
+
+        errors.push_back({ parser_status, message });
+        return std::nullopt;
+      }
 
       const auto& phase_node = object[phase_key];
       std::string phase_name = phase_node.as<std::string>();
@@ -115,6 +129,41 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>());
 
         errors.push_back({ parser_status, message });
+        return std::nullopt;
+      }
+
+      return std::cref(*it); 
+    }
+
+    void CheckSpeciesPresenceInPhase(
+      const YAML::Node& object,
+      const types::Phase& phase,
+      const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
+      Errors& errors,
+      const ConfigParseStatus& parser_status)
+    {
+      std::unordered_set<std::string> phase_species_set; 
+      for (const auto& species : phase.species)
+      {
+        phase_species_set.insert(species.name);
+      }
+
+      for (const auto& [component, node] : species_node_pairs)
+      {
+        if (phase_species_set.find(component.name) == phase_species_set.end())
+        {
+          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+          std::string message = std::format(
+              "{} error: {}-phase species '{}' is used in '{}' but is not defined in the '{}' phase.",
+              error_location,
+              phase.name,
+              component.name,
+              object[validation::type].as<std::string>(),
+              phase.name);
+
+          errors.push_back({ parser_status, message });
+        }
       }
     }
 

@@ -82,9 +82,10 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
         std::string("development_unit_configs/reactions/condensed_phase_arrhenius/unknown_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies};
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase};
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -151,18 +152,17 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueo
     std::string file =
         std::string("development_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase") + extension;
     auto parsed = parser.Parse(file);
-    // EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
-                                                  ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase,
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
       actual.insert(status);
-      std::cout << "jiwon " << std::endl;
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
-    // EXPECT_EQ(actual, expected);
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -174,8 +174,8 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
   {
     std::string file = std::string("development_unit_configs/reactions/condensed_phase_arrhenius/missing_phase") + extension;
     auto parsed = parser.Parse(file);
-    // EXPECT_FALSE(parsed);
-    // EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
@@ -184,37 +184,37 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
-    // EXPECT_EQ(actual, expected);
+    EXPECT_EQ(actual, expected);
   }
 }
 
-// TEST(ParserBase, CondensedPhaseArrheniusMutuallyExclusiveEaAndCFailsValidation)
-// {
-//   using namespace development;
+TEST(ParserBase, CondensedPhaseArrheniusMutuallyExclusiveEaAndCFailsValidation)
+{
+  using namespace development;
 
-//   YAML::Node reaction_node;
-//   reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
-//   reaction_node["products"] = YAML::Load("[{ name: bar }]");
-//   reaction_node["type"] = "ARRHENIUS";
-//   reaction_node["condensed phase"] = "aquoues";
+  YAML::Node reaction_node;
+  reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
+  reaction_node["products"] = YAML::Load("[{ name: bar }]");
+  reaction_node["type"] = "CONDENSED_PHASE_ARRHENIUS";
+  reaction_node["condensed phase"] = "aquoues";
 
-//   // Specify both Ea and C to trigger validation error
-//   reaction_node["Ea"] = 0.5;
-//   reaction_node["C"] = 10.0;
+  // Specify both Ea and C to trigger validation error
+  reaction_node["Ea"] = 0.5;
+  reaction_node["C"] = 10.0;
 
-//   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
-//   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
-//   CondensedPhaseArrheniusParser parser;
-//   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-//   EXPECT_EQ(errors.size(), 1);
+  CondensedPhaseArrheniusParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 1);
 
-//   std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
-//   std::multiset<ConfigParseStatus> actual;
-//   for (const auto& [status, message] : errors)
-//   {
-//     actual.insert(status);
-//     std::cout << message << " " << configParseStatusToString(status) << std::endl;
-//   }
-//   EXPECT_EQ(actual, expected);
-// }
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}

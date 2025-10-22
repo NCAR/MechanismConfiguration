@@ -97,40 +97,19 @@ namespace mechanism_configuration
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
       if (!unknown_species.empty())
       {
-        for (const auto& [name, node] : unknown_species)
-        {
-          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
-          std::string message = std::format(
-              "{} error: Unknown species name '{}' found in '{}' reaction.",
-              error_location,
-              name,
-              object[validation::type].as<std::string>());
-
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, message });
-        }
+        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
       }
 
-      // Check for unknown phase
-      const auto& phase_node = object[validation::gas_phase];
-      std::string gas_phase = phase_node.as<std::string>();
-      auto it = std::find_if(
-          existing_phases.begin(),
-          existing_phases.end(),
-          [&gas_phase](const auto& phase) { return phase.name == gas_phase; });
-
-      if (it == existing_phases.end())
+      // Check for phase existence and get phase reference
+      auto phase_optional = CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
+      if (!phase_optional)
       {
-        ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
-
-        std::string message = std::format(
-            "{} error: Unknown phase name '{}' found in '{}' reaction.",
-            error_location,
-            gas_phase,
-            object[validation::type].as<std::string>());
-
-        errors.push_back({ ConfigParseStatus::UnknownPhase, message });
+        return errors;
       }
+
+      // Check if phase-specific species in reaction is found in phase
+      const auto& phase = phase_optional->get();
+      CheckSpeciesPresenceInPhase(object, phase, species_node_pairs, errors);
 
       return errors;
     }

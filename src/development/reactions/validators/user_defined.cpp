@@ -80,10 +80,21 @@ namespace mechanism_configuration
 
       // Check for unknown species in reactants and products
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
-      ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+      if (!unknown_species.empty())
+      {
+        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+      }
 
-      // Check for unknown phase
-      CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
+      // Check for phase existence and get phase reference
+      auto phase_optional = CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
+      if (!phase_optional)
+      {
+        return errors;
+      }
+
+      // Check if phase-specific species in reaction is found in phase
+      const auto& phase = phase_optional->get();
+      CheckSpeciesPresenceInPhase(object, phase, species_node_pairs, errors);
 
       return errors;
     }
