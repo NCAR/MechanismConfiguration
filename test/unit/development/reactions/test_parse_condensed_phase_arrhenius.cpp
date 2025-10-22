@@ -193,7 +193,7 @@ TEST(ParserBase, CondensedPhaseArrheniusMutuallyExclusiveEaAndCFailsValidation)
   using namespace development;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
-  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "aquoues" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "aqueous" } };
 
   YAML::Node reaction_node;
   reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
