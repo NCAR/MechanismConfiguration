@@ -186,13 +186,13 @@
       "gas phase": "gas",
       "gas-phase species": [
         {
-          "name:": "ethanol"
+          "name": "ethanol"
         }
       ],
       "condensed phase": "aqueous",
       "condensed-phase species": [
         {
-          "name:": "ethanol_aq"
+          "name": "ethanol_aq"
         }
       ],
       "B": [
