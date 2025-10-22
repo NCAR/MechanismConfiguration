@@ -1,5 +1,6 @@
 target_sources(mechanism_configuration
   PRIVATE
+    aqueous_equilibrium.cpp
     arrhenius.cpp
     branched.cpp
     condensed_phase_arrhenius.cpp

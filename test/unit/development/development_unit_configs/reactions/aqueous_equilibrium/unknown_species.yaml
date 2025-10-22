@@ -10,12 +10,12 @@ reactions:
   k_reverse: 0.32
   products:
   - coefficient: 1
-    species name: B
+    name: B
   - coefficient: 1
-    species name: C
+    name: C
   reactants:
   - coefficient: 2
-    species name: A
+    name: A
   type: AQUEOUS_EQUILIBRIUM
 species:
 - name: A
