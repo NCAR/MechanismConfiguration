@@ -10,13 +10,12 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-
 namespace mechanism_configuration
 {
   namespace development
   {
     /// @brief Validates a YAML-defined Ternary ChemicalActivation reaction entry
-    ///        Performs schema validation, ensures all referenced species and phases exist, 
+    ///        Performs schema validation, ensures all referenced species and phases exist,
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
