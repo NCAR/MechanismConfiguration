@@ -192,18 +192,18 @@ TEST(ParserBase, CondensedPhaseArrheniusMutuallyExclusiveEaAndCFailsValidation)
 {
   using namespace development;
 
+  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "aquoues" } };
+
   YAML::Node reaction_node;
   reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
   reaction_node["products"] = YAML::Load("[{ name: bar }]");
   reaction_node["type"] = "CONDENSED_PHASE_ARRHENIUS";
-  reaction_node["condensed phase"] = "aquoues";
+  reaction_node["condensed phase"] = "organic";
 
   // Specify both Ea and C to trigger validation error
   reaction_node["Ea"] = 0.5;
   reaction_node["C"] = 10.0;
-
-  std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
-  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 
   CondensedPhaseArrheniusParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);

@@ -14,6 +14,11 @@ TEST(ParserBase, ParsesFullDevelopmentConfiguration)
   {
     std::string path = "examples/development/full_configuration" + extension;
     auto parsed = parser.Parse(path);
+        for (const auto& [status, message] : parsed.errors)
+    {
+      // actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    }
     EXPECT_TRUE(parsed);
     development::types::Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.name, "Full Configuration");

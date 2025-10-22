@@ -146,7 +146,7 @@ TEST(ParserBase, PhotolysisInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsV
   reaction_node["reactants"] = YAML::Load("[{ name: quiz }, { name: bar }]");
 
   // Unknown gas phase name triggers validation error
-  reaction_node["gas phase"] = "what is first order loss phase";
+  reaction_node["gas phase"] = "aqueous";
 
   PhotolysisParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);

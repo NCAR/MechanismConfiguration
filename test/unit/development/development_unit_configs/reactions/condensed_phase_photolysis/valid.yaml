@@ -12,19 +12,19 @@ reactions:
   name: my condensed phase photolysis
   products:
   - coefficient: 1
-    species name: C
+    name: C
   reactants:
   - coefficient: 1
-    species name: B
+    name: B
   scaling factor: 12.3
   type: CONDENSED_PHASE_PHOTOLYSIS
 - condensed phase: aqueous
   products:
   - coefficient: 0.2
-    species name: C
+    name: C
   reactants:
   - coefficient: 1.2
-    species name: B
+    name: B
   type: CONDENSED_PHASE_PHOTOLYSIS
 species:
 - name: A
