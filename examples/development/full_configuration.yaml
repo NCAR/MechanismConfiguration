@@ -50,6 +50,7 @@ phases:
   - name: C
   - name: ethanol
   - name: H2O2
+  - name: M
 - name: aqueous
   species:
   - name: H2O2_aq
