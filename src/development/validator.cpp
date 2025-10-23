@@ -226,7 +226,7 @@ namespace mechanism_configuration
 
       for (const auto& object : reactions_list)
       {
-        if (!object[validation::type].IsDefined())
+        if (!object[validation::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = std::format("{} error: Missing 'type' object in reaction.", error_location);

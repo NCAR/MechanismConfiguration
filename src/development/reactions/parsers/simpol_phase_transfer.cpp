@@ -20,7 +20,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -32,7 +32,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -44,7 +44,7 @@ namespace mechanism_configuration
         simpol_phase_transfer.B[i] = object[validation::B][i].as<double>();
       }
 
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         simpol_phase_transfer.name = object[validation::name].as<std::string>();
       }

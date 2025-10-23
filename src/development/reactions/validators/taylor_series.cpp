@@ -61,7 +61,7 @@ namespace mechanism_configuration
         is_valid = false;
       }
 
-      if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined())
+      if (object[validation::Ea] && object[validation::C])
       {
         const auto& node = object[validation::Ea];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
