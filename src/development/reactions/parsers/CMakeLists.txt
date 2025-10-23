@@ -15,4 +15,5 @@ target_sources(mechanism_configuration
     troe.cpp
     tunneling.cpp
     user_defined.cpp
+    wet_deposition.cpp
 )
