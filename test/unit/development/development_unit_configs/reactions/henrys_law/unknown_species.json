@@ -39,15 +39,26 @@
       "gas": {
         "name": "gas",
         "species": [
-          "C"
+          {
+            "name": "C",
+            "diffusion_coefficient": 0.7
+          }
         ]
       },
       "particle": {
         "phase": "aqueous",
         "solutes": [
-          "B"
+          {
+            "name": "B",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O",
+            "coefficient": 1.0
+          }
+        ]
       }
     }
   ]

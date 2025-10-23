@@ -212,6 +212,41 @@ namespace mechanism_configuration
       return errors;
     }
 
+    Errors ValidateParticles(const YAML::Node& list)
+    {
+      const std::vector<std::string> required_key = { validation::phase,
+                                                      validation::solutes,
+                                                      validation::solvent };
+      const std::vector<std::string> optional_keys = { };
+
+      Errors errors;
+
+      for (const auto& object : list)
+      {
+        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+
+        // Solutes
+        validation_error = ValidateReactantsOrProducts(object[validation::solutes]);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+
+        // Solvent
+        validation_error = ValidateReactantsOrProducts(object[validation::solvent]);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+      }
+
+      return errors;
+    }
+
     Errors ValidateReactions(
         const YAML::Node& reactions_list,
         const std::vector<types::Species>& existing_species,
@@ -264,6 +299,7 @@ namespace mechanism_configuration
 
       return errors;
     }
+
 
   }  // namespace development
 }  // namespace mechanism_configuration

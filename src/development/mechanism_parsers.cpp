@@ -100,33 +100,56 @@ namespace mechanism_configuration
       return all_phases;
     }
 
-    std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)
+    // std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)
+    // {
+    //   Errors errors;
+    //   ConfigParseStatus status = ConfigParseStatus::Success;
+    //   types::ReactionComponent component;
+    //   const std::vector<std::string> reaction_component_required_keys = { validation::species_name };
+    //   const std::vector<std::string> reaction_component_optional_keys = { validation::coefficient };
+
+    //   auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
+    //   errors.insert(errors.end(), validate.begin(), validate.end());
+    //   if (validate.empty())
+    //     if (status == ConfigParseStatus::Success)
+    //     {
+    //       std::string species_name = object[validation::species_name].as<std::string>();
+    //       double coefficient = 1;
+    //       if (object[validation::coefficient])
+    //       {
+    //         coefficient = object[validation::coefficient].as<double>();
+    //       }
+
+    //       component.species_name = species_name;
+    //       component.coefficient = coefficient;
+    //       component.unknown_properties = GetComments(object);
+    //     }
+
+    //   return { errors, component };
+    // }
+
+
+    std::vector<types::ReactionComponent> ParseReactionComponent(
+      const YAML::Node& object, 
+      const std::string& key)
     {
-      Errors errors;
-      ConfigParseStatus status = ConfigParseStatus::Success;
-      types::ReactionComponent component;
-      const std::vector<std::string> reaction_component_required_keys = { validation::species_name };
-      const std::vector<std::string> reaction_component_optional_keys = { validation::coefficient };
+      std::vector<types::ReactionComponent> component_list;
+      for (const auto& elem : object[key])
+      {
+        types::ReactionComponent component;
+        component.name = elem[validation::name].as<std::string>();
+        component.unknown_properties = GetComments(elem);
 
-      auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
-      errors.insert(errors.end(), validate.begin(), validate.end());
-      if (validate.empty())
-        if (status == ConfigParseStatus::Success)
+        if (elem[validation::coefficient])
         {
-          std::string species_name = object[validation::species_name].as<std::string>();
-          double coefficient = 1;
-          if (object[validation::coefficient])
-          {
-            coefficient = object[validation::coefficient].as<double>();
-          }
-
-          component.species_name = species_name;
-          component.coefficient = coefficient;
-          component.unknown_properties = GetComments(object);
+          component.coefficient = elem[validation::coefficient].as<double>();
         }
+        
+        component_list.emplace_back(std::move(component));
+      }
 
-      return { errors, component };
-    }
+      return component_list;
+    };
 
     std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
         const std::string& key,
@@ -170,7 +193,7 @@ namespace mechanism_configuration
               type == validation::TernaryChemicalActivation_key || type == validation::UserDefined_key ||
               type == validation::CondensedPhaseArrhenius_key || type == validation::CondensedPhasePhotolysis_key ||
               type == validation::AqueousPhaseEquilibrium_key || type == validation::SimpolPhaseTransfer_key ||
-              type == validation::WetDeposition_key)
+              type == validation::WetDeposition_key || type == validation::HenrysLaw_key)
           {
             it->second->Parse(object, reactions);
           }
