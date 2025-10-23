@@ -120,29 +120,28 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, AqueousEquilibriumInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ParserBase, AqueousEquilibriumUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
-  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "aqueous" } };
 
   YAML::Node reaction_node;
   reaction_node["type"] = "AQUEOUS_EQUILIBRIUM";
   reaction_node["products"] = YAML::Load("[{ name: foo }]");
   reaction_node["condensed-phase water"] = "H2O";
   reaction_node["k_reverse"] = 0.46;
-  reaction_node["reactants"] = YAML::Load("[{ name: foo }, { name: bar }]");
+  reaction_node["reactants"] = YAML::Load("[{ name: Foo }, { name: bar }]");
 
   // Unknown gas phase name triggers validation error
-  reaction_node["condensed phase"] = "aqueous";
+  reaction_node["condensed phase"] = "Aqueous";
 
   AqueousEquilibriumParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
-  // EXPECT_EQ(errors.size(), 3);
+  EXPECT_EQ(errors.size(), 2);
 
-  std::multiset<ConfigParseStatus> expected = { 
-                                                ConfigParseStatus::ReactionRequiresUnknownSpecies,
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
                                                 ConfigParseStatus::UnknownPhase };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
@@ -150,5 +149,5 @@ TEST(ParserBase, AqueousEquilibriumInvalidNumberReactantUnknownSpeciesUnknownPha
     actual.insert(status);
     std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
-  // EXPECT_EQ(actual, expected);
+  EXPECT_EQ(actual, expected);
 }
