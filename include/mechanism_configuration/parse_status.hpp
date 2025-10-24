@@ -30,6 +30,7 @@ namespace mechanism_configuration
     TooManyReactionComponents,
     InvalidIonPair,
     InvalidVersion,
+    InvalidParameterNumber,
     UnknownType,
     FileNotFound
   };

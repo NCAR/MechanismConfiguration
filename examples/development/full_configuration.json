@@ -184,9 +184,17 @@
     {
       "type": "SIMPOL_PHASE_TRANSFER",
       "gas phase": "gas",
-      "gas-phase species": "ethanol",
+      "gas-phase species": [
+        {
+          "name": "ethanol"
+        }
+      ],
       "condensed phase": "aqueous",
-      "condensed-phase species": "ethanol_aq",
+      "condensed-phase species": [
+        {
+          "name": "ethanol_aq"
+        }
+      ],
       "B": [
         -1.97E+03,
         2.91E+00,
@@ -204,17 +212,17 @@
       "k_reverse": 0.32,
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 2
         }
       ],
       "products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         },
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],

@@ -1,5 +1,6 @@
 target_sources(mechanism_configuration
   PRIVATE
+    aqueous_equilibrium.cpp
     arrhenius.cpp
     branched.cpp
     condensed_phase_arrhenius.cpp
@@ -7,6 +8,7 @@ target_sources(mechanism_configuration
     emission.cpp
     first_order_loss.cpp
     photolysis.cpp
+    simpol_phase_transfer.cpp
     surface.cpp
     taylor_series.cpp
     ternary_chemical_activation.cpp

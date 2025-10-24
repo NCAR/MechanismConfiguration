@@ -142,11 +142,11 @@ namespace mechanism_configuration
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
         /// @brief The species in the gas phase participating in this reaction
-        ReactionComponent gas_phase_species;
+        std::vector<ReactionComponent> gas_phase_species;
         /// @brief An identifier for the condensed phase where this reaction occurs
         std::string condensed_phase;
         /// @brief The species in the condensed phase participating in this reaction
-        ReactionComponent condensed_phase_species;
+        std::vector<ReactionComponent> condensed_phase_species;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
         /// @brief The 4 SIMPOL parameters

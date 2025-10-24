@@ -42,17 +42,17 @@
       "k_reverse": 0.32,
       "reactants": [
         {
-          "Species name": "A",
-          "coefficient": 2
+          "name": "A",
+          "Coefficient": 2
         }
       ],
       "products": [
         {
-          "Species name": "B",
+          "name": "B",
           "coefficient": 1
         },
         {
-          "Species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ]
