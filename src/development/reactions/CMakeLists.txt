@@ -1,7 +1,6 @@
 target_sources(mechanism_configuration
   PRIVATE
     aqueous_equilibrium_parser.cpp
-    condensed_phase_arrhenius_parser.cpp
     condensed_phase_photolysis_parser.cpp
     henrys_law_parser.cpp
     simpol_phase_transfer_parser.cpp

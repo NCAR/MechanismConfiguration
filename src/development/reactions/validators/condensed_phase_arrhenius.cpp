@@ -2,6 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
@@ -10,28 +11,29 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
+#include <format>
 
 namespace mechanism_configuration
 {
   namespace development
   {
-    /// @brief Validates a YAML-defined Tunneling reaction entry
-    ///        Performs schema validation, ensures all referenced species and phases exist, 
-    ///        and collects any errors found.
+    /// @brief Validates a YAML-defined Condensed-phase Arrhenius reaction entry
+    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
+    ///        ensures all referenced species and phases exist, and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species The list of known species used for validation
     /// @param existing_phases The list of known phases used for validation
     /// @return A list of validation errors, if any
-    Errors TunnelingParser::Validate(
+    Errors CondensedPhaseArrheniusParser::Validate(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        validation::reactants, validation::products, validation::type, validation::condensed_phase
       };
-      std::vector<std::string> optional_keys = { validation::name, validation::A, validation::B, validation::C };
-      
+      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
+                                                 validation::E, validation::Ea, validation::name };
       Errors errors;
 
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
@@ -56,6 +58,20 @@ namespace mechanism_configuration
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        is_valid = false;
+      }
+
+      if (object[validation::Ea].IsDefined() && object[validation::C].IsDefined())
+      {
+        const auto& node = object[validation::Ea];
+        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+        std::string message = std::format(
+            "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
+            error_location,
+            object[validation::type].as<std::string>());
+
+        errors.push_back({ ConfigParseStatus::MutuallyExclusiveOption, message });
         is_valid = false;
       }
 
@@ -85,13 +101,13 @@ namespace mechanism_configuration
       }
 
       // Check for phase existence and get phase reference
-      auto phase_optional = CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
+      auto phase_optional = CheckPhaseExists(object, validation::condensed_phase, existing_phases, errors);
       if (!phase_optional)
       {
         return errors;
       }
 
-      // Check if phase-specific species in reaction is found in phase
+      // Validate reaction species presence in phase
       const auto& phase = phase_optional->get();
       CheckSpeciesPresenceInPhase(object, phase, species_node_pairs, errors);
 

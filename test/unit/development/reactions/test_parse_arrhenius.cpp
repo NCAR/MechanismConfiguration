@@ -80,10 +80,12 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
     std::string file = std::string("development_unit_configs/reactions/arrhenius/unknown_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors.size(), 4);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
-                                                  ConfigParseStatus::ReactionRequiresUnknownSpecies };
+                                                  ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase,
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {

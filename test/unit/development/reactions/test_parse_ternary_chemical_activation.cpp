@@ -100,6 +100,29 @@ TEST(ParserBase, TernaryDetectsNonStandardKey)
   }
 }
 
+TEST(ParserBase, TernaryDetectsUnknownSpecies)
+{
+  development::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    std::string file = std::string("development_unit_configs/reactions/ternary_chemical_activation/unknown_species") + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    EXPECT_EQ(parsed.errors.size(), 2);
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies, 
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
+    {
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    }
+    EXPECT_EQ(actual, expected);
+  }
+}
+
 TEST(ParserBase, TernaryDetectsMissingProducts)
 {
   development::Parser parser;

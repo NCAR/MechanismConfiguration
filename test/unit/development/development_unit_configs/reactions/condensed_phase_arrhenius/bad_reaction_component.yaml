@@ -8,9 +8,9 @@ phases:
 reactions:
 - condensed phase: aqueous
   products:
-  - species name: B
+  - name: B
   reactants:
-  - Species name: A
+  - Name: A
   type: CONDENSED_PHASE_ARRHENIUS
 species:
 - name: A

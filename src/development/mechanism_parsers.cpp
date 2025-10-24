@@ -167,7 +167,8 @@ namespace mechanism_configuration
               type == validation::FirstOrderLoss_key || type == validation::Photolysis_key ||
               type == validation::Surface_key  || type == validation::TaylorSeries_key ||
               type == validation::Troe_key || type == validation::Tunneling_key || 
-              type == validation::TernaryChemicalActivation_key || type == validation::UserDefined_key)
+              type == validation::TernaryChemicalActivation_key || type == validation::UserDefined_key ||
+              type == validation::CondensedPhaseArrhenius_key)
           {
             it->second->Parse(object, reactions);
           }

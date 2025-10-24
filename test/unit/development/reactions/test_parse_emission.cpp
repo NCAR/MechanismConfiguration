@@ -45,9 +45,10 @@ TEST(ParserBase, EmissionDetectsUnknownSpecies)
     std::string file = std::string("development_unit_configs/reactions/emission/unknown_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies, 
+                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {

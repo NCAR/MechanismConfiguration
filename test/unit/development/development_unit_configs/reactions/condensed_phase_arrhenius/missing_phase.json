@@ -22,12 +22,12 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }
