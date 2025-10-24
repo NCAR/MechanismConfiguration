@@ -135,8 +135,7 @@ TEST(ParserBase, TaylorSeriesDetectsBadReactionComponent)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, 
-                                                  ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, ConfigParseStatus::RequiredKeyNotFound };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -172,7 +171,7 @@ TEST(ParserBase, TaylorSeriesDetectsUnknownPhase)
 TEST(ParserBase, TaylorSeriesMutuallyExclusiveEaAndCFailsValidation)
 {
   using namespace development;
-  
+
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };
 

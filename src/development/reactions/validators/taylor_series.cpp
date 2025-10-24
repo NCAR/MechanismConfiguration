@@ -31,9 +31,10 @@ namespace mechanism_configuration
       std::vector<std::string> required_keys = {
         validation::reactants, validation::products, validation::type, validation::gas_phase
       };
-      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
-                                                 validation::E, validation::Ea, validation::name, 
-                                                 validation::taylor_coefficients };
+      std::vector<std::string> optional_keys = { validation::A,    validation::B,
+                                                 validation::C,    validation::D,
+                                                 validation::E,    validation::Ea,
+                                                 validation::name, validation::taylor_coefficients };
       Errors errors;
 
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);

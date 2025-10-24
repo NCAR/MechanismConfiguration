@@ -2,6 +2,7 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
+
 #include <set>
 
 using namespace mechanism_configuration;
@@ -41,7 +42,6 @@ TEST(ParserBase, TernaryParseValidConfig)
     EXPECT_EQ(process_vector[0].Fc, 0.6);
     EXPECT_EQ(process_vector[0].N, 1.0);
 
-
     // second reaction
     EXPECT_EQ(process_vector[1].unknown_properties.size(), 1);
     EXPECT_EQ(process_vector[1].unknown_properties["__optional thing"], "hello");
@@ -62,7 +62,6 @@ TEST(ParserBase, TernaryParseValidConfig)
     EXPECT_EQ(process_vector[1].Fc, 1.3);
     EXPECT_EQ(process_vector[1].N, 32.1);
     EXPECT_EQ(process_vector[1].name, "my ternary chemical activation");
-
   }
 }
 
@@ -78,18 +77,12 @@ TEST(ParserBase, TernaryDetectsNonStandardKey)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 12);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::RequiredKeyNotFound,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey,
-                                                  ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,          ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,          ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,          ConfigParseStatus::InvalidKey,
+                                                  ConfigParseStatus::InvalidKey,          ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -106,12 +99,13 @@ TEST(ParserBase, TernaryDetectsUnknownSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/ternary_chemical_activation/unknown_species") + extension;
+    std::string file =
+        std::string("development_unit_configs/reactions/ternary_chemical_activation/unknown_species") + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies, 
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
                                                   ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
@@ -129,8 +123,7 @@ TEST(ParserBase, TernaryDetectsMissingProducts)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file =
-        "./development_unit_configs/reactions/ternary_chemical_activation/missing_products" + extension;
+    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/missing_products" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
@@ -152,8 +145,7 @@ TEST(ParserBase, TernaryDetectsMissingReactants)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    std::string file =
-        "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants" + extension;
+    std::string file = "./development_unit_configs/reactions/ternary_chemical_activation/missing_reactants" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
@@ -168,7 +160,6 @@ TEST(ParserBase, TernaryDetectsMissingReactants)
     EXPECT_EQ(actual, expected);
   }
 }
-
 
 TEST(ParserBase, TernaryUnknownSpeciesAndUnknownPhaseFailsValidation)
 {
