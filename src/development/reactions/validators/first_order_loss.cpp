@@ -76,7 +76,7 @@ namespace mechanism_configuration
         errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
       }
 
-     // Check for unknown species in reactants and products
+      // Check for unknown species in reactants and products
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
       if (!unknown_species.empty())
       {

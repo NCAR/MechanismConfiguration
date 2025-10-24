@@ -8,9 +8,9 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <format>
-#include <unordered_set>
-#include <optional>
 #include <functional>
+#include <optional>
+#include <unordered_set>
 
 namespace mechanism_configuration
 {
@@ -132,17 +132,17 @@ namespace mechanism_configuration
         return std::nullopt;
       }
 
-      return std::cref(*it); 
+      return std::cref(*it);
     }
 
     void CheckSpeciesPresenceInPhase(
-      const YAML::Node& object,
-      const types::Phase& phase,
-      const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
-      Errors& errors,
-      const ConfigParseStatus& parser_status)
+        const YAML::Node& object,
+        const types::Phase& phase,
+        const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
+        Errors& errors,
+        const ConfigParseStatus& parser_status)
     {
-      std::unordered_set<std::string> phase_species_set; 
+      std::unordered_set<std::string> phase_species_set;
       for (const auto& species : phase.species)
       {
         phase_species_set.insert(species.name);
