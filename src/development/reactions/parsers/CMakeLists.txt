@@ -3,6 +3,7 @@ target_sources(mechanism_configuration
     arrhenius.cpp
     branched.cpp
     condensed_phase_arrhenius.cpp
+    condensed_phase_photolysis.cpp
     emission.cpp
     first_order_loss.cpp
     photolysis.cpp

@@ -10,10 +10,10 @@ reactions:
 - condensed phase: aqueous
   products:
   - coefficient: 0.2
-    species name: C
+    name: C
   reactants:
-  - species name: A
-  - species name: B
+  - name: A
+  - name: B
   type: CONDENSED_PHASE_PHOTOLYSIS
 species:
 - name: A

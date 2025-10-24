@@ -277,13 +277,13 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "H2O2_aq",
+          "name": "H2O2_aq",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "ethanol_aq",
+          "name": "ethanol_aq",
           "coefficient": 1
         }
       ],

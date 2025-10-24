@@ -8,7 +8,7 @@ phases:
   species:
   - A
   - B
-- name: aquoues
+- name: aqueous
   species:
   - C
 reactions: []
