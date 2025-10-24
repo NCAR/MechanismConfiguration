@@ -8,7 +8,7 @@ phases:
   - name: gas
     species:
       - name: A
-        diffusion_coefficient: 0.7
+        diffusion coefficient [m2 s-1]: 0.7
   - name: aqueous
     species:
       - name: B
@@ -19,7 +19,7 @@ reactions:
       name: gas
       species:
         - name: C
-          diffusion_coefficient: 0.7
+          diffusion coefficient [m2 s-1]: 0.7
     particle:
       phase: aqueous
       solutes:

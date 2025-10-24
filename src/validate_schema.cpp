@@ -6,6 +6,7 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <iostream>
+#include <format>
 
 namespace mechanism_configuration
 {

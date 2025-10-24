@@ -18,6 +18,21 @@ namespace mechanism_configuration
 {
   namespace development
   {
+    static YAML::Node MakeSequence(const YAML::Node& node) {
+      if (node.IsSequence())
+          return node;
+
+      YAML::Node seq;
+      seq.push_back(node);
+      return seq;
+    }
+static YAML::Node AsSequence(const YAML::Node& node)
+{
+    if (node.IsSequence()) return node;
+    YAML::Node seq;
+    seq.push_back(node);
+    return seq;
+}
 
     Errors ValidateSpecies(const YAML::Node& species_list)
     {
@@ -94,7 +109,16 @@ namespace mechanism_configuration
 
       std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 
-      for (const auto& object : phases_list)
+
+
+      // if (!phases_list.IsSequence())
+      // {
+      //   YAML::Node new_list;
+      //   new_list.push_back(phases_list);
+      //   phases_list = new_list;  // error: no viable overloaded '='
+      // }
+
+      for (const auto& object : AsSequence(phases_list))
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validation_errors.empty())
@@ -162,7 +186,7 @@ namespace mechanism_configuration
             ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
             std::string message =
-                std::format("{} error: Unknown species name '{}' found in '{}' phase", error_location, name, phase.name);
+                std::format("{} error: Unknown species name '{}' found in '{}' phase.", error_location, name, phase.name);
 
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, message });
           }
@@ -214,14 +238,15 @@ namespace mechanism_configuration
 
     Errors ValidateParticles(const YAML::Node& list)
     {
-      const std::vector<std::string> required_key = { validation::phase,
-                                                      validation::solutes,
-                                                      validation::solvent };
+      const std::vector<std::string> required_keys = { validation::phase,
+                                                       validation::solutes,
+                                                       validation::solvent };
       const std::vector<std::string> optional_keys = { };
 
       Errors errors;
 
-      for (const auto& object : list)
+      // for (const auto& object : list)
+      for (const auto& object : AsSequence(list))
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validation_errors.empty())
@@ -230,14 +255,14 @@ namespace mechanism_configuration
         }
 
         // Solutes
-        validation_error = ValidateReactantsOrProducts(object[validation::solutes]);
+        validation_errors = ValidateReactantsOrProducts(object[validation::solutes]);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
         }
 
         // Solvent
-        validation_error = ValidateReactantsOrProducts(object[validation::solvent]);
+        validation_errors = ValidateReactantsOrProducts(object[validation::solvent]);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

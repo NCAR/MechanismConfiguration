@@ -22,7 +22,7 @@ namespace mechanism_configuration
       for (const auto& elem : object[validation::gas][validation::species])
       {
         types::PhaseSpecies phase_species;
-        phase_species.name = elem.as<std::string>();
+        phase_species.name = elem[validation::name].as<std::string>();
         phase_species.unknown_properties = GetComments(elem);
         if (elem[validation::diffusion_coefficient])
         {

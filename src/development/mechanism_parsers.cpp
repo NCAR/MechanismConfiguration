@@ -128,13 +128,20 @@ namespace mechanism_configuration
     //   return { errors, component };
     // }
 
+static YAML::Node AsSequence(const YAML::Node& node)
+{
+    if (node.IsSequence()) return node;
+    YAML::Node seq;
+    seq.push_back(node);
+    return seq;
+}
 
     std::vector<types::ReactionComponent> ParseReactionComponent(
       const YAML::Node& object, 
       const std::string& key)
     {
       std::vector<types::ReactionComponent> component_list;
-      for (const auto& elem : object[key])
+      for (const auto& elem : AsSequence(object[key]))
       {
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
@@ -151,23 +158,23 @@ namespace mechanism_configuration
       return component_list;
     };
 
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
-        const std::string& key,
-        const YAML::Node& object)
-    {
-      Errors errors;
-      std::vector<types::ReactionComponent> result{};
-      for (const auto& product : object[key])
-      {
-        auto component_parse = ParseReactionComponent(product);
-        errors.insert(errors.end(), component_parse.first.begin(), component_parse.first.end());
-        if (component_parse.first.empty())
-        {
-          result.push_back(component_parse.second);
-        }
-      }
-      return { errors, result };
-    }
+    // std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
+    //     const std::string& key,
+    //     const YAML::Node& object)
+    // {
+    //   Errors errors;
+    //   std::vector<types::ReactionComponent> result{};
+    //   for (const auto& obj : object[key])
+    //   {
+    //     auto component_parse = ParseReactionComponent(obj);
+    //     errors.insert(errors.end(), component_parse.first.begin(), component_parse.first.end());
+    //     if (component_parse.first.empty())
+    //     {
+    //       result.push_back(component_parse.second);
+    //     }
+    //   }
+    //   return { errors, result };
+    // }
 
     std::pair<Errors, types::Reactions> ParseReactions(
         const YAML::Node& objects,
@@ -197,11 +204,11 @@ namespace mechanism_configuration
           {
             it->second->Parse(object, reactions);
           }
-          else
-          {
-            auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
-            errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-          }
+          // else
+          // {
+          //   auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
+          //   errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+          // }
         }
         else
         {

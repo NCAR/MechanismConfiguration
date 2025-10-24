@@ -49,9 +49,9 @@ namespace mechanism_configuration
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
         is_valid = false;
       }
-      
+
       // Particle
-      validation_errors = ValidateParticle(object[validation::particle]);
+      validation_errors = ValidateParticles(object[validation::particle]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
