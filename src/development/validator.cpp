@@ -18,22 +18,6 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    static YAML::Node MakeSequence(const YAML::Node& node) {
-      if (node.IsSequence())
-          return node;
-
-      YAML::Node seq;
-      seq.push_back(node);
-      return seq;
-    }
-static YAML::Node AsSequence(const YAML::Node& node)
-{
-    if (node.IsSequence()) return node;
-    YAML::Node seq;
-    seq.push_back(node);
-    return seq;
-}
-
     Errors ValidateSpecies(const YAML::Node& species_list)
     {
       const std::vector<std::string> required_keys = { validation::name };

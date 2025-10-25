@@ -16,6 +16,16 @@ namespace mechanism_configuration
 {
   namespace development
   {
+    YAML::Node AsSequence(const YAML::Node& node)
+    {
+      if (node.IsSequence()) return node;
+      
+      YAML::Node sequence;
+      sequence.push_back(node);
+
+      return sequence;
+    }
+
     void AppendFilePath(const std::filesystem::path& config_path, Errors& errors)
     {
       for (auto& error : errors)
