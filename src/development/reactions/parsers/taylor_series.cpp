@@ -27,7 +27,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -39,43 +39,43 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         taylor_series.products.emplace_back(std::move(component));
       }
 
-      if (object[validation::A].IsDefined())
+      if (object[validation::A])
       {
         taylor_series.A = object[validation::A].as<double>();
       }
-      if (object[validation::B].IsDefined())
+      if (object[validation::B])
       {
         taylor_series.B = object[validation::B].as<double>();
       }
-      if (object[validation::C].IsDefined())
+      if (object[validation::C])
       {
         taylor_series.C = object[validation::C].as<double>();
       }
-      if (object[validation::D].IsDefined())
+      if (object[validation::D])
       {
         taylor_series.D = object[validation::D].as<double>();
       }
-      if (object[validation::E].IsDefined())
+      if (object[validation::E])
       {
         taylor_series.E = object[validation::E].as<double>();
       }
-      if (object[validation::Ea].IsDefined())
+      if (object[validation::Ea])
       {
         taylor_series.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
       }
-      if (object[validation::taylor_coefficients].IsDefined())
+      if (object[validation::taylor_coefficients])
       {
         taylor_series.taylor_coefficients = object[validation::taylor_coefficients].as<std::vector<double>>();
       }
 
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         taylor_series.name = object[validation::name].as<std::string>();
       }

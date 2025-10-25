@@ -20,7 +20,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -32,47 +32,47 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         ternary.products.emplace_back(std::move(component));
       }
 
-      if (object[validation::k0_A].IsDefined())
+      if (object[validation::k0_A])
       {
         ternary.k0_A = object[validation::k0_A].as<double>();
       }
-      if (object[validation::k0_B].IsDefined())
+      if (object[validation::k0_B])
       {
         ternary.k0_B = object[validation::k0_B].as<double>();
       }
-      if (object[validation::k0_C].IsDefined())
+      if (object[validation::k0_C])
       {
         ternary.k0_C = object[validation::k0_C].as<double>();
       }
-      if (object[validation::kinf_A].IsDefined())
+      if (object[validation::kinf_A])
       {
         ternary.kinf_A = object[validation::kinf_A].as<double>();
       }
-      if (object[validation::kinf_B].IsDefined())
+      if (object[validation::kinf_B])
       {
         ternary.kinf_B = object[validation::kinf_B].as<double>();
       }
-      if (object[validation::kinf_C].IsDefined())
+      if (object[validation::kinf_C])
       {
         ternary.kinf_C = object[validation::kinf_C].as<double>();
       }
-      if (object[validation::Fc].IsDefined())
+      if (object[validation::Fc])
       {
         ternary.Fc = object[validation::Fc].as<double>();
       }
-      if (object[validation::N].IsDefined())
+      if (object[validation::N])
       {
         ternary.N = object[validation::N].as<double>();
       }
 
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         ternary.name = object[validation::name].as<std::string>();
       }

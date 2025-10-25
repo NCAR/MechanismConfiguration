@@ -26,7 +26,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -38,38 +38,38 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         arrhenius.products.emplace_back(std::move(component));
       }
 
-      if (object[validation::A].IsDefined())
+      if (object[validation::A])
       {
         arrhenius.A = object[validation::A].as<double>();
       }
-      if (object[validation::B].IsDefined())
+      if (object[validation::B])
       {
         arrhenius.B = object[validation::B].as<double>();
       }
-      if (object[validation::C].IsDefined())
+      if (object[validation::C])
       {
         arrhenius.C = object[validation::C].as<double>();
       }
-      if (object[validation::D].IsDefined())
+      if (object[validation::D])
       {
         arrhenius.D = object[validation::D].as<double>();
       }
-      if (object[validation::E].IsDefined())
+      if (object[validation::E])
       {
         arrhenius.E = object[validation::E].as<double>();
       }
-      if (object[validation::Ea].IsDefined())
+      if (object[validation::Ea])
       {
         arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
       }
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         arrhenius.name = object[validation::name].as<std::string>();
       }

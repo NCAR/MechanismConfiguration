@@ -18,7 +18,6 @@ namespace mechanism_configuration
 {
   namespace development
   {
-
     Errors ValidateSpecies(const YAML::Node& species_list)
     {
       const std::vector<std::string> required_keys = { validation::name };
@@ -94,7 +93,7 @@ namespace mechanism_configuration
 
       std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 
-      for (const auto& object : phases_list)
+      for (const auto& object : AsSequence(phases_list))
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validation_errors.empty())
@@ -162,7 +161,7 @@ namespace mechanism_configuration
             ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
             std::string message =
-                std::format("{} error: Unknown species name '{}' found in '{}' phase", error_location, name, phase.name);
+                std::format("{} error: Unknown species name '{}' found in '{}' phase.", error_location, name, phase.name);
 
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, message });
           }
@@ -212,6 +211,42 @@ namespace mechanism_configuration
       return errors;
     }
 
+    Errors ValidateParticles(const YAML::Node& list)
+    {
+      const std::vector<std::string> required_keys = { validation::phase,
+                                                       validation::solutes,
+                                                       validation::solvent };
+      const std::vector<std::string> optional_keys = { };
+
+      Errors errors;
+
+      // for (const auto& object : list)
+      for (const auto& object : AsSequence(list))
+      {
+        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+
+        // Solutes
+        validation_errors = ValidateReactantsOrProducts(object[validation::solutes]);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+
+        // Solvent
+        validation_errors = ValidateReactantsOrProducts(object[validation::solvent]);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+      }
+
+      return errors;
+    }
+
     Errors ValidateReactions(
         const YAML::Node& reactions_list,
         const std::vector<types::Species>& existing_species,
@@ -226,7 +261,7 @@ namespace mechanism_configuration
 
       for (const auto& object : reactions_list)
       {
-        if (!object[validation::type].IsDefined())
+        if (!object[validation::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = std::format("{} error: Missing 'type' object in reaction.", error_location);
@@ -264,6 +299,7 @@ namespace mechanism_configuration
 
       return errors;
     }
+
 
   }  // namespace development
 }  // namespace mechanism_configuration

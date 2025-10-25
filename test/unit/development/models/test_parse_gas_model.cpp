@@ -28,15 +28,16 @@ TEST(ParserBase, GasModelMissingPhase)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/models/gas/missing_phase") + extension);
     EXPECT_FALSE(parsed);
-    development::types::Mechanism mechanism = *parsed;
-
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
 
-    for (auto& error : parsed.errors)
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
@@ -48,14 +49,16 @@ TEST(ParserBase, GasModelPhaseNotFoundInRegisteredPhases)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/models/gas/gas_phase_not_found_in_phases") + extension);
     EXPECT_FALSE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    EXPECT_EQ(parsed.errors.size(), 2);
 
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-
-    for (auto& error : parsed.errors)
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase,
+                                                  ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }

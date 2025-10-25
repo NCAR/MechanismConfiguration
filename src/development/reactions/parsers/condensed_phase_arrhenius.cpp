@@ -21,7 +21,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -33,34 +33,34 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         condensed_phase_arrhenius.products.emplace_back(std::move(component));
       }
     
-      if (object[validation::A].IsDefined())
+      if (object[validation::A])
       {
         condensed_phase_arrhenius.A = object[validation::A].as<double>();
       }
-      if (object[validation::B].IsDefined())
+      if (object[validation::B])
       {
         condensed_phase_arrhenius.B = object[validation::B].as<double>();
       }
-      if (object[validation::C].IsDefined())
+      if (object[validation::C])
       {
         condensed_phase_arrhenius.C = object[validation::C].as<double>();
       }
-      if (object[validation::D].IsDefined())
+      if (object[validation::D])
       {
         condensed_phase_arrhenius.D = object[validation::D].as<double>();
       }
-      if (object[validation::E].IsDefined())
+      if (object[validation::E])
       {
         condensed_phase_arrhenius.E = object[validation::E].as<double>();
       }
-      if (object[validation::Ea].IsDefined())
+      if (object[validation::Ea])
       {
         condensed_phase_arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
       }
