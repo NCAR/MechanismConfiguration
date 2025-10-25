@@ -117,17 +117,34 @@
       "gas": {
         "name": "gas",
         "species": [
-          "SO2",
-          "H2O2"
+          {
+            "name": "SO2",
+            "diffusion coefficient [m2 s-1]": 0.7
+          },
+          {
+            "name": "H2O2",
+            "diffusion coefficient [m2 s-1]": 0.7
+          }
         ]
       },
       "particle": {
         "phase": "aqueous",
         "solutes": [
-          "SO4",
-          "H2O2"
+          {
+            "name": "SO4",
+            "coefficient": 1.0
+          },
+          {
+            "name": "H2O2",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O",
+            "coefficient": 1.0
+          }
+        ]
       },
       "__comment": "SO4 condensed phase production due to H2O2 (kg/m2/s)"
     },
@@ -136,17 +153,34 @@
       "gas": {
         "name": "gas",
         "species": [
-          "SO2",
-          "O3"
+          {
+            "name": "SO2",
+            "diffusion coefficient [m2 s-1]": 0.7
+          },
+          {
+            "name": "O3",
+            "diffusion coefficient [m2 s-1]": 0.7
+          }
         ]
       },
       "particle": {
         "phase": "aqueous",
         "solutes": [
-          "SO4",
-          "O3"
+          {
+            "name": "SO4",
+            "coefficient": 1.0
+          },
+          {
+            "name": "O3",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O",
+            "coefficient": 1.0
+          }
+        ]
       },
       "__comment": "SO4 condensed phase production due to O3 (kg/m2/s)"
     }

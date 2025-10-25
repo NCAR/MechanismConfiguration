@@ -54,7 +54,8 @@ namespace mechanism_configuration
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
-        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase);
+        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase,
+        std::string type = {});
 
     void CheckSpeciesPresenceInPhase(
       const YAML::Node& object,

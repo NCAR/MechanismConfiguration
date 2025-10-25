@@ -76,16 +76,30 @@
       "gas": {
         "name": "gas",
         "species": [
-          "SO2"
+          {
+            "name": "SO2",
+            "diffusion coefficient [m2 s-1]": 0.7
+          }
         ]
       },
       "particle": {
         "phase": "organic",
         "solutes": [
-          "SO4",
-          "H2O2"
+          {
+            "name": "SO4",
+            "coefficient": 1.0
+          },
+          {
+            "name": "H2O2",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O",
+            "coefficient": 1.0
+          }
+        ]
       },
       "__comment": "comment"
     }

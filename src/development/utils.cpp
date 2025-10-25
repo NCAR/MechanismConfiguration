@@ -16,7 +16,6 @@ namespace mechanism_configuration
 {
   namespace development
   {
-
     void AppendFilePath(const std::filesystem::path& config_path, Errors& errors)
     {
       for (auto& error : errors)
@@ -94,17 +93,30 @@ namespace mechanism_configuration
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
-        const ConfigParseStatus& parser_status)
+        const ConfigParseStatus& parser_status,
+        std::string type)
     {
+      if (type.empty())
+      {
+        if (object[validation::type]) 
+        {
+          type = object[validation::type].as<std::string>();
+        }
+        else
+        {
+          type = "unknown type";
+        }
+      }
+
       if (!object[phase_key])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
         std::string message = std::format(
-            "{} error: Invalid phase name '{}'. This phase was not found in the object of type '{}'.",
+            "{} error: Invalid phase key '{}'. This phase was not found in the object of type '{}'.",
             error_location,
             phase_key,
-            object[validation::type].as<std::string>());
+            type);
 
         errors.push_back({ parser_status, message });
         return std::nullopt;
@@ -126,7 +138,7 @@ namespace mechanism_configuration
             "{} error: Unknown phase name '{}' found in '{}'.",
             error_location,
             phase_name,
-            object[validation::type].as<std::string>());
+            type);
 
         errors.push_back({ parser_status, message });
         return std::nullopt;

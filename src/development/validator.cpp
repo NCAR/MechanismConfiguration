@@ -109,15 +109,6 @@ static YAML::Node AsSequence(const YAML::Node& node)
 
       std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 
-
-
-      // if (!phases_list.IsSequence())
-      // {
-      //   YAML::Node new_list;
-      //   new_list.push_back(phases_list);
-      //   phases_list = new_list;  // error: no viable overloaded '='
-      // }
-
       for (const auto& object : AsSequence(phases_list))
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);

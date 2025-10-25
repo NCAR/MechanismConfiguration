@@ -171,7 +171,7 @@
         "species": [
           {
             "name": "H2O2",
-            "diffusion_coefficient": 0.7
+            "diffusion coefficient [m2 s-1]": 0.7
           }
         ]
       },

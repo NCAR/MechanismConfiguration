@@ -105,11 +105,23 @@ namespace mechanism_configuration
         ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
       }
 
-      // Check for phase existence and get phase reference
-      auto gas_phase_opt = CheckPhaseExists(object[validation::gas], validation::name, existing_phases, errors);
-      auto particle_phase_opt = CheckPhaseExists(object[validation::particle], validation::phase, existing_phases, errors);
+      auto gas_phase_opt = CheckPhaseExists(object[validation::gas], 
+                                            validation::name, 
+                                            existing_phases, 
+                                            errors, 
+                                            ConfigParseStatus::UnknownPhase, 
+                                            object[validation::type].as<std::string>());
+ 
+      auto particle_phase_opt = CheckPhaseExists(object[validation::particle], 
+                                                validation::phase, 
+                                                existing_phases, 
+                                                errors, 
+                                                ConfigParseStatus::UnknownPhase, 
+                                                object[validation::type].as<std::string>());
       if (!gas_phase_opt || !particle_phase_opt)
+      {
         return errors;
+      }
 
       // Check if phase-specific species in reaction is found in phase
       CheckSpeciesPresenceInPhase(object, gas_phase_opt->get(), gas_species_node_pairs, errors);
