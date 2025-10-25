@@ -32,7 +32,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
+        if (elem[validation::coefficient].IsDefined())
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
