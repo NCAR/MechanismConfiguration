@@ -68,7 +68,7 @@ namespace mechanism_configuration
         /// @brief Lists the chemical species dissolved in the solvent
         std::vector<ReactionComponent> solutes;
         /// @brief Specifies the liquid medium in which solutes are dissolved
-        std::vector<ReactionComponent> solvent;
+        ReactionComponent solvent;
         /// @brief Unknown properties, prefixed with two underscores (__)
         std::unordered_map<std::string, std::string> unknown_properties;
       };

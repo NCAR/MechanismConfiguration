@@ -35,7 +35,7 @@ namespace mechanism_configuration
       henrys_law.particle.phase = object[validation::particle][validation::phase].as<std::string>();
 
       // Parse particle solutes
-      henrys_law.particle.solutes = ParseReactionComponent(object[validation::particle], validation::solutes);
+      henrys_law.particle.solutes = ParseReactionComponents(object[validation::particle], validation::solutes);
 
       // Parse particle solvent
       henrys_law.particle.solvent = ParseReactionComponent(object[validation::particle], validation::solvent);

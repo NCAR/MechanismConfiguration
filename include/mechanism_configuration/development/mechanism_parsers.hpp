@@ -36,7 +36,14 @@ namespace mechanism_configuration
     /// @param object YAML node representing ReactionComponents
     /// @param key Key of the sequence to parse
     /// @return Vector of `types::ReactionComponent` with names, optional coefficients, and comments
-    std::vector<types::ReactionComponent> ParseReactionComponent(const YAML::Node& object, const std::string& key);
+    std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, const std::string& key);
+
+    /// @brief Parses a single reaction component from a YAML node.
+    ///        The parser performs no validation or error checking.
+    /// @param object YAML node representing ReactionComponents
+    /// @param key Key identifying the reaction component
+    /// @return The parsed `types::ReactionComponent`, or a default-constructed one if none found
+    types::ReactionComponent ParseReactionComponent(const YAML::Node& object, const std::string& key);
 
     /// @brief Parses a collection of YAML nodes into reaction objects
     ///        Iterates over the given YAML nodes, identifies the parser for each reaction type,

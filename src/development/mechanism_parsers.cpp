@@ -101,9 +101,7 @@ namespace mechanism_configuration
       return all_phases;
     }
 
-    std::vector<types::ReactionComponent> ParseReactionComponent(
-      const YAML::Node& object, 
-      const std::string& key)
+    std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, const std::string& key)
     {
       std::vector<types::ReactionComponent> component_list;
       for (const auto& elem : AsSequence(object[key]))
@@ -121,6 +119,18 @@ namespace mechanism_configuration
       }
 
       return component_list;
+    };
+
+    types::ReactionComponent ParseReactionComponent(const YAML::Node& object, const std::string& key)
+    {
+      auto reaction_components =  ParseReactionComponents(object, key);
+
+      if (reaction_components.empty())
+      {
+        return types::ReactionComponent();
+      }
+
+      return std::move(reaction_components.front());
     };
 
     types::Reactions ParseReactions(const YAML::Node& objects)

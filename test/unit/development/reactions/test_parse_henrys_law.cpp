@@ -33,9 +33,8 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solutes.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solutes[0].name, "B");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solutes[0].coefficient, 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent[0].name, "H2O");
-    EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent.name, "H2O");
+    EXPECT_EQ(mechanism.reactions.henrys_law[0].particle.solvent.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[0].unknown_properties["__comment"], "B condensed phase production (kg/m2/s)");
 
@@ -49,9 +48,8 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solutes[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solutes[1].name, "C");
     EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solutes[1].coefficient, 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solvent.size(), 1);
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solvent[0].name, "H2O");
-    EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solvent[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solvent.name, "H2O");
+    EXPECT_EQ(mechanism.reactions.henrys_law[1].particle.solvent.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.henrys_law[1].unknown_properties.size(), 0);
   }
 }
@@ -329,4 +327,50 @@ TEST(ParserBase, HenrysLawValidationWithMultipleSolutes)
   HenrysLawParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 0);
+}
+
+TEST(ParserBase, HenrysLawInvalidNumberSolventFailsValidation)
+{
+  using namespace development;
+
+  std::vector<types::Species> existing_species = { 
+    types::Species{ .name = "A" }, 
+    types::Species{ .name = "B" },
+    types::Species{ .name = "C" },
+    types::Species{ .name = "H2O" },
+    types::Species{ .name = "water" }   
+  };
+  std::vector<types::Phase> existing_phases = { 
+    types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
+    types::Phase{ .name = "aqueous", .species = { 
+      types::PhaseSpecies{ .name = "B" },
+      types::PhaseSpecies{ .name = "C" },
+      types::PhaseSpecies{ .name = "H2O" },
+      types::PhaseSpecies{ .name = "water" }
+    } }
+  };
+
+  YAML::Node reaction_node;
+  reaction_node["type"] = "HL_PHASE_TRANSFER";
+
+  reaction_node["gas"]["name"] = "gas";
+  reaction_node["gas"]["species"] = YAML::Load("[{ name: A }]");
+
+  // Valid particle phase configuration with multiple solutes
+  reaction_node["particle"]["phase"] = "aqueous";
+  reaction_node["particle"]["solutes"] = YAML::Load("[{ name: B, coefficient: 1.0 }, { name: C, coefficient: 2.0 }]");
+  reaction_node["particle"]["solvent"] = YAML::Load("[{ name: H2O, coefficient: 1.0 }, { name: water, coefficient: 1.0 }]");
+
+  HenrysLawParser parser;
+  Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
 }

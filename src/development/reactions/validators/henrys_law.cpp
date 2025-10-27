@@ -76,20 +76,36 @@ namespace mechanism_configuration
 
       std::vector<std::pair<types::ReactionComponent, YAML::Node>> particle_species_node_pairs;
 
-      // Solutes
-      for (const auto& obj : object[validation::particle][validation::solutes])
-      {
-        types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
-        particle_species_node_pairs.emplace_back(std::move(component), obj);
-      }
-
       // Solvent
       for (const auto& obj : object[validation::particle][validation::solvent])
       {
         types::ReactionComponent component;
         component.name = obj[validation::name].as<std::string>();
         particle_species_node_pairs.emplace_back(component, obj);
+      }
+
+      // Validates the number of solvent
+      // This must be done before collecting errors from the solutes
+      if (particle_species_node_pairs.size() > 1)
+      {
+        const auto& node = object[validation::particle][validation::solvent];
+        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+        std::string message = std::format(
+            "{} error: '{}' reaction requires one solute, but {} were provided.",
+            error_location,
+            object[validation::type].as<std::string>(),
+            particle_species_node_pairs.size());
+
+        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
+      }
+
+      // Solutes
+      for (const auto& obj : object[validation::particle][validation::solutes])
+      {
+        types::ReactionComponent component;
+        component.name = obj[validation::name].as<std::string>();
+        particle_species_node_pairs.emplace_back(std::move(component), obj);
       }
 
       // Unknown species
