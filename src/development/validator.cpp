@@ -220,7 +220,6 @@ namespace mechanism_configuration
 
       Errors errors;
 
-      // for (const auto& object : list)
       for (const auto& object : AsSequence(list))
       {
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
@@ -277,9 +276,13 @@ namespace mechanism_configuration
         {
           const auto& node = object[validation::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-          std::string message = std::format("{} error: Unknown reaction type '{}' found.", error_location, type);
+
+          std::string message = std::format("{} error: Unknown reaction type '{}' found.", 
+            error_location, type);
+
           errors.push_back({ ConfigParseStatus::UnknownType, message });
           is_valid = false;
+
           continue;
         }
         valid_reactions.emplace_back(object, it->second.get());

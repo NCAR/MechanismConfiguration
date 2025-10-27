@@ -32,21 +32,18 @@ namespace mechanism_configuration
     /// @return A vector of parsed Phases
     std::vector<types::Phase> ParsePhases(const YAML::Node& objects);
 
-    // TODO (in progress) - Once the separating parsing from the validation for all reactions,
-    //                      This will be updated.
-    // std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
+    /// @brief Parses a YAML node into reaction components
+    /// @param object YAML node representing ReactionComponents
+    /// @param key Key of the sequence to parse
+    /// @return Vector of `types::ReactionComponent` with names, optional coefficients, and comments
     std::vector<types::ReactionComponent> ParseReactionComponent(const YAML::Node& object, const std::string& key);
 
-    // // TODO (in progress) - Once the separating parsing from the validation for all reactions,
-    // //                      This will be updated.
-    // std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
-    //     const std::string& key,
-    //     const YAML::Node& object);
-
-    std::pair<Errors, types::Reactions> ParseReactions(
-        const YAML::Node& objects,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases);
+    /// @brief Parses a collection of YAML nodes into reaction objects
+    ///        Iterates over the given YAML nodes, identifies the parser for each reaction type,
+    ///        and populates a `types::Reactions` container with the parsed reactions.
+    /// @param objects YAML node containing multiple reaction definitions
+    /// @return A `types::Reactions` object with all successfully parsed reactions
+    types::Reactions ParseReactions(const YAML::Node& objects);
 
     std::pair<Errors, types::Models> ParseModels(
         const YAML::Node& objects,

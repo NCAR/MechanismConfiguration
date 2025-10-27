@@ -123,38 +123,21 @@ namespace mechanism_configuration
       return component_list;
     };
 
-    std::pair<Errors, types::Reactions> ParseReactions(
-        const YAML::Node& objects,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases)
+    types::Reactions ParseReactions(const YAML::Node& objects)
     {
-      Errors errors;
-
       auto& parsers = GetReactionParserMap();
       types::Reactions reactions;
 
       for (const auto& object : objects)
       {
-        std::string type = object[validation::type].as<std::string>();
-        auto it = parsers.find(type);
+        auto it = parsers.find(object[validation::type].as<std::string>());
         if (it != parsers.end())
         {
           it->second->Parse(object, reactions);
         }
-        else
-        {
-          const auto& node = object[validation::type];
-          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
-          std::string message = std::format("{} error: Unknown reaction type '{}' found.", 
-            error_location, type);
-
-          errors.push_back({ ConfigParseStatus::UnknownType, message });
-
-        }
       }
 
-      return { errors, reactions };
+      return reactions;
     }
 
     std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases)
