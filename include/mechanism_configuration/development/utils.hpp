@@ -36,6 +36,9 @@ namespace mechanism_configuration
       std::vector<YAML::Node> nodes;
     };
 
+    /// @brief Ensures a YAML node is treated as a sequence
+    /// @param node The YAML node to convert
+    /// @return A YAML sequence node containing the original node(s)
     YAML::Node AsSequence(const YAML::Node& node);
 
     void AppendFilePath(const std::filesystem::path& config_path, Errors& errors);

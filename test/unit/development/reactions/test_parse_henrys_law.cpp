@@ -10,8 +10,7 @@ using namespace mechanism_configuration;
 TEST(ParserBase, CanParseValidHenrysLawReaction)
 {
   development::Parser parser;
-  std::vector<std::string> extensions = { ".json"};
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
+  std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/reactions/henrys_law/valid") + extension);
