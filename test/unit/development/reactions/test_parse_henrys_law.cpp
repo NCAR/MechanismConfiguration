@@ -355,10 +355,10 @@ TEST(ParserBase, HenrysLawInvalidNumberSolventFailsValidation)
 
   reaction_node["gas"]["name"] = "gas";
   reaction_node["gas"]["species"] = YAML::Load("[{ name: A }]");
-
-  // Valid particle phase configuration with multiple solutes
   reaction_node["particle"]["phase"] = "aqueous";
   reaction_node["particle"]["solutes"] = YAML::Load("[{ name: B, coefficient: 1.0 }, { name: C, coefficient: 2.0 }]");
+
+  // The invalid number of the solvent triggers validation error
   reaction_node["particle"]["solvent"] = YAML::Load("[{ name: H2O, coefficient: 1.0 }, { name: water, coefficient: 1.0 }]");
 
   HenrysLawParser parser;
