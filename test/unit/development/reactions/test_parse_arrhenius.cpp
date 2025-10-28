@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidArrheniusReaction)
+TEST(ParseArrhenius, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
   }
 }
 
-TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
+TEST(ParseArrhenius, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -96,7 +96,7 @@ TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, ArrheniusDetectsMutuallyExclusiveOptions)
+TEST(ParseArrhenius, DetectsMutuallyExclusiveOptions)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -118,7 +118,7 @@ TEST(ParserBase, ArrheniusDetectsMutuallyExclusiveOptions)
   }
 }
 
-TEST(ParserBase, ArrheniusDetectsBadReactionComponent)
+TEST(ParseArrhenius, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -140,7 +140,7 @@ TEST(ParserBase, ArrheniusDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, ArrheniusDetectsUnknownPhase)
+TEST(ParseArrhenius, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -162,7 +162,7 @@ TEST(ParserBase, ArrheniusDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, ArrheniusMutuallyExclusiveEaAndCFailsValidation)
+TEST(ValidateArrhenius, MutuallyExclusiveEaAndCFailsValidation)
 {
   using namespace development;
 

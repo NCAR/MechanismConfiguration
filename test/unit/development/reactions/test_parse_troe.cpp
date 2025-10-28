@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidTroeReaction)
+TEST(ParserTroe, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -68,7 +68,7 @@ TEST(ParserBase, CanParseValidTroeReaction)
   }
 }
 
-TEST(ParserBase, TroeDetectsUnknownSpecies)
+TEST(ParserTroe, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -91,7 +91,7 @@ TEST(ParserBase, TroeDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, TroeDetectsBadReactionComponent)
+TEST(ParserTroe, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -113,7 +113,7 @@ TEST(ParserBase, TroeDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, TroeDetectsUnknownPhase)
+TEST(ParserTroe, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -135,7 +135,7 @@ TEST(ParserBase, TroeDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, TroeUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateTroe, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

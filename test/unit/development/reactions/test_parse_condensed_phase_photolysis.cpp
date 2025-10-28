@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
+TEST(ParseCondensedPhasePhotolysis, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -41,7 +41,7 @@ TEST(ParserBase, CanParseValidCondensedPhasePhotolysisReaction)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
+TEST(ParseCondensedPhasePhotolysis, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -65,7 +65,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
+TEST(ParseCondensedPhasePhotolysis, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -88,7 +88,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
+TEST(ParseCondensedPhasePhotolysis, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -111,7 +111,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
+TEST(ParseCondensedPhasePhotolysis, DoesNotAcceptMoreThanOneReactant)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -134,7 +134,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDoesNotAcceptMoreThanOneReactant)
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
+TEST(ParseCondensedPhasePhotolysis, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -158,7 +158,7 @@ TEST(ParserBase, CondensedPhasePhotolysisDetectsWhenRequestedSpeciesAreNotInAque
   }
 }
 
-TEST(ParserBase, CondensedPhasePhotolysisInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidateCondensedPhasePhotolysis, InvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 

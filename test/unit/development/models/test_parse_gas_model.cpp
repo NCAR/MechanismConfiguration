@@ -4,7 +4,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidGasModel)
+TEST(ParseGas, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -20,7 +20,7 @@ TEST(ParserBase, CanParseValidGasModel)
   }
 }
 
-TEST(ParserBase, GasModelMissingPhase)
+TEST(ParseGas, MissingPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -41,7 +41,7 @@ TEST(ParserBase, GasModelMissingPhase)
   }
 }
 
-TEST(ParserBase, GasModelPhaseNotFoundInRegisteredPhases)
+TEST(ParseGas, PhaseNotFoundInRegisteredPhases)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };

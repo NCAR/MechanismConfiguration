@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidFirstOrderLossReaction)
+TEST(ParseFirstOrderLoss, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -35,7 +35,7 @@ TEST(ParserBase, CanParseValidFirstOrderLossReaction)
   }
 }
 
-TEST(ParserBase, FirstOrderLossDetectsUnknownSpecies)
+TEST(ParseFirstOrderLoss, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -58,7 +58,7 @@ TEST(ParserBase, FirstOrderLossDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, FirstOrderLossDetectsBadReactionComponent)
+TEST(ParseFirstOrderLoss, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -80,7 +80,7 @@ TEST(ParserBase, FirstOrderLossDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, FirstOrderLossDetectsUnknownPhase)
+TEST(ParseFirstOrderLoss, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -102,7 +102,7 @@ TEST(ParserBase, FirstOrderLossDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, FirstOrderLossDetectsMoreThanOneSpecies)
+TEST(ParseFirstOrderLoss, DetectsMoreThanOneSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -124,7 +124,7 @@ TEST(ParserBase, FirstOrderLossDetectsMoreThanOneSpecies)
   }
 }
 
-TEST(ParserBase, FirstOrderLossInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidateFirstOrderLoss, InvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 

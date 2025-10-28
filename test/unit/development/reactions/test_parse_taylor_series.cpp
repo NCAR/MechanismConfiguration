@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidTaylorSeriesReaction)
+TEST(ParseTaylorSeries, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -79,7 +79,7 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
   }
 }
 
-TEST(ParserBase, TaylorSeriesDetectsUnknownSpecies)
+TEST(ParseTaylorSeries, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -102,7 +102,7 @@ TEST(ParserBase, TaylorSeriesDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, TaylorSeriesDetectsMutuallyExclusiveOptions)
+TEST(ParseTaylorSeries, DetectsMutuallyExclusiveOptions)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -124,7 +124,7 @@ TEST(ParserBase, TaylorSeriesDetectsMutuallyExclusiveOptions)
   }
 }
 
-TEST(ParserBase, TaylorSeriesDetectsBadReactionComponent)
+TEST(ParseTaylorSeries, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -146,7 +146,7 @@ TEST(ParserBase, TaylorSeriesDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, TaylorSeriesDetectsUnknownPhase)
+TEST(ParseTaylorSeries, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -168,7 +168,7 @@ TEST(ParserBase, TaylorSeriesDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, TaylorSeriesMutuallyExclusiveEaAndCFailsValidation)
+TEST(ValidateTaylorSeries, MutuallyExclusiveEaAndCFailsValidation)
 {
   using namespace development;
 

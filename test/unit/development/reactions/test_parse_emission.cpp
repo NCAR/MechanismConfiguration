@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidEmissionReaction)
+TEST(ParseEmission, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -36,7 +36,7 @@ TEST(ParserBase, CanParseValidEmissionReaction)
   }
 }
 
-TEST(ParserBase, EmissionDetectsUnknownSpecies)
+TEST(ParseEmission, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -59,7 +59,7 @@ TEST(ParserBase, EmissionDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, EmissionDetectsBadReactionComponent)
+TEST(ParseEmission, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -81,7 +81,7 @@ TEST(ParserBase, EmissionDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, EmissionDetectsUnknownPhase)
+TEST(ParseEmission, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -103,7 +103,7 @@ TEST(ParserBase, EmissionDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, EmissionUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateEmission, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

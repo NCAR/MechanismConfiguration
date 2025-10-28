@@ -5,7 +5,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, ParsesFullDevelopmentConfiguration)
+TEST(ParseDevFullConfig, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -34,10 +34,12 @@ TEST(ParserBase, ParsesFullDevelopmentConfiguration)
     EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer.size(), 1);
     EXPECT_EQ(mechanism.reactions.surface.size(), 1);
-    EXPECT_EQ(mechanism.reactions.troe.size(), 1);
+    EXPECT_EQ(mechanism.reactions.taylor_series.size(), 1);
     EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);
+    EXPECT_EQ(mechanism.reactions.troe.size(), 1);
     EXPECT_EQ(mechanism.reactions.tunneling.size(), 1);
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
+    EXPECT_EQ(mechanism.reactions.wet_deposition.size(), 1);
 
     EXPECT_EQ(mechanism.species[1].constant_concentration.has_value(), true);
     EXPECT_EQ(mechanism.species[1].constant_concentration.value(), 1.0e19);
@@ -52,7 +54,7 @@ TEST(ParserBase, ParsesFullDevelopmentConfiguration)
   }
 }
 
-TEST(ParserBase, ParserReportsBadFiles)
+TEST(ParseDevFullConfig, ReportsBadFiles)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".yaml", ".json" };
@@ -66,7 +68,7 @@ TEST(ParserBase, ParserReportsBadFiles)
   }
 }
 
-TEST(ParserBase, ParserReportsDirectory)
+TEST(ParseDevFullConfig, ReportsDirectory)
 {
   development::Parser parser;
   std::string path = "examples/";

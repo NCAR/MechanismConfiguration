@@ -1,10 +1,14 @@
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/validator.hpp>
 
 #include <gtest/gtest.h>
+#include <yaml-cpp/yaml.h>
+
+#include <set>
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidPhases)
+TEST(ParsePhases, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -37,7 +41,7 @@ TEST(ParserBase, CanParseValidPhases)
   }
 }
 
-TEST(ParserBase, DetectsDuplicatePhases)
+TEST(ParsePhases, DetectsDuplicatePhases)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -47,16 +51,16 @@ TEST(ParserBase, DetectsDuplicatePhases)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicatePhasesDetected);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicatePhasesDetected);
-    for (auto& error : parsed.errors)
+
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
 }
 
-TEST(ParserBase, DetectsMissingRequiredKeys)
+TEST(ParsePhases, DetectsMissingRequiredKeys)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -74,7 +78,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   }
 }
 
-TEST(ParserBase, DetectsInvalidKeys)
+TEST(ParsePhases, DetectsInvalidKeys)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -84,15 +88,19 @@ TEST(ParserBase, DetectsInvalidKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
+TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -102,15 +110,19 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::PhaseRequiresUnknownSpecies);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::PhaseRequiresUnknownSpecies };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
+TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -120,16 +132,16 @@ TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
-    for (auto& error : parsed.errors)
+
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
 }
 
-TEST(ParserBase, CanParsePhaseSpeciesProperties)
+TEST(ParsePhases, CanParsePhaseSpeciesProperties)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -167,7 +179,7 @@ TEST(ParserBase, CanParsePhaseSpeciesProperties)
   }
 }
 
-TEST(ParserBase, DetectsInvalidSpeciesObject)
+TEST(ParsePhases, DetectsInvalidSpeciesObject)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -177,10 +189,280 @@ TEST(ParserBase, DetectsInvalidSpeciesObject)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_GE(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
+}
+
+TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+  
+  development::types::Species species2;
+  species2.name = "B";
+  existing_species.emplace_back(species2);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - name: "A"
+        - name: "B"
+          "diffusion coefficient [m2 s-1]": 1.5e-05
+    - name: "aqueous"
+      species:
+        - name: "A"
+          "diffusion coefficient [m2 s-1]": 2.3e-06
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_TRUE(errors.empty());
+}
+
+TEST(ValidatePhases, DetectsMissingPhaseName)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - species:
+        - name: "A"
+    - name: "aqueous"
+      species:
+        - name: "A"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsMissingSpeciesList)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+    - name: "aqueous"
+      species:
+        - name: "A"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsInvalidKeysInPhase)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      SPECIES:
+        - name: "A"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 2);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey,
+                                                ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - "diffusion coefficient [m2 s-1]": 1.5e-05
+        - name: "A"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - name: "A"
+          Coefficient: 4.23e-5
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "FOO";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - name: "FOO"
+        - name: "FOO"
+          "diffusion coefficient [m2 s-1]": 1.5e-05
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 2); // Two entries for the duplicate species
+
+  for (const auto& [status, message] : errors)
+  {
+    EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+    EXPECT_NE(message.find("FOO"), std::string::npos); // Error message should contain species name
+  }
+}
+
+TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - name: "A"
+        - name: "FOO"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::PhaseRequiresUnknownSpecies };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidatePhases, DetectsDuplicatePhaseNames)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+  
+  development::types::Species species2;
+  species2.name = "B";
+  existing_species.emplace_back(species2);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "gas"
+      species:
+        - name: "A"
+    - name: "aqueous"
+      species:
+        - name: "B"
+    - name: "gas"
+      species:
+        - name: "B"
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_EQ(errors.size(), 2); // Two entries for the duplicate phase
+
+  for (const auto& [status, message] : errors)
+  {
+    EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
+    EXPECT_NE(message.find("gas"), std::string::npos); // Error message should contain phase name
+  }
+}
+
+TEST(ValidatePhases, ValidatesAllSpeciesOptionalKeys)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "FOO";
+  existing_species.emplace_back(species1);
+
+  YAML::Node phases_list = YAML::Load(R"(
+    - name: "organic"
+      species:
+        - name: "FOO"
+          "diffusion coefficient [m2 s-1]": 1.46e-05
+  )");
+  
+  auto errors = development::ValidatePhases(phases_list, existing_species);
+  EXPECT_TRUE(errors.empty());
 }

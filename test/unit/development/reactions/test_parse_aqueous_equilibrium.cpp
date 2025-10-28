@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidAqueousEquilibriumReaction)
+TEST(ParseAqueousEquilibrium, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -52,7 +52,7 @@ TEST(ParserBase, CanParseValidAqueousEquilibriumReaction)
   }
 }
 
-TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
+TEST(ParseAqueousEquilibrium, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -75,7 +75,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, AqueousEquilibriumDetectsBadReactionComponent)
+TEST(ParseAqueousEquilibrium, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -98,7 +98,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
+TEST(ParseAqueousEquilibrium, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -120,7 +120,7 @@ TEST(ParserBase, AqueousEquilibriumDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, AqueousEquilibriumUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidateAqueousEquilibrium, UnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 
