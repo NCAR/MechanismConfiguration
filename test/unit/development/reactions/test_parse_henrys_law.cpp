@@ -14,17 +14,10 @@ TEST(ParseHenrysLaw, ParseValidConfig)
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/reactions/henrys_law/valid") + extension);
-    std::cout << " 0 " << std::endl;
-
-    for (auto& error : parsed.errors)
-    {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-    }
     EXPECT_TRUE(parsed);
     development::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.henrys_law.size(), 2);
-
     EXPECT_EQ(mechanism.reactions.henrys_law[0].name, "my henry's law");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.name, "gas");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.species.size(), 1);
