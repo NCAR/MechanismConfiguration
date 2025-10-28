@@ -153,7 +153,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAqueousPhaseSpeciesNotInAqueou
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase};
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -169,7 +169,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterNotSequenceFailsValidation)
   using namespace development;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
     types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "B" } } }
   };
@@ -180,7 +180,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterNotSequenceFailsValidation)
   reaction_node["gas-phase species"] = YAML::Load("[{ name: A, coefficient: 1 }]");
   reaction_node["condensed phase"] = "aqueous";
   reaction_node["condensed-phase species"] = YAML::Load("[{ name: B, coefficient: 1 }]");
-  
+
   // Invalid B parameter - not a sequence
   reaction_node["B"] = "not a sequence";
 
@@ -203,7 +203,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterWrongCountFailsValidation)
   using namespace development;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
     types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "B" } } }
   };
@@ -214,7 +214,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterWrongCountFailsValidation)
   reaction_node["gas-phase species"] = YAML::Load("[{ name: A, coefficient: 1 }]");
   reaction_node["condensed phase"] = "aqueous";
   reaction_node["condensed-phase species"] = YAML::Load("[{ name: B, coefficient: 1 }]");
-  
+
   // Invalid B parameter - wrong number of parameters (should be 4)
   reaction_node["B"] = YAML::Load("[-1.97E+03, 2.91E+00]");
 
@@ -236,26 +236,21 @@ TEST(ParserBase, SimpolPhaseTransferTooManyGasSpeciesFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" }, 
-    types::Species{ .name = "C" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
-    types::Phase{ .name = "gas", .species = { 
-      types::PhaseSpecies{ .name = "A" }, 
-      types::PhaseSpecies{ .name = "C" } 
-    } },
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "C" } };
+  std::vector<types::Phase> existing_phases = {
+    types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" }, types::PhaseSpecies{ .name = "C" } } },
     types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "B" } } }
   };
 
   YAML::Node reaction_node;
   reaction_node["type"] = "SIMPOL_PHASE_TRANSFER";
   reaction_node["gas phase"] = "gas";
-  
+
   // Too many gas phase species (should be exactly 1)
   reaction_node["gas-phase species"] = YAML::Load("[{ name: A, coefficient: 1 }, { name: C, coefficient: 1 }]");
-  
+
   reaction_node["condensed phase"] = "aqueous";
   reaction_node["condensed-phase species"] = YAML::Load("[{ name: B, coefficient: 1 }]");
   reaction_node["B"] = YAML::Load("[-1.97E+03, 2.91E+00, 1.96E-03, -4.96E-01]");
@@ -278,17 +273,12 @@ TEST(ParserBase, SimpolPhaseTransferTooManyCondensedSpeciesFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" }, 
-    types::Species{ .name = "C" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "C" } };
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
-    types::Phase{ .name = "aqueous", .species = { 
-      types::PhaseSpecies{ .name = "B" }, 
-      types::PhaseSpecies{ .name = "C" } 
-    } }
+    types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "B" }, types::PhaseSpecies{ .name = "C" } } }
   };
 
   YAML::Node reaction_node;
@@ -296,10 +286,10 @@ TEST(ParserBase, SimpolPhaseTransferTooManyCondensedSpeciesFailsValidation)
   reaction_node["gas phase"] = "gas";
   reaction_node["gas-phase species"] = YAML::Load("[{ name: A, coefficient: 1 }]");
   reaction_node["condensed phase"] = "aqueous";
-  
+
   // Too many condensed phase species (should be exactly 1)
   reaction_node["condensed-phase species"] = YAML::Load("[{ name: B, coefficient: 1 }, { name: C, coefficient: 1 }]");
-  
+
   reaction_node["B"] = YAML::Load("[-1.97E+03, 2.91E+00, 1.96E-03, -4.96E-01]");
 
   SimpolPhaseTransferParser parser;
@@ -321,28 +311,26 @@ TEST(ParserBase, SimpolPhaseTransferMultipleErrorsFailsValidation)
   using namespace development;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
-  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } }; // Missing aqueous phase
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };  // Missing aqueous phase
 
   YAML::Node reaction_node;
   reaction_node["type"] = "SIMPOL_PHASE_TRANSFER";
   reaction_node["gas phase"] = "gas";
-  
+
   // Too many gas species + unknown species + unknown phase + invalid B parameter
   reaction_node["gas-phase species"] = YAML::Load("[{ name: A, coefficient: 1 }, { name: UNKNOWN, coefficient: 1 }]");
-  reaction_node["condensed phase"] = "aqueous"; // Unknown phase
+  reaction_node["condensed phase"] = "aqueous";  // Unknown phase
   reaction_node["condensed-phase species"] = YAML::Load("[{ name: B, coefficient: 1 }]");
-  reaction_node["B"] = "invalid"; // Invalid B parameter
+  reaction_node["B"] = "invalid";  // Invalid B parameter
 
   SimpolPhaseTransferParser parser;
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_GE(errors.size(), 3);
 
-  std::multiset<ConfigParseStatus> expected = { 
-    ConfigParseStatus::TooManyReactionComponents,
-    ConfigParseStatus::ReactionRequiresUnknownSpecies,
-    ConfigParseStatus::UnknownPhase,
-    ConfigParseStatus::InvalidParameterNumber
-  };
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents,
+                                                ConfigParseStatus::ReactionRequiresUnknownSpecies,
+                                                ConfigParseStatus::UnknownPhase,
+                                                ConfigParseStatus::InvalidParameterNumber };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
   {

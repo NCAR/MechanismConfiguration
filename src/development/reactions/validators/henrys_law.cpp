@@ -64,8 +64,8 @@ namespace mechanism_configuration
       // Gather gas and particle species node pairs
       std::vector<std::pair<types::ReactionComponent, YAML::Node>> gas_species_node_pairs;
 
-      // Although the type being validated is PhaseSpecies instead of ReactionComponent, 
-      // the corresponding struct is conceptually the same. (diffusion coefficient vs. coefficient) 
+      // Although the type being validated is PhaseSpecies instead of ReactionComponent,
+      // the corresponding struct is conceptually the same. (diffusion coefficient vs. coefficient)
       // Treating these entries as ReactionComponent objects is acceptable.
       for (const auto& obj : object[validation::gas][validation::species])
       {
@@ -121,19 +121,21 @@ namespace mechanism_configuration
         ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
       }
 
-      auto gas_phase_opt = CheckPhaseExists(object[validation::gas], 
-                                            validation::name, 
-                                            existing_phases, 
-                                            errors, 
-                                            ConfigParseStatus::UnknownPhase, 
-                                            object[validation::type].as<std::string>());
- 
-      auto particle_phase_opt = CheckPhaseExists(object[validation::particle], 
-                                                validation::phase, 
-                                                existing_phases, 
-                                                errors, 
-                                                ConfigParseStatus::UnknownPhase, 
-                                                object[validation::type].as<std::string>());
+      auto gas_phase_opt = CheckPhaseExists(
+          object[validation::gas],
+          validation::name,
+          existing_phases,
+          errors,
+          ConfigParseStatus::UnknownPhase,
+          object[validation::type].as<std::string>());
+
+      auto particle_phase_opt = CheckPhaseExists(
+          object[validation::particle],
+          validation::phase,
+          existing_phases,
+          errors,
+          ConfigParseStatus::UnknownPhase,
+          object[validation::type].as<std::string>());
       if (!gas_phase_opt || !particle_phase_opt)
       {
         return errors;

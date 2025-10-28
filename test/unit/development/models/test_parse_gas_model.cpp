@@ -51,8 +51,7 @@ TEST(ParserBase, GasModelPhaseNotFoundInRegisteredPhases)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase,
-                                                  ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase, ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {

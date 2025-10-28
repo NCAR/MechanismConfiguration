@@ -39,7 +39,7 @@ namespace mechanism_configuration
         }
         condensed_phase_arrhenius.products.emplace_back(std::move(component));
       }
-    
+
       if (object[validation::A])
       {
         condensed_phase_arrhenius.A = object[validation::A].as<double>();
@@ -74,7 +74,7 @@ namespace mechanism_configuration
       condensed_phase_arrhenius.unknown_properties = GetComments(object);
 
       reactions.condensed_phase_arrhenius.emplace_back(std::move(condensed_phase_arrhenius));
-  }
-    
+    }
+
   }  // namespace development
 }  // namespace mechanism_configuration

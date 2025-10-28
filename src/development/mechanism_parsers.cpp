@@ -8,8 +8,8 @@
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
 #include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 #include <sstream>
 
@@ -114,7 +114,7 @@ namespace mechanism_configuration
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
-        
+
         component_list.emplace_back(std::move(component));
       }
 
@@ -123,7 +123,7 @@ namespace mechanism_configuration
 
     types::ReactionComponent ParseReactionComponent(const YAML::Node& object, const std::string& key)
     {
-      auto reaction_components =  ParseReactionComponents(object, key);
+      auto reaction_components = ParseReactionComponents(object, key);
 
       if (reaction_components.empty())
       {

@@ -16,7 +16,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
     auto parsed = parser.Parse(std::string("development_unit_configs/reactions/henrys_law/valid") + extension);
     std::cout << " 0 " << std::endl;
 
-        for (auto& error : parsed.errors)
+    for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
     }
@@ -148,11 +148,8 @@ TEST(ParserBase, HenrysLawValidationWithUnknownSpeciesUnknownPhaseFailsValidatio
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "H2O" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "H2O" } };
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
     types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "H2O" } } }
   };
@@ -188,13 +185,11 @@ TEST(ParserBase, HenrysLawValidationWithSpeciesNotInPhasesFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" },
-    types::Species{ .name = "C" },
-    types::Species{ .name = "H2O" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "C" },
+                                                   types::Species{ .name = "H2O" } };
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
     types::Phase{ .name = "aqueous", .species = { types::PhaseSpecies{ .name = "H2O" } } }
   };
@@ -215,9 +210,8 @@ TEST(ParserBase, HenrysLawValidationWithSpeciesNotInPhasesFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 2);
 
-  std::multiset<ConfigParseStatus> expected = { 
-    ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase,
-    ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase,
+                                                ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
   {
@@ -231,14 +225,8 @@ TEST(ParserBase, HenrysLawValidationWithMissingRequiredKeysFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "H2O" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
-    types::Phase{ .name = "gas" },
-    types::Phase{ .name = "aqueous" }
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "H2O" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" }, types::Phase{ .name = "aqueous" } };
 
   YAML::Node reaction_node;
   reaction_node["type"] = "HL_PHASE_TRANSFER";
@@ -263,17 +251,13 @@ TEST(ParserBase, HenrysLawValidationWithValidConfigurationPassesValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" },
-    types::Species{ .name = "H2O" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "H2O" } };
+  std::vector<types::Phase> existing_phases = {
     types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
-    types::Phase{ .name = "aqueous", .species = { 
-      types::PhaseSpecies{ .name = "B" },
-      types::PhaseSpecies{ .name = "H2O" }
-    } }
+    types::Phase{ .name = "aqueous",
+                  .species = { types::PhaseSpecies{ .name = "B" }, types::PhaseSpecies{ .name = "H2O" } } }
   };
 
   YAML::Node reaction_node;
@@ -298,20 +282,16 @@ TEST(ParserBase, HenrysLawValidationWithMultipleSolutes)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" },
-    types::Species{ .name = "C" },
-    types::Species{ .name = "H2O" } 
-  };
-  std::vector<types::Phase> existing_phases = { 
-    types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
-    types::Phase{ .name = "aqueous", .species = { 
-      types::PhaseSpecies{ .name = "B" },
-      types::PhaseSpecies{ .name = "C" },
-      types::PhaseSpecies{ .name = "H2O" }
-    } }
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "C" },
+                                                   types::Species{ .name = "H2O" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas",
+                                                              .species = { types::PhaseSpecies{ .name = "A" } } },
+                                                types::Phase{ .name = "aqueous",
+                                                              .species = { types::PhaseSpecies{ .name = "B" },
+                                                                           types::PhaseSpecies{ .name = "C" },
+                                                                           types::PhaseSpecies{ .name = "H2O" } } } };
 
   YAML::Node reaction_node;
   reaction_node["type"] = "HL_PHASE_TRANSFER";
@@ -333,22 +313,18 @@ TEST(ParserBase, HenrysLawInvalidNumberSolventFailsValidation)
 {
   using namespace development;
 
-  std::vector<types::Species> existing_species = { 
-    types::Species{ .name = "A" }, 
-    types::Species{ .name = "B" },
-    types::Species{ .name = "C" },
-    types::Species{ .name = "H2O" },
-    types::Species{ .name = "water" }   
-  };
-  std::vector<types::Phase> existing_phases = { 
-    types::Phase{ .name = "gas", .species = { types::PhaseSpecies{ .name = "A" } } },
-    types::Phase{ .name = "aqueous", .species = { 
-      types::PhaseSpecies{ .name = "B" },
-      types::PhaseSpecies{ .name = "C" },
-      types::PhaseSpecies{ .name = "H2O" },
-      types::PhaseSpecies{ .name = "water" }
-    } }
-  };
+  std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
+                                                   types::Species{ .name = "B" },
+                                                   types::Species{ .name = "C" },
+                                                   types::Species{ .name = "H2O" },
+                                                   types::Species{ .name = "water" } };
+  std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas",
+                                                              .species = { types::PhaseSpecies{ .name = "A" } } },
+                                                types::Phase{ .name = "aqueous",
+                                                              .species = { types::PhaseSpecies{ .name = "B" },
+                                                                           types::PhaseSpecies{ .name = "C" },
+                                                                           types::PhaseSpecies{ .name = "H2O" },
+                                                                           types::PhaseSpecies{ .name = "water" } } } };
 
   YAML::Node reaction_node;
   reaction_node["type"] = "HL_PHASE_TRANSFER";

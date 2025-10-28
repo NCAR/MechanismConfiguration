@@ -5,8 +5,8 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <iostream>
 #include <format>
+#include <iostream>
 
 namespace mechanism_configuration
 {

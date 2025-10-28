@@ -27,7 +27,7 @@ namespace mechanism_configuration
 
       wet_deposition.condensed_phase = object[validation::condensed_phase].as<std::string>();
       wet_deposition.unknown_properties = GetComments(object);
-      
+
       reactions.wet_deposition.emplace_back(std::move(wet_deposition));
     }
 
