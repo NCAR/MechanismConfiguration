@@ -16,29 +16,10 @@ namespace mechanism_configuration
     {
       types::CondensedPhaseArrhenius condensed_phase_arrhenius;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        condensed_phase_arrhenius.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        condensed_phase_arrhenius.products.emplace_back(std::move(component));
-      }
+      condensed_phase_arrhenius.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      condensed_phase_arrhenius.reactants = ParseReactionComponents(object, validation::reactants);
+      condensed_phase_arrhenius.products = ParseReactionComponents(object, validation::products);
+      condensed_phase_arrhenius.unknown_properties = GetComments(object);
 
       if (object[validation::A])
       {
@@ -64,14 +45,10 @@ namespace mechanism_configuration
       {
         condensed_phase_arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
       }
-
       if (object[validation::name])
       {
         condensed_phase_arrhenius.name = object[validation::name].as<std::string>();
       }
-
-      condensed_phase_arrhenius.condensed_phase = object[validation::condensed_phase].as<std::string>();
-      condensed_phase_arrhenius.unknown_properties = GetComments(object);
 
       reactions.condensed_phase_arrhenius.emplace_back(std::move(condensed_phase_arrhenius));
     }

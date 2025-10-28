@@ -15,29 +15,11 @@ namespace mechanism_configuration
     {
       types::SimpolPhaseTransfer simpol_phase_transfer;
 
-      for (const auto& elem : object[validation::gas_phase_species])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        simpol_phase_transfer.gas_phase_species.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::condensed_phase_species])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        simpol_phase_transfer.condensed_phase_species.emplace_back(std::move(component));
-      }
+      simpol_phase_transfer.gas_phase = object[validation::gas_phase].as<std::string>();
+      simpol_phase_transfer.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      simpol_phase_transfer.gas_phase_species = ParseReactionComponents(object, validation::gas_phase_species);
+      simpol_phase_transfer.condensed_phase_species = ParseReactionComponents(object, validation::condensed_phase_species);
+      simpol_phase_transfer.unknown_properties = GetComments(object);
 
       for (size_t i = 0; i < 4; ++i)
       {
@@ -48,10 +30,6 @@ namespace mechanism_configuration
       {
         simpol_phase_transfer.name = object[validation::name].as<std::string>();
       }
-
-      simpol_phase_transfer.gas_phase = object[validation::gas_phase].as<std::string>();
-      simpol_phase_transfer.condensed_phase = object[validation::condensed_phase].as<std::string>();
-      simpol_phase_transfer.unknown_properties = GetComments(object);
 
       reactions.simpol_phase_transfer.emplace_back(std::move(simpol_phase_transfer));
     }

@@ -15,29 +15,10 @@ namespace mechanism_configuration
     {
       types::Tunneling tunneling;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        tunneling.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        tunneling.products.emplace_back(std::move(component));
-      }
+      tunneling.gas_phase = object[validation::gas_phase].as<std::string>();
+      tunneling.reactants = ParseReactionComponents(object, validation::reactants);
+      tunneling.products = ParseReactionComponents(object, validation::products);
+      tunneling.unknown_properties = GetComments(object);
 
       if (object[validation::A])
       {
@@ -51,14 +32,10 @@ namespace mechanism_configuration
       {
         tunneling.C = object[validation::C].as<double>();
       }
-
       if (object[validation::name])
       {
         tunneling.name = object[validation::name].as<std::string>();
       }
-
-      tunneling.gas_phase = object[validation::gas_phase].as<std::string>();
-      tunneling.unknown_properties = GetComments(object);
 
       reactions.tunneling.emplace_back(std::move(tunneling));
     }

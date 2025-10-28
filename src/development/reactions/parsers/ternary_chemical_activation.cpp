@@ -15,29 +15,10 @@ namespace mechanism_configuration
     {
       types::TernaryChemicalActivation ternary;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        ternary.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        ternary.products.emplace_back(std::move(component));
-      }
+      ternary.gas_phase = object[validation::gas_phase].as<std::string>();
+      ternary.reactants = ParseReactionComponents(object, validation::reactants);
+      ternary.products = ParseReactionComponents(object, validation::products);
+      ternary.unknown_properties = GetComments(object);
 
       if (object[validation::k0_A])
       {
@@ -71,14 +52,11 @@ namespace mechanism_configuration
       {
         ternary.N = object[validation::N].as<double>();
       }
-
       if (object[validation::name])
       {
         ternary.name = object[validation::name].as<std::string>();
       }
 
-      ternary.gas_phase = object[validation::gas_phase].as<std::string>();
-      ternary.unknown_properties = GetComments(object);
       reactions.ternary_chemical_activation.emplace_back(std::move(ternary));
     }
 

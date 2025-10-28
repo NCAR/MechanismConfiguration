@@ -21,29 +21,10 @@ namespace mechanism_configuration
     {
       types::TaylorSeries taylor_series;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        taylor_series.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        taylor_series.products.emplace_back(std::move(component));
-      }
+      taylor_series.gas_phase = object[validation::gas_phase].as<std::string>();
+      taylor_series.reactants = ParseReactionComponents(object, validation::reactants);
+      taylor_series.products = ParseReactionComponents(object, validation::products);
+      taylor_series.unknown_properties = GetComments(object);
 
       if (object[validation::A])
       {
@@ -73,14 +54,10 @@ namespace mechanism_configuration
       {
         taylor_series.taylor_coefficients = object[validation::taylor_coefficients].as<std::vector<double>>();
       }
-
       if (object[validation::name])
       {
         taylor_series.name = object[validation::name].as<std::string>();
       }
-
-      taylor_series.gas_phase = object[validation::gas_phase].as<std::string>();
-      taylor_series.unknown_properties = GetComments(object);
 
       reactions.taylor_series.emplace_back(std::move(taylor_series));
     }

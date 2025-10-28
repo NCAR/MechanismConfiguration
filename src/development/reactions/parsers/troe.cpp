@@ -15,29 +15,10 @@ namespace mechanism_configuration
     {
       types::Troe troe;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        troe.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        troe.products.emplace_back(std::move(component));
-      }
+      troe.gas_phase = object[validation::gas_phase].as<std::string>();
+      troe.reactants = ParseReactionComponents(object, validation::reactants);
+      troe.products = ParseReactionComponents(object, validation::products);
+      troe.unknown_properties = GetComments(object);
 
       if (object[validation::k0_A])
       {
@@ -71,14 +52,10 @@ namespace mechanism_configuration
       {
         troe.N = object[validation::N].as<double>();
       }
-
       if (object[validation::name])
       {
         troe.name = object[validation::name].as<std::string>();
       }
-
-      troe.gas_phase = object[validation::gas_phase].as<std::string>();
-      troe.unknown_properties = GetComments(object);
 
       reactions.troe.emplace_back(std::move(troe));
     }

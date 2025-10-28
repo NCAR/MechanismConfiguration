@@ -15,29 +15,10 @@ namespace mechanism_configuration
     {
       types::CondensedPhasePhotolysis condensed_phase_photolysis;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        condensed_phase_photolysis.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        condensed_phase_photolysis.products.emplace_back(std::move(component));
-      }
+      condensed_phase_photolysis.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      condensed_phase_photolysis.reactants = ParseReactionComponent(object, validation::reactants);
+      condensed_phase_photolysis.products = ParseReactionComponents(object, validation::products);
+      condensed_phase_photolysis.unknown_properties = GetComments(object);
 
       if (object[validation::scaling_factor])
       {
@@ -48,8 +29,6 @@ namespace mechanism_configuration
         condensed_phase_photolysis.name = object[validation::name].as<std::string>();
       }
 
-      condensed_phase_photolysis.condensed_phase = object[validation::condensed_phase].as<std::string>();
-      condensed_phase_photolysis.unknown_properties = GetComments(object);
       reactions.condensed_phase_photolysis.emplace_back(std::move(condensed_phase_photolysis));
     }
 

@@ -55,8 +55,7 @@
         ],
         "solvent": [
           {
-            "name": "H2O",
-            "coefficient": 1.0
+            "name": "H2O"
           }
         ]
       }

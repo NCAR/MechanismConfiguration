@@ -15,17 +15,9 @@ namespace mechanism_configuration
     {
       types::FirstOrderLoss first_order_loss;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        first_order_loss.reactants.emplace_back(std::move(component));
-      }
+      first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
+      first_order_loss.reactants = ParseReactionComponent(object, validation::reactants);
+      first_order_loss.unknown_properties = GetComments(object);
 
       if (object[validation::scaling_factor])
       {
@@ -35,9 +27,6 @@ namespace mechanism_configuration
       {
         first_order_loss.name = object[validation::name].as<std::string>();
       }
-
-      first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
-      first_order_loss.unknown_properties = GetComments(object);
 
       reactions.first_order_loss.emplace_back(std::move(first_order_loss));
     }

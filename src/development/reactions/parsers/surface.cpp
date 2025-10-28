@@ -15,29 +15,11 @@ namespace mechanism_configuration
     {
       types::Surface surface;
 
-      for (const auto& elem : object[validation::gas_phase_species])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        surface.gas_phase_species.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::gas_phase_products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        surface.gas_phase_products.emplace_back(std::move(component));
-      }
+      surface.gas_phase = object[validation::gas_phase].as<std::string>();
+      surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      surface.gas_phase_species = ParseReactionComponent(object, validation::gas_phase_species);
+      surface.gas_phase_products = ParseReactionComponents(object, validation::gas_phase_products);
+      surface.unknown_properties = GetComments(object);
 
       if (object[validation::reaction_probability])
       {
@@ -48,9 +30,6 @@ namespace mechanism_configuration
         surface.name = object[validation::name].as<std::string>();
       }
 
-      surface.gas_phase = object[validation::gas_phase].as<std::string>();
-      surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
-      surface.unknown_properties = GetComments(object);
       reactions.surface.emplace_back(std::move(surface));
     }
 
