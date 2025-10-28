@@ -99,10 +99,8 @@ reactions:
     phase: aqueous
     solutes:
       - name: H2O2_aq
-        coefficient: 1.0
     solvent:
       - name: H2O
-        coefficient: 1.0
   name: my henry's law
 - type: SIMPOL_PHASE_TRANSFER
   gas phase: gas
