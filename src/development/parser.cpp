@@ -93,11 +93,7 @@ namespace mechanism_configuration
         return result;
       }
 
-      // TODO(in progress) This will the API when the list issue 148 is complete
-      // auto parsed_reactions = ParseReactions(object[validation::reactions]);
-      auto parsed_reactions = ParseReactions(object[validation::reactions], parsed_species, parsed_phases);
-      result.errors.insert(result.errors.end(), parsed_reactions.first.begin(), parsed_reactions.first.end());
-      mechanism->reactions = parsed_reactions.second;
+      mechanism->reactions = ParseReactions(object[validation::reactions]);
 
       result.mechanism = std::move(mechanism);
 

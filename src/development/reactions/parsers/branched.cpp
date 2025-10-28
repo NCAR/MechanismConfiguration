@@ -20,7 +20,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -32,7 +32,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -44,30 +44,30 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         branched.nitrate_products.emplace_back(std::move(component));
       }
 
-      if (object[validation::X].IsDefined())
+      if (object[validation::X])
       {
         branched.X = object[validation::X].as<double>();
       }
-      if (object[validation::Y].IsDefined())
+      if (object[validation::Y])
       {
         branched.Y = object[validation::Y].as<double>();
       }
-      if (object[validation::a0].IsDefined())
+      if (object[validation::a0])
       {
         branched.a0 = object[validation::a0].as<double>();
       }
-      if (object[validation::n].IsDefined())
+      if (object[validation::n])
       {
         branched.n = object[validation::n].as<double>();
       }
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         branched.name = object[validation::name].as<std::string>();
       }

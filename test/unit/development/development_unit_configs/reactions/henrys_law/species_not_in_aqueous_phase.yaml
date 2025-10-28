@@ -17,11 +17,15 @@ reactions:
     gas:
       name: gas
       species:
-        - A
+        - name: A
+          diffusion coefficient [m2 s-1]: 0.7
     particle:
       phase: aqueous
       solutes:
-        - B
-      solvent: H2O
+        - name: B
+          coefficient: 1.0
+      solvent:
+        - name: H2O
+          coefficient: 1.0
     name: my henry's law
     __comment: hi

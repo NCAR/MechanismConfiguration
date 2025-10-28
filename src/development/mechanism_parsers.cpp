@@ -9,6 +9,7 @@
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+#include <mechanism_configuration/error_location.hpp>
 
 #include <sstream>
 
@@ -100,95 +101,53 @@ namespace mechanism_configuration
       return all_phases;
     }
 
-    std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object)
+    std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, const std::string& key)
     {
-      Errors errors;
-      ConfigParseStatus status = ConfigParseStatus::Success;
-      types::ReactionComponent component;
-      const std::vector<std::string> reaction_component_required_keys = { validation::species_name };
-      const std::vector<std::string> reaction_component_optional_keys = { validation::coefficient };
-
-      auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
-      errors.insert(errors.end(), validate.begin(), validate.end());
-      if (validate.empty())
-        if (status == ConfigParseStatus::Success)
-        {
-          std::string species_name = object[validation::species_name].as<std::string>();
-          double coefficient = 1;
-          if (object[validation::coefficient])
-          {
-            coefficient = object[validation::coefficient].as<double>();
-          }
-
-          component.species_name = species_name;
-          component.coefficient = coefficient;
-          component.unknown_properties = GetComments(object);
-        }
-
-      return { errors, component };
-    }
-
-    std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
-        const std::string& key,
-        const YAML::Node& object)
-    {
-      Errors errors;
-      std::vector<types::ReactionComponent> result{};
-      for (const auto& product : object[key])
+      std::vector<types::ReactionComponent> component_list;
+      for (const auto& elem : AsSequence(object[key]))
       {
-        auto component_parse = ParseReactionComponent(product);
-        errors.insert(errors.end(), component_parse.first.begin(), component_parse.first.end());
-        if (component_parse.first.empty())
+        types::ReactionComponent component;
+        component.name = elem[validation::name].as<std::string>();
+        component.unknown_properties = GetComments(elem);
+
+        if (elem[validation::coefficient])
         {
-          result.push_back(component_parse.second);
+          component.coefficient = elem[validation::coefficient].as<double>();
         }
+        
+        component_list.emplace_back(std::move(component));
       }
-      return { errors, result };
-    }
 
-    std::pair<Errors, types::Reactions> ParseReactions(
-        const YAML::Node& objects,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases)
+      return component_list;
+    };
+
+    types::ReactionComponent ParseReactionComponent(const YAML::Node& object, const std::string& key)
     {
-      Errors errors;
+      auto reaction_components =  ParseReactionComponents(object, key);
 
+      if (reaction_components.empty())
+      {
+        return types::ReactionComponent();
+      }
+
+      return std::move(reaction_components.front());
+    };
+
+    types::Reactions ParseReactions(const YAML::Node& objects)
+    {
       auto& parsers = GetReactionParserMap();
       types::Reactions reactions;
 
       for (const auto& object : objects)
       {
-        std::string type = object[validation::type].as<std::string>();
-        auto it = parsers.find(type);
+        auto it = parsers.find(object[validation::type].as<std::string>());
         if (it != parsers.end())
         {
-          // TODO - This is temporary until the decoupling is complete
-          if (type == validation::Arrhenius_key || type == validation::Branched_key || type == validation::Emission_key ||
-              type == validation::FirstOrderLoss_key || type == validation::Photolysis_key ||
-              type == validation::Surface_key  || type == validation::TaylorSeries_key ||
-              type == validation::Troe_key || type == validation::Tunneling_key || 
-              type == validation::TernaryChemicalActivation_key || type == validation::UserDefined_key ||
-              type == validation::CondensedPhaseArrhenius_key || type == validation::CondensedPhasePhotolysis_key ||
-              type == validation::AqueousPhaseEquilibrium_key || type == validation::SimpolPhaseTransfer_key)
-          {
-            it->second->Parse(object, reactions);
-          }
-          else
-          {
-            auto parse_errors = it->second->parse(object, existing_species, existing_phases, reactions);
-            errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-          }
-        }
-        else
-        {
-          std::string line = std::to_string(object[validation::type].Mark().line + 1);
-          std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back(
-              { ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
+          it->second->Parse(object, reactions);
         }
       }
 
-      return { errors, reactions };
+      return reactions;
     }
 
     std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases)

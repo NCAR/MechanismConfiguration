@@ -20,7 +20,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -39,16 +39,16 @@ namespace mechanism_configuration
         aqueous_equilibrium.products.emplace_back(std::move(component));
       }
 
-      if (object[validation::A].IsDefined())
+      if (object[validation::A])
       {
         aqueous_equilibrium.A = object[validation::A].as<double>();
       }
-      if (object[validation::C].IsDefined())
+      if (object[validation::C])
       {
         aqueous_equilibrium.C = object[validation::C].as<double>();
       }
 
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         aqueous_equilibrium.name = object[validation::name].as<std::string>();
       }

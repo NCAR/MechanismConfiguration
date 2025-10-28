@@ -36,6 +36,11 @@ namespace mechanism_configuration
       std::vector<YAML::Node> nodes;
     };
 
+    /// @brief Ensures a YAML node is treated as a sequence
+    /// @param node The YAML node to convert
+    /// @return A YAML sequence node containing the original node(s)
+    YAML::Node AsSequence(const YAML::Node& node);
+
     void AppendFilePath(const std::filesystem::path& config_path, Errors& errors);
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
@@ -54,7 +59,8 @@ namespace mechanism_configuration
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
-        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase);
+        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase,
+        std::string type = {});
 
     void CheckSpeciesPresenceInPhase(
       const YAML::Node& object,
@@ -145,40 +151,5 @@ namespace mechanism_configuration
       return unknowns;
     }
 
-    // TODO (In Progress): This function will be removed and replaced by the one above
-    //                     once parsing and validation for all the configurations are fully decoupled.
-    template<typename SpeciesType>
-    std::vector<std::string> FindUnknownSpecies(
-        const std::vector<std::string>& requested_species,
-        const std::vector<SpeciesType>& existing_species)
-    {
-      std::unordered_set<std::string> existing_names;
-
-      if constexpr (std::is_same_v<SpeciesType, std::string>)
-      {
-        for (const auto& species : existing_species)
-        {
-          existing_names.insert(species);
-        }
-      }
-      else
-      {
-        for (const auto& species : existing_species)
-        {
-          existing_names.insert(species.name);
-        }
-      }
-
-      std::vector<std::string> unknown_species;
-      for (const auto& name : requested_species)
-      {
-        if (existing_names.find(name) == existing_names.end())
-        {
-          unknown_species.emplace_back(name);
-        }
-      }
-
-      return unknown_species;
-    }
   }  // namespace development
 }  // namespace mechanism_configuration

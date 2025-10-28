@@ -20,7 +20,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -32,18 +32,18 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         surface.gas_phase_products.emplace_back(std::move(component));
       }
 
-      if (object[validation::reaction_probability].IsDefined())
+      if (object[validation::reaction_probability])
       {
         surface.reaction_probability = object[validation::reaction_probability].as<double>();
       }
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         surface.name = object[validation::name].as<std::string>();
       }

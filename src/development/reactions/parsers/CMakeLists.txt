@@ -7,6 +7,7 @@ target_sources(mechanism_configuration
     condensed_phase_photolysis.cpp
     emission.cpp
     first_order_loss.cpp
+    henrys_law.cpp
     photolysis.cpp
     simpol_phase_transfer.cpp
     surface.cpp
@@ -15,4 +16,5 @@ target_sources(mechanism_configuration
     troe.cpp
     tunneling.cpp
     user_defined.cpp
+    wet_deposition.cpp
 )

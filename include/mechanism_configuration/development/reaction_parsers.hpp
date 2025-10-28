@@ -22,34 +22,20 @@ namespace mechanism_configuration
     class IReactionParser
     {
      public:
-      virtual Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases)
-      {
-        return Errors();
-      }
-
-      virtual void Parse(const YAML::Node& object, types::Reactions& reactions)
-      {
-        // Optional during the development
-      }
-
-      // TODO(in progress) - Will remove this function when the issue 148 is complete
-      /// @brief Parses a YAML node representing a chemical reaction
+      /// @brief Validates a YAML node representing a chemical reaction
       /// @param object The YAML node containing reaction information
       /// @param existing_species A list of species previously defined in the mechanism
       /// @param existing_phases A list of chemical phases relevant to the reaction
-      /// @param reactions The container to which the parsed reactions will be added
-      /// @return A list of any parsing errors encountered
-      virtual Errors parse(
+      /// @return A list of any validation errors encountered
+      virtual Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions)
-      {
-        return Errors();
-      }
+          const std::vector<types::Phase>& existing_phases) = 0;
+
+      /// @brief Parses a YAML node representing a chemical reaction
+      /// @param object The YAML node containing reaction information
+      /// @param reactions The container to which the parsed reactions will be added
+      virtual void Parse(const YAML::Node& object, types::Reactions& reactions) = 0;
 
       /// @brief Destructor
       virtual ~IReactionParser() = default;
@@ -146,23 +132,23 @@ namespace mechanism_configuration
     class WetDepositionParser : public IReactionParser
     {
      public:
-      /// @brief Parser for wet deposition reactions
-      Errors parse(
+      Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+          const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
     class HenrysLawParser : public IReactionParser
     {
      public:
-      /// @brief Parser for Henry's Law reactions
-      Errors parse(
+      Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases,
-          types::Reactions& reactions) override;
+          const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
     class PhotolysisParser : public IReactionParser

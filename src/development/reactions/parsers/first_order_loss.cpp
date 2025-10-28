@@ -20,18 +20,18 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         first_order_loss.reactants.emplace_back(std::move(component));
       }
 
-      if (object[validation::scaling_factor].IsDefined())
+      if (object[validation::scaling_factor])
       {
         first_order_loss.scaling_factor = object[validation::scaling_factor].as<double>();
       }
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         first_order_loss.name = object[validation::name].as<std::string>();
       }

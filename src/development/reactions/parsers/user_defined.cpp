@@ -21,7 +21,7 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
@@ -33,19 +33,19 @@ namespace mechanism_configuration
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();
         component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient].IsDefined())
+        if (elem[validation::coefficient])
         {
           component.coefficient = elem[validation::coefficient].as<double>();
         }
         user_defined.products.emplace_back(std::move(component));
       }
 
-      if (object[validation::scaling_factor].IsDefined())
+      if (object[validation::scaling_factor])
       {
         user_defined.scaling_factor = object[validation::scaling_factor].as<double>();
       }
 
-      if (object[validation::name].IsDefined())
+      if (object[validation::name])
       {
         user_defined.name = object[validation::name].as<std::string>();
       }

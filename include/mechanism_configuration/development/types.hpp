@@ -55,9 +55,6 @@ namespace mechanism_configuration
 
       struct ReactionComponent
       {
-        // TODO - Replace `species_name` with `name`.
-        //        This will be removed once the decoupling is complete
-        std::string species_name;
         std::string name;
         double coefficient{ 1.0 };
         /// @brief Unknown properties, prefixed with two underscores (__)

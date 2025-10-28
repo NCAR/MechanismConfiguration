@@ -38,6 +38,11 @@ namespace mechanism_configuration
     /// @return List of validation errors, or empty if all entries are valid
     Errors ValidateReactantsOrProducts(const YAML::Node& object);
 
+    /// @brief Validates a list of particle definitions in a YAML node
+    /// @param list YAML node containing particle
+    /// @return List of validation errors, or empty if all entries are valid
+    Errors ValidateParticles(const YAML::Node& list);
+
     /// @brief Validates a YAML list of reactions for type correctness and supported schema.
     ///        Performs a two-pass validation over the reaction list. The first pass checks that each
     ///        reaction has a defined and recognized type. The second pass validates the content of
