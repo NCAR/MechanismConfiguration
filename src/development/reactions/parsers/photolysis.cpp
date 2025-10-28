@@ -15,29 +15,10 @@ namespace mechanism_configuration
     {
       types::Photolysis photolysis;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        photolysis.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        photolysis.products.emplace_back(std::move(component));
-      }
+      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
+      photolysis.reactants = ParseReactionComponent(object, validation::reactants);
+      photolysis.products = ParseReactionComponents(object, validation::products);
+      photolysis.unknown_properties = GetComments(object);
 
       if (object[validation::scaling_factor])
       {
@@ -47,9 +28,6 @@ namespace mechanism_configuration
       {
         photolysis.name = object[validation::name].as<std::string>();
       }
-
-      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
-      photolysis.unknown_properties = GetComments(object);
 
       reactions.photolysis.emplace_back(std::move(photolysis));
     }

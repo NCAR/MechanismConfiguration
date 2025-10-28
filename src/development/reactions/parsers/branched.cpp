@@ -15,41 +15,11 @@ namespace mechanism_configuration
     {
       types::Branched branched;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        branched.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::alkoxy_products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        branched.alkoxy_products.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::nitrate_products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        branched.nitrate_products.emplace_back(std::move(component));
-      }
+      branched.gas_phase = object[validation::gas_phase].as<std::string>();
+      branched.reactants = ParseReactionComponents(object, validation::reactants);
+      branched.alkoxy_products = ParseReactionComponents(object, validation::alkoxy_products);
+      branched.nitrate_products = ParseReactionComponents(object, validation::nitrate_products);
+      branched.unknown_properties = GetComments(object);
 
       if (object[validation::X])
       {
@@ -71,9 +41,6 @@ namespace mechanism_configuration
       {
         branched.name = object[validation::name].as<std::string>();
       }
-
-      branched.gas_phase = object[validation::gas_phase].as<std::string>();
-      branched.unknown_properties = GetComments(object);
 
       reactions.branched.emplace_back(std::move(branched));
     }

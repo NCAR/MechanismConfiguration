@@ -30,22 +30,18 @@ namespace mechanism_configuration
         }
         gas.species.emplace_back(std::move(phase_species));
       }
+
       henrys_law.gas = std::move(gas);
-
       henrys_law.particle.phase = object[validation::particle][validation::phase].as<std::string>();
-
-      // Parse particle solutes
       henrys_law.particle.solutes = ParseReactionComponents(object[validation::particle], validation::solutes);
-
-      // Parse particle solvent
       henrys_law.particle.solvent = ParseReactionComponent(object[validation::particle], validation::solvent);
+      henrys_law.unknown_properties = GetComments(object);
 
       if (object[validation::name])
       {
         henrys_law.name = object[validation::name].as<std::string>();
       }
 
-      henrys_law.unknown_properties = GetComments(object);
       reactions.henrys_law.emplace_back(std::move(henrys_law));
     }
 

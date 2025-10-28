@@ -15,17 +15,9 @@ namespace mechanism_configuration
     {
       types::Emission emission;
 
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        emission.products.emplace_back(std::move(component));
-      }
+      emission.gas_phase = object[validation::gas_phase].as<std::string>();
+      emission.products = ParseReactionComponents(object, validation::products);
+      emission.unknown_properties = GetComments(object);
 
       if (object[validation::scaling_factor])
       {
@@ -35,9 +27,6 @@ namespace mechanism_configuration
       {
         emission.name = object[validation::name].as<std::string>();
       }
-
-      emission.gas_phase = object[validation::gas_phase].as<std::string>();
-      emission.unknown_properties = GetComments(object);
 
       reactions.emission.emplace_back(std::move(emission));
     }

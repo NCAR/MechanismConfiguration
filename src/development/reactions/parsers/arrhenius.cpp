@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/constants.hpp>
+#include <mechanism_configuration/development/mechanism_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/reaction_types.hpp>
 #include <mechanism_configuration/development/types.hpp>
@@ -21,29 +22,10 @@ namespace mechanism_configuration
     {
       types::Arrhenius arrhenius;
 
-      for (const auto& elem : object[validation::reactants])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        arrhenius.reactants.emplace_back(std::move(component));
-      }
-
-      for (const auto& elem : object[validation::products])
-      {
-        types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
-        component.unknown_properties = GetComments(elem);
-        if (elem[validation::coefficient])
-        {
-          component.coefficient = elem[validation::coefficient].as<double>();
-        }
-        arrhenius.products.emplace_back(std::move(component));
-      }
+      arrhenius.gas_phase = object[validation::gas_phase].as<std::string>();
+      arrhenius.reactants = ParseReactionComponents(object, validation::reactants);
+      arrhenius.products = ParseReactionComponents(object, validation::products);
+      arrhenius.unknown_properties = GetComments(object);
 
       if (object[validation::A])
       {
@@ -73,9 +55,6 @@ namespace mechanism_configuration
       {
         arrhenius.name = object[validation::name].as<std::string>();
       }
-
-      arrhenius.gas_phase = object[validation::gas_phase].as<std::string>();
-      arrhenius.unknown_properties = GetComments(object);
 
       reactions.arrhenius.emplace_back(std::move(arrhenius));
     }

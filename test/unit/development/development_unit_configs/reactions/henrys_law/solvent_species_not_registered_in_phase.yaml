@@ -28,6 +28,5 @@ reactions:
           coefficient: 1.0
       solvent:
         - name: B
-          coefficient: 1.0
     name: my henry's law
     __comment: hi

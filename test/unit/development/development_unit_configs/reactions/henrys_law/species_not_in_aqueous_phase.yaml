@@ -26,6 +26,5 @@ reactions:
           coefficient: 1.0
       solvent:
         - name: H2O
-          coefficient: 1.0
     name: my henry's law
     __comment: hi

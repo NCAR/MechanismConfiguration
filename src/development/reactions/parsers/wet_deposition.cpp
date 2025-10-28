@@ -15,6 +15,9 @@ namespace mechanism_configuration
     {
       types::WetDeposition wet_deposition;
 
+      wet_deposition.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      wet_deposition.unknown_properties = GetComments(object);
+
       if (object[validation::scaling_factor])
       {
         wet_deposition.scaling_factor = object[validation::scaling_factor].as<double>();
@@ -24,9 +27,6 @@ namespace mechanism_configuration
       {
         wet_deposition.name = object[validation::name].as<std::string>();
       }
-
-      wet_deposition.condensed_phase = object[validation::condensed_phase].as<std::string>();
-      wet_deposition.unknown_properties = GetComments(object);
 
       reactions.wet_deposition.emplace_back(std::move(wet_deposition));
     }

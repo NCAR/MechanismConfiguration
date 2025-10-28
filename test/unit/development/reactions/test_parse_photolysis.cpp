@@ -22,9 +22,8 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
     EXPECT_EQ(mechanism.reactions.photolysis[0].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.photolysis[0].name, "my photolysis");
     EXPECT_EQ(mechanism.reactions.photolysis[0].scaling_factor, 12.3);
-    EXPECT_EQ(mechanism.reactions.photolysis[0].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.photolysis[0].reactants[0].name, "B");
-    EXPECT_EQ(mechanism.reactions.photolysis[0].reactants[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.photolysis[0].reactants.name, "B");
+    EXPECT_EQ(mechanism.reactions.photolysis[0].reactants.coefficient, 1);
     EXPECT_EQ(mechanism.reactions.photolysis[0].products.size(), 1);
     EXPECT_EQ(mechanism.reactions.photolysis[0].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.photolysis[0].products[0].coefficient, 1);
@@ -33,9 +32,8 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
 
     EXPECT_EQ(mechanism.reactions.photolysis[1].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.photolysis[1].scaling_factor, 1);
-    EXPECT_EQ(mechanism.reactions.photolysis[1].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.photolysis[1].reactants[0].name, "B");
-    EXPECT_EQ(mechanism.reactions.photolysis[1].reactants[0].coefficient, 1.2);
+    EXPECT_EQ(mechanism.reactions.photolysis[1].reactants.name, "B");
+    EXPECT_EQ(mechanism.reactions.photolysis[1].reactants.coefficient, 1.2);
     EXPECT_EQ(mechanism.reactions.photolysis[1].products.size(), 1);
     EXPECT_EQ(mechanism.reactions.photolysis[1].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.photolysis[1].products[0].coefficient, 0.2);

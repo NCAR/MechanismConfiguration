@@ -61,8 +61,7 @@
         ],
         "solvent": [
           {
-            "name": "B",
-            "coefficient": 1.0
+            "name": "B"
           }
         ]
       },
