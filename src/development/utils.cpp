@@ -8,9 +8,9 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <format>
-#include <unordered_set>
-#include <optional>
 #include <functional>
+#include <optional>
+#include <unordered_set>
 
 namespace mechanism_configuration
 {
@@ -18,8 +18,9 @@ namespace mechanism_configuration
   {
     YAML::Node AsSequence(const YAML::Node& node)
     {
-      if (node.IsSequence()) return node;
-      
+      if (node.IsSequence())
+        return node;
+
       YAML::Node sequence;
       sequence.push_back(node);
 
@@ -108,7 +109,7 @@ namespace mechanism_configuration
     {
       if (type.empty())
       {
-        if (object[validation::type]) 
+        if (object[validation::type])
         {
           type = object[validation::type].as<std::string>();
         }
@@ -144,27 +145,24 @@ namespace mechanism_configuration
       {
         ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
-        std::string message = std::format(
-            "{} error: Unknown phase name '{}' found in '{}'.",
-            error_location,
-            phase_name,
-            type);
+        std::string message =
+            std::format("{} error: Unknown phase name '{}' found in '{}'.", error_location, phase_name, type);
 
         errors.push_back({ parser_status, message });
         return std::nullopt;
       }
 
-      return std::cref(*it); 
+      return std::cref(*it);
     }
 
     void CheckSpeciesPresenceInPhase(
-      const YAML::Node& object,
-      const types::Phase& phase,
-      const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
-      Errors& errors,
-      const ConfigParseStatus& parser_status)
+        const YAML::Node& object,
+        const types::Phase& phase,
+        const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
+        Errors& errors,
+        const ConfigParseStatus& parser_status)
     {
-      std::unordered_set<std::string> phase_species_set; 
+      std::unordered_set<std::string> phase_species_set;
       for (const auto& species : phase.species)
       {
         phase_species_set.insert(species.name);

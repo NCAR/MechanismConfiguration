@@ -213,10 +213,8 @@ namespace mechanism_configuration
 
     Errors ValidateParticles(const YAML::Node& list)
     {
-      const std::vector<std::string> required_keys = { validation::phase,
-                                                       validation::solutes,
-                                                       validation::solvent };
-      const std::vector<std::string> optional_keys = { };
+      const std::vector<std::string> required_keys = { validation::phase, validation::solutes, validation::solvent };
+      const std::vector<std::string> optional_keys = {};
 
       Errors errors;
 
@@ -277,8 +275,7 @@ namespace mechanism_configuration
           const auto& node = object[validation::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format("{} error: Unknown reaction type '{}' found.", 
-            error_location, type);
+          std::string message = std::format("{} error: Unknown reaction type '{}' found.", error_location, type);
 
           errors.push_back({ ConfigParseStatus::UnknownType, message });
           is_valid = false;
@@ -302,7 +299,6 @@ namespace mechanism_configuration
 
       return errors;
     }
-
 
   }  // namespace development
 }  // namespace mechanism_configuration

@@ -18,7 +18,7 @@ namespace mechanism_configuration
       // Parse gas
       types::Phase gas;
       gas.name = object[validation::gas][validation::name].as<std::string>();
-      
+
       for (const auto& elem : object[validation::gas][validation::species])
       {
         types::PhaseSpecies phase_species;

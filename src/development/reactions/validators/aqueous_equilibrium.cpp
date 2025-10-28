@@ -81,7 +81,7 @@ namespace mechanism_configuration
         species_node_pairs.emplace_back(component, obj);
       }
 
-     // Check for unknown species in reactants and products
+      // Check for unknown species in reactants and products
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
       if (!unknown_species.empty())
       {

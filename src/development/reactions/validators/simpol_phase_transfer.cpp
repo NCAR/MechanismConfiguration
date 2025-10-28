@@ -75,16 +75,14 @@ namespace mechanism_configuration
         if (!object[validation::B].IsSequence())
         {
           issue = "value must be a sequence";
-        } else 
+        }
+        else
         {
           issue = std::format("requires {} parameters, but {} were provided", NUM_PARAMS, object[validation::B].size());
         }
 
         std::string message = std::format(
-            "{} error: '{}' reaction parameter 'B' {}.",
-            error_location,
-            object[validation::type].as<std::string>(),
-            issue);
+            "{} error: '{}' reaction parameter 'B' {}.", error_location, object[validation::type].as<std::string>(), issue);
 
         errors.push_back({ ConfigParseStatus::InvalidParameterNumber, message });
       }
