@@ -89,6 +89,27 @@ models:
       - cloud
 
 reactions:
+- type: TAYLOR_SERIES
+  gas phase: gas
+  reactants:
+    - name: A
+      coefficient: 1
+  products:
+    - name: B
+      coefficient: 1.2
+    - name: C
+      coefficient: 0.3
+  A: 32.1
+  B: -2.3
+  C: 102.3
+  D: 63.4
+  E: -1.3
+  taylor coefficients:
+    - 1.0
+    - 2.0
+    - 3.0
+  name: my taylor_series
+  __solver_param: 0.1
 - type: HL_PHASE_TRANSFER
   gas:
     name: gas
