@@ -87,8 +87,7 @@ TEST(ParseSpecies, DetectsMissingRequiredKeys)
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
-                                                  ConfigParseStatus::InvalidKey};
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : parsed.errors)
     {
@@ -118,7 +117,6 @@ TEST(ParseSpecies, DetectsInvalidKeys)
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
-
   }
 }
 
@@ -132,7 +130,7 @@ TEST(ValidateSpecies, ReturnsEmptyErrorsForValidSpecies)
       "molecular weight [kg mol-1]": 0.034
       "density [kg m-3]": 1000.0
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_TRUE(errors.empty());
 }
@@ -145,7 +143,7 @@ TEST(ValidateSpecies, DetectsMissingNameKey)
     - "name": "B"
       "molecular weight [kg mol-1]": 0.034
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 1);
@@ -168,7 +166,7 @@ TEST(ValidateSpecies, DetectsInvalidKeysInSpecies)
     - "name": "B"
       "absolute tolerance": 1.0e-30
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 1);
 
@@ -192,7 +190,7 @@ TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
     - "name": "A"
       "density [kg m-3]": 1000.0
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 2);
 
@@ -202,7 +200,7 @@ TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    EXPECT_NE(message.find("A"), std::string::npos); // Error message should contain species "name"
+    EXPECT_NE(message.find("A"), std::string::npos);  // Error message should contain species "name"
     std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
@@ -217,9 +215,9 @@ TEST(ValidateSpecies, DetectsMultipleDuplicateSpecies)
     - "name": "C"
     - "name": "B"
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
-  EXPECT_EQ(errors.size(), 4); // 2 for "A" duplicates + 2 for "B" duplicates
+  EXPECT_EQ(errors.size(), 4);  // 2 for "A" duplicates + 2 for "B" duplicates
 
   for (const auto& [status, message] : errors)
   {
@@ -244,7 +242,7 @@ TEST(ValidateSpecies, ValidatesAllOptionalKeys)
       "constant mixing ratio [mol mol-1]": 1.0e-6
       "is third body": true
   )");
-  
+
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_TRUE(errors.empty());
 }
