@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidBranchedReaction)
+TEST(ParseBranched, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -43,7 +43,7 @@ TEST(ParserBase, CanParseValidBranchedReaction)
   }
 }
 
-TEST(ParserBase, BranchedDetectsUnknownSpecies)
+TEST(ParseBranched, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -66,7 +66,7 @@ TEST(ParserBase, BranchedDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, BranchedDetectsBadReactionComponent)
+TEST(ParseBranched, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -88,7 +88,7 @@ TEST(ParserBase, BranchedDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, BranchedDetectsUnknownPhase)
+TEST(ParseBranched, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -110,7 +110,7 @@ TEST(ParserBase, BranchedDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, BranchedMissingRequiredKeyFailsValidation)
+TEST(ParseBranched, MissingRequiredKeyFailsValidation)
 {
   using namespace development;
 
@@ -142,7 +142,7 @@ TEST(ParserBase, BranchedMissingRequiredKeyFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, BranchedUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateBranched, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

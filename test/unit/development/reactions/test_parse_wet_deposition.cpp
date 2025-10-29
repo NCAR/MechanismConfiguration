@@ -1,10 +1,13 @@
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
+#include <set>
+
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidWetDepositionReaction)
+TEST(ParseWetDeposition, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -28,7 +31,7 @@ TEST(ParserBase, CanParseValidWetDepositionReaction)
   }
 }
 
-TEST(ParserBase, WetDepositionDetectsUnknownPhase)
+TEST(ParseWetDeposition, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -38,10 +41,114 @@ TEST(ParserBase, WetDepositionDetectsUnknownPhase)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
+
+TEST(ValidateWetDeposition, ReturnsEmptyErrorsForValidReaction)
+{
+  std::vector<development::types::Species> existing_species;
+  development::types::Species species1;
+  species1.name = "A";
+  existing_species.emplace_back(species1);
+
+  std::vector<development::types::Phase> existing_phases;
+  development::types::Phase phase1;
+  phase1.name = "cloud";
+  existing_phases.emplace_back(phase1);
+
+  YAML::Node reaction = YAML::Load(R"(
+    type: "WET_DEPOSITION"
+    "condensed phase": "cloud"
+    name: "rxn cloud"
+    "scaling factor": 12.3
+  )");
+  
+  development::WetDepositionParser parser;
+  auto errors = parser.Validate(reaction, existing_species, existing_phases);
+  EXPECT_TRUE(errors.empty());
+}
+
+TEST(ValidateWetDeposition, DetectsMissingRequiredType)
+{
+  std::vector<development::types::Species> existing_species;
+  std::vector<development::types::Phase> existing_phases;
+  development::types::Phase phase1;
+  phase1.name = "cloud";
+  existing_phases.emplace_back(phase1);
+
+  YAML::Node reaction = YAML::Load(R"(
+    "condensed phase": "cloud"
+    name: "rxn cloud"
+  )");
+  
+  development::WetDepositionParser parser;
+  auto errors = parser.Validate(reaction, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
+{
+  std::vector<development::types::Species> existing_species;
+  std::vector<development::types::Phase> existing_phases;
+  development::types::Phase phase1;
+  phase1.name = "cloud";
+  existing_phases.emplace_back(phase1);
+
+  YAML::Node reaction = YAML::Load(R"(
+    type: "WET_DEPOSITION"
+    name: "rxn cloud"
+  )");
+  
+  development::WetDepositionParser parser;
+  auto errors = parser.Validate(reaction, existing_species, existing_phases);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidateWetDeposition, ValidatesWithOptionalScalingFactor)
+{
+  std::vector<development::types::Species> existing_species;
+  std::vector<development::types::Phase> existing_phases;
+  development::types::Phase phase1;
+  phase1.name = "cloud";
+  existing_phases.emplace_back(phase1);
+
+  YAML::Node reaction = YAML::Load(R"(
+    type: "WET_DEPOSITION"
+    "condensed phase": "cloud"
+    "scaling factor": 5.7
+  )");
+  
+  development::WetDepositionParser parser;
+  auto errors = parser.Validate(reaction, existing_species, existing_phases);
+  EXPECT_TRUE(errors.empty());
+}
+
+
+

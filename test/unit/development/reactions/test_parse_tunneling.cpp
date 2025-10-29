@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidTunnelingReaction)
+TEST(ParseTunneling, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -49,7 +49,7 @@ TEST(ParserBase, CanParseValidTunnelingReaction)
   }
 }
 
-TEST(ParserBase, TunnelingDetectsUnknownSpecies)
+TEST(ParseTunneling, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -72,7 +72,7 @@ TEST(ParserBase, TunnelingDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, TunnelingDetectsBadReactionComponent)
+TEST(ParseTunneling, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -94,7 +94,7 @@ TEST(ParserBase, TunnelingDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, TunnelingDetectsUnknownPhase)
+TEST(ParseTunneling, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -116,7 +116,7 @@ TEST(ParserBase, TunnelingDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, TunnelingUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateTunneling, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

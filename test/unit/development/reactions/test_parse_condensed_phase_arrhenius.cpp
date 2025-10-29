@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
+TEST(ParseCondensedPhaseArrhenius, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -72,7 +72,7 @@ TEST(ParserBase, CanParseValidCondensedPhaseArrheniusReaction)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
+TEST(ParseCondensedPhaseArrhenius, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -96,7 +96,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
+TEST(ParseCondensedPhaseArrhenius, DetectsMutuallyExclusiveOptions)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -119,7 +119,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMutuallyExclusiveOptions)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
+TEST(ParseCondensedPhaseArrhenius, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -142,7 +142,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
+TEST(ParseCondensedPhaseArrhenius, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -165,7 +165,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsWhenRequestedSpeciesAreNotInAqueo
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
+TEST(ParseCondensedPhaseArrhenius, DetectsMissingPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -187,7 +187,7 @@ TEST(ParserBase, CondensedPhaseArrheniusDetectsMissingPhase)
   }
 }
 
-TEST(ParserBase, CondensedPhaseArrheniusMutuallyExclusiveEaAndCFailsValidation)
+TEST(ValidateCondensedPhaseArrhenius, MutuallyExclusiveEaAndCFailsValidation)
 {
   using namespace development;
 

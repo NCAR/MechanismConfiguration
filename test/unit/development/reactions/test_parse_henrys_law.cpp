@@ -7,24 +7,17 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidHenrysLawReaction)
+TEST(ParseHenrysLaw, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     auto parsed = parser.Parse(std::string("development_unit_configs/reactions/henrys_law/valid") + extension);
-    std::cout << " 0 " << std::endl;
-
-    for (auto& error : parsed.errors)
-    {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
-    }
     EXPECT_TRUE(parsed);
     development::types::Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.henrys_law.size(), 2);
-
     EXPECT_EQ(mechanism.reactions.henrys_law[0].name, "my henry's law");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.name, "gas");
     EXPECT_EQ(mechanism.reactions.henrys_law[0].gas.species.size(), 1);
@@ -54,7 +47,7 @@ TEST(ParserBase, CanParseValidHenrysLawReaction)
   }
 }
 
-TEST(ParserBase, HenrysLawDetectsUnknownSpecies)
+TEST(ParseHenrysLaw, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -76,7 +69,7 @@ TEST(ParserBase, HenrysLawDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, HenrysLawDetectsGasSpeciesInReactionNotFoundInGasPhase)
+TEST(ParseHenrysLaw, DetectsGasSpeciesInReactionNotFoundInGasPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -99,7 +92,7 @@ TEST(ParserBase, HenrysLawDetectsGasSpeciesInReactionNotFoundInGasPhase)
   }
 }
 
-TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
+TEST(ParseHenrysLaw, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -121,7 +114,7 @@ TEST(ParserBase, HenrysLawDetectsWhenRequestedSpeciesAreNotInAqueousPhase)
   }
 }
 
-TEST(ParserBase, HenrysLawDetectsWhenRequestedSolventIsNotRegisteredInCorrectPhase)
+TEST(ParseHenrysLaw, DetectsWhenRequestedSolventIsNotRegisteredInCorrectPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -144,7 +137,7 @@ TEST(ParserBase, HenrysLawDetectsWhenRequestedSolventIsNotRegisteredInCorrectPha
   }
 }
 
-TEST(ParserBase, HenrysLawValidationWithUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidateHenrysLaw, ValidationWithUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 
@@ -181,7 +174,7 @@ TEST(ParserBase, HenrysLawValidationWithUnknownSpeciesUnknownPhaseFailsValidatio
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, HenrysLawValidationWithSpeciesNotInPhasesFailsValidation)
+TEST(ValidateHenrysLaw, ValidationWithSpeciesNotInPhasesFailsValidation)
 {
   using namespace development;
 
@@ -221,7 +214,7 @@ TEST(ParserBase, HenrysLawValidationWithSpeciesNotInPhasesFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, HenrysLawValidationWithMissingRequiredKeysFailsValidation)
+TEST(ValidateHenrysLaw, ValidationWithMissingRequiredKeysFailsValidation)
 {
   using namespace development;
 
@@ -247,7 +240,7 @@ TEST(ParserBase, HenrysLawValidationWithMissingRequiredKeysFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, HenrysLawValidationWithValidConfigurationPassesValidation)
+TEST(ValidateHenrysLaw, ValidationWithValidConfigurationPassesValidation)
 {
   using namespace development;
 
@@ -278,7 +271,7 @@ TEST(ParserBase, HenrysLawValidationWithValidConfigurationPassesValidation)
   EXPECT_EQ(errors.size(), 0);
 }
 
-TEST(ParserBase, HenrysLawValidationWithMultipleSolutes)
+TEST(ValidateHenrysLaw, ValidationWithMultipleSolutes)
 {
   using namespace development;
 
@@ -309,7 +302,7 @@ TEST(ParserBase, HenrysLawValidationWithMultipleSolutes)
   EXPECT_EQ(errors.size(), 0);
 }
 
-TEST(ParserBase, HenrysLawInvalidNumberSolventFailsValidation)
+TEST(ValidateHenrysLaw, InvalidNumberSolventFailsValidation)
 {
   using namespace development;
 

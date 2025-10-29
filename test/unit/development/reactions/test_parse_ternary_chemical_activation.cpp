@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, TernaryParseValidConfig)
+TEST(ParserTernary, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -65,7 +65,7 @@ TEST(ParserBase, TernaryParseValidConfig)
   }
 }
 
-TEST(ParserBase, TernaryDetectsNonStandardKey)
+TEST(ParserTernary, DetectsNonStandardKey)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -93,7 +93,7 @@ TEST(ParserBase, TernaryDetectsNonStandardKey)
   }
 }
 
-TEST(ParserBase, TernaryDetectsUnknownSpecies)
+TEST(ParserTernary, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -117,7 +117,7 @@ TEST(ParserBase, TernaryDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, TernaryDetectsMissingProducts)
+TEST(ParserTernary, DetectsMissingProducts)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -139,7 +139,7 @@ TEST(ParserBase, TernaryDetectsMissingProducts)
   }
 }
 
-TEST(ParserBase, TernaryDetectsMissingReactants)
+TEST(ParserTernary, DetectsMissingReactants)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -161,7 +161,7 @@ TEST(ParserBase, TernaryDetectsMissingReactants)
   }
 }
 
-TEST(ParserBase, TernaryUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateTernary, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

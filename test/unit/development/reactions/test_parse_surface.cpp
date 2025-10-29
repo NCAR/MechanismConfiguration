@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidSurfaceReaction)
+TEST(ParseSurface, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -48,7 +48,7 @@ TEST(ParserBase, CanParseValidSurfaceReaction)
   }
 }
 
-TEST(ParserBase, SurfaceDetectsUnknownSpecies)
+TEST(ParseSurface, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(ParserBase, SurfaceDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, SurfaceDetectsBadReactionComponent)
+TEST(ParseSurface, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -93,7 +93,7 @@ TEST(ParserBase, SurfaceDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, SurfaceDetectsUnknownCondensedPhase)
+TEST(ParseSurface, DetectsUnknownCondensedPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -115,7 +115,7 @@ TEST(ParserBase, SurfaceDetectsUnknownCondensedPhase)
   }
 }
 
-TEST(ParserBase, SurfaceDetectsUnknownGasPhase)
+TEST(ParseSurface, DetectsUnknownGasPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -137,7 +137,7 @@ TEST(ParserBase, SurfaceDetectsUnknownGasPhase)
   }
 }
 
-TEST(ParserBase, SurfaceInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidateSurface, InvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 

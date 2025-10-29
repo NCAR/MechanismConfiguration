@@ -1,10 +1,14 @@
 #include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/validator.hpp>
 
 #include <gtest/gtest.h>
+#include <yaml-cpp/yaml.h>
+
+#include <set>
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidSpecies)
+TEST(ParseSpecies, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -53,7 +57,7 @@ TEST(ParserBase, CanParseValidSpecies)
   }
 }
 
-TEST(ParserBase, DetectsDuplicateSpecies)
+TEST(ParseSpecies, DetectsDuplicateSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -63,18 +67,16 @@ TEST(ParserBase, DetectsDuplicateSpecies)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 4);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    for (auto& error : parsed.errors)
+
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
 }
 
-TEST(ParserBase, DetectsMissingRequiredKeys)
+TEST(ParseSpecies, DetectsMissingRequiredKeys)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -84,16 +86,20 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
+                                                  ConfigParseStatus::InvalidKey};
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(ParserBase, DetectsInvalidKeys)
+TEST(ParseSpecies, DetectsInvalidKeys)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -103,10 +109,142 @@ TEST(ParserBase, DetectsInvalidKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : parsed.errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
+
   }
+}
+
+TEST(ValidateSpecies, ReturnsEmptyErrorsForValidSpecies)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "name": "A"
+      "absolute tolerance": "1.0e-30"
+      "is third body": true
+    - "name": "B"
+      "molecular weight [kg mol-1]": 0.034
+      "density [kg m-3]": 1000.0
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_TRUE(errors.empty());
+}
+
+TEST(ValidateSpecies, DetectsMissingNameKey)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "absolute tolerance": "1.0e-30"
+      "is third body": true
+    - "name": "B"
+      "molecular weight [kg mol-1]": 0.034
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_FALSE(errors.empty());
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidateSpecies, DetectsInvalidKeysInSpecies)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "name": "A"
+      "Absolute Tolerance": 1.0e-30
+    - "name": "B"
+      "absolute tolerance": 1.0e-30
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_EQ(errors.size(), 1);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "name": "A"
+      "absolute tolerance": "1.0e-30"
+    - "name": "B"
+      "molecular weight [kg mol-1]": 0.034
+    - "name": "A"
+      "density [kg m-3]": 1000.0
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_EQ(errors.size(), 2);
+
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::DuplicateSpeciesDetected,
+                                                ConfigParseStatus::DuplicateSpeciesDetected };
+  std::multiset<ConfigParseStatus> actual;
+  for (const auto& [status, message] : errors)
+  {
+    actual.insert(status);
+    EXPECT_NE(message.find("A"), std::string::npos); // Error message should contain species "name"
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+  EXPECT_EQ(actual, expected);
+}
+
+TEST(ValidateSpecies, DetectsMultipleDuplicateSpecies)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "name": "A"
+    - "name": "B"
+    - "name": "A"
+    - "name": "C"
+    - "name": "B"
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_EQ(errors.size(), 4); // 2 for "A" duplicates + 2 for "B" duplicates
+
+  for (const auto& [status, message] : errors)
+  {
+    EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
+    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+  }
+}
+
+TEST(ValidateSpecies, ValidatesAllOptionalKeys)
+{
+  YAML::Node species_list = YAML::Load(R"(
+    - "name": "CompleteSpecies"
+      "absolute tolerance": "1.0e-30"
+      "diffusion coefficient [m2 s-1]": 1.46e-05
+      "molecular weight [kg mol-1]": 0.0340147
+      "HLC(298K) [mol m-3 Pa-1]": 1.011596348
+      "HLC exponential factor [K]": 6340
+      "N star": 1.74
+      "density [kg m-3]": 1000.0
+      "tracer type": "CHEM"
+      "constant concentration [mol m-3]": 2.5e19
+      "constant mixing ratio [mol mol-1]": 1.0e-6
+      "is third body": true
+  )");
+  
+  auto errors = development::ValidateSpecies(species_list);
+  EXPECT_TRUE(errors.empty());
 }

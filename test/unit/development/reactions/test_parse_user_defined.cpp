@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidUserDefinedReaction)
+TEST(ParseUserDefined, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -44,7 +44,7 @@ TEST(ParserBase, CanParseValidUserDefinedReaction)
   }
 }
 
-TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
+TEST(ParseUserDefined, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -68,7 +68,7 @@ TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
+TEST(ParseUserDefined, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -92,7 +92,7 @@ TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, UserDefinedDetectsUnknownPhase)
+TEST(ParseUserDefined, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -114,7 +114,7 @@ TEST(ParserBase, UserDefinedDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, UserDefinedUnknownSpeciesAndUnknownPhaseFailsValidation)
+TEST(ValidateUserDefined, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
   using namespace development;
 

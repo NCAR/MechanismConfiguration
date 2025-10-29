@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidPhotolysisReaction)
+TEST(ParsePhotolysis, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -40,7 +40,7 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
   }
 }
 
-TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
+TEST(ParsePhotolysis, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -63,7 +63,7 @@ TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
+TEST(ParsePhotolysis, DetectsBadReactionComponent)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -85,7 +85,7 @@ TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
   }
 }
 
-TEST(ParserBase, PhotolysisDetectsUnknownPhase)
+TEST(ParsePhotolysis, DetectsUnknownPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -107,7 +107,7 @@ TEST(ParserBase, PhotolysisDetectsUnknownPhase)
   }
 }
 
-TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
+TEST(ParsePhotolysis, DoesNotAcceptMoreThanOneReactant)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -129,7 +129,7 @@ TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
   }
 }
 
-TEST(ParserBase, PhotolysisInvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
+TEST(ValidatePhotolysis, InvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
   using namespace development;
 

@@ -102,7 +102,7 @@ namespace mechanism_configuration
         /// @brief A list of products
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
-        std::string name;
+        std::string name; 
         /// @brief An identifier for the condensed phase where this reaction occurs
         std::string condensed_phase;
         /// @brief Unknown properties, prefixed with two underscores (__)

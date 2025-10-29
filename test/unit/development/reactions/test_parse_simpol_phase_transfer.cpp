@@ -7,7 +7,7 @@
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidSimpolPhaseTransferReaction)
+TEST(ParseSimpolPhaseTransfer, ParseValidConfig)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -47,7 +47,7 @@ TEST(ParserBase, CanParseValidSimpolPhaseTransferReaction)
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferDetectsUnknownSpecies)
+TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -70,7 +70,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownSpecies)
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAqueousPhase)
+TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -93,7 +93,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAqueousPhase)
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhase)
+TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -115,7 +115,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhase)
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
+TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -139,7 +139,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownGasPhaseSpeciesNotInGasPhase)
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAqueousPhaseSpeciesNotInAqueousPhase)
+TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhase)
 {
   development::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -164,7 +164,7 @@ TEST(ParserBase, SimpolPhaseTransferDetectsUnknownAqueousPhaseSpeciesNotInAqueou
   }
 }
 
-TEST(ParserBase, SimpolPhaseTransferInvalidBParameterNotSequenceFailsValidation)
+TEST(ValidateSimpolPhaseTransfer, InvalidBParameterNotSequenceFailsValidation)
 {
   using namespace development;
 
@@ -198,7 +198,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterNotSequenceFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, SimpolPhaseTransferInvalidBParameterWrongCountFailsValidation)
+TEST(ValidateSimpolPhaseTransfer, InvalidBParameterWrongCountFailsValidation)
 {
   using namespace development;
 
@@ -232,7 +232,7 @@ TEST(ParserBase, SimpolPhaseTransferInvalidBParameterWrongCountFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, SimpolPhaseTransferTooManyGasSpeciesFailsValidation)
+TEST(ValidateSimpolPhaseTransfer, TooManyGasSpeciesFailsValidation)
 {
   using namespace development;
 
@@ -269,7 +269,7 @@ TEST(ParserBase, SimpolPhaseTransferTooManyGasSpeciesFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, SimpolPhaseTransferTooManyCondensedSpeciesFailsValidation)
+TEST(ValidateSimpolPhaseTransfer, TooManyCondensedSpeciesFailsValidation)
 {
   using namespace development;
 
@@ -306,7 +306,7 @@ TEST(ParserBase, SimpolPhaseTransferTooManyCondensedSpeciesFailsValidation)
   EXPECT_EQ(actual, expected);
 }
 
-TEST(ParserBase, SimpolPhaseTransferMultipleErrorsFailsValidation)
+TEST(ValidateSimpolPhaseTransfer, MultipleErrorsFailsValidation)
 {
   using namespace development;
 
