@@ -71,7 +71,7 @@ TEST(ValidateWetDeposition, ReturnsEmptyErrorsForValidReaction)
     name: "rxn cloud"
     "scaling factor": 12.3
   )");
-  
+
   development::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_TRUE(errors.empty());
@@ -89,7 +89,7 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredType)
     "condensed phase": "cloud"
     name: "rxn cloud"
   )");
-  
+
   development::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
@@ -116,7 +116,7 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
     type: "WET_DEPOSITION"
     name: "rxn cloud"
   )");
-  
+
   development::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
@@ -144,11 +144,8 @@ TEST(ValidateWetDeposition, ValidatesWithOptionalScalingFactor)
     "condensed phase": "cloud"
     "scaling factor": 5.7
   )");
-  
+
   development::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_TRUE(errors.empty());
 }
-
-
-

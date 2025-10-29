@@ -211,7 +211,7 @@ TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
   development::types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
-  
+
   development::types::Species species2;
   species2.name = "B";
   existing_species.emplace_back(species2);
@@ -227,7 +227,7 @@ TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
         - name: "A"
           "diffusion coefficient [m2 s-1]": 2.3e-06
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_TRUE(errors.empty());
 }
@@ -246,7 +246,7 @@ TEST(ValidatePhases, DetectsMissingPhaseName)
       species:
         - name: "A"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
@@ -273,7 +273,7 @@ TEST(ValidatePhases, DetectsMissingSpeciesList)
       species:
         - name: "A"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
@@ -299,12 +299,11 @@ TEST(ValidatePhases, DetectsInvalidKeysInPhase)
       SPECIES:
         - name: "A"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 2);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey,
-                                                ConfigParseStatus::RequiredKeyNotFound };
+  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, ConfigParseStatus::RequiredKeyNotFound };
   std::multiset<ConfigParseStatus> actual;
   for (const auto& [status, message] : errors)
   {
@@ -327,7 +326,7 @@ TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
         - "diffusion coefficient [m2 s-1]": 1.5e-05
         - name: "A"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
@@ -354,7 +353,7 @@ TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
         - name: "A"
           Coefficient: 4.23e-5
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
@@ -382,14 +381,14 @@ TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
         - name: "FOO"
           "diffusion coefficient [m2 s-1]": 1.5e-05
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
-  EXPECT_EQ(errors.size(), 2); // Two entries for the duplicate species
+  EXPECT_EQ(errors.size(), 2);  // Two entries for the duplicate species
 
   for (const auto& [status, message] : errors)
   {
     EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
-    EXPECT_NE(message.find("FOO"), std::string::npos); // Error message should contain species name
+    EXPECT_NE(message.find("FOO"), std::string::npos);  // Error message should contain species name
   }
 }
 
@@ -406,7 +405,7 @@ TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
         - name: "A"
         - name: "FOO"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
@@ -426,7 +425,7 @@ TEST(ValidatePhases, DetectsDuplicatePhaseNames)
   development::types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
-  
+
   development::types::Species species2;
   species2.name = "B";
   existing_species.emplace_back(species2);
@@ -442,14 +441,14 @@ TEST(ValidatePhases, DetectsDuplicatePhaseNames)
       species:
         - name: "B"
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
-  EXPECT_EQ(errors.size(), 2); // Two entries for the duplicate phase
+  EXPECT_EQ(errors.size(), 2);  // Two entries for the duplicate phase
 
   for (const auto& [status, message] : errors)
   {
     EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
-    EXPECT_NE(message.find("gas"), std::string::npos); // Error message should contain phase name
+    EXPECT_NE(message.find("gas"), std::string::npos);  // Error message should contain phase name
   }
 }
 
@@ -466,7 +465,7 @@ TEST(ValidatePhases, ValidatesAllSpeciesOptionalKeys)
         - name: "FOO"
           "diffusion coefficient [m2 s-1]": 1.46e-05
   )");
-  
+
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_TRUE(errors.empty());
 }
