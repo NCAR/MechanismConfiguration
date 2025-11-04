@@ -9,6 +9,8 @@
 
 #include <filesystem>
 
+#include <yaml-cpp/yaml.h>
+
 namespace mechanism_configuration
 {
   namespace v1
@@ -17,6 +19,8 @@ namespace mechanism_configuration
     {
      public:
       ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
+      ParserResult<types::Mechanism> ParseFromString(const std::string& content);
+      ParserResult<types::Mechanism> ParseFromNode(const YAML::Node& object);
     };
   }  // namespace v1
 }  // namespace mechanism_configuration

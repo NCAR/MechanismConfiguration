@@ -9,20 +9,52 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <yaml-cpp/yaml.h>
+#include <iostream>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
+    ParserResult<types::Mechanism> Parser::ParseFromString(const std::string& content){
+      ParserResult<types::Mechanism> result;
+      try
+      {
+        YAML::Node object = YAML::Load(content);
+        return ParseFromNode(object);
+      }
+      catch(const std::exception& e)
+      {
+        std::string msg = "Failed to parse content as YAML: " + std::string(e.what());
+        msg += "\nContent:\n" + content;
+        result.errors.push_back({ ConfigParseStatus::UnexpectedError, msg });
+      }
+
+      return result;
+    }
+
     ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
     {
       ParserResult<types::Mechanism> result;
+
       if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
       {
         result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found or is a directory" });
         return result;
       }
       YAML::Node object = YAML::LoadFile(config_path.string());
+
+      auto parsed = ParseFromNode(object);
+      // prepend the file name to the error messages
+      for (auto& error : parsed.errors)
+      {
+        error.second = config_path.string() + ":" + error.second;
+      }
+
+      return parsed;
+    }
+
+    ParserResult<types::Mechanism> Parser::ParseFromNode(const YAML::Node& object) {
+      ParserResult<types::Mechanism> result;
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
       std::vector<std::string> mechanism_required_keys = {
@@ -62,12 +94,6 @@ namespace mechanism_configuration
       auto reactions_parsing = ParseReactions(object[validation::reactions], species_parsing.second, phases_parsing.second);
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
       mechanism->reactions = reactions_parsing.second;
-
-      // prepend the file name to the error messages
-      for (auto& error : result.errors)
-      {
-        error.second = config_path.string() + ":" + error.second;
-      }
 
       result.mechanism = std::move(mechanism);
       return result;
