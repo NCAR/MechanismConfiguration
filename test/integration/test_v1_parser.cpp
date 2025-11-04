@@ -101,8 +101,10 @@ reactions:
 
   auto parsed = parser.ParseFromString(content);
   EXPECT_TRUE(parsed);
-  if (!parsed) {
-    for (const auto& error : parsed.errors) {
+  if (!parsed)
+  {
+    for (const auto& error : parsed.errors)
+    {
       std::cerr << "Error: " << configParseStatusToString(error.first) << " - " << error.second << std::endl;
     }
   }
@@ -160,8 +162,10 @@ TEST(ParserBase, CanParseFromJsonString)
 
   auto parsed = parser.ParseFromString(content);
   EXPECT_TRUE(parsed);
-  if (!parsed) {
-    for (const auto& error : parsed.errors) {
+  if (!parsed)
+  {
+    for (const auto& error : parsed.errors)
+    {
       std::cerr << "Error: " << configParseStatusToString(error.first) << " - " << error.second << std::endl;
     }
   }
