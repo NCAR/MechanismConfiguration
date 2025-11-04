@@ -14,14 +14,15 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    ParserResult<types::Mechanism> Parser::ParseFromString(const std::string& content){
+    ParserResult<types::Mechanism> Parser::ParseFromString(const std::string& content)
+    {
       ParserResult<types::Mechanism> result;
       try
       {
         YAML::Node object = YAML::Load(content);
         return ParseFromNode(object);
       }
-      catch(const std::exception& e)
+      catch (const std::exception& e)
       {
         std::string msg = "Failed to parse content as YAML: " + std::string(e.what());
         msg += "\nContent:\n" + content;
@@ -53,7 +54,7 @@ namespace mechanism_configuration
 
         return parsed;
       }
-      catch(const std::exception& e)
+      catch (const std::exception& e)
       {
         std::string msg = "Failed to parse file as YAML: " + std::string(e.what());
         msg += "\nFile: " + config_path.string();
@@ -62,7 +63,8 @@ namespace mechanism_configuration
       }
     }
 
-    ParserResult<types::Mechanism> Parser::ParseFromNode(const YAML::Node& object) {
+    ParserResult<types::Mechanism> Parser::ParseFromNode(const YAML::Node& object)
+    {
       ParserResult<types::Mechanism> result;
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 

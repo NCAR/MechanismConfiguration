@@ -7,9 +7,9 @@
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v1/mechanism.hpp>
 
-#include <filesystem>
-
 #include <yaml-cpp/yaml.h>
+
+#include <filesystem>
 
 namespace mechanism_configuration
 {
