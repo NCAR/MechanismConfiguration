@@ -30,6 +30,7 @@ namespace mechanism_configuration
       case ConfigParseStatus::InvalidVersion: return "InvalidVersion";
       case ConfigParseStatus::UnknownType: return "UnknownType";
       case ConfigParseStatus::FileNotFound: return "FileNotFound";
+      case ConfigParseStatus::UnexpectedError: return "UnexpectedError";
       default: return "Unknown";
     }
   }

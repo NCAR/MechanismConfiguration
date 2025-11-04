@@ -32,7 +32,8 @@ namespace mechanism_configuration
     InvalidVersion,
     InvalidParameterNumber,
     UnknownType,
-    FileNotFound
+    FileNotFound,
+    UnexpectedError
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);
