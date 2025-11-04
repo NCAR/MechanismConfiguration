@@ -40,16 +40,26 @@ namespace mechanism_configuration
         result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found or is a directory" });
         return result;
       }
-      YAML::Node object = YAML::LoadFile(config_path.string());
-
-      auto parsed = ParseFromNode(object);
-      // prepend the file name to the error messages
-      for (auto& error : parsed.errors)
+      try
       {
-        error.second = config_path.string() + ":" + error.second;
-      }
+        YAML::Node object = YAML::LoadFile(config_path.string());
 
-      return parsed;
+        auto parsed = ParseFromNode(object);
+        // prepend the file name to the error messages
+        for (auto& error : parsed.errors)
+        {
+          error.second = config_path.string() + ":" + error.second;
+        }
+
+        return parsed;
+      }
+      catch(const std::exception& e)
+      {
+        std::string msg = "Failed to parse file as YAML: " + std::string(e.what());
+        msg += "\nFile: " + config_path.string();
+        result.errors.push_back({ ConfigParseStatus::UnexpectedError, msg });
+        return result;
+      }
     }
 
     ParserResult<types::Mechanism> Parser::ParseFromNode(const YAML::Node& object) {
