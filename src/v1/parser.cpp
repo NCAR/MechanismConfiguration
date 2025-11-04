@@ -9,7 +9,6 @@
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <yaml-cpp/yaml.h>
-#include <iostream>
 
 namespace mechanism_configuration
 {
