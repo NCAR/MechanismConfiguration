@@ -31,7 +31,7 @@ endif()
 # yaml-cpp
 
 set_git_default(YAML_CPP_GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git)
-set_git_default(YAML_CPP_GIT_TAG 28f93bdec6387d42332220afa9558060c8016795)
+set_git_default(YAML_CPP_GIT_TAG 65c1c270dbe7eec37b2df2531d7497c4eea79aee)
 
 FetchContent_Declare(yaml-cpp
     GIT_REPOSITORY ${YAML_CPP_GIT_REPOSITORY}
