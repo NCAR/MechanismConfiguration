@@ -60,9 +60,7 @@ namespace mechanism_configuration
     /// @param models_list YAML node containing the list of models
     /// @param existing_phases List of known phases to validate phase references
     /// @return list of validation errors, if any
-    Errors ValidateModels(
-        const YAML::Node& models_list,
-        const std::vector<types::Phase>& existing_phases);
+    Errors ValidateModels(const YAML::Node& models_list, const std::vector<types::Phase>& existing_phases);
 
   }  // namespace development
 }  // namespace mechanism_configuration

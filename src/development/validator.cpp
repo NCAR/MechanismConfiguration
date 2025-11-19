@@ -2,6 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include <mechanism_configuration/development/model_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
@@ -9,7 +10,6 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
-#include <mechanism_configuration/development/model_parsers.hpp>
 
 #include <format>
 #include <string>
@@ -301,9 +301,7 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors ValidateModels(
-        const YAML::Node& models_list,
-        const std::vector<types::Phase>& existing_phases)
+    Errors ValidateModels(const YAML::Node& models_list, const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
       bool is_valid = true;
