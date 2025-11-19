@@ -56,5 +56,13 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases);
 
+    /// @brief Validates a list of model definitions in a YAML node
+    /// @param models_list YAML node containing the list of models
+    /// @param existing_phases List of known phases to validate phase references
+    /// @return list of validation errors, if any
+    Errors ValidateModels(
+        const YAML::Node& models_list,
+        const std::vector<types::Phase>& existing_phases);
+
   }  // namespace development
 }  // namespace mechanism_configuration

@@ -76,14 +76,16 @@ namespace mechanism_configuration
       mechanism->phases = parsed_phases;
 
       // Models
-      YAML::Node models_node = object[validation::models];
-      if (models_node && !models_node.IsNull())
+      validation_errors = ValidateModels(object[validation::models], parsed_phases);
+      if (!validation_errors.empty())
       {
-        auto models_parsing = ParseModels(models_node, parsed_phases);
-        result.errors.insert(result.errors.end(), models_parsing.first.begin(), models_parsing.first.end());
-        mechanism->models = models_parsing.second;
+        AppendFilePath(config_path, validation_errors);
+        result.errors.insert(result.errors.end(), validation_errors.begin(), validation_errors.end());
+        return result;
       }
 
+      mechanism->models = ParseModels(object[validation::models]);
+      
       // Reactions
       validation_errors = ValidateReactions(object[validation::reactions], parsed_species, parsed_phases);
       if (!validation_errors.empty())

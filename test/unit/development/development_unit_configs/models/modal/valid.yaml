@@ -72,16 +72,13 @@ models:
       - name: aitken
         geometric mean diameter [m]: 2.6e-8
         geometric standard deviation: 1.6
-        phases:
-          - aqueous
+        phase: aqueous
         __comment: Aitken mode
 
       - name: accumulation
         geometric mean diameter [m]: 1.1e-7
         geometric standard deviation: 1.8
-        phases:
-          - aqueous
-          - organic
+        phase: organic
 
 reactions:
   - type: HL_PHASE_TRANSFER
