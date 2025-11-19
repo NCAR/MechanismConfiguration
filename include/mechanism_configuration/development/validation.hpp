@@ -202,7 +202,7 @@ namespace mechanism_configuration
       static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
       // also
       // name
-      // phases
+      // phase
 
     }  // namespace validation
   }  // namespace development

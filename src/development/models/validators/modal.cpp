@@ -9,16 +9,6 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-
-// #include <mechanism_configuration/development/mechanism_parsers.hpp>
-// #include <mechanism_configuration/development/reaction_parsers.hpp>
-// #include <mechanism_configuration/development/reaction_types.hpp>
-// #include <mechanism_configuration/development/utils.hpp>
-// #include <mechanism_configuration/development/validator.hpp>
-// #include <mechanism_configuration/error_location.hpp>
-// #include <mechanism_configuration/validate_schema.hpp>
-
-
 #include <utility>
 
 namespace mechanism_configuration
@@ -71,32 +61,9 @@ namespace mechanism_configuration
           continue;
         }
 
-        // if (!mode_object[validation::phases].IsSequence())
-        // {
-        //   const auto& node = mode_object[validation::phases];
-        //   ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
-        //   std::string message = std::format(
-        //       "{} error: Expected 'phases' to be a sequence, but found a different type in the '{}' mode.",
-        //       error_location,
-        //       mode_object[validation::name].as<std::string>());
-
-        //   errors.push_back({ ConfigParseStatus::InvalidType, message });
-
-        //   continue;
-        // }
-
-        // for (const auto& phase_object : mode_object[validation::phases])
-        // {
-        // }
-        // for (const auto& each_mode : mode_object)
-        // {
-          auto phase_optional = CheckPhaseExists( 
-            mode_object, validation::phase, existing_phases, errors, 
-            ConfigParseStatus::UnknownPhase, 
-            object[validation::type].as<std::string>());
-            // mode_object, phase_object.as<std::string>(), existing_phases, errors);
-        // }
+        auto phase_optional = CheckPhaseExists( 
+          mode_object, validation::phase, existing_phases, errors, 
+          ConfigParseStatus::UnknownPhase, object[validation::type].as<std::string>());
       }
 
       return errors;

@@ -12,7 +12,6 @@ namespace mechanism_configuration
 {
   namespace development
   {
-    /// @brief 
     void GasModelParser::Parse(const YAML::Node& object, types::Models& models)
     {
       types::GasModel model;

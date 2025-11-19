@@ -23,28 +23,16 @@ namespace mechanism_configuration
      public:
       /// @brief Validates a YAML node representing a model
       /// @param object The YAML node containing model information
-      /// @param existing_species A list of species previously defined in the mechanism
-      /// @param existing_phases A list of chemical phases relevant to the reaction
+      /// @param existing_phases A list of chemical phases
       /// @return A list of any validation errors encountered
       virtual Errors Validate(
           const YAML::Node& object,
           const std::vector<types::Phase>& existing_phases) = 0;
 
       /// @brief Parses a YAML node representing a model and populate the models object
-      /// @param object The YAML node containing reaction information
+      /// @param object The YAML node containing model information
       /// @param models The container to which the parsed models will be added
       virtual void Parse(const YAML::Node& object, types::Models& models) = 0;
-
-     //////
-     //////
-
-      // /// @brief Parses a YAML node representing a model and populate the models object
-      // /// @param object The YAML node containing model information
-      // /// @param existing_phases A list of previously defined phases
-      // /// @param models The container to which the parsed models will be added
-      // /// @return A list of any parsing errors encountered
-      // virtual Errors
-      // parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models) = 0;
 
       /// @brief Destructor
       virtual ~IModelParser() = default;
@@ -59,13 +47,6 @@ namespace mechanism_configuration
           const std::vector<types::Phase>& existing_phases) override;
 
       void Parse(const YAML::Node& object, types::Models& models) override;
-      ////
-      ////
-      ////
-
-      // /// @brief Parses a YAML node containing gas-phase model information
-      // Errors parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
-      //     override;
     };
 
     /// @brief Parser for modal aerosol models
@@ -77,12 +58,6 @@ namespace mechanism_configuration
           const std::vector<types::Phase>& existing_phases) override;
 
       void Parse(const YAML::Node& object, types::Models& models) override;
-
-     /////
-     /////
-      /// @brief Parses a YAML node containing modal aerosol model information
-      // Errors parse(const YAML::Node& object, const std::vector<types::Phase>& existing_phases, types::Models& models)
-      //     override;
     };
 
     /// @brief Returns a static map of model type keys to their parser instances
@@ -98,5 +73,6 @@ namespace mechanism_configuration
 
       return model_parsers;
     }
+
   }  // namespace development
 }  // namespace mechanism_configuration

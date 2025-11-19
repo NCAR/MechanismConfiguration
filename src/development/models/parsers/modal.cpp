@@ -26,12 +26,6 @@ namespace mechanism_configuration
         mode.geometric_mean_diameter = mode_object[validation::geometric_mean_diameter].as<double>();
         mode.geometric_standard_deviation = mode_object[validation::geometric_standard_deviation].as<double>();
         mode.phase = mode_object[validation::phase].as<std::string>();
-        // mode.phases.reserve(mode_object[validation::phases].size());
-        // for (const auto& phase_object : mode_object[validation::phases])
-        // {
-          // mode.phases.emplace_back(phase_object.as<std::string>());
-        // }
-
         mode.unknown_properties = GetComments(mode_object);
         model.modes.emplace_back(std::move(mode));
       }

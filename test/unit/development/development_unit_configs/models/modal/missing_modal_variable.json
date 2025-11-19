@@ -96,13 +96,13 @@
         {
           "name": "aitken",
           "geometric mean diameter [m]": 2.6e-8,
-          "phases": "aqueous",
+          "phase": "aqueous",
           "__comment": "Aitken mode"
         },
         {
           "name": "accumulation",
           "geometric mean diameter [m]": 1.1e-7,
-          "phases": "aqueous"
+          "phase": "aqueous"
         }
       ]
     }

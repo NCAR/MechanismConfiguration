@@ -53,8 +53,8 @@ namespace mechanism_configuration
     types::Reactions ParseReactions(const YAML::Node& objects);
 
     // @brief Parses a collection of YAML nodes into model objects
-    ///        Iterates over the given YAML nodes, identifies the parser for each model type,
-    ///        and populates a `types::Models` container with the parsed models.
+    ///       Iterates over the given YAML nodes, identifies the parser for each model type,
+    ///       and populates a `types::Models` container with the parsed models.
     /// @param objects YAML node containing multiple model definitions
     /// @return A `types:: Models` object with all successfully parsed models
     types::Models ParseModels(const YAML::Node& objects);
