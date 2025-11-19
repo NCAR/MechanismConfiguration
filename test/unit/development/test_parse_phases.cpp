@@ -1,5 +1,5 @@
 #include <mechanism_configuration/development/mechanism_parser.hpp>
-#include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>

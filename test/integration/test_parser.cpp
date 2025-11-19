@@ -1,4 +1,5 @@
 #include <mechanism_configuration/parser.hpp>
+#include <mechanism_configuration/development/mechanism_parser.hpp>
 #include <mechanism_configuration/v1/types.hpp>
 
 #include <gtest/gtest.h>

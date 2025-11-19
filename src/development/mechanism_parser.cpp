@@ -6,7 +6,7 @@
 #include <mechanism_configuration/development/mechanism_parser.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
 #include <yaml-cpp/yaml.h>

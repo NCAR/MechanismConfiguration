@@ -1,9 +1,9 @@
 target_sources(mechanism_configuration
   PRIVATE
-    parser.cpp
-    mechanism_parsers.cpp
+    mechanism_parser.cpp
+    type_parsers.cpp
+    type_validator.cpp
     utils.cpp
-    validator.cpp
 )
 
 add_subdirectory(models)
