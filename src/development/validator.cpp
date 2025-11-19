@@ -344,7 +344,6 @@ namespace mechanism_configuration
       if (!is_valid)
         return errors;
 
-
       for (const auto& [model_node, parser] : valid_models)
       {
         auto validation_errors = parser->Validate(model_node, existing_phases);
