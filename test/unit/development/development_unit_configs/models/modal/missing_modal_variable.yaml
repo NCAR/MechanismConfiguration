@@ -63,14 +63,12 @@ models:
     modes:
       - name: aitken
         geometric mean diameter [m]: 2.6e-8
-        phases:
-          - aqueous
+        phases: aqueous
         __comment: Aitken mode
 
       - name: accumulation
         geometric mean diameter [m]: 1.1e-7
-        phases:
-          - aqueous
+        phases: aqueous
 
 reactions:
   - type: HL_PHASE_TRANSFER

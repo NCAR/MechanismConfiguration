@@ -9,6 +9,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+#include <mechanism_configuration/development/model_parsers.hpp>
 
 #include <format>
 #include <string>
@@ -291,6 +292,62 @@ namespace mechanism_configuration
       for (const auto& [reaction_node, parser] : valid_reactions)
       {
         auto validation_errors = parser->Validate(reaction_node, existing_species, existing_phases);
+        if (!validation_errors.empty())
+        {
+          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        }
+      }
+
+      return errors;
+    }
+
+    Errors ValidateModels(
+        const YAML::Node& models_list,
+        const std::vector<types::Phase>& existing_phases)
+    {
+      Errors errors;
+      bool is_valid = true;
+
+      auto& parsers = GetModelParserMap();
+
+      std::vector<std::pair<YAML::Node, IModelParser*>> valid_models;
+
+      for (const auto& object : models_list)
+      {
+        if (!object[validation::type])
+        {
+          ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+          std::string message = std::format("{} error: Missing 'type' object in model.", error_location);
+          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+          is_valid = false;
+          continue;
+        }
+
+        std::string type = object[validation::type].as<std::string>();
+
+        auto it = parsers.find(type);
+        if (it == parsers.end())
+        {
+          const auto& node = object[validation::type];
+          ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+
+          std::string message = std::format("{} error: Unknown model type '{}' found.", error_location, type);
+
+          errors.push_back({ ConfigParseStatus::UnknownType, message });
+          is_valid = false;
+
+          continue;
+        }
+        valid_models.emplace_back(object, it->second.get());
+      }
+
+      if (!is_valid)
+        return errors;
+
+
+      for (const auto& [model_node, parser] : valid_models)
+      {
+        auto validation_errors = parser->Validate(model_node, existing_phases);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

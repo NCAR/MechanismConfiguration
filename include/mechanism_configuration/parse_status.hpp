@@ -31,6 +31,7 @@ namespace mechanism_configuration
     InvalidIonPair,
     InvalidVersion,
     InvalidParameterNumber,
+    InvalidType,
     UnknownType,
     FileNotFound
   };

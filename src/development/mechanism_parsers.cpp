@@ -150,34 +150,21 @@ namespace mechanism_configuration
       return reactions;
     }
 
-    std::pair<Errors, types::Models> ParseModels(const YAML::Node& objects, const std::vector<types::Phase>& existing_phases)
+    types::Models ParseModels(const YAML::Node& objects)
     {
-      Errors errors;
+      auto& parsers = GetModelParserMap();
       types::Models models;
-
-      std::map<std::string, std::unique_ptr<IModelParser>> parsers;
-      parsers[validation::GasModel_key] = std::make_unique<GasModelParser>();
-      parsers[validation::ModalModel_key] = std::make_unique<ModalModelParser>();
 
       for (const auto& object : objects)
       {
-        std::string type = object[validation::type].as<std::string>();
-        auto it = parsers.find(type);
+        auto it = parsers.find(object[validation::type].as<std::string>());
         if (it != parsers.end())
         {
-          auto parse_errors = it->second->parse(object, existing_phases, models);
-          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-        }
-        else
-        {
-          std::string line = std::to_string(object[validation::type].Mark().line + 1);
-          std::string column = std::to_string(object[validation::type].Mark().column + 1);
-          errors.push_back(
-              { ConfigParseStatus::UnknownType, "Unknown type: " + type + " at line " + line + " column " + column });
+          it->second->Parse(object, models);
         }
       }
 
-      return { errors, models };
+      return models;
     }
 
   }  // namespace development

@@ -122,7 +122,7 @@ namespace mechanism_configuration
       if (!object[phase_key])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-
+      std::cout << "JK: " <<  phase_key << std::endl;
         std::string message = std::format(
             "{} error: Invalid phase key '{}'. This phase was not found in the object of type '{}'.",
             error_location,
