@@ -25,9 +25,7 @@ namespace mechanism_configuration
       /// @param object The YAML node containing model information
       /// @param existing_phases A list of chemical phases
       /// @return A list of any validation errors encountered
-      virtual Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Phase>& existing_phases) = 0;
+      virtual Errors Validate(const YAML::Node& object, const std::vector<types::Phase>& existing_phases) = 0;
 
       /// @brief Parses a YAML node representing a model and populate the models object
       /// @param object The YAML node containing model information
@@ -42,9 +40,7 @@ namespace mechanism_configuration
     class GasModelParser : public IModelParser
     {
      public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Phase>& existing_phases) override;
+      Errors Validate(const YAML::Node& object, const std::vector<types::Phase>& existing_phases) override;
 
       void Parse(const YAML::Node& object, types::Models& models) override;
     };
@@ -53,9 +49,7 @@ namespace mechanism_configuration
     class ModalModelParser : public IModelParser
     {
      public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Phase>& existing_phases) override;
+      Errors Validate(const YAML::Node& object, const std::vector<types::Phase>& existing_phases) override;
 
       void Parse(const YAML::Node& object, types::Models& models) override;
     };

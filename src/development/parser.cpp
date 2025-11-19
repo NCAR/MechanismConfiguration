@@ -85,7 +85,7 @@ namespace mechanism_configuration
       }
 
       mechanism->models = ParseModels(object[validation::models]);
-      
+
       // Reactions
       validation_errors = ValidateReactions(object[validation::reactions], parsed_species, parsed_phases);
       if (!validation_errors.empty())

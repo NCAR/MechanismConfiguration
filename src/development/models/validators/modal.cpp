@@ -21,10 +21,7 @@ namespace mechanism_configuration
       std::vector<std::string> optional_top_level_keys = { validation::name };
 
       std::vector<std::string> required_second_level_keys = {
-        validation::name, 
-        validation::geometric_mean_diameter, 
-        validation::geometric_standard_deviation, 
-        validation::phase
+        validation::name, validation::geometric_mean_diameter, validation::geometric_standard_deviation, validation::phase
       };
       std::vector<std::string> optional_second_level_keys = {};
 
@@ -61,9 +58,13 @@ namespace mechanism_configuration
           continue;
         }
 
-        auto phase_optional = CheckPhaseExists( 
-          mode_object, validation::phase, existing_phases, errors, 
-          ConfigParseStatus::UnknownPhase, object[validation::type].as<std::string>());
+        auto phase_optional = CheckPhaseExists(
+            mode_object,
+            validation::phase,
+            existing_phases,
+            errors,
+            ConfigParseStatus::UnknownPhase,
+            object[validation::type].as<std::string>());
       }
 
       return errors;
