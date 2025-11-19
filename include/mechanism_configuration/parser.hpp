@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism_parser.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>

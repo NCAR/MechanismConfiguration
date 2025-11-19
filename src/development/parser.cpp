@@ -2,8 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/development/mechanism_parsers.hpp>
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/type_parsers.hpp>
+#include <mechanism_configuration/development/mechanism_parser.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/development/validator.hpp>

@@ -2,7 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/development/mechanism_parsers.hpp>
+#include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/model_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
@@ -13,17 +13,18 @@
 
 #include <sstream>
 
-namespace
-{
-  std::string FormatYamlError(const YAML::Node& node, const std::string& message)
-  {
-    std::string line = std::to_string(node.Mark().line + 1);
-    std::string column = std::to_string(node.Mark().column + 1);
-    std::ostringstream oss;
-    oss << line << ":" << column << message;
-    return oss.str();
-  }
-}  // namespace
+// TODO - Remove
+// namespace
+// {
+//   std::string FormatYamlError(const YAML::Node& node, const std::string& message)
+//   {
+//     std::string line = std::to_string(node.Mark().line + 1);
+//     std::string column = std::to_string(node.Mark().column + 1);
+//     std::ostringstream oss;
+//     oss << line << ":" << column << message;
+//     return oss.str();
+//   }
+// }  // namespace
 
 namespace mechanism_configuration
 {

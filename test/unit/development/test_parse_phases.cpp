@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism_parser.hpp>
 #include <mechanism_configuration/development/validator.hpp>
 
 #include <gtest/gtest.h>
