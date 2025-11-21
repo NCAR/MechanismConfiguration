@@ -2,7 +2,7 @@ target_sources(mechanism_configuration
   PRIVATE
     mechanism_parser.cpp
     type_parsers.cpp
-    type_validator.cpp
+    type_validators.cpp
     utils.cpp
 )
 
