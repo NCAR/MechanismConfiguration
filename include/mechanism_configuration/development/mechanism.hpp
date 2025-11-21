@@ -9,11 +9,9 @@
 #include <mechanism_configuration/development/types.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 
-// TODO
-#include <mechanism_configuration/parser_result.hpp>
-
 #include <string>
 #include <vector>
+#include <yaml-cpp/yaml.h>
 
 namespace mechanism_configuration {
 namespace development {

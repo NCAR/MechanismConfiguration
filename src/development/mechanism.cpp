@@ -11,6 +11,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <format>
+
 namespace mechanism_configuration
 {
   namespace development
