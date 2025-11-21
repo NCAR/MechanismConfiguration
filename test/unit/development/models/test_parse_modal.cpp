@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism_parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 
 #include <gtest/gtest.h>
 
@@ -7,15 +7,18 @@ using namespace mechanism_configuration;
 TEST(ParseModal, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/modal/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/modal/valid") + extension);
-    EXPECT_TRUE(parsed);
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    development::types::Mechanism mechanism = *parsed;
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
 
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.models.modal_model.type, "MODAL");
     EXPECT_EQ(mechanism.models.modal_model.name, "aqueous");
     EXPECT_EQ(mechanism.models.modal_model.modes.size(), 2);
@@ -37,16 +40,20 @@ TEST(ParseModal, ParseValidConfig)
 TEST(ParseModal, MissingModes)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/modal/missing_modes";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/modal/missing_modes") + extension);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -58,17 +65,21 @@ TEST(ParseModal, MissingModes)
 TEST(ParseModal, MissingModalMemberData)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/modal/missing_modal_variable";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/modal/missing_modal_variable") + extension);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
                                                   ConfigParseStatus::RequiredKeyNotFound };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -80,17 +91,20 @@ TEST(ParseModal, MissingModalMemberData)
 TEST(ParseModal, PhaseInModeNotFoundInRegisteredPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/modal/mode_phase_not_found_in_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed =
-        parser.Parse(std::string("development_unit_configs/models/modal/mode_phase_not_found_in_phases") + extension);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;

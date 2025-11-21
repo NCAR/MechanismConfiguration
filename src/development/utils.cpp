@@ -27,11 +27,11 @@ namespace mechanism_configuration
       return sequence;
     }
 
-    void AppendFilePath(const std::filesystem::path& config_path, Errors& errors)
+    void AppendFilePath(const std::string& config_path, Errors& errors)
     {
       for (auto& error : errors)
       {
-        error.second = config_path.string() + ":" + error.second;
+        error.second = config_path + ":" + error.second;
       }
     }
 

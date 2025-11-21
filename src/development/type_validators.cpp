@@ -71,7 +71,7 @@ namespace mechanism_configuration
             ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
             std::string message = std::format(
-                "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+                "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, message });
           }
@@ -146,7 +146,7 @@ namespace mechanism_configuration
               ErrorLocation error_location{ duplicate_obj.Mark().line, duplicate_obj.Mark().column };
 
               std::string message = std::format(
-                  "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+                  "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
               errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, message });
             }
