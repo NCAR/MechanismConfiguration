@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -10,13 +10,18 @@ using namespace mechanism_configuration;
 TEST(ParseSimpolPhaseTransfer, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/reactions/simpol_phase_transfer/valid") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
 
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer.size(), 2);
 
     EXPECT_EQ(mechanism.reactions.simpol_phase_transfer[0].name, "my simpol");
@@ -50,18 +55,21 @@ TEST(ParseSimpolPhaseTransfer, ParseValidConfig)
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/simpol_phase_transfer/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
                                                   ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -73,18 +81,20 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file =
-        std::string("development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -96,17 +106,20 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -118,19 +131,20 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file =
-        std::string("development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase") +
-        extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -142,20 +156,20 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase_species_in_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file =
-        std::string(
-            "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase_species_in_aqueous_phase") +
-        extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;

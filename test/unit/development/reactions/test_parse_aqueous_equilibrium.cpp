@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -10,13 +10,18 @@ using namespace mechanism_configuration;
 TEST(ParseAqueousEquilibrium, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/aqueous_equilibrium/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/reactions/aqueous_equilibrium/valid") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
 
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium.size(), 2);
 
     EXPECT_EQ(mechanism.reactions.aqueous_equilibrium[0].name, "my aqueous eq");
@@ -55,18 +60,21 @@ TEST(ParseAqueousEquilibrium, ParseValidConfig)
 TEST(ParseAqueousEquilibrium, DetectsUnknownSpecies)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/aqueous_equilibrium/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/aqueous_equilibrium/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
                                                   ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -78,18 +86,20 @@ TEST(ParseAqueousEquilibrium, DetectsUnknownSpecies)
 TEST(ParseAqueousEquilibrium, DetectsBadReactionComponent)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/aqueous_equilibrium/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file =
-        std::string("development_unit_configs/reactions/aqueous_equilibrium/bad_reaction_component") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -101,17 +111,20 @@ TEST(ParseAqueousEquilibrium, DetectsBadReactionComponent)
 TEST(ParseAqueousEquilibrium, DetectsUnknownPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/reactions/aqueous_equilibrium/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/reactions/aqueous_equilibrium/missing_phase") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;

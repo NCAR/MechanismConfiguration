@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
@@ -11,14 +11,19 @@ using namespace mechanism_configuration;
 TEST(ParseSpecies, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/species/valid_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/species/valid_species") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
-    EXPECT_EQ(mechanism.species.size(), 3);
+    YAML::Node object = parser.FileToYaml(path + extension);
 
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+
+    auto mechanism = parser.Parse(object);
+    EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.species[0].name, "A");
     EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 2);
     EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0e-30");
@@ -60,15 +65,18 @@ TEST(ParseSpecies, ParseValidConfig)
 TEST(ParseSpecies, DetectsDuplicateSpecies)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/species/duplicate_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/species/duplicate_species") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 4);
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    for (const auto& [status, message] : parsed.errors)
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 4);
+
+    for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -79,17 +87,20 @@ TEST(ParseSpecies, DetectsDuplicateSpecies)
 TEST(ParseSpecies, DetectsMissingRequiredKeys)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/species/missing_required_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/species/missing_required_key") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -101,17 +112,20 @@ TEST(ParseSpecies, DetectsMissingRequiredKeys)
 TEST(ParseSpecies, DetectsInvalidKeys)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/species/invalid_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/species/invalid_key") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
