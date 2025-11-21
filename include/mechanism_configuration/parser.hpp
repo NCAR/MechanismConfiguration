@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/mechanism_parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
@@ -37,11 +37,11 @@ namespace mechanism_configuration
       }
 
       development::Parser dev_parser;
-      auto dev_result = dev_parser.Parse(config_path);
-
-      if (dev_result)
+      YAML::Node object = dev_parser.FileToYaml(config_path);
+      auto dev_errors = dev_parser.Validate(object);
+      if (dev_errors.empty())
       {
-        result.mechanism = std::move(dev_result.mechanism);
+        result.mechanism = std::make_unique<development::types::Mechanism>(dev_parser.Parse(object));
         return result;
       }
 
@@ -55,7 +55,7 @@ namespace mechanism_configuration
       }
 
       result.errors = v1_result.errors;
-      result.errors.insert(result.errors.end(), dev_result.errors.begin(), dev_result.errors.end());
+      result.errors.insert(result.errors.end(), dev_errors.begin(), dev_errors.end());
       result.errors.insert(result.errors.end(), v0_result.errors.begin(), v0_result.errors.end());
       return result;
     }
