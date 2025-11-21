@@ -108,7 +108,7 @@ TEST(ParsePhotolysis, DetectsUnknownPhase)
     YAML::Node object = parser.FileToYaml(path + extension);
 
     auto validation_errors = parser.Validate(object);
-    EXPECT_EQ(validation_errors.size(), 1);;
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
