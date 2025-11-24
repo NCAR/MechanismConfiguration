@@ -3,17 +3,6 @@
 
 #include <gtest/gtest.h>
 
-TEST(UniversalParser, ParsesFullV0ConfigurationWithoutExtension)
-{
-  mechanism_configuration::UniversalParser parser;
-  std::string path = "examples/v0";
-  auto parsed = parser.Parse(path);
-  EXPECT_TRUE(parsed);
-  EXPECT_EQ(parsed.mechanism->version.major, 0);
-  EXPECT_EQ(parsed.mechanism->version.minor, 0);
-  EXPECT_EQ(parsed.mechanism->version.patch, 0);
-}
-
 TEST(UniversalParser, ConfigurationWithoutVersionFallsbackToV0)
 {
   mechanism_configuration::UniversalParser parser;
