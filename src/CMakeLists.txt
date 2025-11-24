@@ -22,6 +22,7 @@ set_target_properties(mechanism_configuration PROPERTIES
 target_sources(mechanism_configuration
   PRIVATE
     parse_status.cpp
+    parser.cpp
     validate_schema.cpp
 )
 

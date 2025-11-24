@@ -23,14 +23,19 @@ namespace mechanism_configuration
       case ConfigParseStatus::DuplicateSpeciesInPhaseDetected: return "DuplicateSpeciesInPhaseDetected";
       case ConfigParseStatus::PhaseRequiresUnknownSpecies: return "PhaseRequiresUnknownSpecies";
       case ConfigParseStatus::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
+      case ConfigParseStatus::UnknownSpecies: return "UnknownSpecies";
       case ConfigParseStatus::UnknownPhase: return "UnknownPhase";
       case ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase: return "RequestedSpeciesNotRegisteredInPhase";
       case ConfigParseStatus::TooManyReactionComponents: return "TooManyReactionComponents";
       case ConfigParseStatus::InvalidIonPair: return "InvalidIonPair";
       case ConfigParseStatus::InvalidVersion: return "InvalidVersion";
+      case ConfigParseStatus::MissingVersionField: return "MissingVersionField";
+      case ConfigParseStatus::InvalidParameterNumber: return "InvalidParameterNumber";
+      case ConfigParseStatus::InvalidType: return "InvalidType";
       case ConfigParseStatus::UnknownType: return "UnknownType";
       case ConfigParseStatus::FileNotFound: return "FileNotFound";
       case ConfigParseStatus::UnexpectedError: return "UnexpectedError";
+      case ConfigParseStatus::EmptyObject: return "EmptyObject";
       default: return "Unknown";
     }
   }
