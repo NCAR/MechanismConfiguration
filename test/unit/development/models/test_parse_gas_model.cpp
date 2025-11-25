@@ -64,8 +64,7 @@ TEST(ParseGas, PhaseNotFoundInRegisteredPhases)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase,
-                                                  ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase, ConfigParseStatus::UnknownPhase };
     std::multiset<ConfigParseStatus> actual;
     for (const auto& [status, message] : validation_errors)
     {

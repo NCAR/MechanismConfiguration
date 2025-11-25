@@ -23,7 +23,7 @@ TEST(ParserTernary, ParseValidConfig)
 
     auto mechanism = parser.Parse(object);
     auto& process_vector = mechanism.reactions.ternary_chemical_activation;
-    
+
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction

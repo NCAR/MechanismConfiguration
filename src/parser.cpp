@@ -2,19 +2,19 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/development/mechanism.hpp>
-#include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/error_location.hpp>
-#include <mechanism_configuration/development/validation.hpp>
 
 #include <filesystem>
+#include <format>
 #include <memory>
 #include <vector>
-#include <format>
 
 namespace mechanism_configuration
 {
@@ -25,11 +25,8 @@ namespace mechanism_configuration
 
     if (!std::filesystem::exists(config_path))
     {
-      info.errors.push_back({ 
-        ConfigParseStatus::FileNotFound, 
-        std::format("Configuration file '{}' does not exist.", 
-                    config_path.string())
-      });
+      info.errors.push_back(
+          { ConfigParseStatus::FileNotFound, std::format("Configuration file '{}' does not exist.", config_path.string()) });
       return info;
     }
 
@@ -37,22 +34,18 @@ namespace mechanism_configuration
     try
     {
       object = YAML::LoadFile(config_path.string());
-    } 
+    }
     catch (const YAML::Exception& e)
     {
-      info.errors.push_back({ 
-        ConfigParseStatus::UnexpectedError, 
-        std::format("Failed to parse '{}': {}", config_path.string(), e.what())
-      });
+      info.errors.push_back(
+          { ConfigParseStatus::UnexpectedError, std::format("Failed to parse '{}': {}", config_path.string(), e.what()) });
       return info;
     }
 
     if (!object[development::validation::version])
     {
-      info.errors.push_back({ 
-        ConfigParseStatus::MissingVersionField,
-        std::format("The version field was not found in '{}'.", config_path.string())
-      });
+      info.errors.push_back({ ConfigParseStatus::MissingVersionField,
+                              std::format("The version field was not found in '{}'.", config_path.string()) });
       return info;
     }
 
@@ -130,8 +123,11 @@ namespace mechanism_configuration
     else
     {
       std::string message = std::format(
-        "error: The supported versions are '{}', '{}' but the invalid version number '{}' was found: '{}'.", 
-        DEV_VERSION, V1_VERSION, version_info.version, config_path.string());
+          "error: The supported versions are '{}', '{}' but the invalid version number '{}' was found: '{}'.",
+          DEV_VERSION,
+          V1_VERSION,
+          version_info.version,
+          config_path.string());
       result.errors.push_back({ ConfigParseStatus::InvalidVersion, message });
     }
 

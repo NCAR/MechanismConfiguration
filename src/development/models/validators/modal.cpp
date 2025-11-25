@@ -4,8 +4,8 @@
 
 #include <mechanism_configuration/development/model_parsers.hpp>
 #include <mechanism_configuration/development/model_types.hpp>
-#include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/type_validators.hpp>
+#include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
