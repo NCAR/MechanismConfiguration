@@ -157,7 +157,8 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhas
 {
   development::Parser parser;
 
-  std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase_species_in_aqueous_phase";
+  std::string path =
+      "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase_species_in_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)

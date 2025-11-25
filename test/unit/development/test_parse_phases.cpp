@@ -204,7 +204,7 @@ TEST(ParsePhases, CanParsePhaseSpeciesProperties)
 
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
-    
+
     auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.phases.size(), 1);

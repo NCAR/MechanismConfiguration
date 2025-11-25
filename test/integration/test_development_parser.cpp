@@ -8,7 +8,7 @@ using namespace mechanism_configuration;
 TEST(ParseDevFullConfig, ParseValidConfig)
 {
   development::Parser parser;
-  
+
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
@@ -73,9 +73,9 @@ TEST(ParseDevFullConfig, ReportsBadFiles)
   {
     std::string error_msg(e.what());
     EXPECT_NE(error_msg.find("does not exist or is not a regular file"), std::string::npos)
-      << "Error message was: " << error_msg;
+        << "Error message was: " << error_msg;
 
-    std::cout << error_msg << std::endl; 
+    std::cout << error_msg << std::endl;
   }
 }
 
@@ -93,8 +93,8 @@ TEST(ParseDevFullConfig, ReportsDirectory)
   {
     std::string error_msg(e.what());
     EXPECT_NE(error_msg.find("does not exist or is not a regular file"), std::string::npos)
-      << "Error message was: " << error_msg;
+        << "Error message was: " << error_msg;
 
-    std::cout << error_msg << std::endl; 
+    std::cout << error_msg << std::endl;
   }
 }

@@ -2,13 +2,13 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/type_parsers.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/development/type_validators.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
 #include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -23,8 +23,8 @@ namespace mechanism_configuration
     {
       if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
       {
-        throw std::runtime_error(std::format(
-          "Configuration file '{}' does not exist or is not a regular file.", config_path.string()));
+        throw std::runtime_error(
+            std::format("Configuration file '{}' does not exist or is not a regular file.", config_path.string()));
       }
 
       SetConfigPath(config_path.string());
@@ -32,11 +32,10 @@ namespace mechanism_configuration
       try
       {
         return YAML::LoadFile(config_path.string());
-      } 
+      }
       catch (const YAML::Exception& e)
       {
-        throw std::runtime_error(std::format(
-              "Failed to parse '{}': {}", config_path.string(), e.what()));
+        throw std::runtime_error(std::format("Failed to parse '{}': {}", config_path.string(), e.what()));
       }
     }
 
@@ -67,12 +66,13 @@ namespace mechanism_configuration
       Version version = Version(object[validation::version].as<std::string>());
       if (version.major != MAJOR_VERSION)
       {
-        ErrorLocation error_location{ 
-          object[validation::version].Mark().line, object[validation::version].Mark().column };
+        ErrorLocation error_location{ object[validation::version].Mark().line, object[validation::version].Mark().column };
 
         std::string message = std::format(
-          "{} error: The version must be '{}' but the invalid version number '{}' found.", 
-          error_location, MAJOR_VERSION, version.major);
+            "{} error: The version must be '{}' but the invalid version number '{}' found.",
+            error_location,
+            MAJOR_VERSION,
+            version.major);
         errors.push_back({ ConfigParseStatus::InvalidVersion, config_path_ + ":" + message });
       }
 
