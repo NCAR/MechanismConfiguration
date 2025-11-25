@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
@@ -11,12 +11,18 @@ using namespace mechanism_configuration;
 TEST(ParsePhases, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/valid_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/phases/valid_phases") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.phases.size(), 2);
 
@@ -44,15 +50,18 @@ TEST(ParsePhases, ParseValidConfig)
 TEST(ParsePhases, DetectsDuplicatePhases)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/duplicate_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/phases/duplicate_phases") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    for (const auto& [status, message] : parsed.errors)
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
+
+    for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -63,17 +72,20 @@ TEST(ParsePhases, DetectsDuplicatePhases)
 TEST(ParsePhases, DetectsMissingRequiredKeys)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/missing_required_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/phases/missing_required_key") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -85,17 +97,20 @@ TEST(ParsePhases, DetectsMissingRequiredKeys)
 TEST(ParsePhases, DetectsInvalidKeys)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/invalid_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/phases/invalid_key") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -107,17 +122,20 @@ TEST(ParsePhases, DetectsInvalidKeys)
 TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/phases/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
     std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::PhaseRequiresUnknownSpecies };
     std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
+    for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -129,15 +147,18 @@ TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
 TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/duplicate_species_in_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    std::string file = std::string("development_unit_configs/phases/duplicate_species_in_phase") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    for (const auto& [status, message] : parsed.errors)
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
+
+    for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
@@ -145,15 +166,46 @@ TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
   }
 }
 
+TEST(ParsePhases, DetectsInvalidSpeciesObject)
+{
+  development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/invalid_species_object";
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
+  for (auto& extension : extensions)
+  {
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
+
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : validation_errors)
+    {
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    }
+    EXPECT_EQ(actual, expected);
+  }
+}
+
 TEST(ParsePhases, CanParsePhaseSpeciesProperties)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/phases/phase_species_properties";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/phases/phase_species_properties") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+    
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.phases.size(), 1);
 
@@ -180,28 +232,6 @@ TEST(ParsePhases, CanParsePhaseSpeciesProperties)
     EXPECT_EQ(phase.species[2].name, "baz");
     EXPECT_FALSE(phase.species[2].diffusion_coefficient.has_value());
     EXPECT_EQ(phase.species[2].unknown_properties.size(), 0);
-  }
-}
-
-TEST(ParsePhases, DetectsInvalidSpeciesObject)
-{
-  development::Parser parser;
-  std::vector<std::string> extensions = { ".json", ".yaml" };
-  for (auto& extension : extensions)
-  {
-    std::string file = std::string("development_unit_configs/phases/invalid_species_object") + extension;
-    auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    EXPECT_GE(parsed.errors.size(), 1);
-
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
-    for (const auto& [status, message] : parsed.errors)
-    {
-      actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
-    }
-    EXPECT_EQ(actual, expected);
   }
 }
 

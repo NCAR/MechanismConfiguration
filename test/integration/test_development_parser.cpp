@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 #include <mechanism_configuration/development/types.hpp>
 
 #include <gtest/gtest.h>
@@ -8,14 +8,19 @@ using namespace mechanism_configuration;
 TEST(ParseDevFullConfig, ParseValidConfig)
 {
   development::Parser parser;
+  
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
   {
     std::string path = "examples/development/full_configuration" + extension;
-    auto parsed = parser.Parse(path);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path);
+
+    auto errors = parser.Validate(object);
+    EXPECT_EQ(errors.size(), 0) << "Validation errors were: " << errors.size();
+
+    auto mechanism = parser.Parse(object);
+
     EXPECT_EQ(mechanism.name, "Full Configuration");
     EXPECT_EQ(mechanism.species.size(), 11);
     EXPECT_EQ(mechanism.phases.size(), 4);
@@ -57,14 +62,20 @@ TEST(ParseDevFullConfig, ParseValidConfig)
 TEST(ParseDevFullConfig, ReportsBadFiles)
 {
   development::Parser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
-  for (auto& extension : extensions)
+  std::string path = "bad_path.yaml";
+
+  try
   {
-    std::string path = "examples/_missing_configuration" + extension;
-    auto parsed = parser.Parse(path);
-    EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+    YAML::Node object = parser.FileToYaml(path);
+    FAIL() << "Expected std::runtime_error";
+  }
+  catch (const std::runtime_error& e)
+  {
+    std::string error_msg(e.what());
+    EXPECT_NE(error_msg.find("does not exist or is not a regular file"), std::string::npos)
+      << "Error message was: " << error_msg;
+
+    std::cout << error_msg << std::endl; 
   }
 }
 
@@ -72,8 +83,18 @@ TEST(ParseDevFullConfig, ReportsDirectory)
 {
   development::Parser parser;
   std::string path = "examples/";
-  auto parsed = parser.Parse(path);
-  EXPECT_FALSE(parsed);
-  EXPECT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+
+  try
+  {
+    YAML::Node object = parser.FileToYaml(path);
+    FAIL() << "Expected std::runtime_error";
+  }
+  catch (const std::runtime_error& e)
+  {
+    std::string error_msg(e.what());
+    EXPECT_NE(error_msg.find("does not exist or is not a regular file"), std::string::npos)
+      << "Error message was: " << error_msg;
+
+    std::cout << error_msg << std::endl; 
+  }
 }

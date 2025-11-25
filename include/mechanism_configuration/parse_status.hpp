@@ -15,7 +15,6 @@ namespace mechanism_configuration
     InvalidKey,
     UnknownKey,
     InvalidFilePath,
-    EmptyObject,
     ObjectTypeNotFound,
     RequiredKeyNotFound,
     MutuallyExclusiveOption,
@@ -30,11 +29,13 @@ namespace mechanism_configuration
     TooManyReactionComponents,
     InvalidIonPair,
     InvalidVersion,
+    MissingVersionField,
     InvalidParameterNumber,
     InvalidType,
     UnknownType,
     FileNotFound,
-    UnexpectedError
+    UnexpectedError,
+    EmptyObject,
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);

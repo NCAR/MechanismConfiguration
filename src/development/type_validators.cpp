@@ -6,7 +6,7 @@
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/development/validator.hpp>
+#include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
@@ -71,7 +71,7 @@ namespace mechanism_configuration
             ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
             std::string message = std::format(
-                "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+                "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, message });
           }
@@ -146,7 +146,7 @@ namespace mechanism_configuration
               ErrorLocation error_location{ duplicate_obj.Mark().line, duplicate_obj.Mark().column };
 
               std::string message = std::format(
-                  "{} error: Duplicate species name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
+                  "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
               errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, message });
             }

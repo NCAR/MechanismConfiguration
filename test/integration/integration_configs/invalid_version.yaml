@@ -1,0 +1,21 @@
+version: 9999.0.0
+name: Invalid Config
+species:
+  - name: A
+    __absolute tolerance: 1.0e-30
+  - name: B
+phases:
+  - name: gas
+    species:
+      - name: A
+reactions:
+  - type: ARRHENIUS
+    reactants:
+      - name: A
+        coefficient: 1
+    products:
+      - name: B
+        coefficient: 1
+    A: 1.0e-3
+    Ea: 0.0
+    gas phase: gas
