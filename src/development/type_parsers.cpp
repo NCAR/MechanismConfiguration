@@ -7,6 +7,7 @@
 #include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/development/compatability.hpp>
 #include <mechanism_configuration/error_location.hpp>
 
 namespace mechanism_configuration
@@ -88,7 +89,9 @@ namespace mechanism_configuration
     std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, const std::string& key)
     {
       std::vector<types::ReactionComponent> component_list;
-      for (const auto& elem : AsSequence(object[key]))
+      YAML::Node copy = object[key];
+      BackwardCompatibleSpeciesName(copy);
+      for (const auto& elem : AsSequence(copy))
       {
         types::ReactionComponent component;
         component.name = elem[validation::name].as<std::string>();

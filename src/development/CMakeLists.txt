@@ -1,5 +1,6 @@
 target_sources(mechanism_configuration
   PRIVATE
+    compatability.cpp
     mechanism.cpp
     type_parsers.cpp
     type_validators.cpp

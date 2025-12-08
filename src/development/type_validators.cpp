@@ -7,6 +7,7 @@
 #include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/development/compatability.hpp>
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
@@ -196,12 +197,13 @@ namespace mechanism_configuration
     Errors ValidateReactantsOrProducts(const YAML::Node& list)
     {
       const std::vector<std::string> required_keys = { validation::name };
-      const std::vector<std::string> optional_keys = { validation::coefficient };
+      const std::vector<std::string> optional_keys = { validation::species_name, validation::coefficient };
 
       Errors errors;
 
-      for (const auto& object : list)
+      for (auto object : list)
       {
+        BackwardCompatibleSpeciesName(object);
         auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validation_errors.empty())
         {

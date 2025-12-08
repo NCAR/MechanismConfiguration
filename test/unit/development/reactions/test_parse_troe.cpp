@@ -22,7 +22,7 @@ TEST(ParserTroe, ParseValidConfig)
     EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
 
     auto mechanism = parser.Parse(object);
-    EXPECT_EQ(mechanism.reactions.troe.size(), 2);
+    EXPECT_EQ(mechanism.reactions.troe.size(), 3);
 
     EXPECT_EQ(mechanism.reactions.troe[0].gas_phase, "gas");
     EXPECT_EQ(mechanism.reactions.troe[0].k0_A, 1.0);
@@ -70,6 +70,28 @@ TEST(ParserTroe, ParseValidConfig)
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].name, "B");
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].coefficient, 1.2);
     EXPECT_EQ(mechanism.reactions.troe[1].products[1].unknown_properties.size(), 0);
+
+    EXPECT_EQ(mechanism.reactions.troe[2].name, "my troe");
+    EXPECT_EQ(mechanism.reactions.troe[2].gas_phase, "gas");
+    EXPECT_EQ(mechanism.reactions.troe[2].k0_A, 32.1);
+    EXPECT_EQ(mechanism.reactions.troe[2].k0_B, -2.3);
+    EXPECT_EQ(mechanism.reactions.troe[2].k0_C, 102.3);
+    EXPECT_EQ(mechanism.reactions.troe[2].kinf_A, 63.4);
+    EXPECT_EQ(mechanism.reactions.troe[2].kinf_B, -1.3);
+    EXPECT_EQ(mechanism.reactions.troe[2].kinf_C, 908.5);
+    EXPECT_EQ(mechanism.reactions.troe[2].Fc, 1.3);
+    EXPECT_EQ(mechanism.reactions.troe[2].N, 32.1);
+    EXPECT_EQ(mechanism.reactions.troe[2].reactants.size(), 1);
+    EXPECT_EQ(mechanism.reactions.troe[2].reactants[0].name, "C");
+    EXPECT_EQ(mechanism.reactions.troe[2].reactants[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.troe[2].products.size(), 2);
+    EXPECT_EQ(mechanism.reactions.troe[2].products[0].name, "A");
+    EXPECT_EQ(mechanism.reactions.troe[2].products[0].coefficient, 0.2);
+    EXPECT_EQ(mechanism.reactions.troe[2].products[0].unknown_properties.size(), 1);
+    EXPECT_EQ(mechanism.reactions.troe[2].products[0].unknown_properties["__optional thing"], "hello");
+    EXPECT_EQ(mechanism.reactions.troe[2].products[1].name, "B");
+    EXPECT_EQ(mechanism.reactions.troe[2].products[1].coefficient, 1.2);
+    EXPECT_EQ(mechanism.reactions.troe[2].products[1].unknown_properties.size(), 0);
   }
 }
 

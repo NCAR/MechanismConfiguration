@@ -14,6 +14,9 @@ namespace mechanism_configuration
       static constexpr const char* version = "version";
       static constexpr const char* name = "name";
 
+      //deprecated in favor of name, but still accepted
+      static constexpr const char* species_name = "species name";
+
       // Configuration
       static constexpr const char* species = "species";
       static constexpr const char* phases = "phases";
