@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 
 namespace mechanism_configuration
 {
@@ -39,4 +40,10 @@ namespace mechanism_configuration
   };
 
   std::string configParseStatusToString(const ConfigParseStatus &status);
+
+  // For Google Test printing
+  inline void PrintTo(const ConfigParseStatus& status, std::ostream* os)
+  {
+    *os << configParseStatusToString(status);
+  }
 }  // namespace mechanism_configuration
