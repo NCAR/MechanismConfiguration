@@ -1,25 +1,28 @@
-version: "2.0.0"
-name: "Gas species in reactions are not found in gas phase"
+version: 2.0.0
+name: Gas species in reactions are not found in gas phase
 species:
-  - name: "A"
-  - name: "B"
-  - name: "H2O"
+  - name: A
+  - name: B
+  - name: H2O
 phases:
-  - name: "gas"
+  - name: gas
     species:
-      - "A"
-  - name: "aqueous"
+      - name: A
+  - name: aqueous
     species:
-      - "B"
-      - "H2O"
+      - name: B
+      - name: H2O
 reactions:
-  - type: "HL_PHASE_TRANSFER"
+  - type: HL_PHASE_TRANSFER
     gas:
-      name: "gas"
+      name: gas
       species:
-        - "H2O"
+        - name: H2O
+          diffusion coefficient [m2 s-1]: 0.7
     particle:
-      phase: "aqueous"
+      phase: aqueous
       solutes:
-        - "B"
-      solvent: "H2O"
+        - name: B
+          coefficient: 1.0
+      solvent:
+        - name: H2O

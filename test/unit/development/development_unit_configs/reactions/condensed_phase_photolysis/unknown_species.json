@@ -13,8 +13,12 @@
     {
       "name": "aqueous",
       "species": [
-        "A",
-        "B"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        }
       ]
     }
   ],
@@ -24,13 +28,13 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.2
         }
       ]

@@ -1,7 +1,8 @@
 target_sources(mechanism_configuration
   PRIVATE
-    parser.cpp
-    mechanism_parsers.cpp
+    mechanism.cpp
+    type_parsers.cpp
+    type_validators.cpp
     utils.cpp
 )
 

@@ -2,19 +2,19 @@ name: Condensed phase photolysis using species not in its requested condensed ph
 phases:
 - name: aqueous
   species:
-  - A
-  - C
-  - H2O
+  - name: A
+  - name: C
+  - name: H2O
 reactions:
 - condensed phase: aqueous
   products:
   - coefficient: 1.2
-    species name: B
+    name: B
   - coefficient: 0.3
-    species name: C
+    name: C
   reactants:
   - coefficient: 1
-    species name: A
+    name: A
   type: CONDENSED_PHASE_PHOTOLYSIS
 species:
 - name: A

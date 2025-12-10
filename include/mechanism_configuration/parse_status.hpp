@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
 
 namespace mechanism_configuration
@@ -23,14 +24,26 @@ namespace mechanism_configuration
     DuplicateSpeciesInPhaseDetected,
     PhaseRequiresUnknownSpecies,
     ReactionRequiresUnknownSpecies,
+    UnknownSpecies,
     UnknownPhase,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
     InvalidIonPair,
     InvalidVersion,
+    MissingVersionField,
+    InvalidParameterNumber,
+    InvalidType,
     UnknownType,
-    FileNotFound
+    FileNotFound,
+    UnexpectedError,
+    EmptyObject,
   };
 
-  std::string configParseStatusToString(const ConfigParseStatus &status);
+  std::string configParseStatusToString(const ConfigParseStatus& status);
+
+  // For Google Test printing
+  inline void PrintTo(const ConfigParseStatus& status, std::ostream* os)
+  {
+    *os << configParseStatusToString(status);
+  }
 }  // namespace mechanism_configuration

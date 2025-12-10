@@ -137,7 +137,8 @@ namespace mechanism_configuration
       ParserMap parsers;
 
       std::function<Errors(std::unique_ptr<types::Mechanism>&, const YAML::Node&)> ParseMechanismArray =
-          [&](std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object) { return ParseMechanism(parsers, mechanism, object); };
+          [&](std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+      { return ParseMechanism(parsers, mechanism, object); };
 
       parsers["CHEM_SPEC"] = ParseChemicalSpecies;
       parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;

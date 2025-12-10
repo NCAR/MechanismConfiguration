@@ -19,10 +19,18 @@
     {
       "name": "aqueous",
       "species": [
-        "A",
-        "B",
-        "C",
-        "H2O"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "C"
+        },
+        {
+          "name": "H2O"
+        }
       ]
     }
   ],
@@ -33,13 +41,13 @@
       "__comment": "hi",
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 1
         }
       ],
@@ -51,13 +59,13 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1.2
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.2
         }
       ]

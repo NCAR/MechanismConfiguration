@@ -1,9 +1,12 @@
 ################################################################################
 # Preamble
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # must be on the same line so that pyproject.toml can correctly identify the version
-project(mechanism_configuration VERSION 1.0.0 LANGUAGES CXX)
+project(mechanism_configuration VERSION 1.1.0 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -44,23 +47,23 @@ add_subdirectory(src)
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   # Test code coverage
   if(MECH_CONFIG_ENABLE_COVERAGE)
-    include(CodeCoverage)
+    include(cmake/CodeCoverage.cmake)
     append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
         NAME coverage
-        EXECUTABLE "ctest"
+        EXECUTABLE "ctest" -j 4
         EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
-        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src")
-    
+        BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
+        LCOV_ARGS --ignore-errors mismatch)
   endif()
 
   enable_testing()
   add_subdirectory(test)
 
   # Copy example folder to use as test data
-
   add_custom_target(copy_example_configs ALL ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/examples ${CMAKE_BINARY_DIR}/examples)
+
 endif()
 
 ################################################################################

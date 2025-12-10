@@ -97,8 +97,8 @@ namespace mechanism_configuration
       {
         /// @brief Scaling factor to apply to user-provided rate constants
         double scaling_factor{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
+        /// @brief A single reactant
+        ReactionComponent reactants;
         /// @brief A list of products
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
@@ -127,8 +127,8 @@ namespace mechanism_configuration
       {
         /// @brief Scaling factor to apply to user-provided rate constants
         double scaling_factor{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
+        /// @brief A single reactant
+        ReactionComponent reactants;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
         /// @brief An identifier indicating which gas phase this reaction takes place in
@@ -142,11 +142,11 @@ namespace mechanism_configuration
         /// @brief An identifier indicating which gas phase this reaction takes place in
         std::string gas_phase;
         /// @brief The species in the gas phase participating in this reaction
-        ReactionComponent gas_phase_species;
+        std::vector<ReactionComponent> gas_phase_species;
         /// @brief An identifier for the condensed phase where this reaction occurs
         std::string condensed_phase;
         /// @brief The species in the condensed phase participating in this reaction
-        ReactionComponent condensed_phase_species;
+        std::vector<ReactionComponent> condensed_phase_species;
         /// @brief An identifier, optional, uniqueness not enforced
         std::string name;
         /// @brief The 4 SIMPOL parameters
@@ -205,8 +205,8 @@ namespace mechanism_configuration
       {
         /// @brief Scaling factor to apply to user-provided rate constants
         double scaling_factor{ 1.0 };
-        /// @brief A list of reactants
-        std::vector<ReactionComponent> reactants;
+        /// @brief A single reactant
+        ReactionComponent reactants;
         /// @brief A list of products
         std::vector<ReactionComponent> products;
         /// @brief An identifier, optional, uniqueness not enforced
@@ -221,7 +221,7 @@ namespace mechanism_configuration
       {
         /// @brief Reaction probability (0-1) [unitless]
         double reaction_probability{ 1.0 };
-        /// @brief A list of reactants
+        /// @brief A single gas-phase species
         ReactionComponent gas_phase_species;
         /// @brief A list of products
         std::vector<ReactionComponent> gas_phase_products;

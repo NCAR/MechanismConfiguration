@@ -2,14 +2,14 @@ name: Bad reaction component
 phases:
 - name: gas
   species:
-  - A
-  - B
+  - name: A
+  - name: B
 reactions:
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
-  - Species name: A
+  - Name: A
   type: TROE
 species:
 - name: A

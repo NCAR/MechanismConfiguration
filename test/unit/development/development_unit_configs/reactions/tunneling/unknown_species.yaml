@@ -2,15 +2,15 @@ name: Unknown species
 phases:
 - name: gas
   species:
-  - A
-  - B
+  - name: A
+  - name: B
 reactions:
 - __my comment: {}
   gas phase: gas
   products:
-  - species name: C
+  - name: C
   reactants:
-  - species name: A
+  - name: A
   type: TUNNELING
 species:
 - name: A

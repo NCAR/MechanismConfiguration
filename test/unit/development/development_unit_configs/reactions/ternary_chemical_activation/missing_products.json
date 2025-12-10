@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "name": "Missing products",
+  "species": [
+    {
+      "name": "foo"
+    },
+    {
+      "name": "bar"
+    },
+    {
+      "name": "baz"
+    },
+    {
+      "name": "quz"
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        {
+          "name": "foo"
+        },
+        {
+          "name": "bar"
+        },
+        {
+          "name": "baz"
+        },
+        {
+          "name": "quz"
+        }
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "TERNARY_CHEMICAL_ACTIVATION",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "name": "foo",
+          "coefficient": 1
+        },
+        {
+          "name": "quz",
+          "coefficient": 2
+        }
+      ]
+    }
+  ]
+}

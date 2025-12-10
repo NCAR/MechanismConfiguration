@@ -16,9 +16,15 @@
     {
       "name": "gas",
       "species": [
-        "A",
-        "B",
-        "C"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "C"
+        }
       ]
     }
   ],
@@ -26,14 +32,19 @@
     {
       "type": "SURFACE",
       "gas phase": "gas",
-      "gas-phase species": "A",
+      "gas-phase species": [
+        {
+          "name": "A",
+          "coefficient": 1
+        }
+      ],
       "gas-phase products": [
         {
-          "species name": "B",
+          "name": "B",
           "__optional thing": "hello"
         },
         {
-          "species name": "C"
+          "name": "C"
         }
       ],
       "condensed phase": "surface reacting phase"

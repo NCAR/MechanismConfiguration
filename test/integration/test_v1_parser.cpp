@@ -67,3 +67,159 @@ TEST(ParserBase, ParserReportsDirectory)
   EXPECT_EQ(parsed.errors.size(), 1);
   EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
 }
+
+TEST(ParserBase, CanParseFromYamlString)
+{
+  v1::Parser parser;
+  std::string content = R"(
+version: 1.0.0
+name: Simple Configuration
+species:
+  - name: A
+  - name: B
+phases:
+  - name: gas
+    species:
+      - A
+      - B
+reactions:
+  - type: ARRHENIUS
+    name: my arrhenius
+    gas phase: gas
+    A: 32.1
+    B: -2.3
+    C: 102.3
+    D: 63.4
+    E: -1.3
+    reactants:
+      - species name: A
+        coefficient: 1
+    products:
+      - species name: B
+        coefficient: 1
+)";
+
+  auto parsed = parser.ParseFromString(content);
+  EXPECT_TRUE(parsed);
+  if (!parsed)
+  {
+    for (const auto& error : parsed.errors)
+    {
+      std::cerr << "Error: " << configParseStatusToString(error.first) << " - " << error.second << std::endl;
+    }
+  }
+  v1::types::Mechanism mechanism = *parsed;
+  EXPECT_EQ(mechanism.name, "Simple Configuration");
+  EXPECT_EQ(mechanism.species.size(), 2);
+  EXPECT_EQ(mechanism.phases.size(), 1);
+  EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
+  EXPECT_EQ(mechanism.version.major, 1);
+  EXPECT_EQ(mechanism.version.minor, 0);
+  EXPECT_EQ(mechanism.version.patch, 0);
+}
+
+TEST(ParserBase, CanParseFromJsonString)
+{
+  v1::Parser parser;
+  std::string content = R"({
+  "version": "1.0.0",
+  "name": "Simple Configuration",
+  "species": [
+    { "name": "A" },
+    { "name": "B" }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [ {"name": "A"}, {"name": "B"} ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "ARRHENIUS",
+      "name": "my arrhenius",
+      "gas phase": "gas",
+      "A": 32.1,
+      "B": -2.3,
+      "C": 102.3,
+      "D": 63.4,
+      "E": -1.3,
+      "reactants": [
+        {
+          "species name": "A",
+          "coefficient": 1
+        }
+      ],
+      "products": [
+        {
+          "species name": "B",
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+})";
+
+  auto parsed = parser.ParseFromString(content);
+  EXPECT_TRUE(parsed);
+  if (!parsed)
+  {
+    for (const auto& error : parsed.errors)
+    {
+      std::cerr << "Error: " << configParseStatusToString(error.first) << " - " << error.second << std::endl;
+    }
+  }
+  v1::types::Mechanism mechanism = *parsed;
+  EXPECT_EQ(mechanism.name, "Simple Configuration");
+  EXPECT_EQ(mechanism.species.size(), 2);
+  EXPECT_EQ(mechanism.phases.size(), 1);
+  EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
+  EXPECT_EQ(mechanism.version.major, 1);
+  EXPECT_EQ(mechanism.version.minor, 0);
+  EXPECT_EQ(mechanism.version.patch, 0);
+}
+
+TEST(ParserBase, CanParseFromYamlNode)
+{
+  v1::Parser parser;
+  std::string content = R"(
+version: 1.0.0
+name: Simple Configuration
+species:
+  - name: A
+  - name: B
+phases:
+  - name: gas
+    species:
+      - A
+      - B
+reactions:
+  - type: ARRHENIUS
+    name: my arrhenius
+    gas phase: gas
+    A: 32.1
+    B: -2.3
+    C: 102.3
+    D: 63.4
+    E: -1.3
+    reactants:
+      - species name: A
+        coefficient: 1
+    products:
+      - species name: B
+        coefficient: 1
+)";
+
+  YAML::Node node = YAML::Load(content);
+
+  auto parsed = parser.ParseFromNode(node);
+  EXPECT_TRUE(parsed);
+  v1::types::Mechanism mechanism = *parsed;
+  EXPECT_EQ(mechanism.name, "Simple Configuration");
+  EXPECT_EQ(mechanism.species.size(), 2);
+  EXPECT_EQ(mechanism.phases.size(), 1);
+  EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
+  EXPECT_EQ(mechanism.version.major, 1);
+  EXPECT_EQ(mechanism.version.minor, 0);
+  EXPECT_EQ(mechanism.version.patch, 0);
+}

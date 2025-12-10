@@ -2,17 +2,19 @@ name: Missing condensed phase
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 reactions:
 - condensed phase: surface reacting phase
   gas phase: gas
   gas-phase products:
   - __optional thing: hello
-    species name: B
-  - species name: C
-  gas-phase species: A
+    name: B
+  - name: C
+  gas-phase species:
+    - name: "A"
+      coefficient: 1
   type: SURFACE
 species:
 - name: A

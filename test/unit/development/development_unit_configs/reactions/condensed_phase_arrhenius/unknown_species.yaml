@@ -2,15 +2,15 @@ name: Unknown species
 phases:
 - name: aqueous
   species:
-  - A
-  - B
-  - H2O
+  - name: A
+  - name: B
+  - name: H2O
 reactions:
 - condensed phase: aqueous
   products:
-  - species name: C
+  - name: C
   reactants:
-  - species name: A
+  - name: A
   type: CONDENSED_PHASE_ARRHENIUS
 species:
 - name: A

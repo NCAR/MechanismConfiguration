@@ -25,7 +25,9 @@
           "__custom property": 0.5,
           "__another custom property": "value"
         },
-        "baz"
+        {
+          "name": "baz",
+        }
       ],
       "__my custom phase property": "custom value"
     }

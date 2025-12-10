@@ -1,61 +1,76 @@
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
 
 #include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, CanParseValidGasModel)
+TEST(ParseGas, ParseValidConfig)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/gas/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/gas/valid") + extension);
-    EXPECT_TRUE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
 
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Validation errors were: " << validation_errors.size();
+
+    auto mechanism = parser.Parse(object);
     EXPECT_EQ(mechanism.models.gas_model.name, "gas");
     EXPECT_EQ(mechanism.models.gas_model.type, "GAS_PHASE");
     EXPECT_EQ(mechanism.models.gas_model.phase, "gas");
   }
 }
 
-TEST(ParserBase, GasModelMissingPhase)
+TEST(ParseGas, MissingPhase)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/gas/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/gas/missing_phase") + extension);
-    EXPECT_FALSE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 1);
 
-    for (auto& error : parsed.errors)
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : validation_errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }
 
-TEST(ParserBase, GasModelPhaseNotFoundInRegisteredPhases)
+TEST(ParseGas, PhaseNotFoundInRegisteredPhases)
 {
   development::Parser parser;
+
+  std::string path = "development_unit_configs/models/gas/gas_phase_not_found_in_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
+
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("development_unit_configs/models/gas/gas_phase_not_found_in_phases") + extension);
-    EXPECT_FALSE(parsed);
-    development::types::Mechanism mechanism = *parsed;
+    YAML::Node object = parser.FileToYaml(path + extension);
 
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 2);
 
-    for (auto& error : parsed.errors)
+    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase, ConfigParseStatus::UnknownPhase };
+    std::multiset<ConfigParseStatus> actual;
+    for (const auto& [status, message] : validation_errors)
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      actual.insert(status);
+      std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
+    EXPECT_EQ(actual, expected);
   }
 }

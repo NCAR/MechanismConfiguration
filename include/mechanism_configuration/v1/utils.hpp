@@ -38,7 +38,7 @@ namespace mechanism_configuration
     {
       std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
 
-      if constexpr (std::is_same<T, std::string>::value)
+      if constexpr (std::is_same_v<T, std::string>)
       {
         for (const auto& [elem, node] : collection)
         {
@@ -67,11 +67,13 @@ namespace mechanism_configuration
     }
 
     template<typename SpeciesType>
-    std::vector<std::string> FindUnknownSpecies(const std::vector<std::string>& requested_species, const std::vector<SpeciesType>& existing_species)
+    std::vector<std::string> FindUnknownSpecies(
+        const std::vector<std::string>& requested_species,
+        const std::vector<SpeciesType>& existing_species)
     {
       std::unordered_set<std::string> existing_names;
 
-      if constexpr (std::is_same<SpeciesType, std::string>::value)
+      if constexpr (std::is_same_v<SpeciesType, std::string>)
       {
         for (const auto& species : existing_species)
         {

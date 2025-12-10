@@ -2,16 +2,16 @@ name: Bad reaction component
 phases:
 - name: gas
   species:
-  - A
-  - B
+  - name: A
+  - name: B
 reactions:
 - gas phase: gas
   products:
-  - species name: B
+  - name: B
   reactants:
-  - Species name: A
+  - name: A
   type: TAYLOR_SERIES
 species:
-- name: A
+- Name: A
 - name: B
 version: 2.0.0

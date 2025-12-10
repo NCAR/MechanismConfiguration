@@ -16,9 +16,15 @@
     {
       "name": "cloud",
       "species": [
-        "A",
-        "B",
-        "C"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "C"
+        }
       ]
     }
   ],

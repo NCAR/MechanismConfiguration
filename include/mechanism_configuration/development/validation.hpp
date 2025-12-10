@@ -42,8 +42,8 @@ namespace mechanism_configuration
       static constexpr const char* gas_phase = "gas phase";
 
       // Reactant and product
-      static constexpr const char* species_name = "species name";
       static constexpr const char* coefficient = "coefficient";
+      // also name
 
       // ----------------------------------------
       // Reaction types
@@ -202,7 +202,7 @@ namespace mechanism_configuration
       static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
       // also
       // name
-      // phases
+      // phase
 
     }  // namespace validation
   }  // namespace development

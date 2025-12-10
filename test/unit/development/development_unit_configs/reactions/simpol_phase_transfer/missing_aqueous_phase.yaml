@@ -2,7 +2,7 @@ name: Valid surface
 phases:
 - name: gas
   species:
-  - A
+  - name: A
 reactions:
 - B:
   - -1970.0
@@ -10,9 +10,13 @@ reactions:
   - 0.00196
   - -0.496
   condensed phase: aqueous
-  condensed-phase species: B
+  condensed-phase species:
+    - name: B
+      coefficient: 1
   gas phase: gas
-  gas-phase species: A
+  gas-phase species:
+    - name: A
+      coefficient: 1
   name: my simpol
   type: SIMPOL_PHASE_TRANSFER
 species:

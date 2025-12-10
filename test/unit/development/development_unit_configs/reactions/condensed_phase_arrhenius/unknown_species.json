@@ -16,9 +16,15 @@
     {
       "name": "aqueous",
       "species": [
-        "A",
-        "B",
-        "H2O"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "H2O"
+        }
       ]
     }
   ],
@@ -28,12 +34,12 @@
       "condensed phase": "aqueous",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }

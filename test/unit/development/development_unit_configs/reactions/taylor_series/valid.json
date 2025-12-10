@@ -16,9 +16,15 @@
     {
       "name": "gas",
       "species": [
-        "A",
-        "B",
-        "C"
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "C"
+        }
       ]
     }
   ],
@@ -28,17 +34,17 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 1.2
         },
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.3
         }
       ],
@@ -60,17 +66,17 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A",
+          "name": "A",
           "coefficient": 2
         },
         {
-          "species name": "B",
+          "name": "B",
           "coefficient": 0.1
         }
       ],
       "products": [
         {
-          "species name": "C",
+          "name": "C",
           "coefficient": 0.5,
           "__optional thing": "hello"
         }
@@ -90,12 +96,12 @@
       "gas phase": "gas",
       "reactants": [
         {
-          "species name": "A"
+          "name": "A"
         }
       ],
       "products": [
         {
-          "species name": "C"
+          "name": "C"
         }
       ]
     }

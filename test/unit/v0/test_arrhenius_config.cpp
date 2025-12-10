@@ -66,7 +66,8 @@ TEST(ArrheniusConfig, ParseConfig)
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].coefficient, 1.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].species_name, "baz");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].coefficient, 3.2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[0].A, 1.0 * conversions::MolesM3ToMoleculesCm3 * conversions::MolesM3ToMoleculesCm3);
+      EXPECT_EQ(
+          mechanism.reactions.arrhenius[0].A, 1.0 * conversions::MolesM3ToMoleculesCm3 * conversions::MolesM3ToMoleculesCm3);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].B, 0.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].C, 0.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].D, 300);

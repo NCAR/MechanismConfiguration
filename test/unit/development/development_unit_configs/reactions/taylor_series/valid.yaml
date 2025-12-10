@@ -2,9 +2,9 @@ name: Valid taylor_series
 phases:
 - name: gas
   species:
-  - A
-  - B
-  - C
+  - name: A
+  - name: B
+  - name: C
 reactions:
 - A: 32.1
   B: -2.3
@@ -20,12 +20,12 @@ reactions:
   name: my taylor_series
   products:
   - coefficient: 1.2
-    species name: B
+    name: B
   - coefficient: 0.3
-    species name: C
+    name: C
   reactants:
   - coefficient: 1
-    species name: A
+    name: A
   type: TAYLOR_SERIES
 - A: 3.1
   B: -0.3
@@ -39,18 +39,18 @@ reactions:
   products:
   - __optional thing: hello
     coefficient: 0.5
-    species name: C
+    name: C
   reactants:
   - coefficient: 2
-    species name: A
+    name: A
   - coefficient: 0.1
-    species name: B
+    name: B
   type: TAYLOR_SERIES
 - gas phase: gas
   products:
-  - species name: C
+  - name: C
   reactants:
-  - species name: A
+  - name: A
   type: TAYLOR_SERIES
 species:
 - name: A

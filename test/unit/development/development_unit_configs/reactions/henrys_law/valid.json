@@ -19,15 +19,23 @@
     {
       "name": "gas",
       "species": [
-        "A"
+        {
+          "name": "A"
+        }
       ]
     },
     {
       "name": "aqueous",
       "species": [
-        "B",
-        "H2O",
-        "C"
+        {
+          "name": "B"
+        },
+        {
+          "name": "H2O"
+        },
+        {
+          "name": "C"
+        }
       ]
     }
   ],
@@ -37,15 +45,25 @@
       "gas": {
         "name": "gas",
         "species": [
-          "A"
+          {
+            "name": "A",
+            "diffusion coefficient [m2 s-1]": 0.7
+          }
         ]
       },
       "particle": {
         "phase": "aqueous",
         "solutes": [
-          "B"
+          {
+            "name": "B",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O"
+          }
+        ]
       },
       "name": "my henry's law",
       "__comment": "B condensed phase production (kg/m2/s)"
@@ -54,17 +72,30 @@
       "type": "HL_PHASE_TRANSFER",
       "gas": {
         "name": "gas",
-        "species": [
-          "A"
-        ]
+      "species": [
+        {
+          "name": "A"
+        }
+      ]
       },
       "particle": {
         "phase": "aqueous",
         "solutes": [
-          "B",
-          "C"
+          {
+            "name": "B",
+            "coefficient": 1.0
+          },
+          {
+            "name": "C",
+            "coefficient": 1.0
+          }
         ],
-        "solvent": "H2O"
+        "solvent": [
+          {
+            "name": "H2O",
+            "coefficient": 1.0
+          }
+        ]
       }
     }
   ]

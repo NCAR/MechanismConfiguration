@@ -2,12 +2,12 @@ name: Unknown species
 phases:
 - name: gas
   species:
-  - A
-  - B
+  - name: A
+  - name: B
 reactions:
 - gas phase: gas
   reactants:
-  - species name: C
+  - name: C
   type: FIRST_ORDER_LOSS
 species:
 - name: A

@@ -4,60 +4,34 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/parser.hpp>
+#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parser_result.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
 
 #include <filesystem>
-#include <memory>
-#include <vector>
 
 namespace mechanism_configuration
 {
+  struct VersionInfo
+  {
+    unsigned int version;  // major version
+    Errors errors;
+  };
+
   class UniversalParser
   {
    public:
-    ParserResult<GlobalMechanism> Parse(const std::filesystem::path& config_path)
-    {
-      ParserResult<GlobalMechanism> result;
-      if (!std::filesystem::exists(config_path))
-      {
-        result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
-        return result;
-      }
+    /// @brief Extracts the major version from the given configuration file
+    /// @return VersionInfo containing the version and validation errors
+    VersionInfo GetVersion(const std::filesystem::path& config_path);
 
-      v1::Parser v1_parser;
-      auto v1_result = v1_parser.Parse(config_path);
-
-      if (v1_result)
-      {
-        result.mechanism = std::move(v1_result.mechanism);
-        return result;
-      }
-
-      development::Parser dev_parser;
-      auto dev_result = dev_parser.Parse(config_path);
-
-      if (dev_result)
-      {
-        result.mechanism = std::move(dev_result.mechanism);
-        return result;
-      }
-
-      v0::Parser v0_parser;
-      auto v0_result = v0_parser.Parse(config_path);
-
-      if (v0_result)
-      {
-        result.mechanism = std::move(v0_result.mechanism);
-        return result;
-      }
-
-      result.errors = v1_result.errors;
-      result.errors.insert(result.errors.end(), dev_result.errors.begin(), dev_result.errors.end());
-      result.errors.insert(result.errors.end(), v0_result.errors.begin(), v0_result.errors.end());
-      return result;
-    }
+    /// @brief Parses a configuration file using the appropriate versioned parser.
+    ///        Determines the configuration version and calls the corresponding parser
+    ///        implementation. If the version field is missing, the function falls
+    ///        back to the version 0 parser.
+    /// @param config_path Path to the YAML configuration file
+    /// @return ParserResult containing the parsed GlobalMechanism on success,
+    ///         or a list of accumulated errors on failure
+    ParserResult<GlobalMechanism> Parse(const std::filesystem::path& config_path);
   };
 }  // namespace mechanism_configuration
