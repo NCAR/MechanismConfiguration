@@ -82,7 +82,8 @@ namespace mechanism_configuration
     {
       // If the version field is missing, the parser defaults to version 0.
       // This approach is temporary and fragile, but is required to support
-      // the version 0 configurations.
+      // the version 0 configurations. It can be removed once version 0 is fully
+      // deprecated or no longer supported.
       for (auto& [status, message] : version_info.errors)
       {
         if (status == ConfigParseStatus::MissingVersionField)
