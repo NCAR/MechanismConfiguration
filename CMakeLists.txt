@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # must be on the same line so that pyproject.toml can correctly identify the version
-project(mechanism_configuration VERSION 1.1.0 LANGUAGES CXX)
+project(mechanism_configuration VERSION 1.1.1 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
