@@ -98,3 +98,32 @@ TEST(UniversalParser, ParseUnsupportedVersion)
   }
   EXPECT_EQ(actual, expected);
 }
+
+TEST(UniversalParser, ParsesV0DirectoryConfiguration)
+{
+  // Test that v0 parser can handle directory-based configurations
+  mechanism_configuration::UniversalParser parser;
+  
+  std::string directory_path = "examples/v0/";
+  auto parsed = parser.Parse(directory_path);
+  EXPECT_TRUE(parsed);
+  EXPECT_EQ(parsed.mechanism->version.major, 0);
+  EXPECT_EQ(parsed.mechanism->version.minor, 0);
+  EXPECT_EQ(parsed.mechanism->version.patch, 0);
+}
+
+TEST(UniversalParser, RejectsDirectoryForV1Configuration)
+{
+  // Test v1 and upper version parsers do not accept directories
+  // V0 parser will attempt to parse a directory, but if the directory
+  // contains higher version files, it should throw an exception
+  mechanism_configuration::UniversalParser parser;
+  
+  std::string directory_path = "examples/v1";
+  EXPECT_THROW(
+    {
+      auto parsed = parser.Parse(directory_path);
+    },
+    std::exception
+  );
+}

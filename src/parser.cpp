@@ -59,13 +59,30 @@ namespace mechanism_configuration
   {
     ParserResult<GlobalMechanism> result;
 
+    // Check if the path is a directory
+    // If it's a directory, use the v0 parser without version checking
+    if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path))
+    {
+      v0::Parser v0_parser;
+      auto parser_result = v0_parser.Parse(config_path);
+      if (parser_result.errors.empty())
+      {
+        result.mechanism = std::move(parser_result.mechanism);
+      }
+      else
+      {
+        result.errors.insert(result.errors.end(), parser_result.errors.begin(), parser_result.errors.end());
+      }
+      return result;
+    }
+
+    // For files, check the version
     VersionInfo version_info = GetVersion(config_path);
     if (!version_info.errors.empty())
     {
       // If the version field is missing, the parser defaults to version 0.
       // This approach is temporary and fragile, but is required to support
-      // the version 0 configurations. It can be removed once version 0 is fully
-      // deprecated or no longer supported.
+      // the version 0 configurations.
       for (auto& [status, message] : version_info.errors)
       {
         if (status == ConfigParseStatus::MissingVersionField)

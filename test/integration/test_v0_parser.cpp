@@ -30,6 +30,15 @@ TEST(ParserBase, ParsesFullv0Configuration)
   }
 }
 
+TEST(ParserBase, ConfigPathIsDirectory)
+{
+  v0::Parser parser;
+  std::string path = "examples/v0";
+  auto parsed = parser.Parse(path);
+  EXPECT_TRUE(parsed);
+
+}
+
 TEST(ParserBase, ParserReportsBadFiles)
 {
   v0::Parser parser;
