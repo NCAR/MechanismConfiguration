@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/mechanism.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 
