@@ -2,7 +2,7 @@
 # version
 configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configuration/version.hpp @ONLY)
 
-if(MECH_CONFIG_SHARED_LIBS)
+if(MECH_CONFIG_BUILD_SHARED_LIBS)
   add_library(mechanism_configuration SHARED)
 else()
   add_library(mechanism_configuration STATIC)
