@@ -11,12 +11,12 @@
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 
+#include <yaml-cpp/yaml.h>
+
 #include <filesystem>
 #include <format>
 #include <memory>
 #include <vector>
-
-#include <yaml-cpp/yaml.h>
 
 namespace mechanism_configuration
 {
