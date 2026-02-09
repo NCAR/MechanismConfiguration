@@ -7,9 +7,12 @@
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v1/mechanism.hpp>
 
-#include <yaml-cpp/yaml.h>
-
 #include <filesystem>
+
+namespace YAML
+{
+  class Node;
+}  // namespace YAML
 
 namespace mechanism_configuration
 {

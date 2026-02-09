@@ -16,6 +16,8 @@
 #include <memory>
 #include <vector>
 
+#include <yaml-cpp/yaml.h>
+
 namespace mechanism_configuration
 {
 

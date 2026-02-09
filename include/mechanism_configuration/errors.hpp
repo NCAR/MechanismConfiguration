@@ -6,8 +6,6 @@
 
 #include <mechanism_configuration/parse_status.hpp>
 
-#include <yaml-cpp/yaml.h>
-
 #include <string>
 #include <utility>
 #include <vector>
