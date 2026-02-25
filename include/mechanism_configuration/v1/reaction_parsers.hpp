@@ -224,5 +224,16 @@ namespace mechanism_configuration
           types::Reactions& reactions) override;
     };
 
+    class LambdaRateConstantParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for lambda rate constant reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
   }  // namespace v1
 }  // namespace mechanism_configuration

@@ -1,0 +1,22 @@
+name: Missing phase lambda_rate_constant
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+reactions:
+- gas phase: nonexistent_phase
+  lambda function: "[](double T) { return 1.0; }"
+  products:
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  type: LAMBDA_RATE_CONSTANT
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0

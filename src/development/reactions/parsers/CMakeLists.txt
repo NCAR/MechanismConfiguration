@@ -16,5 +16,6 @@ target_sources(mechanism_configuration
     troe.cpp
     tunneling.cpp
     user_defined.cpp
+    lambda_rate_constant.cpp
     wet_deposition.cpp
 )

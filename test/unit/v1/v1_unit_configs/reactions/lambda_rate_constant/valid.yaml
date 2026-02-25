@@ -1,0 +1,35 @@
+name: Valid lambda_rate_constant
+phases:
+- name: gas
+  species:
+  - A
+  - B
+  - C
+reactions:
+- __comment: hi
+  gas phase: gas
+  name: my lambda reaction
+  lambda function: "[](double T, double P) { return 1.2e-5 * exp(-500.0 / T); }"
+  products:
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  type: LAMBDA_RATE_CONSTANT
+- gas phase: gas
+  lambda function: "[](double T) { return 3.0e-4 * T; }"
+  products:
+  - coefficient: 0.2
+    species name: C
+  reactants:
+  - coefficient: 1.2
+    species name: B
+  - coefficient: 0.5
+    species name: A
+  type: LAMBDA_RATE_CONSTANT
+species:
+- name: A
+- name: B
+- name: C
+version: 1.0.0
