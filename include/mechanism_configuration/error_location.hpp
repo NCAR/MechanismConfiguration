@@ -28,7 +28,8 @@ template<>
 struct std::formatter<mechanism_configuration::ErrorLocation>
 {
   constexpr auto parse(std::format_parse_context& ctx) const { return ctx.begin(); }
-  auto format(const mechanism_configuration::ErrorLocation& loc, std::format_context& ctx) const
+  template<class FormatContext>
+  auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
   {
     return std::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
   }
