@@ -24,14 +24,13 @@ namespace mechanism_configuration
   };
 }  // namespace mechanism_configuration
 
-namespace std
+template<>
+struct std::formatter<mechanism_configuration::ErrorLocation>
 {
-  template<>
-  struct formatter<mechanism_configuration::ErrorLocation> : std::formatter<std::string>
+  constexpr auto parse(std::format_parse_context& ctx) const { return ctx.begin(); }
+  template<class FormatContext>
+  auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
   {
-    auto format(const mechanism_configuration::ErrorLocation& loc, format_context& ctx) const
-    {
-      return formatter<std::string>::format(std::format("{}:{}", loc.line, loc.column), ctx);
-    }
-  };
-}  // namespace std
+    return std::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
+  }
+};
