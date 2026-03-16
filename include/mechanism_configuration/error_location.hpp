@@ -27,7 +27,10 @@ namespace mechanism_configuration
 template<>
 struct std::formatter<mechanism_configuration::ErrorLocation>
 {
-  constexpr auto parse(std::format_parse_context& ctx) const { return ctx.begin(); }
+  constexpr auto parse(std::format_parse_context& ctx) const
+  {
+    return ctx.begin();
+  }
   template<class FormatContext>
   auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
   {
