@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "File path only",
+  "name": "troposophere and stratosphere configs",
   "species": {
     "files": ["species.json"]
   },

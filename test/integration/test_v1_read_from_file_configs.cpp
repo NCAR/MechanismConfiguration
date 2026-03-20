@@ -10,11 +10,10 @@ using namespace mechanism_configuration;
 TEST(ParserBase, ParsesFullV1Configuration)
 {
   v1::Parser parser;
-  // std::vector<std::string> extensions = { ".json", ".yaml" };
-  std::vector<std::string> extensions = { ".json" };
+  std::vector<std::string> extensions = { "/json/main.json", "/yaml/main.yaml" };
   for (auto& extension : extensions)
   {
-    std::string path = "examples/v1/config/json/main" + extension;
+    std::string path = "examples/v1/config" + extension;
     auto parsed = parser.Parse(path);
     for (const auto& error : parsed.errors)
       std::cout << "[" << configParseStatusToString(error.first) << "] " << error.second << "\n";
@@ -22,7 +21,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
 
     auto& mechanism = *parsed;
 
-    EXPECT_EQ(mechanism.name, "File path only");
+    EXPECT_EQ(mechanism.name, "troposophere and stratosphere configs");
 
     // species: A, B, C
     ASSERT_EQ(mechanism.species.size(), 3);
