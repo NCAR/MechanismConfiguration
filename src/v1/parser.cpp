@@ -14,6 +14,15 @@ namespace mechanism_configuration
 {
   namespace v1
   {
+    Parser::EntityFormat Parser::GetEntityFormat(const YAML::Node& node)
+    {
+      if (node.IsMap() && node["files"])
+        return EntityFormat::FileList;
+      if (node.IsSequence())
+        return EntityFormat::Inline;
+      return EntityFormat::Invalid;
+    }
+
     ParserResult<types::Mechanism> Parser::ParseFromString(const std::string& content)
     {
       ParserResult<types::Mechanism> result;
@@ -41,26 +50,57 @@ namespace mechanism_configuration
         result.errors.push_back({ ConfigParseStatus::FileNotFound, "File not found or is a directory" });
         return result;
       }
+
       try
       {
         YAML::Node object = YAML::LoadFile(config_path.string());
 
-        auto parsed = ParseFromNode(object);
-        // prepend the file name to the error messages
-        for (auto& error : parsed.errors)
-        {
-          error.second = config_path.string() + ":" + error.second;
-        }
+        EntityFormat spc_format = GetEntityFormat(object[validation::species]);
+        EntityFormat phs_format = GetEntityFormat(object[validation::phases]);
+        EntityFormat rxn_format = GetEntityFormat(object[validation::reactions]);
 
-        return parsed;
+        if (spc_format == EntityFormat::Inline && 
+            phs_format == EntityFormat::Inline && 
+            rxn_format == EntityFormat::Inline)
+        {
+          result = ParseFromNode(object);
+        }
+        else if (spc_format == EntityFormat::FileList && 
+                 phs_format == EntityFormat::FileList && 
+                 rxn_format == EntityFormat::FileList)
+        {
+          result = ParseFromFileConfig(object, config_path);
+        }
+        else
+        {
+          auto format_name = [](EntityFormat f) -> std::string {
+            return f == EntityFormat::FileList ? "file-list" : "inline";
+          };
+          std::string msg = "Mixed entity formats are not allowed. "
+                            "All sections must use the same format (file-list or inline). "
+                            "Got: species=" + format_name(spc_format) +
+                            ", phases=" + format_name(phs_format) +
+                            ", reactions=" + format_name(rxn_format);
+          result.errors.push_back({ ConfigParseStatus::InvalidType, msg });
+        }
       }
       catch (const std::exception& e)
       {
-        std::string msg = "Failed to parse file as YAML: " + std::string(e.what());
-        msg += "\nFile: " + config_path.string();
+        std::string msg = "Failed to parse '" + config_path.string() + "': " + std::string(e.what());
         result.errors.push_back({ ConfigParseStatus::UnexpectedError, msg });
         return result;
       }
+
+      if (!result.errors.empty())
+        return result;
+
+      const std::string prefix = config_path.string() + ":";
+      for (auto& error : result.errors)
+      {
+        error.second = prefix + error.second;
+      }
+
+      return result;
     }
 
     ParserResult<types::Mechanism> Parser::ParseFromNode(const YAML::Node& object)
@@ -108,6 +148,69 @@ namespace mechanism_configuration
 
       result.mechanism = std::move(mechanism);
       return result;
+    }
+
+    ParserResult<types::Mechanism> Parser::ParseFromFileConfig(
+      const YAML::Node& object, 
+      const std::filesystem::path& config_path)
+    {
+      ParserResult<types::Mechanism> result;
+
+      std::filesystem::path base_dir = config_path.parent_path();
+
+      auto load_files = [&](const std::string& entity) -> std::pair<Errors, YAML::Node>
+      {
+        Errors errors;
+        YAML::Node merged = YAML::Node(YAML::NodeType::Sequence);
+
+        if (!object[entity] || !object[entity]["files"])
+        {
+          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
+                            "Missing '" + entity + ".files' in config" });
+          return { errors, merged };
+        }
+
+        for (const auto& file_node : object[entity]["files"])
+        {
+          std::filesystem::path file_path = base_dir / file_node.as<std::string>();
+          if (!std::filesystem::exists(file_path))
+          {
+            errors.push_back({ ConfigParseStatus::FileNotFound,
+                              "File not found: " + file_path.string() });
+            continue;
+          }
+          try
+          {
+            YAML::Node loaded = YAML::LoadFile(file_path.string());
+            for (const auto& item : loaded)
+              merged.push_back(item);
+          }
+          catch (const std::exception& e)
+          {
+            errors.push_back({ ConfigParseStatus::UnexpectedError,
+                              "Failed to parse file: " + file_path.string() + ": " + e.what() });
+          }
+        }
+        return { errors, merged };
+      };
+
+      YAML::Node combined;
+      combined[validation::version] = object[validation::version];
+      combined[validation::name] = object[validation::name];
+
+      auto [species_errors, species_node] = load_files(validation::species);
+      result.errors.insert(result.errors.end(), species_errors.begin(), species_errors.end());
+      combined[validation::species] = species_node;
+
+      auto [phases_errors, phases_node] = load_files(validation::phases);
+      result.errors.insert(result.errors.end(), phases_errors.begin(), phases_errors.end());
+      combined[validation::phases] = phases_node;
+
+      auto [reactions_errors, reactions_node] = load_files(validation::reactions);
+      result.errors.insert(result.errors.end(), reactions_errors.begin(), reactions_errors.end());
+      combined[validation::reactions] = reactions_node;
+
+      return ParseFromNode(combined);
     }
   }  // namespace v1
 }  // namespace mechanism_configuration

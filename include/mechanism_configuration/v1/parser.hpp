@@ -20,10 +20,22 @@ namespace mechanism_configuration
   {
     class Parser
     {
+     private:
+      enum class EntityFormat
+      {
+        FileList,  // { "files": [...] }
+        Inline,    // [ { "name": ... }, ... ]
+        Invalid,
+      };
+
+      EntityFormat GetEntityFormat(const YAML::Node& node);
+
      public:
       ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
       ParserResult<types::Mechanism> ParseFromString(const std::string& content);
       ParserResult<types::Mechanism> ParseFromNode(const YAML::Node& object);
+      ParserResult<types::Mechanism> ParseFromFileConfig(
+        const YAML::Node& object, const std::filesystem::path& config_path);
     };
   }  // namespace v1
 }  // namespace mechanism_configuration

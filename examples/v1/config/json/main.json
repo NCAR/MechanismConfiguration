@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "name": "File path only",
+  "species": {
+    "files": ["species.json"]
+  },
+  "phases": {
+    "files": ["gas_phase.json"]
+  },
+  "reactions": {
+    "files": ["troposophere.json",
+              "stratosphere.json"]
+  }
+}
