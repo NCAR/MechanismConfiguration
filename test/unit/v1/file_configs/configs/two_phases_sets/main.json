@@ -5,7 +5,8 @@
     "files": ["species.json"]
   },
   "phases": {
-    "files": ["gas_phase.json"]
+    "files": ["gas_phase_1.json",
+              "gas_phase_2.json"]
   },
   "reactions": {
     "files": ["troposophere.json",

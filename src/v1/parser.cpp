@@ -29,6 +29,19 @@ namespace mechanism_configuration
       try
       {
         YAML::Node object = YAML::Load(content);
+
+        std::vector<std::string> required_keys = {
+          validation::version, validation::species, validation::phases, validation::reactions
+        };
+        std::vector<std::string> optional_keys = { validation::name };
+
+        auto validate_errors = ValidateSchema(object, required_keys, optional_keys);
+        if (!validate_errors.empty())
+        {
+          result.errors = validate_errors;
+          return result;
+        }
+
         return ParseFromNode(object);
       }
       catch (const std::exception& e)
@@ -51,53 +64,116 @@ namespace mechanism_configuration
         return result;
       }
 
+      auto prepend_path = [&](Errors& errors) {
+        const std::string prefix = config_path.string() + ":";
+        for (auto& error : errors)
+          error.second = prefix + error.second;
+      };
+
       try
       {
         YAML::Node object = YAML::LoadFile(config_path.string());
+
+        std::vector<std::string> mechanism_required_keys = {
+          validation::version, validation::species, validation::phases, validation::reactions
+        };
+        std::vector<std::string> mechanism_optional_keys = { validation::name };
+
+        auto validate_errors = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
+
+        if (!validate_errors.empty())
+        {
+          result.errors = validate_errors;
+          prepend_path(result.errors);
+          return result;
+        }
+
+        Version version = Version(object[validation::version].as<std::string>());
+        if (version.major != 1)
+        {
+          result.errors.push_back({ ConfigParseStatus::InvalidVersion,
+                                    "Unsupported version '" + object[validation::version].as<std::string>() +
+                                    "'. Expected major version 1." });
+          prepend_path(result.errors);
+          return result;
+        }
 
         EntityFormat spc_format = GetEntityFormat(object[validation::species]);
         EntityFormat phs_format = GetEntityFormat(object[validation::phases]);
         EntityFormat rxn_format = GetEntityFormat(object[validation::reactions]);
 
-        if (spc_format == EntityFormat::Inline && 
-            phs_format == EntityFormat::Inline && 
+        if (spc_format == EntityFormat::Inline &&
+            phs_format == EntityFormat::Inline &&
             rxn_format == EntityFormat::Inline)
         {
+          if (version.minor != 0)
+          {
+            result.errors.push_back({ ConfigParseStatus::InvalidVersion,
+                                      "Inline format requires minor version 0, got " +
+                                      std::to_string(version.minor) + "." });
+            prepend_path(result.errors);
+            return result;
+          }
           result = ParseFromNode(object);
         }
-        else if (spc_format == EntityFormat::FileList && 
-                 phs_format == EntityFormat::FileList && 
+        else if (spc_format == EntityFormat::FileList &&
+                 phs_format == EntityFormat::FileList &&
                  rxn_format == EntityFormat::FileList)
         {
+          if (version.minor != 1)
+          {
+            result.errors.push_back({ ConfigParseStatus::InvalidVersion,
+                                      "File-list format requires minor version 1, got " +
+                                      std::to_string(version.minor) + "." });
+            prepend_path(result.errors);
+            return result;
+          }
           result = ParseFromFileConfig(object, config_path);
         }
         else
         {
-          auto format_name = [](EntityFormat f) -> std::string {
-            return f == EntityFormat::FileList ? "file-list" : "inline";
+          // A entity that is a map but missing "files" is a more specific error
+          // than a generic mixed-format error. Check each invalid entity first.
+          auto check_missing_files = [&](const std::string& entity, EntityFormat fmt)
+          {
+            if (fmt == EntityFormat::Invalid && object[entity] && object[entity].IsMap())
+              result.errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
+                                        "Missing 'files' key in '" + entity + "' entity." });
           };
-          std::string msg = "Mixed entity formats are not allowed. "
-                            "All sections must use the same format (file-list or inline). "
-                            "Got: species=" + format_name(spc_format) +
-                            ", phases=" + format_name(phs_format) +
-                            ", reactions=" + format_name(rxn_format);
-          result.errors.push_back({ ConfigParseStatus::InvalidType, msg });
+          check_missing_files(validation::species, spc_format);
+          check_missing_files(validation::phases, phs_format);
+          check_missing_files(validation::reactions, rxn_format);
+
+          // If no missing-files errors, the issue is a genuinely mixed format
+          if (result.errors.empty())
+          {
+            auto format_name = [](EntityFormat f) -> std::string {
+              switch (f)
+              {
+                case EntityFormat::FileList: return "file-list";
+                case EntityFormat::Inline:   return "inline";
+                default:                     return "invalid";
+              }
+            };
+            result.errors.push_back({ ConfigParseStatus::InvalidType,
+                                      "Mixed or invalid entity formats are not allowed. "
+                                      "All entities must use the same format (file-list or inline). "
+                                      "Got: species=" + format_name(spc_format) +
+                                      ", phases=" + format_name(phs_format) +
+                                      ", reactions=" + format_name(rxn_format) });
+          }
         }
       }
       catch (const std::exception& e)
       {
-        std::string msg = "Failed to parse '" + config_path.string() + "': " + std::string(e.what());
-        result.errors.push_back({ ConfigParseStatus::UnexpectedError, msg });
+        result.errors.push_back({ ConfigParseStatus::UnexpectedError,
+                        "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) });
         return result;
       }
 
       if (!result.errors.empty())
-        return result;
-
-      const std::string prefix = config_path.string() + ":";
-      for (auto& error : result.errors)
       {
-        error.second = prefix + error.second;
+        prepend_path(result.errors);
       }
 
       return result;
@@ -108,31 +184,13 @@ namespace mechanism_configuration
       ParserResult<types::Mechanism> result;
       std::unique_ptr<types::Mechanism> mechanism = std::make_unique<types::Mechanism>();
 
-      std::vector<std::string> mechanism_required_keys = {
-        validation::version, validation::species, validation::phases, validation::reactions
-      };
-      std::vector<std::string> mechanism_optional_keys = { validation::name };
+      mechanism->version = Version(object[validation::version].as<std::string>());
 
-      auto validate = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
-
-      if (!validate.empty())
+      if (object[validation::name])
       {
-        result.errors = validate;
-        return result;
+        std::string name = object[validation::name].as<std::string>();
+        mechanism->name = name;
       }
-
-      Version version = Version(object[validation::version].as<std::string>());
-
-      if (version.major != 1)
-      {
-        result.errors.push_back({ ConfigParseStatus::InvalidVersion, "Invalid version." });
-        return result;
-      }
-
-      mechanism->version = version;
-
-      std::string name = object[validation::name].as<std::string>();
-      mechanism->name = name;
 
       auto species_parsing = ParseSpecies(object[validation::species]);
       result.errors.insert(result.errors.end(), species_parsing.first.begin(), species_parsing.first.end());
@@ -196,7 +254,10 @@ namespace mechanism_configuration
 
       YAML::Node combined;
       combined[validation::version] = object[validation::version];
-      combined[validation::name] = object[validation::name];
+      if (object[validation::name])
+      {
+       combined[validation::name] = object[validation::name];
+      }
 
       auto [species_errors, species_node] = load_files(validation::species);
       result.errors.insert(result.errors.end(), species_errors.begin(), species_errors.end());

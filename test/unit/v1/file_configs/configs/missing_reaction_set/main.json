@@ -8,7 +8,6 @@
     "files": ["gas_phase.json"]
   },
   "reactions": {
-    "files": ["troposophere.json",
-              "stratosphere.json"]
+    "files": []
   }
 }
