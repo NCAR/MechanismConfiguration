@@ -102,56 +102,36 @@ namespace mechanism_configuration
         EntityFormat phs_format = GetEntityFormat(object[validation::phases]);
         EntityFormat rxn_format = GetEntityFormat(object[validation::reactions]);
 
-        if (spc_format == EntityFormat::Inline &&
-            phs_format == EntityFormat::Inline &&
-            rxn_format == EntityFormat::Inline)
+        auto check_invalid = [&](const std::string& entity, EntityFormat fmt)
         {
-          result = ParseFromNode(object);
-        }
-        else if (spc_format == EntityFormat::FileList &&
-                 phs_format == EntityFormat::FileList &&
-                 rxn_format == EntityFormat::FileList)
+          if (fmt == EntityFormat::Invalid)
+          {
+            if (object[entity] && object[entity].IsMap())
+              result.errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
+                                        "Missing 'files' key in '" + entity + "' section." });
+            else
+              result.errors.push_back({ ConfigParseStatus::InvalidType,
+                                        "'" + entity + "' must be a file-list object or an inline array." });
+          }
+        };
+        check_invalid(validation::species, spc_format);
+        check_invalid(validation::phases, phs_format);
+        check_invalid(validation::reactions, rxn_format);
+
+        if (result.errors.empty())
         {
-          if (version.minor < 1)
+          bool any_filelist = spc_format == EntityFormat::FileList ||
+                              phs_format == EntityFormat::FileList ||
+                              rxn_format == EntityFormat::FileList;
+          if (any_filelist && version.minor < 1)
           {
             result.errors.push_back({ ConfigParseStatus::InvalidVersion,
-                                      "File-list format requires minor version greater than 1, got " +
+                                      "File-list format requires minor version >= 1, got " +
                                       std::to_string(version.minor) + "." });
-            prepend_path(result.errors);
-            return result;
           }
-          result = ParseFromFileConfig(object, config_path);
-        }
-        else
-        {
-          // Check missing files
-          auto check_missing_files = [&](const std::string& entity, EntityFormat fmt)
+          else
           {
-            if (fmt == EntityFormat::Invalid && object[entity] && object[entity].IsMap())
-              result.errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
-                                        "Missing 'files' key in '" + entity + "' entity." });
-          };
-          check_missing_files(validation::species, spc_format);
-          check_missing_files(validation::phases, phs_format);
-          check_missing_files(validation::reactions, rxn_format);
-
-          // Check mixed format
-          if (result.errors.empty())
-          {
-            auto format_name = [](EntityFormat f) -> std::string {
-              switch (f)
-              {
-                case EntityFormat::FileList: return "file-list";
-                case EntityFormat::Inline:   return "inline";
-                default:                     return "invalid";
-              }
-            };
-            result.errors.push_back({ ConfigParseStatus::InvalidType,
-                                      "Mixed or invalid entity formats are not allowed. "
-                                      "All entities must use the same format (file-list or inline). "
-                                      "Got: species=" + format_name(spc_format) +
-                                      ", phases=" + format_name(phs_format) +
-                                      ", reactions=" + format_name(rxn_format) });
+            result = ParseFromFileConfig(object, config_path, spc_format, phs_format, rxn_format);
           }
         }
       }
@@ -200,8 +180,11 @@ namespace mechanism_configuration
     }
 
     ParserResult<types::Mechanism> Parser::ParseFromFileConfig(
-      const YAML::Node& object, 
-      const std::filesystem::path& config_path)
+      const YAML::Node& object,
+      const std::filesystem::path& config_path,
+      EntityFormat spc_format,
+      EntityFormat phs_format,
+      EntityFormat rxn_format)
     {
       ParserResult<types::Mechanism> result;
 
@@ -211,13 +194,6 @@ namespace mechanism_configuration
       {
         Errors errors;
         YAML::Node merged = YAML::Node(YAML::NodeType::Sequence);
-
-        if (!object[entity] || !object[entity]["files"])
-        {
-          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
-                            "Missing '" + entity + " files' in config" });
-          return { errors, merged };
-        }
 
         for (const auto& file_node : object[entity]["files"])
         {
@@ -243,22 +219,27 @@ namespace mechanism_configuration
         return { errors, merged };
       };
 
+      auto resolve_section = [&](const std::string& entity, EntityFormat fmt) -> std::pair<Errors, YAML::Node>
+      {
+        if (fmt == EntityFormat::Inline)
+          return { {}, object[entity] };
+        return load_files(entity);
+      };
+
       YAML::Node combined;
       combined[validation::version] = object[validation::version];
       if (object[validation::name])
-      {
-       combined[validation::name] = object[validation::name];
-      }
+        combined[validation::name] = object[validation::name];
 
-      auto [species_errors, species_node] = load_files(validation::species);
+      auto [species_errors, species_node] = resolve_section(validation::species, spc_format);
       result.errors.insert(result.errors.end(), species_errors.begin(), species_errors.end());
       combined[validation::species] = species_node;
 
-      auto [phases_errors, phases_node] = load_files(validation::phases);
+      auto [phases_errors, phases_node] = resolve_section(validation::phases, phs_format);
       result.errors.insert(result.errors.end(), phases_errors.begin(), phases_errors.end());
       combined[validation::phases] = phases_node;
 
-      auto [reactions_errors, reactions_node] = load_files(validation::reactions);
+      auto [reactions_errors, reactions_node] = resolve_section(validation::reactions, rxn_format);
       result.errors.insert(result.errors.end(), reactions_errors.begin(), reactions_errors.end());
       combined[validation::reactions] = reactions_node;
 

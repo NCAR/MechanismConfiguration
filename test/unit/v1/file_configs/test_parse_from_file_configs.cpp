@@ -124,6 +124,49 @@ TEST(ParseFromFileConfigs, VersionMismatch)
     std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
 }
 
+// ── mixed_inline_species ──────────────────────────────────────────────────────
+// species inline, phases and reactions as file-lists
+
+TEST(ParseFromFileConfigs, MixedInlineSpecies)
+{
+  v1::Parser parser;
+  auto parsed = parser.Parse(configBase + "mixed_inline_species/main.json");
+  ASSERT_TRUE(parsed);
+
+  auto& mechanism = *parsed;
+  EXPECT_EQ(mechanism.name, "mixed inline species");
+
+  ASSERT_EQ(mechanism.species.size(), 3);
+  EXPECT_EQ(mechanism.species[0].name, "A");
+  EXPECT_EQ(mechanism.species[1].name, "B");
+  EXPECT_EQ(mechanism.species[2].name, "C");
+
+  ASSERT_EQ(mechanism.phases.size(), 1);
+  EXPECT_EQ(mechanism.phases[0].name, "gas");
+
+  EXPECT_EQ(mechanism.reactions.arrhenius.size(), 3);
+}
+
+// ── mixed_inline_reactions ────────────────────────────────────────────────────
+// species and phases as file-lists, reactions inline
+
+TEST(ParseFromFileConfigs, MixedInlineReactions)
+{
+  v1::Parser parser;
+  auto parsed = parser.Parse(configBase + "mixed_inline_reactions/main.json");
+  ASSERT_TRUE(parsed);
+
+  auto& mechanism = *parsed;
+  EXPECT_EQ(mechanism.name, "mixed inline reactions");
+
+  ASSERT_EQ(mechanism.species.size(), 3);
+  ASSERT_EQ(mechanism.phases.size(), 1);
+  EXPECT_EQ(mechanism.phases[0].name, "gas");
+
+  ASSERT_EQ(mechanism.reactions.arrhenius.size(), 1);
+  EXPECT_EQ(mechanism.reactions.arrhenius[0].name, "inline arrhenius");
+}
+
 // ── duplicate_species_set ─────────────────────────────────────────────────────
 // species_set_1 and species_set_2 both define A, B, C
 // each duplicate emits one error per occurrence: 3 names × 2 occurrences = 6 errors
