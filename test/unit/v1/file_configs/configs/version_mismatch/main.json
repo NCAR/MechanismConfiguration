@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "name": "troposophere and stratosphere configs",
+  "name": "troposphere and stratosphere configs",
   "species": {
     "files": ["species.json"]
   },
@@ -8,7 +8,7 @@
     "files": ["gas_phase.json"]
   },
   "reactions": {
-    "files": ["troposophere.json",
+    "files": ["troposphere.json",
               "stratosphere.json"]
   }
 }

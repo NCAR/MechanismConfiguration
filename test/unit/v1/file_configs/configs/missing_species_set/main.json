@@ -1,11 +1,11 @@
 {
   "version": "1.1.0",
-  "name": "troposophere and stratosphere configs",
+  "name": "troposphere and stratosphere configs",
   "phases": {
     "files": ["gas_phase.json"]
   },
   "reactions": {
-    "files": ["troposophere.json",
+    "files": ["troposphere.json",
               "stratosphere.json"]
   }
 }

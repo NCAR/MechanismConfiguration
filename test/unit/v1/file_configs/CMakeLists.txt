@@ -1,7 +1,7 @@
 ################################################################################
 # Tests
 
-create_standard_test(NAME v1_parse_from_file_configs SOURCES test/test_parse_from_file_configs.cpp)
+create_standard_test(NAME v1_parse_from_file_configs SOURCES test_parse_from_file_configs.cpp)
 
 ################################################################################
 # Copy test config data

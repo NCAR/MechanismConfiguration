@@ -33,7 +33,7 @@ TEST(ParseFromFileConfigs, TwoSpeciesSets)
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
-  EXPECT_EQ(mechanism.name, "troposophere and stratosphere configs");
+  EXPECT_EQ(mechanism.name, "troposphere and stratosphere configs");
 
   ASSERT_EQ(mechanism.species.size(), 6);
   EXPECT_EQ(mechanism.species[0].name, "A");
@@ -75,7 +75,7 @@ TEST(ParseFromFileConfigs, TwoPhasesSets)
 }
 
 // ── missing_phase_set ─────────────────────────────────────────────────────────
-// phases section has no "files" key → RequiredKeyNotFound
+// phases section has no "files" key : RequiredKeyNotFound
 
 TEST(ParseFromFileConfigs, MissingPhaseSet)
 {
@@ -91,7 +91,7 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
 }
 
 // ── missing_reaction_set ──────────────────────────────────────────────────────
-// reactions.files is empty [] → parser succeeds with 0 reactions
+// reactions.files is empty [] : parser succeeds with 0 reactions
 
 TEST(ParseFromFileConfigs, MissingReactionSet)
 {
@@ -107,7 +107,7 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
 }
 
 // ── missing_species_set ───────────────────────────────────────────────────────
-// "species" key absent from main.json → RequiredKeyNotFound from ValidateSchema
+// "species" key absent from main.json : RequiredKeyNotFound from ValidateSchema
 
 TEST(ParseFromFileConfigs, MissingSpeciesSet)
 {
@@ -123,7 +123,7 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
-// version "1.3.0" → minor != 1 for file-list format → InvalidVersion
+// version "1.3.0" : minor != 1 for file-list format : InvalidVersion
 
 TEST(ParseFromFileConfigs, VersionMismatch)
 {

@@ -21,7 +21,7 @@ TEST(ParserBase, ParsesFullV1Configuration)
 
     auto& mechanism = *parsed;
 
-    EXPECT_EQ(mechanism.name, "troposophere and stratosphere configs");
+    EXPECT_EQ(mechanism.name, "troposphere and stratosphere configs");
 
     // species: A, B, C
     ASSERT_EQ(mechanism.species.size(), 3);

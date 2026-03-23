@@ -1,5 +1,5 @@
 version: "1.1.0"
-name: troposophere and stratosphere configs
+name: troposphere and stratosphere configs
 species:
   files:
     - species.yaml
@@ -8,5 +8,5 @@ phases:
     - gas_phase.yaml
 reactions:
   files:
-    - troposophere.yaml
+    - troposphere.yaml
     - stratosphere.yaml
