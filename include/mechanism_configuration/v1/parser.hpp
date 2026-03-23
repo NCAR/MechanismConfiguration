@@ -30,12 +30,13 @@ namespace mechanism_configuration
 
       EntityFormat GetEntityFormat(const YAML::Node& node);
 
+      ParserResult<types::Mechanism> ParseFromFileConfig(
+        const YAML::Node& object, const std::filesystem::path& config_path);
+
      public:
       ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
       ParserResult<types::Mechanism> ParseFromString(const std::string& content);
       ParserResult<types::Mechanism> ParseFromNode(const YAML::Node& object);
-      ParserResult<types::Mechanism> ParseFromFileConfig(
-        const YAML::Node& object, const std::filesystem::path& config_path);
     };
   }  // namespace v1
 }  // namespace mechanism_configuration
