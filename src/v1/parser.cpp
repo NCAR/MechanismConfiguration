@@ -106,24 +106,16 @@ namespace mechanism_configuration
             phs_format == EntityFormat::Inline &&
             rxn_format == EntityFormat::Inline)
         {
-          if (version.minor != 0)
-          {
-            result.errors.push_back({ ConfigParseStatus::InvalidVersion,
-                                      "Inline format requires minor version 0, got " +
-                                      std::to_string(version.minor) + "." });
-            prepend_path(result.errors);
-            return result;
-          }
           result = ParseFromNode(object);
         }
         else if (spc_format == EntityFormat::FileList &&
                  phs_format == EntityFormat::FileList &&
                  rxn_format == EntityFormat::FileList)
         {
-          if (version.minor != 1)
+          if (version.minor < 1)
           {
             result.errors.push_back({ ConfigParseStatus::InvalidVersion,
-                                      "File-list format requires minor version 1, got " +
+                                      "File-list format requires minor version greater than 1, got " +
                                       std::to_string(version.minor) + "." });
             prepend_path(result.errors);
             return result;
@@ -223,7 +215,7 @@ namespace mechanism_configuration
         if (!object[entity] || !object[entity]["files"])
         {
           errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
-                            "Missing '" + entity + ".files' in config" });
+                            "Missing '" + entity + " files' in config" });
           return { errors, merged };
         }
 
