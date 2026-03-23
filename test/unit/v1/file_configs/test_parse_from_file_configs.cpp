@@ -7,18 +7,13 @@
 
 #include <gtest/gtest.h>
 
+#include <string>
+#include <vector>
+#include <iostream>
+
 using namespace mechanism_configuration;
 
 const std::string configBase = "test/unit/v1/file_configs/configs/";
-
-// Helper: collect all error status codes from a result
-static std::vector<ConfigParseStatus> ErrorStatuses(const ParserResult<v1::types::Mechanism>& result)
-{
-  std::vector<ConfigParseStatus> statuses;
-  for (const auto& error : result.errors)
-    statuses.push_back(error.first);
-  return statuses;
-}
 
 // ── two_species_sets ──────────────────────────────────────────────────────────
 // species_set_1 (A,B,C) + species_set_2 (D,E,F) merged into 6 species
@@ -28,8 +23,6 @@ TEST(ParseFromFileConfigs, TwoSpeciesSets)
 {
   v1::Parser parser;
   auto parsed = parser.Parse(configBase + "two_species_sets/main.json");
-  for (const auto& error : parsed.errors)
-    std::cout << "[" << configParseStatusToString(error.first) << "] " << error.second << "\n";
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -58,8 +51,6 @@ TEST(ParseFromFileConfigs, TwoPhasesSets)
 {
   v1::Parser parser;
   auto parsed = parser.Parse(configBase + "two_phases_sets/main.json");
-  for (const auto& error : parsed.errors)
-    std::cout << "[" << configParseStatusToString(error.first) << "] " << error.second << "\n";
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -83,11 +74,10 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
   auto parsed = parser.Parse(configBase + "missing_phase_set/main.json");
 
   EXPECT_FALSE(parsed);
-
-  auto statuses = ErrorStatuses(parsed);
-  EXPECT_TRUE(
-      std::find(statuses.begin(), statuses.end(), ConfigParseStatus::RequiredKeyNotFound) !=
-      statuses.end());
+  ASSERT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+  for (const auto& error : parsed.errors)
+    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
 }
 
 // ── missing_reaction_set ──────────────────────────────────────────────────────
@@ -97,8 +87,6 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
 {
   v1::Parser parser;
   auto parsed = parser.Parse(configBase + "missing_reaction_set/main.json");
-  for (const auto& error : parsed.errors)
-    std::cout << "[" << configParseStatusToString(error.first) << "] " << error.second << "\n";
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -115,11 +103,10 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
   auto parsed = parser.Parse(configBase + "missing_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-
-  auto statuses = ErrorStatuses(parsed);
-  EXPECT_TRUE(
-      std::find(statuses.begin(), statuses.end(), ConfigParseStatus::RequiredKeyNotFound) !=
-      statuses.end());
+  ASSERT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+  for (const auto& error : parsed.errors)
+    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
@@ -131,9 +118,26 @@ TEST(ParseFromFileConfigs, VersionMismatch)
   auto parsed = parser.Parse(configBase + "version_mismatch/main.json");
 
   EXPECT_FALSE(parsed);
+  ASSERT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidVersion);
+  for (const auto& error : parsed.errors)
+    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+}
 
-  auto statuses = ErrorStatuses(parsed);
-  EXPECT_TRUE(
-      std::find(statuses.begin(), statuses.end(), ConfigParseStatus::InvalidVersion) !=
-      statuses.end());
+// ── duplicate_species_set ─────────────────────────────────────────────────────
+// species_set_1 and species_set_2 both define A, B, C
+// each duplicate emits one error per occurrence: 3 names × 2 occurrences = 6 errors
+
+TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
+{
+  v1::Parser parser;
+  auto parsed = parser.Parse(configBase + "duplicate_species_set/main.json");
+
+  EXPECT_FALSE(parsed);
+  ASSERT_EQ(parsed.errors.size(), 6);
+  for (const auto& error : parsed.errors)
+  {
+    EXPECT_EQ(error.first, ConfigParseStatus::DuplicateSpeciesDetected);
+    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  }
 }

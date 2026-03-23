@@ -132,8 +132,7 @@ namespace mechanism_configuration
         }
         else
         {
-          // A entity that is a map but missing "files" is a more specific error
-          // than a generic mixed-format error. Check each invalid entity first.
+          // Check missing files
           auto check_missing_files = [&](const std::string& entity, EntityFormat fmt)
           {
             if (fmt == EntityFormat::Invalid && object[entity] && object[entity].IsMap())
@@ -144,7 +143,7 @@ namespace mechanism_configuration
           check_missing_files(validation::phases, phs_format);
           check_missing_files(validation::reactions, rxn_format);
 
-          // If no missing-files errors, the issue is a genuinely mixed format
+          // Check mixed format
           if (result.errors.empty())
           {
             auto format_name = [](EntityFormat f) -> std::string {

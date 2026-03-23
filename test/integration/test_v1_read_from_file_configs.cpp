@@ -5,6 +5,10 @@
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
 
+#include <string>
+#include <vector>
+#include <iostream>
+
 using namespace mechanism_configuration;
 
 TEST(ParserBase, ParsesFullV1Configuration)
