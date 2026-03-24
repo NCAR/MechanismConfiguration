@@ -64,7 +64,8 @@ namespace mechanism_configuration
         return result;
       }
 
-      auto prepend_path = [&](Errors& errors) {
+      auto prepend_path = [&](Errors& errors)
+      {
         const std::string prefix = config_path.string() + ":";
         for (auto& error : errors)
           error.second = prefix + error.second;
@@ -91,9 +92,9 @@ namespace mechanism_configuration
         Version version = Version(object[validation::version].as<std::string>());
         if (version.major != 1)
         {
-          result.errors.push_back({ ConfigParseStatus::InvalidVersion,
-                                    "Unsupported version '" + object[validation::version].as<std::string>() +
-                                    "'. Expected major version 1." });
+          result.errors.push_back(
+              { ConfigParseStatus::InvalidVersion,
+                "Unsupported version '" + object[validation::version].as<std::string>() + "'. Expected major version 1." });
           prepend_path(result.errors);
           return result;
         }
@@ -107,11 +108,11 @@ namespace mechanism_configuration
           if (fmt == EntityFormat::Invalid)
           {
             if (object[entity] && object[entity].IsMap())
-              result.errors.push_back({ ConfigParseStatus::RequiredKeyNotFound,
-                                        "Missing 'files' key in '" + entity + "' section." });
+              result.errors.push_back(
+                  { ConfigParseStatus::RequiredKeyNotFound, "Missing 'files' key in '" + entity + "' section." });
             else
-              result.errors.push_back({ ConfigParseStatus::InvalidType,
-                                        "'" + entity + "' must be a file-list object or an inline array." });
+              result.errors.push_back(
+                  { ConfigParseStatus::InvalidType, "'" + entity + "' must be a file-list object or an inline array." });
           }
         };
         check_invalid(validation::species, spc_format);
@@ -120,14 +121,13 @@ namespace mechanism_configuration
 
         if (result.errors.empty())
         {
-          bool any_filelist = spc_format == EntityFormat::FileList ||
-                              phs_format == EntityFormat::FileList ||
+          bool any_filelist = spc_format == EntityFormat::FileList || phs_format == EntityFormat::FileList ||
                               rxn_format == EntityFormat::FileList;
           if (any_filelist && version.minor < 1)
           {
-            result.errors.push_back({ ConfigParseStatus::InvalidVersion,
-                                      "File-list format requires minor version >= 1, got " +
-                                      std::to_string(version.minor) + "." });
+            result.errors.push_back(
+                { ConfigParseStatus::InvalidVersion,
+                  "File-list format requires minor version >= 1, got " + std::to_string(version.minor) + "." });
           }
           else
           {
@@ -138,7 +138,7 @@ namespace mechanism_configuration
       catch (const std::exception& e)
       {
         result.errors.push_back({ ConfigParseStatus::UnexpectedError,
-                        "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) });
+                                  "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) });
         return result;
       }
 
@@ -180,11 +180,11 @@ namespace mechanism_configuration
     }
 
     ParserResult<types::Mechanism> Parser::ParseFromFileConfig(
-      const YAML::Node& object,
-      const std::filesystem::path& config_path,
-      EntityFormat spc_format,
-      EntityFormat phs_format,
-      EntityFormat rxn_format)
+        const YAML::Node& object,
+        const std::filesystem::path& config_path,
+        EntityFormat spc_format,
+        EntityFormat phs_format,
+        EntityFormat rxn_format)
     {
       ParserResult<types::Mechanism> result;
 
@@ -200,8 +200,7 @@ namespace mechanism_configuration
           std::filesystem::path file_path = base_dir / file_node.as<std::string>();
           if (!std::filesystem::exists(file_path))
           {
-            errors.push_back({ ConfigParseStatus::FileNotFound,
-                              "File not found: " + file_path.string() });
+            errors.push_back({ ConfigParseStatus::FileNotFound, "File not found: " + file_path.string() });
             continue;
           }
           try
@@ -212,8 +211,8 @@ namespace mechanism_configuration
           }
           catch (const std::exception& e)
           {
-            errors.push_back({ ConfigParseStatus::UnexpectedError,
-                              "Failed to parse file: " + file_path.string() + ": " + e.what() });
+            errors.push_back(
+                { ConfigParseStatus::UnexpectedError, "Failed to parse file: " + file_path.string() + ": " + e.what() });
           }
         }
         return { errors, merged };
