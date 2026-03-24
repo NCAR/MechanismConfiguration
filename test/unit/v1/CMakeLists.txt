@@ -13,3 +13,4 @@ add_custom_target(copy_v1_unit_test_configs ALL ${CMAKE_COMMAND} -E copy_directo
 ################################################################################
 
 add_subdirectory(reactions)
+add_subdirectory(file_configs)
