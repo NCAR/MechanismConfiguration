@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "name": "Unknown species lambda_rate_constant",
+  "species": [
+    { "name": "A" },
+    { "name": "B" }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": ["A", "B"]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "LAMBDA_RATE_CONSTANT",
+      "gas phase": "gas",
+      "lambda function": "[](double T) { return 1.0; }",
+      "reactants": [
+        { "species name": "B", "coefficient": 1 }
+      ],
+      "products": [
+        { "species name": "C", "coefficient": 1 }
+      ]
+    }
+  ]
+}

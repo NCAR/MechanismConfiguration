@@ -7,24 +7,29 @@
 #include <mechanism_configuration/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
+#include <mechanism_configuration/v1/validation.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
+
+#include <algorithm>
+#include <sstream>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors FirstOrderLossParser::parse(
+    Errors LambdaRateConstantParser::parse(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases,
         types::Reactions& reactions)
     {
       Errors errors;
-      types::FirstOrderLoss first_order_loss;
+      types::LambdaRateConstant lambda_rate_constant;
 
-      std::vector<std::string> required_keys = { validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor, validation::products };
-
+      std::vector<std::string> required_keys = {
+        validation::reactants, validation::products, validation::type, validation::gas_phase, validation::lambda_function
+      };
+      std::vector<std::string> optional_keys = { validation::name };
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
@@ -34,14 +39,11 @@ namespace mechanism_configuration
         auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
-        if (object[validation::scaling_factor])
-        {
-          first_order_loss.scaling_factor = object[validation::scaling_factor].as<double>();
-        }
+        lambda_rate_constant.lambda_function = object[validation::lambda_function].as<std::string>();
 
         if (object[validation::name])
         {
-          first_order_loss.name = object[validation::name].as<std::string>();
+          lambda_rate_constant.name = object[validation::name].as<std::string>();
         }
 
         std::vector<std::string> requested_species;
@@ -96,22 +98,15 @@ namespace mechanism_configuration
           errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
-        if (reactants.second.size() > 1)
-        {
-          std::string line = std::to_string(object[validation::reactants].Mark().line + 1);
-          std::string column = std::to_string(object[validation::reactants].Mark().column + 1);
-          errors.push_back(
-              { ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
-        }
-
-        first_order_loss.gas_phase = gas_phase;
-        first_order_loss.reactants = reactants.second;
-        first_order_loss.products = products.second;
-        first_order_loss.unknown_properties = GetComments(object);
-        reactions.first_order_loss.push_back(first_order_loss);
+        lambda_rate_constant.gas_phase = gas_phase;
+        lambda_rate_constant.products = products.second;
+        lambda_rate_constant.reactants = reactants.second;
+        lambda_rate_constant.unknown_properties = GetComments(object);
+        reactions.lambda_rate_constant.push_back(lambda_rate_constant);
       }
 
       return errors;
     }
   }  // namespace v1
 }  // namespace mechanism_configuration
+

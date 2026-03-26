@@ -126,6 +126,15 @@ namespace mechanism_configuration
       // products
       // scaling factor
 
+      // Lambda Rate Constant
+      static constexpr const char* LambdaRateConstant_key = "LAMBDA_RATE_CONSTANT";
+      static constexpr const char* lambda_function = "lambda function";
+      // also
+      // gas phase
+      // reactants
+      // products
+      // name
+
     }  // namespace validation
   }  // namespace v1
 }  // namespace mechanism_configuration

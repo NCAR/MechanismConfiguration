@@ -358,6 +358,22 @@ namespace mechanism_configuration
         std::unordered_map<std::string, std::string> unknown_properties;
       };
 
+      struct LambdaRateConstant
+      {
+        /// @brief A lambda function as a string, expected to be a function of temperature (T) and optionally pressure (P)
+        std::string lambda_function;
+        /// @brief A list of reactants
+        std::vector<ReactionComponent> reactants;
+        /// @brief A list of products
+        std::vector<ReactionComponent> products;
+        /// @brief An identifier, optional, uniqueness not enforced
+        std::string name;
+        /// @brief An identifier indicating which gas phase this reaction takes place in
+        std::string gas_phase;
+        /// @brief Unknown properties, prefixed with two underscores (__)
+        std::unordered_map<std::string, std::string> unknown_properties;
+      };
+
       /// @brief Represents a collection of different reaction types
       struct Reactions
       {
@@ -378,6 +394,7 @@ namespace mechanism_configuration
         std::vector<TernaryChemicalActivation> ternary_chemical_activation;
         std::vector<Tunneling> tunneling;
         std::vector<UserDefined> user_defined;
+        std::vector<LambdaRateConstant> lambda_rate_constant;
       };
 
     }  // namespace types

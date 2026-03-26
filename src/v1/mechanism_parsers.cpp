@@ -286,6 +286,7 @@ namespace mechanism_configuration
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();
       parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
       parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+      parsers[validation::LambdaRateConstant_key] = std::make_unique<LambdaRateConstantParser>();
 
       for (const auto& object : objects)
       {

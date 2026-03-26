@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "name": "Bad reaction component lambda_rate_constant",
+  "species": [
+    { "name": "A" },
+    { "name": "B" },
+    { "name": "C" }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": ["A", "B", "C"]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "LAMBDA_RATE_CONSTANT",
+      "gas phase": "gas",
+      "lambda function": "[](double T) { return 1.0; }",
+      "reactants": [
+        { "species name": "B", "Coefficient": 1 }
+      ],
+      "products": [
+        { "species name": "C", "coefficient": 1 }
+      ]
+    }
+  ]
+}
