@@ -106,3 +106,38 @@ TEST(ParserBase, FirstOrderLossDetectsMoreThanOneSpecies)
     }
   }
 }
+
+TEST(ParserBase, CanParseValidFirstOrderLossReactionWithProducts)
+{
+  v1::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+  for (auto& extension : extensions)
+  {
+    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/first_order_loss/products") + extension);
+    EXPECT_TRUE(parsed);
+    v1::types::Mechanism mechanism = *parsed;
+
+    EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 2);
+
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].gas_phase, "gas");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].name, "my first order loss");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].scaling_factor, 12.3);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].reactants.size(), 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].reactants[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].reactants[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].products.size(), 2);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].products[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].products[0].coefficient, 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].products[1].species_name, "B");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].products[1].coefficient, 2);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[0].unknown_properties.size(), 1);
+    EXPECT_EQ(
+        mechanism.reactions.first_order_loss[0].unknown_properties["__comment"], "Strawberries are the superior fruit");
+
+    EXPECT_EQ(mechanism.reactions.first_order_loss[1].gas_phase, "gas");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[1].scaling_factor, 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[1].reactants.size(), 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss[1].reactants[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.first_order_loss[1].reactants[0].coefficient, 1);
+  }
+}

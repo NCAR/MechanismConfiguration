@@ -86,6 +86,8 @@ namespace mechanism_configuration
       {
         /// @brief Scaling factor to apply to user-provided rate constants
         double scaling_factor{ 1.0 };
+        /// @brief A list of products
+        std::vector<ReactionComponent> products;
         /// @brief A list of reactants
         std::vector<ReactionComponent> reactants;
         /// @brief An identifier, optional, uniqueness not enforced
