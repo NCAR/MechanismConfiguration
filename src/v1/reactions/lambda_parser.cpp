@@ -109,4 +109,3 @@ namespace mechanism_configuration
     }
   }  // namespace v1
 }  // namespace mechanism_configuration
-
