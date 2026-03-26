@@ -5,9 +5,9 @@
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 using namespace mechanism_configuration;
 
