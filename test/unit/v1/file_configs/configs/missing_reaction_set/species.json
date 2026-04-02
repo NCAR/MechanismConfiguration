@@ -1,0 +1,15 @@
+[
+  {
+    "name": "A",
+    "__absolute tolerance": 1.0e-30,
+    "is third body": true
+  },
+  {
+    "name": "B",
+    "molecular weight [kg mol-1]": 0.0340147
+  },
+  {
+    "name": "C",
+    "molecular weight [kg mol-1]": 0.5
+  }
+]

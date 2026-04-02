@@ -1,4 +1,4 @@
-// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
@@ -125,6 +125,15 @@ namespace mechanism_configuration
       // reactants
       // products
       // scaling factor
+
+      // Lambda Rate Constant
+      static constexpr const char* LambdaRateConstant_key = "LAMBDA_RATE_CONSTANT";
+      static constexpr const char* lambda_function = "lambda function";
+      // also
+      // gas phase
+      // reactants
+      // products
+      // name
 
     }  // namespace validation
   }  // namespace v1

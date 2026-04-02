@@ -1,4 +1,4 @@
-// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
@@ -23,12 +23,14 @@ namespace mechanism_configuration
       types::FirstOrderLoss first_order_loss;
 
       std::vector<std::string> required_keys = { validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor, validation::products };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
+        auto products = ParseReactantsOrProducts(validation::products, object);
+        errors.insert(errors.end(), products.first.begin(), products.first.end());
         auto reactants = ParseReactantsOrProducts(validation::reactants, object);
         errors.insert(errors.end(), reactants.first.begin(), reactants.first.end());
 
@@ -43,6 +45,10 @@ namespace mechanism_configuration
         }
 
         std::vector<std::string> requested_species;
+        for (const auto& spec : products.second)
+        {
+          requested_species.push_back(spec.species_name);
+        }
         for (const auto& spec : reactants.second)
         {
           requested_species.push_back(spec.species_name);
@@ -100,6 +106,7 @@ namespace mechanism_configuration
 
         first_order_loss.gas_phase = gas_phase;
         first_order_loss.reactants = reactants.second;
+        first_order_loss.products = products.second;
         first_order_loss.unknown_properties = GetComments(object);
         reactions.first_order_loss.push_back(first_order_loss);
       }

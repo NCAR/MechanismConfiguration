@@ -4,6 +4,7 @@ target_sources(mechanism_configuration
     branched_parser.cpp
     emission_parser.cpp
     first_order_loss_parser.cpp
+    lambda_parser.cpp
     photolysis_parser.cpp
     surface_parser.cpp
     taylor_series_parser.cpp

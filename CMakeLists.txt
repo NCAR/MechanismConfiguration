@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # must be on the same line so that pyproject.toml can correctly identify the version
-project(mechanism_configuration VERSION 1.1.1 LANGUAGES CXX)
+project(mechanism_configuration VERSION 1.1.2 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -25,7 +25,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
-option(MECH_CONFIG_ENABLE_PIC "Build the library with position independent code" ON)
+option(MECH_CONFIG_BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MECH_CONFIG_ENABLE_COVERAGE "Enable code coverage output" OFF)
 
 set(MECH_CONFIG_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})

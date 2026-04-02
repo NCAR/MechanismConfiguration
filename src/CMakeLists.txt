@@ -2,14 +2,15 @@
 # version
 configure_file(version.hpp.in ${PROJECT_SOURCE_DIR}/include/mechanism_configuration/version.hpp @ONLY)
 
-add_library(mechanism_configuration)
+if(MECH_CONFIG_BUILD_SHARED_LIBS)
+  add_library(mechanism_configuration SHARED)
+else()
+  add_library(mechanism_configuration STATIC)
+endif()
+
 add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
-
-if(MECH_CONFIG_ENABLE_PIC)
-  set_target_properties(mechanism_configuration PROPERTIES POSITION_INDEPENDENT_CODE ON)
-endif()
 
 set_target_properties(mechanism_configuration PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}

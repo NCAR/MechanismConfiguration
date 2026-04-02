@@ -1,4 +1,4 @@
-// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
@@ -217,6 +217,17 @@ namespace mechanism_configuration
     {
      public:
       /// @brief Parser for user-defined reactions
+      Errors parse(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases,
+          types::Reactions& reactions) override;
+    };
+
+    class LambdaRateConstantParser : public IReactionParser
+    {
+     public:
+      /// @brief Parser for lambda rate constant reactions
       Errors parse(
           const YAML::Node& object,
           const std::vector<types::Species>& existing_species,

@@ -1,0 +1,20 @@
+name: Unknown species lambda_rate_constant
+phases:
+- name: gas
+  species:
+  - A
+  - B
+reactions:
+- gas phase: gas
+  lambda function: "[](double T) { return 1.0; }"
+  products:
+  - coefficient: 1
+    species name: C
+  reactants:
+  - coefficient: 1
+    species name: B
+  type: LAMBDA_RATE_CONSTANT
+species:
+- name: A
+- name: B
+version: 1.0.0

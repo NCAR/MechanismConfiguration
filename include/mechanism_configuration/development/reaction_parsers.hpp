@@ -1,4 +1,4 @@
-// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
@@ -228,6 +228,17 @@ namespace mechanism_configuration
       void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
+    class LambdaRateConstantParser : public IReactionParser
+    {
+     public:
+      Errors Validate(
+          const YAML::Node& object,
+          const std::vector<types::Species>& existing_species,
+          const std::vector<types::Phase>& existing_phases) override;
+
+      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
+    };
+
     /// @brief Returns a static map of reaction type keys to their parser instances
     inline std::map<std::string, std::unique_ptr<IReactionParser>>& GetReactionParserMap()
     {
@@ -251,6 +262,7 @@ namespace mechanism_configuration
         map[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
         map[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
         map[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+        map[validation::LambdaRateConstant_key] = std::make_unique<LambdaRateConstantParser>();
         return map;
       }();
 

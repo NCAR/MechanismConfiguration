@@ -2,6 +2,7 @@
 #include <mechanism_configuration/v1/types.hpp>
 
 #include <gtest/gtest.h>
+#include <yaml-cpp/yaml.h>
 
 using namespace mechanism_configuration;
 

@@ -12,3 +12,4 @@ create_standard_test(NAME v1_parse_ternary_chemical_activation SOURCES test_pars
 create_standard_test(NAME v1_parse_troe SOURCES test_parse_troe.cpp)
 create_standard_test(NAME v1_parse_tunneling SOURCES test_parse_tunneling.cpp)
 create_standard_test(NAME v1_parse_user_defined SOURCES test_parse_user_defined.cpp)
+create_standard_test(NAME v1_parse_lambda_rate_constant SOURCES test_parse_lambda_rate_constant.cpp)

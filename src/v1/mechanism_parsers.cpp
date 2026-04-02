@@ -1,4 +1,4 @@
-// Copyright (C) 2023–2025 University Corporation for Atmospheric Research
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
@@ -286,6 +286,7 @@ namespace mechanism_configuration
       parsers[validation::Troe_key] = std::make_unique<TroeParser>();
       parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
       parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
+      parsers[validation::LambdaRateConstant_key] = std::make_unique<LambdaRateConstantParser>();
 
       for (const auto& object : objects)
       {
