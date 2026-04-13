@@ -134,6 +134,8 @@ namespace mechanism_configuration
               // Parse standard properties
               if (spec[validation::diffusion_coefficient])
                 phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+              if (spec[validation::density])
+                phase_species.density = spec[validation::density].as<double>();
 
               // Parse custom properties (those starting with __)
               phase_species.unknown_properties = GetComments(spec);

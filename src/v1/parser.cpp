@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/v1/mechanism_parsers.hpp>
+#include <mechanism_configuration/v1/aerosol_parsers.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/v1/validation.hpp>
@@ -33,7 +34,9 @@ namespace mechanism_configuration
         std::vector<std::string> required_keys = {
           validation::version, validation::species, validation::phases, validation::reactions
         };
-        std::vector<std::string> optional_keys = { validation::name };
+        std::vector<std::string> optional_keys = {
+          validation::name, validation::aerosol_representations, validation::aerosol_processes
+        };
 
         auto validate_errors = ValidateSchema(object, required_keys, optional_keys);
         if (!validate_errors.empty())
@@ -78,7 +81,9 @@ namespace mechanism_configuration
         std::vector<std::string> mechanism_required_keys = {
           validation::version, validation::species, validation::phases, validation::reactions
         };
-        std::vector<std::string> mechanism_optional_keys = { validation::name };
+        std::vector<std::string> mechanism_optional_keys = {
+          validation::name, validation::aerosol_representations, validation::aerosol_processes
+        };
 
         auto validate_errors = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
@@ -175,6 +180,22 @@ namespace mechanism_configuration
       result.errors.insert(result.errors.end(), reactions_parsing.first.begin(), reactions_parsing.first.end());
       mechanism->reactions = reactions_parsing.second;
 
+      if (object[validation::aerosol_representations])
+      {
+        auto aerosol_rep_parsing = ParseAerosolRepresentations(
+            object[validation::aerosol_representations], phases_parsing.second);
+        result.errors.insert(result.errors.end(), aerosol_rep_parsing.first.begin(), aerosol_rep_parsing.first.end());
+        mechanism->aerosol_representations = aerosol_rep_parsing.second;
+      }
+
+      if (object[validation::aerosol_processes])
+      {
+        auto aerosol_proc_parsing = ParseAerosolProcesses(
+            object[validation::aerosol_processes], species_parsing.second, phases_parsing.second);
+        result.errors.insert(result.errors.end(), aerosol_proc_parsing.first.begin(), aerosol_proc_parsing.first.end());
+        mechanism->aerosol_processes = aerosol_proc_parsing.second;
+      }
+
       result.mechanism = std::move(mechanism);
       return result;
     }
@@ -241,6 +262,12 @@ namespace mechanism_configuration
       auto [reactions_errors, reactions_node] = resolve_section(validation::reactions, rxn_format);
       result.errors.insert(result.errors.end(), reactions_errors.begin(), reactions_errors.end());
       combined[validation::reactions] = reactions_node;
+
+      // Pass through optional aerosol sections (inline only for now)
+      if (object[validation::aerosol_representations])
+        combined[validation::aerosol_representations] = object[validation::aerosol_representations];
+      if (object[validation::aerosol_processes])
+        combined[validation::aerosol_processes] = object[validation::aerosol_processes];
 
       return ParseFromNode(combined);
     }

@@ -135,6 +135,51 @@ namespace mechanism_configuration
       // products
       // name
 
+      // ----------------------------------------
+      // Aerosol representations
+      // ----------------------------------------
+      static constexpr const char* aerosol_representations = "aerosol representations";
+      static constexpr const char* aerosol_processes = "aerosol processes";
+
+      // Representation types
+      static constexpr const char* UniformSection_key = "UNIFORM_SECTION";
+      static constexpr const char* SingleMomentMode_key = "SINGLE_MOMENT_MODE";
+      static constexpr const char* TwoMomentMode_key = "TWO_MOMENT_MODE";
+      static constexpr const char* minimum_radius = "minimum radius [m]";
+      static constexpr const char* maximum_radius = "maximum radius [m]";
+      static constexpr const char* geometric_mean_radius = "geometric mean radius [m]";
+      static constexpr const char* geometric_standard_deviation = "geometric standard deviation";
+
+      // ----------------------------------------
+      // Aerosol process types
+      // ----------------------------------------
+      static constexpr const char* HenryLawEquilibrium_key = "HENRY_LAW_EQUILIBRIUM";
+      static constexpr const char* HenryLawPhaseTransfer_key = "HENRY_LAW_PHASE_TRANSFER";
+      static constexpr const char* DissolvedReaction_key = "DISSOLVED_REACTION";
+      static constexpr const char* DissolvedReversibleReaction_key = "DISSOLVED_REVERSIBLE_REACTION";
+      static constexpr const char* DissolvedEquilibrium_key = "DISSOLVED_EQUILIBRIUM";
+      static constexpr const char* LinearConstraint_key = "LINEAR_CONSTRAINT";
+
+      // Aerosol process keys
+      static constexpr const char* condensed_phase = "condensed phase";
+      static constexpr const char* condensed_phase_species = "condensed-phase species";
+
+      static constexpr const char* solvent = "solvent";
+      static constexpr const char* henrys_law_constant = "Henry's law constant";
+      static constexpr const char* hlc_ref = "HLC_ref [mol m-3 Pa-1]";
+      static constexpr const char* rate_constant = "rate constant";
+      static constexpr const char* forward_rate_constant = "forward rate constant";
+      static constexpr const char* reverse_rate_constant = "reverse rate constant";
+      static constexpr const char* equilibrium_constant = "equilibrium constant";
+      static constexpr const char* algebraic_species = "algebraic species";
+      static constexpr const char* algebraic_phase = "algebraic phase";
+      static constexpr const char* diagnose_from_state = "diagnose from state";
+      static constexpr const char* terms = "terms";
+      static constexpr const char* phase_key = "phase";
+      static constexpr const char* constant_mol_m3 = "constant [mol m-3]";
+      static constexpr const char* aerosol_accommodation_coefficient = "accommodation coefficient";
+      static constexpr const char* density = "density [kg m-3]";
+
     }  // namespace validation
   }  // namespace v1
 }  // namespace mechanism_configuration
