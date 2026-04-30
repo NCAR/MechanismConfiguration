@@ -2,7 +2,6 @@
 # Preamble
 cmake_minimum_required(VERSION 3.24)
 
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # must be on the same line so that pyproject.toml can correctly identify the version
@@ -27,6 +26,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
 option(MECH_CONFIG_BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MECH_CONFIG_ENABLE_COVERAGE "Enable code coverage output" OFF)
+option(MECH_CONFIG_USE_FMT "Use {fmt} library instead of std::format (enables C++17 support)" OFF)
 
 set(MECH_CONFIG_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 set(MECH_CONFIG_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})

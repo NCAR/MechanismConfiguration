@@ -11,7 +11,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 #include <string>
 #include <vector>
 
@@ -70,7 +70,7 @@ namespace mechanism_configuration
             const auto& object = duplicate.nodes[i];
             ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
-            std::string message = std::format(
+            std::string message = mc_fmt::format(
                 "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, message });
@@ -145,7 +145,7 @@ namespace mechanism_configuration
               const auto& duplicate_obj = duplicate.nodes[i];
               ErrorLocation error_location{ duplicate_obj.Mark().line, duplicate_obj.Mark().column };
 
-              std::string message = std::format(
+              std::string message = mc_fmt::format(
                   "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
               errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, message });
@@ -162,7 +162,7 @@ namespace mechanism_configuration
             ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
             std::string message =
-                std::format("{} error: Unknown species name '{}' found in '{}' phase.", error_location, name, phase.name);
+                mc_fmt::format("{} error: Unknown species name '{}' found in '{}' phase.", error_location, name, phase.name);
 
             errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, message });
           }
@@ -183,7 +183,7 @@ namespace mechanism_configuration
             const auto& duplicate_object = duplicate.nodes[i];
             ErrorLocation error_location{ duplicate_object.Mark().line, duplicate_object.Mark().column };
 
-            std::string message = std::format(
+            std::string message = mc_fmt::format(
                 "{} error: Duplicate phase name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
 
             errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, message });
@@ -262,7 +262,7 @@ namespace mechanism_configuration
         if (!object[validation::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-          std::string message = std::format("{} error: Missing 'type' object in reaction.", error_location);
+          std::string message = mc_fmt::format("{} error: Missing 'type' object in reaction.", error_location);
           errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
           is_valid = false;
           continue;
@@ -276,7 +276,7 @@ namespace mechanism_configuration
           const auto& node = object[validation::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format("{} error: Unknown reaction type '{}' found.", error_location, type);
+          std::string message = mc_fmt::format("{} error: Unknown reaction type '{}' found.", error_location, type);
 
           errors.push_back({ ConfigParseStatus::UnknownType, message });
           is_valid = false;
@@ -315,7 +315,7 @@ namespace mechanism_configuration
         if (!object[validation::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-          std::string message = std::format("{} error: Missing 'type' object in model.", error_location);
+          std::string message = mc_fmt::format("{} error: Missing 'type' object in model.", error_location);
           errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
           is_valid = false;
           continue;
@@ -329,7 +329,7 @@ namespace mechanism_configuration
           const auto& node = object[validation::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format("{} error: Unknown model type '{}' found.", error_location, type);
+          std::string message = mc_fmt::format("{} error: Unknown model type '{}' found.", error_location, type);
 
           errors.push_back({ ConfigParseStatus::UnknownType, message });
           is_valid = false;

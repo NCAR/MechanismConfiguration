@@ -2,11 +2,22 @@ include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 set(INSTALL_PREFIX "mechanism_configuration-${PROJECT_VERSION}" )
 
+set(MECH_CONFIG_OPTIONAL_INSTALL_TARGETS "")
+set(MECH_CONFIG_FMT_FIND_DEPENDENCY OFF)
+if(MECH_CONFIG_USE_FMT)
+  if(fmt_POPULATED)
+    list(APPEND MECH_CONFIG_OPTIONAL_INSTALL_TARGETS fmt)
+  else()
+    set(MECH_CONFIG_FMT_FIND_DEPENDENCY ON)
+  endif()
+endif()
+
 install(
   TARGETS
     mechanism_configuration
     yaml-cpp
-  EXPORT 
+    ${MECH_CONFIG_OPTIONAL_INSTALL_TARGETS}
+  EXPORT
     mechanism_configuration_Exports
   LIBRARY DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}

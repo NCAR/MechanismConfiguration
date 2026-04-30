@@ -28,6 +28,7 @@ namespace mechanism_configuration
     {
       std::string name;
       YAML::Node nodes;
+      NodeInfo(std::string name, YAML::Node nodes) : name(std::move(name)), nodes(std::move(nodes)) {}
     };
 
     struct DuplicateEntryInfo
