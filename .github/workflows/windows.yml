@@ -25,22 +25,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        if: matrix.architecture == 'Win32'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-          architecture: 'x86'
-
-      - name: Setup Python
-        if: matrix.architecture == 'x64'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-          architecture: 'x64'
-
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
@@ -83,7 +69,6 @@ jobs:
         run: |
           cmake -S . -B build -G "MinGW Makefiles" \
                               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                              -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
                               -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build the project

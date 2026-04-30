@@ -30,28 +30,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install GCC 13 if needed
-        if: matrix.compiler.cpp == 'clang++'
-        run: |
-          sudo apt update
-          sudo apt install -y gcc-13 g++-13
-
       - name: Configure CMake
-        run: |
-          FMT_ARGS="-D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}"
-          if [[ "${{ matrix.use_fmt }}" == "OFF" ]]; then
-            FMT_ARGS="$FMT_ARGS -D CMAKE_CXX_STANDARD=20"
-          fi
-          if [[ "${{ matrix.compiler.cpp }}" == "clang++" ]]; then
-            cmake -S . -B build \
-              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              $FMT_ARGS \
-              -D CMAKE_CXX_COMPILER=${CXX} \
-              -D CMAKE_EXE_LINKER_FLAGS="-stdlib=libstdc++" \
-              -D CMAKE_CXX_FLAGS="--gcc-toolchain=/usr"
-          else
-            cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} $FMT_ARGS
-          fi
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
