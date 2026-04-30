@@ -81,7 +81,7 @@ namespace mechanism_configuration
           double qty = 1;
           if (value[validation::QTY])
             qty = value[validation::QTY].as<std::size_t>();
-          types::ReactionComponent reactant = { .species_name = key, .coefficient = qty };
+          types::ReactionComponent reactant = { key, qty };
           reactants.push_back(reactant);
         }
       }
@@ -101,7 +101,7 @@ namespace mechanism_configuration
         errors.insert(errors.end(), validate.begin(), validate.end());
         if (validate.empty())
         {
-          types::ReactionComponent product = { .species_name = key, .coefficient = 1 };
+          types::ReactionComponent product = { key, 1 };
           if (value[validation::YIELD])
           {
             double yield = value[validation::YIELD].as<double>();

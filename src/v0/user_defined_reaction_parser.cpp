@@ -34,9 +34,7 @@ namespace mechanism_configuration
 
         std::string name = "USER." + object[validation::MUSICA_NAME].as<std::string>();
 
-        types::UserDefined user_defined = {
-          .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
-        };
+        types::UserDefined user_defined = { scaling_factor, reactants, products, name };
         mechanism->reactions.user_defined.push_back(user_defined);
       }
 
