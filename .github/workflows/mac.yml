@@ -19,7 +19,7 @@ jobs:
       matrix:
         xcode: ['16.4']
         build_type: [Release]
-        use_fmt: [false, true]
+        use_fmt: [OFF, ON]
         compiler:
           - { cpp: g++-13, c: gcc-13 }
           - { cpp: g++-14, c: gcc-14 }
@@ -38,7 +38,7 @@ jobs:
           xcode-version: ${{ matrix.xcode }}
 
       - name: Run Cmake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build
         run: cmake --build build --parallel 10

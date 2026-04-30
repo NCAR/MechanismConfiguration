@@ -22,7 +22,7 @@ jobs:
           - { cpp: g++-14, c: gcc-14 }
           - { cpp: clang++, c: clang }
         build_type: [Release]
-        use_fmt: [false, true]
+        use_fmt: [OFF, ON]
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
@@ -38,10 +38,9 @@ jobs:
 
       - name: Configure CMake
         run: |
-          if [[ "${{ matrix.use_fmt }}" == "true" ]]; then
-            FMT_ARGS="-D MECH_CONFIG_USE_FMT=ON"
-          else
-            FMT_ARGS="-D CMAKE_CXX_STANDARD=20"
+          FMT_ARGS="-D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}"
+          if [[ "${{ matrix.use_fmt }}" == "OFF" ]]; then
+            FMT_ARGS="$FMT_ARGS -D CMAKE_CXX_STANDARD=20"
           fi
           if [[ "${{ matrix.compiler.cpp }}" == "clang++" ]]; then
             cmake -S . -B build \

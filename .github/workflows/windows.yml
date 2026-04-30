@@ -19,7 +19,7 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         architecture: [Win32, x64]
-        use_fmt: [false, true]
+        use_fmt: [OFF, ON]
 
     steps:
       - name: Checkout code
@@ -40,7 +40,7 @@ jobs:
           architecture: 'x64'
 
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5" ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [Debug, Release]
-        use_fmt: [false, true]
+        use_fmt: [OFF, ON]
 
     steps:
       - name: Checkout code
@@ -84,7 +84,7 @@ jobs:
           cmake -S . -B build -G "MinGW Makefiles" \
                               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
                               -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
-                              ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
+                              -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }}
 
       - name: Build the project
         shell: msys2 {0}
