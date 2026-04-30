@@ -1,18 +1,18 @@
 name: Ubuntu
 
-on: 
+on:
   push:
     branches:
       - main
   pull_request:
   workflow_dispatch:
-  
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  build-and-test-fmt:
+  build-and-test:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
@@ -22,6 +22,7 @@ jobs:
           - { cpp: g++-14, c: gcc-14 }
           - { cpp: clang++, c: clang }
         build_type: [Release]
+        use_fmt: [false, true]
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
@@ -37,62 +38,20 @@ jobs:
 
       - name: Configure CMake
         run: |
-          if [[ "${{ matrix.compiler.cpp }}" == "clang++" ]]; then
-            cmake -S . -B build \
-              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D MECH_CONFIG_USE_FMT=ON \
-              -D CMAKE_CXX_COMPILER=${CXX} \
-              -D CMAKE_EXE_LINKER_FLAGS="-stdlib=libstdc++" \
-              -D CMAKE_CXX_FLAGS="--gcc-toolchain=/usr"
+          if [[ "${{ matrix.use_fmt }}" == "true" ]]; then
+            FMT_ARGS="-D MECH_CONFIG_USE_FMT=ON"
           else
-            cmake -S . -B build \
-              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D MECH_CONFIG_USE_FMT=ON
+            FMT_ARGS="-D CMAKE_CXX_STANDARD=20"
           fi
-
-      - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
-
-      - name: Run tests
-        run: |
-          cd build
-          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
-
-  build-and-test:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    strategy:
-      matrix:
-        compiler:
-          - { cpp: g++-13, c: gcc-13 }
-          - { cpp: g++-14, c: gcc-14 }
-          - { cpp: clang++, c: clang }
-        build_type: [Release]
-    env:
-      CC: ${{ matrix.compiler.c }}
-      CXX: ${{ matrix.compiler.cpp }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install GCC 13 if needed
-        if: matrix.compiler.cpp  == 'clang++'
-        run: |
-          sudo apt update
-          sudo apt install -y gcc-13 g++-13
-
-      - name: Configure CMake
-        run: |
           if [[ "${{ matrix.compiler.cpp }}" == "clang++" ]]; then
             cmake -S . -B build \
               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D CMAKE_CXX_STANDARD=20 \
+              $FMT_ARGS \
               -D CMAKE_CXX_COMPILER=${CXX} \
               -D CMAKE_EXE_LINKER_FLAGS="-stdlib=libstdc++" \
               -D CMAKE_CXX_FLAGS="--gcc-toolchain=/usr"
           else
-            cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D CMAKE_CXX_STANDARD=20
+            cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} $FMT_ARGS
           fi
 
       - name: Build

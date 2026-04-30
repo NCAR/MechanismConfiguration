@@ -1,6 +1,6 @@
 name: Windows
 
-on: 
+on:
   push:
     branches:
       - main
@@ -12,43 +12,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  msvc-fmt:
-    runs-on: windows-latest
-    continue-on-error: true
-    strategy:
-      matrix:
-        build_type: [Release, Debug]
-        architecture: [Win32, x64]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        if: matrix.architecture == 'Win32'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-          architecture: 'x86'
-
-      - name: Setup Python
-        if: matrix.architecture == 'x64'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-          architecture: 'x64'
-
-      - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -D MECH_CONFIG_USE_FMT=ON
-
-      - name: Build
-        run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
-
-      - name: Run tests
-        run: |
-          cd build
-          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
-
   msvc:
     runs-on: windows-latest
     continue-on-error: true
@@ -56,6 +19,7 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         architecture: [Win32, x64]
+        use_fmt: [false, true]
 
     steps:
       - name: Checkout code
@@ -76,8 +40,8 @@ jobs:
           architecture: 'x64'
 
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
-      
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_POLICY_VERSION_MINIMUM="3.5" ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
+
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
@@ -86,13 +50,14 @@ jobs:
           cd build
           ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure . --verbose
 
-  msys2-fmt:
+  msys2:
     runs-on: windows-latest
     continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
         build_type: [Debug, Release]
+        use_fmt: [false, true]
 
     steps:
       - name: Checkout code
@@ -119,50 +84,7 @@ jobs:
           cmake -S . -B build -G "MinGW Makefiles" \
                               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
                               -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
-                              -D MECH_CONFIG_USE_FMT=ON
-
-      - name: Build the project
-        shell: msys2 {0}
-        run: cmake --build build --verbose
-
-      - name: Run tests
-        shell: msys2 {0}
-        run: ctest --rerun-failed --output-on-failure . --verbose
-        working-directory: build
-
-  msys2:
-    runs-on: windows-latest
-    continue-on-error: true 
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type: [Debug, Release]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup MSYS2
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: >-
-            base-devel
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-cmake
-          msystem: MINGW64
-
-      - name: Add MSYS2 mingw64 to PATH
-        shell: msys2 {0}
-        run: echo "C:/msys64/mingw64/bin" >> $GITHUB_PATH
-
-      - name: Configure with CMake
-        shell: msys2 {0}
-        run: |
-          cmake -S . -B build -G "MinGW Makefiles" \
-                              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                              -D CMAKE_POLICY_VERSION_MINIMUM=3.5
+                              ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
 
       - name: Build the project
         shell: msys2 {0}

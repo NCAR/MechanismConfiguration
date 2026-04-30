@@ -1,6 +1,6 @@
 name: Mac
 
-on: 
+on:
   push:
     branches:
       - main
@@ -12,13 +12,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  xcode_macos_fmt:
+  xcode_macos_latest:
     runs-on: macos-15
     continue-on-error: true
     strategy:
       matrix:
         xcode: ['16.4']
         build_type: [Release]
+        use_fmt: [false, true]
         compiler:
           - { cpp: g++-13, c: gcc-13 }
           - { cpp: g++-14, c: gcc-14 }
@@ -37,42 +38,7 @@ jobs:
           xcode-version: ${{ matrix.xcode }}
 
       - name: Run Cmake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=ON
-
-      - name: Build
-        run: cmake --build build --parallel 10
-
-      - name: Run tests
-        run: |
-          cd build
-          ctest -C ${{ matrix.build_type }} --rerun-failed --output-on-failure --verbose
-
-  xcode_macos_latest:
-    runs-on: macos-15
-    continue-on-error: true
-    strategy:
-      matrix:
-        xcode: ['16.4']
-        build_type: [Release]
-        compiler:
-          - { cpp: g++-13, c: gcc-13 }
-          - { cpp: g++-14, c: gcc-14 }
-          - { cpp: clang++, c: clang }
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-      CC: ${{ matrix.compiler.c }}
-      CXX: ${{ matrix.compiler.cpp }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ matrix.xcode }}
-
-      - name: Run Cmake 
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.use_fmt && '-D MECH_CONFIG_USE_FMT=ON' || '' }}
 
       - name: Build
         run: cmake --build build --parallel 10
