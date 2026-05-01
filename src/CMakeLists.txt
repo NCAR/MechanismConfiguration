@@ -14,7 +14,7 @@ target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
 if(MECH_CONFIG_USE_FMT)
   target_compile_definitions(mechanism_configuration PUBLIC MECH_CONFIG_USE_FMT)
-  target_link_libraries(mechanism_configuration PRIVATE fmt::fmt)
+  target_link_libraries(mechanism_configuration PUBLIC fmt::fmt)
 endif()
 
 set_target_properties(mechanism_configuration PROPERTIES
