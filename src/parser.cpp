@@ -14,7 +14,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 #include <memory>
 #include <vector>
 
@@ -28,7 +28,7 @@ namespace mechanism_configuration
     if (!std::filesystem::exists(config_path))
     {
       info.errors.push_back(
-          { ConfigParseStatus::FileNotFound, std::format("Configuration file '{}' does not exist.", config_path.string()) });
+          { ConfigParseStatus::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) });
       return info;
     }
 
@@ -40,14 +40,14 @@ namespace mechanism_configuration
     catch (const YAML::Exception& e)
     {
       info.errors.push_back(
-          { ConfigParseStatus::UnexpectedError, std::format("Failed to parse '{}': {}", config_path.string(), e.what()) });
+          { ConfigParseStatus::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) });
       return info;
     }
 
     if (!object[development::validation::version])
     {
       info.errors.push_back({ ConfigParseStatus::MissingVersionField,
-                              std::format("The version field was not found in '{}'.", config_path.string()) });
+                              mc_fmt::format("The version field was not found in '{}'.", config_path.string()) });
       return info;
     }
 
@@ -142,7 +142,7 @@ namespace mechanism_configuration
     }
     else
     {
-      std::string message = std::format(
+      std::string message = mc_fmt::format(
           "error: The supported versions are '{}', '{}' but the invalid version number '{}' was found: '{}'.",
           DEV_VERSION,
           V1_VERSION,

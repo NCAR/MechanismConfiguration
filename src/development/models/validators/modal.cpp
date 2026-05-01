@@ -39,7 +39,7 @@ namespace mechanism_configuration
         const auto& node = object[validation::modes];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: Expected 'modes' to be a sequence, but found a different type in the '{}' model.",
             error_location,
             object[validation::type].as<std::string>());

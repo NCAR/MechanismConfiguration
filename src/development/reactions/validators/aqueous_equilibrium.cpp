@@ -10,7 +10,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 
 namespace mechanism_configuration
 {

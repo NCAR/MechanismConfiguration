@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 #include <string>
 
 namespace mechanism_configuration
@@ -24,16 +24,32 @@ namespace mechanism_configuration
   };
 }  // namespace mechanism_configuration
 
-template<>
+#ifdef MECH_CONFIG_USE_FMT
+template <>
+struct fmt::formatter<mechanism_configuration::ErrorLocation>
+{
+  constexpr auto parse(fmt::format_parse_context& ctx) const
+  {
+    return ctx.begin();
+  }
+  template <class FormatContext>
+  auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
+  {
+    return fmt::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
+  }
+};
+#else
+template <>
 struct std::formatter<mechanism_configuration::ErrorLocation>
 {
   constexpr auto parse(std::format_parse_context& ctx) const
   {
     return ctx.begin();
   }
-  template<class FormatContext>
+  template <class FormatContext>
   auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
   {
     return std::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
   }
 };
+#endif
