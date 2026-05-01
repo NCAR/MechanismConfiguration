@@ -24,7 +24,7 @@ namespace mechanism_configuration
         std::vector<types::ReactionComponent> products;
 
         std::string species_name = object[validation::GAS_PHASE_REACTANT].as<std::string>();
-        reactants.push_back({ species_name, 1.0 });
+        reactants.push_back({ .species_name = species_name, .coefficient = 1.0 });
 
         auto parse_error = ParseProducts(object[validation::GAS_PHASE_PRODUCTS], products);
         errors.insert(errors.end(), parse_error.begin(), parse_error.end());

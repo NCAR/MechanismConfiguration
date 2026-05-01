@@ -23,7 +23,7 @@ namespace mechanism_configuration
         YAML::Node products_object{};
         std::vector<types::ReactionComponent> reactants;
         std::vector<types::ReactionComponent> products;
-        products.push_back({ species, 1.0 });
+        products.push_back({ .species_name = species, .coefficient = 1.0 });
         double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
 
         std::string name = "EMIS." + object[validation::MUSICA_NAME].as<std::string>();
