@@ -107,6 +107,7 @@ namespace mechanism_configuration
         std::vector<ReactionComponent> reactants;
         std::vector<ReactionComponent> products;
         AerosolArrheniusRate rate_constant;
+        double min_halflife = 0.0;  ///< When > 0, caps rate so no reactant depleted faster than this half-life [s]
         std::string name;
         std::unordered_map<std::string, std::string> unknown_properties;
       };

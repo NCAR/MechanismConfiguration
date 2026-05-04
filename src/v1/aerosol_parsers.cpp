@@ -323,7 +323,7 @@ namespace mechanism_configuration
             validation::type, validation::condensed_phase, validation::solvent,
             validation::reactants, validation::products, validation::rate_constant
           };
-          std::vector<std::string> optional = { validation::name };
+          std::vector<std::string> optional = { validation::name, validation::min_halflife };
           auto validate = ValidateSchema(object, required, optional);
           errors.insert(errors.end(), validate.begin(), validate.end());
           if (!validate.empty())
@@ -334,6 +334,8 @@ namespace mechanism_configuration
           proc.solvent = object[validation::solvent].as<std::string>();
           if (object[validation::name])
             proc.name = object[validation::name].as<std::string>();
+          if (object[validation::min_halflife])
+            proc.min_halflife = object[validation::min_halflife].as<double>();
           proc.unknown_properties = GetComments(object);
 
           // Parse rate constant (inline Arrhenius)

@@ -168,6 +168,7 @@ namespace mechanism_configuration
       static constexpr const char* henrys_law_constant = "Henry's law constant";
       static constexpr const char* hlc_ref = "HLC_ref [mol m-3 Pa-1]";
       static constexpr const char* rate_constant = "rate constant";
+      static constexpr const char* min_halflife = "min halflife [s]";
       static constexpr const char* forward_rate_constant = "forward rate constant";
       static constexpr const char* reverse_rate_constant = "reverse rate constant";
       static constexpr const char* equilibrium_constant = "equilibrium constant";
