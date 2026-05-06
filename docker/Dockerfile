@@ -18,6 +18,7 @@ RUN mkdir /build \
       && cd /build \
       && cmake \
         -D CMAKE_BUILD_TYPE=debug \
+        -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON \
         ../mechanism_configuration \
       && make install -j 8
 
