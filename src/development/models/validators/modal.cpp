@@ -58,7 +58,7 @@ namespace mechanism_configuration
           continue;
         }
 
-        auto phase_optional = CheckPhaseExists(
+        CheckPhaseExists(
             mode_object,
             validation::phase,
             existing_phases,

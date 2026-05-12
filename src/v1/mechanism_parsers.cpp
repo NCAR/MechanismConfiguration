@@ -94,7 +94,6 @@ namespace mechanism_configuration
         const std::vector<types::Species> existing_species)
     {
       Errors errors;
-      ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<types::Phase> all_phases;
       std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 

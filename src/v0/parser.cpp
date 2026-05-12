@@ -43,7 +43,6 @@ namespace mechanism_configuration
 
     Errors ParseMechanism(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
     {
-      ConfigParseStatus status = ConfigParseStatus::Success;
       std::vector<std::string> required = { validation::NAME, validation::REACTIONS, validation::TYPE };
 
       Errors errors;
@@ -120,8 +119,6 @@ namespace mechanism_configuration
 
     ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
     {
-      ConfigParseStatus status;
-
       ParserResult<types::Mechanism> result;
       result.mechanism = std::make_unique<types::Mechanism>();
 

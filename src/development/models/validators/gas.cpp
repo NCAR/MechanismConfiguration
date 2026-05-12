@@ -27,7 +27,7 @@ namespace mechanism_configuration
         return errors;
       }
 
-      auto phase_optional = CheckPhaseExists(object, validation::phase, existing_phases, errors);
+      CheckPhaseExists(object, validation::phase, existing_phases, errors);
 
       return errors;
     }
