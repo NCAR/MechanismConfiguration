@@ -7,7 +7,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 #include <functional>
 #include <optional>
 #include <unordered_set>
@@ -89,7 +89,7 @@ namespace mechanism_configuration
       {
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: Unknown species name '{}' found in '{}'.",
             error_location,
             name,
@@ -123,7 +123,7 @@ namespace mechanism_configuration
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: Invalid phase key '{}'. This phase was not found in the object of type '{}'.",
             error_location,
             phase_key,
@@ -146,7 +146,7 @@ namespace mechanism_configuration
         ErrorLocation error_location{ phase_node.Mark().line, phase_node.Mark().column };
 
         std::string message =
-            std::format("{} error: Unknown phase name '{}' found in '{}'.", error_location, phase_name, type);
+            mc_fmt::format("{} error: Unknown phase name '{}' found in '{}'.", error_location, phase_name, type);
 
         errors.push_back({ parser_status, message });
         return std::nullopt;
@@ -174,7 +174,7 @@ namespace mechanism_configuration
         {
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-          std::string message = std::format(
+          std::string message = mc_fmt::format(
               "{} error: {}-phase species '{}' is used in '{}' but is not defined in the '{}' phase.",
               error_location,
               phase.name,

@@ -12,7 +12,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 
 namespace mechanism_configuration
 {
@@ -24,7 +24,7 @@ namespace mechanism_configuration
       if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
       {
         throw std::runtime_error(
-            std::format("Configuration file '{}' does not exist or is not a regular file.", config_path.string()));
+            mc_fmt::format("Configuration file '{}' does not exist or is not a regular file.", config_path.string()));
       }
 
       SetConfigPath(config_path.string());
@@ -35,7 +35,7 @@ namespace mechanism_configuration
       }
       catch (const YAML::Exception& e)
       {
-        throw std::runtime_error(std::format("Failed to parse '{}': {}", config_path.string(), e.what()));
+        throw std::runtime_error(mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()));
       }
     }
 
@@ -68,7 +68,7 @@ namespace mechanism_configuration
       {
         ErrorLocation error_location{ object[validation::version].Mark().line, object[validation::version].Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: The version must be '{}' but the invalid version number '{}' found.",
             error_location,
             MAJOR_VERSION,

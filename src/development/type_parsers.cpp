@@ -46,7 +46,7 @@ namespace mechanism_configuration
         if (object[validation::is_third_body])
           species.is_third_body = object[validation::is_third_body].as<bool>();
 
-        species.unknown_properties = std::move(GetComments(object));
+        species.unknown_properties = GetComments(object);
 
         all_species.push_back(species);
       }
@@ -72,13 +72,13 @@ namespace mechanism_configuration
           {
             phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
           }
-          phase_species.unknown_properties = std::move(GetComments(spec));
+          phase_species.unknown_properties = GetComments(spec);
 
           species.emplace_back(phase_species);
         }
 
         phase.species = species;
-        phase.unknown_properties = std::move(GetComments(object));
+        phase.unknown_properties = GetComments(object);
         all_phases.emplace_back(phase);
       }
 

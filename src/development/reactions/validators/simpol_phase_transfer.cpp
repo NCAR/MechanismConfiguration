@@ -10,7 +10,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 
 namespace mechanism_configuration
 {
@@ -78,10 +78,10 @@ namespace mechanism_configuration
         }
         else
         {
-          issue = std::format("requires {} parameters, but {} were provided", NUM_PARAMS, object[validation::B].size());
+          issue = mc_fmt::format("requires {} parameters, but {} were provided", NUM_PARAMS, object[validation::B].size());
         }
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: '{}' reaction parameter 'B' {}.", error_location, object[validation::type].as<std::string>(), issue);
 
         errors.push_back({ ConfigParseStatus::InvalidParameterNumber, message });
@@ -102,7 +102,7 @@ namespace mechanism_configuration
         const auto& node = object[validation::gas_phase_species];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one gas phase, but {} were provided.",
             error_location,
             object[validation::type].as<std::string>(),
@@ -133,7 +133,7 @@ namespace mechanism_configuration
         const auto& node = object[validation::condensed_phase_species];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one condensed phase, but {} were provided.",
             error_location,
             object[validation::type].as<std::string>(),

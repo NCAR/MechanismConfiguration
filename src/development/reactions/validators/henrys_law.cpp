@@ -10,7 +10,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 
 namespace mechanism_configuration
 {
@@ -91,7 +91,7 @@ namespace mechanism_configuration
         const auto& node = object[validation::particle][validation::solvent];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = std::format(
+        std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one solute, but {} were provided.",
             error_location,
             object[validation::type].as<std::string>(),

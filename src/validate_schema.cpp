@@ -5,7 +5,7 @@
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <format>
+#include <mechanism_configuration/format_compat.hpp>
 #include <iostream>
 
 namespace mechanism_configuration
@@ -20,7 +20,7 @@ namespace mechanism_configuration
 
     if (!object || object.IsNull())
     {
-      std::string message = std::format("{} error: Object is null.", error_location);
+      std::string message = mc_fmt::format("{} error: Object is null.", error_location);
       errors.push_back({ ConfigParseStatus::EmptyObject, message });
 
       return errors;
@@ -51,7 +51,7 @@ namespace mechanism_configuration
 
     for (const auto& key : missing_keys)
     {
-      std::string message = std::format("{} error: Required key '{}' is missing.", error_location, key);
+      std::string message = mc_fmt::format("{} error: Required key '{}' is missing.", error_location, key);
       errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
     }
 
@@ -77,7 +77,7 @@ namespace mechanism_configuration
     {
       if (key.find("__") == std::string::npos)
       {
-        std::string message = std::format("{} error: Non-standard key '{}' found.", error_location, key);
+        std::string message = mc_fmt::format("{} error: Non-standard key '{}' found.", error_location, key);
         errors.push_back({ ConfigParseStatus::InvalidKey, message });
       }
     }

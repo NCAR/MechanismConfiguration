@@ -28,6 +28,22 @@ if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
 endif()
 
 ################################################################################
+# fmt
+
+if(MECH_CONFIG_USE_FMT)
+  set_git_default(FMT_GIT_REPOSITORY https://github.com/fmtlib/fmt.git)
+  set_git_default(FMT_GIT_TAG 12.1.0)
+
+  FetchContent_Declare(fmt
+    GIT_REPOSITORY ${FMT_GIT_REPOSITORY}
+    GIT_TAG        ${FMT_GIT_TAG}
+    FIND_PACKAGE_ARGS NAMES fmt
+  )
+
+  FetchContent_MakeAvailable(fmt)
+endif()
+
+################################################################################
 # yaml-cpp
 
 set_git_default(YAML_CPP_GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git)

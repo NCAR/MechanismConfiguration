@@ -12,6 +12,11 @@ add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
 target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
+if(MECH_CONFIG_USE_FMT)
+  target_compile_definitions(mechanism_configuration PUBLIC MECH_CONFIG_USE_FMT)
+  target_link_libraries(mechanism_configuration PUBLIC fmt::fmt)
+endif()
+
 set_target_properties(mechanism_configuration PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
   LIBRARY_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
@@ -37,10 +42,18 @@ add_subdirectory(v0)
 add_subdirectory(v1)
 add_subdirectory(development)
 
-target_link_libraries(mechanism_configuration 
-  PUBLIC 
+target_link_libraries(mechanism_configuration
+  PUBLIC
     yaml-cpp::yaml-cpp
 )
+
+if(MECH_CONFIG_COMPILE_WARNING_AS_ERROR)
+  if(MSVC)
+    target_compile_options(mechanism_configuration PRIVATE /WX)
+  else()
+    target_compile_options(mechanism_configuration PRIVATE -Werror)
+  endif()
+endif()
 
 if (APPLE)
   # set the rpath for the shared library
