@@ -9,9 +9,9 @@
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
-#include <mechanism_configuration/format_compat.hpp>
 #include <string>
 #include <vector>
 
