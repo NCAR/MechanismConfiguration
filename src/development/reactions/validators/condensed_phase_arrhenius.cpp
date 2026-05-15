@@ -9,9 +9,8 @@
 #include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 #include <mechanism_configuration/error_location.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
-
 #include <mechanism_configuration/format_compat.hpp>
+#include <mechanism_configuration/validate_schema.hpp>
 
 namespace mechanism_configuration
 {

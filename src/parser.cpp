@@ -6,6 +6,7 @@
 #include <mechanism_configuration/development/validation.hpp>
 #include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/parser.hpp>
 #include <mechanism_configuration/parser_result.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
@@ -14,7 +15,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
-#include <mechanism_configuration/format_compat.hpp>
 #include <memory>
 #include <vector>
 
@@ -27,8 +27,8 @@ namespace mechanism_configuration
 
     if (!std::filesystem::exists(config_path))
     {
-      info.errors.push_back(
-          { ConfigParseStatus::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) });
+      info.errors.push_back({ ConfigParseStatus::FileNotFound,
+                              mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) });
       return info;
     }
 
@@ -39,8 +39,8 @@ namespace mechanism_configuration
     }
     catch (const YAML::Exception& e)
     {
-      info.errors.push_back(
-          { ConfigParseStatus::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) });
+      info.errors.push_back({ ConfigParseStatus::UnexpectedError,
+                              mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) });
       return info;
     }
 
