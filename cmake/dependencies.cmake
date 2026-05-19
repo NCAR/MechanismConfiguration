@@ -41,6 +41,10 @@ if(MECH_CONFIG_USE_FMT)
   )
 
   FetchContent_MakeAvailable(fmt)
+
+  if(fmt_POPULATED AND MECH_CONFIG_BUILD_SHARED_LIBS)
+    set_target_properties(fmt PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  endif()
 endif()
 
 ################################################################################
