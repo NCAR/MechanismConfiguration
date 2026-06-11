@@ -5,8 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/v1/reaction_types.hpp>
-#include <mechanism_configuration/v1/types.hpp>
+#include <mechanism_configuration/types.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -21,7 +20,7 @@ namespace mechanism_configuration
 
     std::pair<Errors, std::vector<types::Phase>> ParsePhases(
         const YAML::Node& objects,
-        const std::vector<v1::types::Species> existing_species);
+        const std::vector<types::Species> existing_species);
 
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 

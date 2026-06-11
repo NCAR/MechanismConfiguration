@@ -50,8 +50,8 @@ TEST(ParseWetDeposition, DetectsUnknownPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::UnknownPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -102,8 +102,8 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredType)
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -129,8 +129,8 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);

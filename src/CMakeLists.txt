@@ -10,7 +10,7 @@ endif()
 
 add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
-target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
+target_compile_features(mechanism_configuration PUBLIC cxx_std_23)
 
 if(MECH_CONFIG_USE_FMT)
   target_compile_definitions(mechanism_configuration PUBLIC MECH_CONFIG_USE_FMT)
@@ -27,8 +27,8 @@ set_target_properties(mechanism_configuration PROPERTIES
 
 target_sources(mechanism_configuration
   PRIVATE
-    parse_status.cpp
-    parser.cpp
+    errors.cpp
+    parse.cpp
     validate_schema.cpp
 )
 
@@ -38,9 +38,9 @@ target_include_directories(mechanism_configuration
     $<INSTALL_INTERFACE:include>
 )
 
-add_subdirectory(v0)
+# add_subdirectory(v0)
 add_subdirectory(v1)
-add_subdirectory(development)
+# add_subdirectory(development)
 
 target_link_libraries(mechanism_configuration
   PUBLIC

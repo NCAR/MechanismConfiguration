@@ -80,7 +80,7 @@ namespace mechanism_configuration
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
       if (!unknown_species.empty())
       {
-        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
       }
 
       // Check for phase existence and get phase reference

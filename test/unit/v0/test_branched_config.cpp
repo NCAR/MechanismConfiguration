@@ -16,11 +16,11 @@ TEST(BranchedConfig, DetectsInvalidConfig)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 5);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -30,11 +30,11 @@ TEST(BranchedConfig, DetectsInvalidConfig)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 5);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -44,11 +44,11 @@ TEST(BranchedConfig, DetectsInvalidConfig)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 5);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[2].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[4].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -121,8 +121,8 @@ TEST(BranchedConfig, DetectsNonstandardKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -140,7 +140,7 @@ TEST(BranchedConfig, DetectsNonstandardProductCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -150,7 +150,7 @@ TEST(BranchedConfig, DetectsNonstandardProductCoefficient)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -168,7 +168,7 @@ TEST(BranchedConfig, DetectsNonstandardReactantCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

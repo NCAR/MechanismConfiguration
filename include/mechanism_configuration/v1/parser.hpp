@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <mechanism_configuration/parser_result.hpp>
-#include <mechanism_configuration/v1/mechanism.hpp>
+#include <mechanism_configuration/mechanism.hpp>
 
 #include <filesystem>
+#include <expected>
 
 namespace YAML
 {
@@ -30,7 +30,7 @@ namespace mechanism_configuration
 
       EntityFormat GetEntityFormat(const YAML::Node& node);
 
-      ParserResult<types::Mechanism> ParseFromFileConfig(
+      std::expected<Mechanism, Errors> ParseFromFileConfig(
           const YAML::Node& object,
           const std::filesystem::path& config_path,
           EntityFormat spc_format,
@@ -38,9 +38,9 @@ namespace mechanism_configuration
           EntityFormat rxn_format);
 
      public:
-      ParserResult<types::Mechanism> Parse(const std::filesystem::path& config_path);
-      ParserResult<types::Mechanism> ParseFromString(const std::string& content);
-      ParserResult<types::Mechanism> ParseFromNode(const YAML::Node& object);
+      std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
+      std::expected<Mechanism, Errors> ParseFromString(const std::string& content);
+      std::expected<Mechanism, Errors> ParseFromNode(const YAML::Node& object);
     };
   }  // namespace v1
 }  // namespace mechanism_configuration

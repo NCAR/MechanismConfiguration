@@ -51,8 +51,8 @@ TEST(ParseModal, MissingModes)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -76,9 +76,8 @@ TEST(ParseModal, MissingModalMemberData)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound,
-                                                  ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound, ErrorCode::RequiredKeyNotFound };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -102,8 +101,8 @@ TEST(ParseModal, PhaseInModeNotFoundInRegisteredPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::UnknownPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);

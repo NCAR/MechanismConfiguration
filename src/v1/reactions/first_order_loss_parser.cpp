@@ -5,7 +5,6 @@
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/v1/mechanism_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_parsers.hpp>
-#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -47,11 +46,11 @@ namespace mechanism_configuration
         std::vector<std::string> requested_species;
         for (const auto& spec : products.second)
         {
-          requested_species.push_back(spec.species_name);
+          requested_species.push_back(spec.name);
         }
         for (const auto& spec : reactants.second)
         {
-          requested_species.push_back(spec.species_name);
+          requested_species.push_back(spec.name);
         }
 
         std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, existing_species);
@@ -81,7 +80,7 @@ namespace mechanism_configuration
             }
           }
 
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, oss.str() });
+          errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies, oss.str() });
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
@@ -93,19 +92,18 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::gas_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
+          errors.push_back({ ErrorCode::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
         if (reactants.second.size() > 1)
         {
           std::string line = std::to_string(object[validation::reactants].Mark().line + 1);
           std::string column = std::to_string(object[validation::reactants].Mark().column + 1);
-          errors.push_back(
-              { ConfigParseStatus::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
+          errors.push_back({ ErrorCode::TooManyReactionComponents, line + ":" + column + ": Too many reaction components" });
         }
 
         first_order_loss.gas_phase = gas_phase;
-        first_order_loss.reactants = reactants.second;
+        first_order_loss.reactants = reactants.second.empty() ? types::ReactionComponent{} : reactants.second[0];
         first_order_loss.products = products.second;
         first_order_loss.unknown_properties = GetComments(object);
         reactions.first_order_loss.push_back(first_order_loss);

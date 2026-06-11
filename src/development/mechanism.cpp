@@ -72,7 +72,7 @@ namespace mechanism_configuration
             error_location,
             MAJOR_VERSION,
             version.major);
-        errors.push_back({ ConfigParseStatus::InvalidVersion, config_path_ + ":" + message });
+        errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
       }
 
       validation_errors = ValidateSpecies(object[validation::species]);

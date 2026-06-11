@@ -52,14 +52,14 @@ namespace mechanism_configuration
         const YAML::Node& object,
         const std::vector<NodeInfo>& unknown_species,
         Errors& errors,
-        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownSpecies);
+        const ErrorCode& parser_status = ErrorCode::UnknownSpecies);
 
     std::optional<std::reference_wrapper<const types::Phase>> CheckPhaseExists(
         const YAML::Node& object,
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
-        const ConfigParseStatus& parser_status = ConfigParseStatus::UnknownPhase,
+        const ErrorCode& parser_status = ErrorCode::UnknownPhase,
         std::string type = {});
 
     void CheckSpeciesPresenceInPhase(
@@ -67,7 +67,7 @@ namespace mechanism_configuration
         const types::Phase& phase,
         const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
         Errors& errors,
-        const ConfigParseStatus& parser_status = ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase);
+        const ErrorCode& parser_status = ErrorCode::RequestedSpeciesNotRegisteredInPhase);
 
     template<typename T>
     std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)

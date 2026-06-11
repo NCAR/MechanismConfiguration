@@ -78,7 +78,7 @@ TEST(ParseSpecies, DetectsDuplicateSpecies)
 
     for (const auto& [status, message] : validation_errors)
     {
-      EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
+      EXPECT_EQ(status, ErrorCode::DuplicateSpeciesDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
@@ -98,8 +98,8 @@ TEST(ParseSpecies, DetectsMissingRequiredKeys)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound, ConfigParseStatus::InvalidKey };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound, ErrorCode::InvalidKey };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -123,8 +123,8 @@ TEST(ParseSpecies, DetectsInvalidKeys)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -162,8 +162,8 @@ TEST(ValidateSpecies, DetectsMissingNameKey)
   EXPECT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -184,8 +184,8 @@ TEST(ValidateSpecies, DetectsInvalidKeysInSpecies)
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -208,9 +208,8 @@ TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
   auto errors = development::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 2);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::DuplicateSpeciesDetected,
-                                                ConfigParseStatus::DuplicateSpeciesDetected };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::DuplicateSpeciesDetected, ErrorCode::DuplicateSpeciesDetected };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -235,7 +234,7 @@ TEST(ValidateSpecies, DetectsMultipleDuplicateSpecies)
 
   for (const auto& [status, message] : errors)
   {
-    EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesDetected);
+    EXPECT_EQ(status, ErrorCode::DuplicateSpeciesDetected);
     std::cout << message << " " << configParseStatusToString(status) << std::endl;
   }
 }

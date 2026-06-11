@@ -16,7 +16,7 @@ TEST(TernaryChemicalActivationConfig, DetectsInvalidConfig)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -26,7 +26,7 @@ TEST(TernaryChemicalActivationConfig, DetectsInvalidConfig)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -103,14 +103,14 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 8);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[4].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[5].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[6].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[7].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[3].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[4].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[5].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[6].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[7].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -128,7 +128,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardProductCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -146,7 +146,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonstandardReactantCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

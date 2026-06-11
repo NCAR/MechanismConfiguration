@@ -2,7 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/parse_status.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
 
 #include <gtest/gtest.h>
@@ -74,10 +74,10 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
   auto parsed = parser.Parse(configBase + "missing_phase_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── missing_reaction_set ──────────────────────────────────────────────────────
@@ -103,10 +103,10 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
   auto parsed = parser.Parse(configBase + "missing_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
@@ -118,10 +118,10 @@ TEST(ParseFromFileConfigs, VersionMismatch)
   auto parsed = parser.Parse(configBase + "version_mismatch/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidVersion);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidVersion);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── mixed_inline_species ──────────────────────────────────────────────────────
@@ -177,10 +177,10 @@ TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
   auto parsed = parser.Parse(configBase + "duplicate_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 6);
-  for (const auto& error : parsed.errors)
+  ASSERT_EQ(parsed.error().size(), 6);
+  for (const auto& error : parsed.error())
   {
-    EXPECT_EQ(error.first, ConfigParseStatus::DuplicateSpeciesDetected);
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+    EXPECT_EQ(error.first, ErrorCode::DuplicateSpeciesDetected);
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
   }
 }

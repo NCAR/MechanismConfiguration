@@ -18,11 +18,15 @@ jobs:
     strategy:
       matrix:
         compiler:
+          - { cpp: g++-12, c: gcc-12 }
           - { cpp: g++-13, c: gcc-13 }
           - { cpp: g++-14, c: gcc-14 }
           - { cpp: clang++, c: clang }
         build_type: [Release]
         use_fmt: [OFF, ON]
+      exclude:
+        - compiler: { cpp: g++-12, c: gcc-12 }
+          use_fmt: OFF
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}

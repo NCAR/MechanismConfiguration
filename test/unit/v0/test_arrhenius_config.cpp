@@ -16,7 +16,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -26,7 +26,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -36,7 +36,7 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::MutuallyExclusiveOption);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -120,9 +120,9 @@ TEST(ArrheniusConfig, DetectsNonstandardKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 3);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -140,7 +140,7 @@ TEST(ArrheniusConfig, DetectsNonstandardProductCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
@@ -158,7 +158,7 @@ TEST(ArrheniusConfig, DetectsNonstandardReactantCoefficient)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
     for (auto& error : parsed.errors)
     {
       std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;

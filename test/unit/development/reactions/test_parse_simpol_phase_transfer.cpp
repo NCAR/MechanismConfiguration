@@ -66,9 +66,9 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
-                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::ReactionRequiresUnknownSpecies,
+                                          ErrorCode::RequestedSpeciesNotRegisteredInPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -92,8 +92,8 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::UnknownPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -117,8 +117,8 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::UnknownPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -142,8 +142,8 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequestedSpeciesNotRegisteredInPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -168,8 +168,8 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhas
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequestedSpeciesNotRegisteredInPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -203,8 +203,8 @@ TEST(ValidateSimpolPhaseTransfer, InvalidBParameterNotSequenceFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidParameterNumber };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidParameterNumber };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -237,8 +237,8 @@ TEST(ValidateSimpolPhaseTransfer, InvalidBParameterWrongCountFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidParameterNumber };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidParameterNumber };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -274,8 +274,8 @@ TEST(ValidateSimpolPhaseTransfer, TooManyGasSpeciesFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::TooManyReactionComponents };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -311,8 +311,8 @@ TEST(ValidateSimpolPhaseTransfer, TooManyCondensedSpeciesFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::TooManyReactionComponents };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -342,11 +342,11 @@ TEST(ValidateSimpolPhaseTransfer, MultipleErrorsFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_GE(errors.size(), 3);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::TooManyReactionComponents,
-                                                ConfigParseStatus::ReactionRequiresUnknownSpecies,
-                                                ConfigParseStatus::UnknownPhase,
-                                                ConfigParseStatus::InvalidParameterNumber };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::TooManyReactionComponents,
+                                        ErrorCode::ReactionRequiresUnknownSpecies,
+                                        ErrorCode::UnknownPhase,
+                                        ErrorCode::InvalidParameterNumber };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);

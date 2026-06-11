@@ -4,6 +4,10 @@
 
 #pragma once
 
+#include <mechanism_configuration/development/types.hpp>
+
+#include <array>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -14,8 +18,6 @@ namespace mechanism_configuration
   {
     namespace types
     {
-
-      /// @brief Represents gas model
     }  // namespace types
   }  // namespace development
 }  // namespace mechanism_configuration

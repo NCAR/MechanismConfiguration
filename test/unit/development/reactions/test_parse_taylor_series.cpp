@@ -98,9 +98,9 @@ TEST(ParseTaylorSeries, DetectsUnknownSpecies)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::ReactionRequiresUnknownSpecies,
-                                                  ConfigParseStatus::RequestedSpeciesNotRegisteredInPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::ReactionRequiresUnknownSpecies,
+                                          ErrorCode::RequestedSpeciesNotRegisteredInPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -124,8 +124,8 @@ TEST(ParseTaylorSeries, DetectsMutuallyExclusiveOptions)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::MutuallyExclusiveOption };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -149,8 +149,8 @@ TEST(ParseTaylorSeries, DetectsBadReactionComponent)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 2);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey, ErrorCode::RequiredKeyNotFound };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -174,8 +174,8 @@ TEST(ParseTaylorSeries, DetectsUnknownPhase)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::UnknownPhase };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::UnknownPhase };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -206,8 +206,8 @@ TEST(ValidateTaylorSeries, MutuallyExclusiveEaAndCFailsValidation)
   Errors errors = parser.Validate(reaction_node, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::MutuallyExclusiveOption };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::MutuallyExclusiveOption };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);

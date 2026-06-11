@@ -64,7 +64,7 @@ namespace mechanism_configuration
       // Look for CAMP config path
       if (!std::filesystem::exists(config_path))
       {
-        errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
+        errors.push_back({ ErrorCode::FileNotFound, "File not found" });
         return errors;
       }
 
@@ -96,7 +96,7 @@ namespace mechanism_configuration
       if (!camp_data[CAMP_FILES])
       {
         std::string msg = "Required key not found: " + CAMP_FILES;
-        errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, msg });
+        errors.push_back({ ErrorCode::RequiredKeyNotFound, msg });
         return errors;
       }
 
@@ -106,7 +106,7 @@ namespace mechanism_configuration
         std::filesystem::path camp_file = config_dir / element.as<std::string>();
         if (!std::filesystem::exists(camp_file))
         {
-          errors.push_back({ ConfigParseStatus::FileNotFound, "File not found: " + camp_file.string() });
+          errors.push_back({ ErrorCode::FileNotFound, "File not found: " + camp_file.string() });
         }
         else
         {

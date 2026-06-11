@@ -80,7 +80,7 @@ namespace mechanism_configuration
         const YAML::Node& object,
         const std::vector<NodeInfo>& unknown_species,
         Errors& errors,
-        const ConfigParseStatus& parser_status)
+        const ErrorCode& parser_status)
     {
       if (unknown_species.empty())
         return;
@@ -104,7 +104,7 @@ namespace mechanism_configuration
         const std::string& phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
-        const ConfigParseStatus& parser_status,
+        const ErrorCode& parser_status,
         std::string type)
     {
       if (type.empty())
@@ -160,7 +160,7 @@ namespace mechanism_configuration
         const types::Phase& phase,
         const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
         Errors& errors,
-        const ConfigParseStatus& parser_status)
+        const ErrorCode& parser_status)
     {
       std::unordered_set<std::string> phase_species_set;
       for (const auto& species : phase.species)

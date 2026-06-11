@@ -5,7 +5,6 @@
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/v1/mechanism_parsers.hpp>
 #include <mechanism_configuration/v1/reaction_parsers.hpp>
-#include <mechanism_configuration/v1/reaction_types.hpp>
 #include <mechanism_configuration/v1/utils.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -55,15 +54,15 @@ namespace mechanism_configuration
         std::vector<std::string> requested_species;
         for (const auto& spec : nitrate_products.second)
         {
-          requested_species.push_back(spec.species_name);
+          requested_species.push_back(spec.name);
         }
         for (const auto& spec : alkoxy_products.second)
         {
-          requested_species.push_back(spec.species_name);
+          requested_species.push_back(spec.name);
         }
         for (const auto& spec : reactants.second)
         {
-          requested_species.push_back(spec.species_name);
+          requested_species.push_back(spec.name);
         }
 
         std::vector<std::string> unknown_species = FindUnknownSpecies(requested_species, existing_species);
@@ -93,7 +92,7 @@ namespace mechanism_configuration
             }
           }
 
-          errors.push_back({ ConfigParseStatus::ReactionRequiresUnknownSpecies, oss.str() });
+          errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies, oss.str() });
         }
 
         std::string gas_phase = object[validation::gas_phase].as<std::string>();
@@ -105,7 +104,7 @@ namespace mechanism_configuration
         {
           std::string line = std::to_string(object[validation::gas_phase].Mark().line + 1);
           std::string column = std::to_string(object[validation::gas_phase].Mark().column + 1);
-          errors.push_back({ ConfigParseStatus::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
+          errors.push_back({ ErrorCode::UnknownPhase, line + ":" + column + ": Unknown phase: " + gas_phase });
         }
 
         branched.gas_phase = gas_phase;

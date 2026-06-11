@@ -73,7 +73,7 @@ namespace mechanism_configuration
             std::string message = mc_fmt::format(
                 "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
-            errors.push_back({ ConfigParseStatus::DuplicateSpeciesDetected, message });
+            errors.push_back({ ErrorCode::DuplicateSpeciesDetected, message });
           }
         }
       }
@@ -148,7 +148,7 @@ namespace mechanism_configuration
               std::string message = mc_fmt::format(
                   "{} error: Duplicate species name '{}' found ({} of {}).", error_location, duplicate.name, i + 1, total);
 
-              errors.push_back({ ConfigParseStatus::DuplicateSpeciesInPhaseDetected, message });
+              errors.push_back({ ErrorCode::DuplicateSpeciesInPhaseDetected, message });
             }
           }
         }
@@ -164,7 +164,7 @@ namespace mechanism_configuration
             std::string message =
                 mc_fmt::format("{} error: Unknown species name '{}' found in '{}' phase.", error_location, name, phase.name);
 
-            errors.push_back({ ConfigParseStatus::PhaseRequiresUnknownSpecies, message });
+            errors.push_back({ ErrorCode::PhaseRequiresUnknownSpecies, message });
           }
         }
         phase_node_pairs.emplace_back(phase, object);
@@ -186,7 +186,7 @@ namespace mechanism_configuration
             std::string message = mc_fmt::format(
                 "{} error: Duplicate phase name '{}' found ({} of {})", error_location, duplicate.name, i + 1, total);
 
-            errors.push_back({ ConfigParseStatus::DuplicatePhasesDetected, message });
+            errors.push_back({ ErrorCode::DuplicatePhasesDetected, message });
           }
         }
       }
@@ -263,7 +263,7 @@ namespace mechanism_configuration
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = mc_fmt::format("{} error: Missing 'type' object in reaction.", error_location);
-          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+          errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
           is_valid = false;
           continue;
         }
@@ -278,7 +278,7 @@ namespace mechanism_configuration
 
           std::string message = mc_fmt::format("{} error: Unknown reaction type '{}' found.", error_location, type);
 
-          errors.push_back({ ConfigParseStatus::UnknownType, message });
+          errors.push_back({ ErrorCode::UnknownType, message });
           is_valid = false;
 
           continue;
@@ -316,7 +316,7 @@ namespace mechanism_configuration
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = mc_fmt::format("{} error: Missing 'type' object in model.", error_location);
-          errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+          errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
           is_valid = false;
           continue;
         }
@@ -331,7 +331,7 @@ namespace mechanism_configuration
 
           std::string message = mc_fmt::format("{} error: Unknown model type '{}' found.", error_location, type);
 
-          errors.push_back({ ConfigParseStatus::UnknownType, message });
+          errors.push_back({ ErrorCode::UnknownType, message });
           is_valid = false;
 
           continue;

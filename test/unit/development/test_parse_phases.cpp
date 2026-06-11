@@ -63,7 +63,7 @@ TEST(ParsePhases, DetectsDuplicatePhases)
 
     for (const auto& [status, message] : validation_errors)
     {
-      EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
+      EXPECT_EQ(status, ErrorCode::DuplicatePhasesDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
@@ -83,8 +83,8 @@ TEST(ParsePhases, DetectsMissingRequiredKeys)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -108,8 +108,8 @@ TEST(ParsePhases, DetectsInvalidKeys)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -133,8 +133,8 @@ TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::PhaseRequiresUnknownSpecies };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::PhaseRequiresUnknownSpecies };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -160,7 +160,7 @@ TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
 
     for (const auto& [status, message] : validation_errors)
     {
-      EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+      EXPECT_EQ(status, ErrorCode::DuplicateSpeciesInPhaseDetected);
       std::cout << message << " " << configParseStatusToString(status) << std::endl;
     }
   }
@@ -180,8 +180,8 @@ TEST(ParsePhases, DetectsInvalidSpeciesObject)
     auto validation_errors = parser.Validate(object);
     EXPECT_EQ(validation_errors.size(), 1);
 
-    std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-    std::multiset<ConfigParseStatus> actual;
+    std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+    std::multiset<ErrorCode> actual;
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
@@ -280,8 +280,8 @@ TEST(ValidatePhases, DetectsMissingPhaseName)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -307,8 +307,8 @@ TEST(ValidatePhases, DetectsMissingSpeciesList)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -333,8 +333,8 @@ TEST(ValidatePhases, DetectsInvalidKeysInPhase)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 2);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey, ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey, ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -360,8 +360,8 @@ TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::RequiredKeyNotFound };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -387,8 +387,8 @@ TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidKey };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -417,7 +417,7 @@ TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
 
   for (const auto& [status, message] : errors)
   {
-    EXPECT_EQ(status, ConfigParseStatus::DuplicateSpeciesInPhaseDetected);
+    EXPECT_EQ(status, ErrorCode::DuplicateSpeciesInPhaseDetected);
     EXPECT_NE(message.find("FOO"), std::string::npos);  // Error message should contain species name
   }
 }
@@ -439,8 +439,8 @@ TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
   auto errors = development::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::PhaseRequiresUnknownSpecies };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::PhaseRequiresUnknownSpecies };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
@@ -477,7 +477,7 @@ TEST(ValidatePhases, DetectsDuplicatePhaseNames)
 
   for (const auto& [status, message] : errors)
   {
-    EXPECT_EQ(status, ConfigParseStatus::DuplicatePhasesDetected);
+    EXPECT_EQ(status, ErrorCode::DuplicatePhasesDetected);
     EXPECT_NE(message.find("gas"), std::string::npos);  // Error message should contain phase name
   }
 }

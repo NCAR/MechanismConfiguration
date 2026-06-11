@@ -2,7 +2,6 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/error_location.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -21,7 +20,7 @@ namespace mechanism_configuration
     if (!object || object.IsNull())
     {
       std::string message = mc_fmt::format("{} error: Object is null.", error_location);
-      errors.push_back({ ConfigParseStatus::EmptyObject, message });
+      errors.push_back({ ErrorCode::EmptyObject, message });
 
       return errors;
     }
@@ -52,7 +51,7 @@ namespace mechanism_configuration
     for (const auto& key : missing_keys)
     {
       std::string message = mc_fmt::format("{} error: Required key '{}' is missing.", error_location, key);
-      errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, message });
+      errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
     }
 
     // Find keys that are neither required nor optional
@@ -78,7 +77,7 @@ namespace mechanism_configuration
       if (key.find("__") == std::string::npos)
       {
         std::string message = mc_fmt::format("{} error: Non-standard key '{}' found.", error_location, key);
-        errors.push_back({ ConfigParseStatus::InvalidKey, message });
+        errors.push_back({ ErrorCode::InvalidKey, message });
       }
     }
 

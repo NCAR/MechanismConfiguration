@@ -77,7 +77,7 @@ TEST(UniversalParser, ParserReportsBadFiles)
     auto parsed = parser.Parse(path);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, mechanism_configuration::ConfigParseStatus::FileNotFound);
+    EXPECT_EQ(parsed.errors[0].first, mechanism_configuration::ErrorCode::FileNotFound);
   }
 }
 
@@ -89,8 +89,8 @@ TEST(UniversalParser, ParseUnsupportedVersion)
   auto parsed = parser.Parse("integration_configs/invalid_version.yaml");
   EXPECT_EQ(parsed.errors.size(), 1);
 
-  std::multiset<ConfigParseStatus> expected = { ConfigParseStatus::InvalidVersion };
-  std::multiset<ConfigParseStatus> actual;
+  std::multiset<ErrorCode> expected = { ErrorCode::InvalidVersion };
+  std::multiset<ErrorCode> actual;
   for (const auto& [status, message] : parsed.errors)
   {
     actual.insert(status);

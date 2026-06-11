@@ -96,7 +96,7 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>(),
             particle_species_node_pairs.size());
 
-        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
+        errors.push_back({ ErrorCode::TooManyReactionComponents, message });
       }
 
       // Solutes
@@ -111,13 +111,13 @@ namespace mechanism_configuration
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, gas_species_node_pairs);
       if (!unknown_species.empty())
       {
-        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
       }
 
       unknown_species = FindUnknownObjectsByName(existing_species, particle_species_node_pairs);
       if (!unknown_species.empty())
       {
-        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
       }
 
       auto gas_phase_opt = CheckPhaseExists(
@@ -125,7 +125,7 @@ namespace mechanism_configuration
           validation::name,
           existing_phases,
           errors,
-          ConfigParseStatus::UnknownPhase,
+          ErrorCode::UnknownPhase,
           object[validation::type].as<std::string>());
 
       auto particle_phase_opt = CheckPhaseExists(
@@ -133,7 +133,7 @@ namespace mechanism_configuration
           validation::phase,
           existing_phases,
           errors,
-          ConfigParseStatus::UnknownPhase,
+          ErrorCode::UnknownPhase,
           object[validation::type].as<std::string>());
       if (!gas_phase_opt || !particle_phase_opt)
       {

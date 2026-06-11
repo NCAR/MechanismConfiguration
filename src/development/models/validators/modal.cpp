@@ -44,7 +44,7 @@ namespace mechanism_configuration
             error_location,
             object[validation::type].as<std::string>());
 
-        errors.push_back({ ConfigParseStatus::InvalidType, message });
+        errors.push_back({ ErrorCode::InvalidType, message });
 
         return errors;
       }
@@ -63,7 +63,7 @@ namespace mechanism_configuration
             validation::phase,
             existing_phases,
             errors,
-            ConfigParseStatus::UnknownPhase,
+            ErrorCode::UnknownPhase,
             object[validation::type].as<std::string>());
       }
 

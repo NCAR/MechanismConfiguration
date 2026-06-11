@@ -83,7 +83,7 @@ namespace mechanism_configuration
         std::string message = mc_fmt::format(
             "{} error: '{}' reaction parameter 'B' {}.", error_location, object[validation::type].as<std::string>(), issue);
 
-        errors.push_back({ ConfigParseStatus::InvalidParameterNumber, message });
+        errors.push_back({ ErrorCode::InvalidParameterNumber, message });
       }
 
       // Validates the number of gas phase species
@@ -107,14 +107,14 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>(),
             gas_species_node_pairs.size());
 
-        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
+        errors.push_back({ ErrorCode::TooManyReactionComponents, message });
       }
 
       // Check for unknown species in gas phase species
       std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, gas_species_node_pairs);
       if (!unknown_species.empty())
       {
-        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
       }
 
       // Validates the number of condensed phase species
@@ -138,14 +138,14 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>(),
             condensed_species_node_pairs.size());
 
-        errors.push_back({ ConfigParseStatus::TooManyReactionComponents, message });
+        errors.push_back({ ErrorCode::TooManyReactionComponents, message });
       }
 
       // Check for unknown species in condensed phase species
       unknown_species = FindUnknownObjectsByName(existing_species, condensed_species_node_pairs);
       if (!unknown_species.empty())
       {
-        ReportUnknownSpecies(object, unknown_species, errors, ConfigParseStatus::ReactionRequiresUnknownSpecies);
+        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
       }
 
       // Check for phase existence and get phase reference

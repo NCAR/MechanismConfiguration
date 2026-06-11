@@ -55,7 +55,7 @@ TEST(ParserBase, ParserReportsBadFiles)
     auto parsed = parser.Parse(path);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+    EXPECT_EQ(parsed.errors[0].first, ErrorCode::FileNotFound);
   }
 }
 
@@ -66,7 +66,7 @@ TEST(ParserBase, ParserReportsDirectory)
   auto parsed = parser.Parse(path);
   EXPECT_FALSE(parsed);
   EXPECT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+  EXPECT_EQ(parsed.errors[0].first, ErrorCode::FileNotFound);
 }
 
 TEST(ParserBase, CanParseFromYamlString)
