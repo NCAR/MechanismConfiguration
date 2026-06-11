@@ -4,12 +4,9 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/model_types.hpp>
-#include <mechanism_configuration/development/reaction_types.hpp>
-#include <mechanism_configuration/development/types.hpp>
-#include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/validation.hpp>
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/parse_status.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -56,7 +53,7 @@ namespace mechanism_configuration
 
     std::optional<std::reference_wrapper<const types::Phase>> CheckPhaseExists(
         const YAML::Node& object,
-        const std::string& phase_key,
+        std::string_view phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
         const ErrorCode& parser_status = ErrorCode::UnknownPhase,

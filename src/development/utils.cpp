@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/validation.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -101,7 +101,7 @@ namespace mechanism_configuration
 
     std::optional<std::reference_wrapper<const types::Phase>> CheckPhaseExists(
         const YAML::Node& object,
-        const std::string& phase_key,
+        std::string_view phase_key,
         const std::vector<types::Phase>& existing_phases,
         Errors& errors,
         const ErrorCode& parser_status,

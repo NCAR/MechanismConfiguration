@@ -11,49 +11,49 @@ namespace mechanism_configuration
     namespace validation
     {
       // Shared, but also Mechanism
-      static constexpr const char* version = "version";
-      static constexpr const char* name = "name";
+      inline constexpr std::string_view version = "version";
+      inline constexpr std::string_view name = "name";
 
       // Configuration
-      static constexpr const char* species = "species";
-      static constexpr const char* phases = "phases";
-      static constexpr const char* reactions = "reactions";
+      inline constexpr std::string_view species = "species";
+      inline constexpr std::string_view phases = "phases";
+      inline constexpr std::string_view reactions = "reactions";
 
       // Species
-      static constexpr const char* molecular_weight = "molecular weight [kg mol-1]";
-      static constexpr const char* constant_concentration = "constant concentration [mol m-3]";
-      static constexpr const char* constant_mixing_ratio = "constant mixing ratio [mol mol-1]";
-      static constexpr const char* is_third_body = "is third body";
+      inline constexpr std::string_view molecular_weight = "molecular weight [kg mol-1]";
+      inline constexpr std::string_view constant_concentration = "constant concentration [mol m-3]";
+      inline constexpr std::string_view constant_mixing_ratio = "constant mixing ratio [mol mol-1]";
+      inline constexpr std::string_view is_third_body = "is third body";
 
       // Phase-species
-      static constexpr const char* diffusion_coefficient = "diffusion coefficient [m2 s-1]";
+      inline constexpr std::string_view diffusion_coefficient = "diffusion coefficient [m2 s-1]";
 
       // Reactions
-      static constexpr const char* reactants = "reactants";
-      static constexpr const char* products = "products";
-      static constexpr const char* type = "type";
-      static constexpr const char* gas_phase = "gas phase";
+      inline constexpr std::string_view reactants = "reactants";
+      inline constexpr std::string_view products = "products";
+      inline constexpr std::string_view type = "type";
+      inline constexpr std::string_view gas_phase = "gas phase";
 
       // Reactant and product
-      static constexpr const char* species_name = "species name";
-      static constexpr const char* coefficient = "coefficient";
+      inline constexpr std::string_view species_name = "species name";
+      inline constexpr std::string_view coefficient = "coefficient";
 
       // ----------------------------------------
       // Reaction types
       // ----------------------------------------
 
       // Arrhenius
-      static constexpr const char* Arrhenius_key = "ARRHENIUS";
-      static constexpr const char* A = "A";
-      static constexpr const char* B = "B";
-      static constexpr const char* C = "C";
-      static constexpr const char* D = "D";
-      static constexpr const char* E = "E";
-      static constexpr const char* Ea = "Ea";
+      inline constexpr std::string_view Arrhenius_key = "ARRHENIUS";
+      inline constexpr std::string_view A = "A";
+      inline constexpr std::string_view B = "B";
+      inline constexpr std::string_view C = "C";
+      inline constexpr std::string_view D = "D";
+      inline constexpr std::string_view E = "E";
+      inline constexpr std::string_view Ea = "Ea";
 
       // TaylorSeries
-      static constexpr const char* TaylorSeries_key = "TAYLOR_SERIES";
-      static constexpr const char* taylor_coefficients = "taylor coefficients";
+      inline constexpr std::string_view TaylorSeries_key = "TAYLOR_SERIES";
+      inline constexpr std::string_view taylor_coefficients = "taylor coefficients";
       // also these
       // A
       // B
@@ -63,18 +63,18 @@ namespace mechanism_configuration
       // Ea
 
       // Troe
-      static constexpr const char* Troe_key = "TROE";
-      static constexpr const char* k0_A = "k0_A";
-      static constexpr const char* k0_B = "k0_B";
-      static constexpr const char* k0_C = "k0_C";
-      static constexpr const char* kinf_A = "kinf_A";
-      static constexpr const char* kinf_B = "kinf_B";
-      static constexpr const char* kinf_C = "kinf_C";
-      static constexpr const char* Fc = "Fc";
-      static constexpr const char* N = "N";
+      inline constexpr std::string_view Troe_key = "TROE";
+      inline constexpr std::string_view k0_A = "k0_A";
+      inline constexpr std::string_view k0_B = "k0_B";
+      inline constexpr std::string_view k0_C = "k0_C";
+      inline constexpr std::string_view kinf_A = "kinf_A";
+      inline constexpr std::string_view kinf_B = "kinf_B";
+      inline constexpr std::string_view kinf_C = "kinf_C";
+      inline constexpr std::string_view Fc = "Fc";
+      inline constexpr std::string_view N = "N";
 
       // Ternary Chemical Activation
-      static constexpr const char* TernaryChemicalActivation_key = "TERNARY_CHEMICAL_ACTIVATION";
+      inline constexpr std::string_view TernaryChemicalActivation_key = "TERNARY_CHEMICAL_ACTIVATION";
       // also k0_A
       // k0_B
       // k0_C
@@ -85,41 +85,41 @@ namespace mechanism_configuration
       // N
 
       // Branched
-      static constexpr const char* Branched_key = "BRANCHED_NO_RO2";
-      static constexpr const char* X = "X";
-      static constexpr const char* Y = "Y";
-      static constexpr const char* a0 = "a0";
-      static constexpr const char* n = "n";
-      static constexpr const char* nitrate_products = "nitrate products";
-      static constexpr const char* alkoxy_products = "alkoxy products";
+      inline constexpr std::string_view Branched_key = "BRANCHED_NO_RO2";
+      inline constexpr std::string_view X = "X";
+      inline constexpr std::string_view Y = "Y";
+      inline constexpr std::string_view a0 = "a0";
+      inline constexpr std::string_view n = "n";
+      inline constexpr std::string_view nitrate_products = "nitrate products";
+      inline constexpr std::string_view alkoxy_products = "alkoxy products";
 
       // Tunneling
-      static constexpr const char* Tunneling_key = "TUNNELING";
+      inline constexpr std::string_view Tunneling_key = "TUNNELING";
       // also these, but they are defined above
       // A
       // B
       // C
 
       // Surface
-      static constexpr const char* Surface_key = "SURFACE";
-      static constexpr const char* reaction_probability = "reaction probability";
-      static constexpr const char* gas_phase_species = "gas-phase species";
-      static constexpr const char* gas_phase_products = "gas-phase products";
+      inline constexpr std::string_view Surface_key = "SURFACE";
+      inline constexpr std::string_view reaction_probability = "reaction probability";
+      inline constexpr std::string_view gas_phase_species = "gas-phase species";
+      inline constexpr std::string_view gas_phase_products = "gas-phase products";
 
       // Photolysis
-      static constexpr const char* Photolysis_key = "PHOTOLYSIS";
-      static constexpr const char* scaling_factor = "scaling factor";
+      inline constexpr std::string_view Photolysis_key = "PHOTOLYSIS";
+      inline constexpr std::string_view scaling_factor = "scaling factor";
 
       // Emissions
-      static constexpr const char* Emission_key = "EMISSION";
+      inline constexpr std::string_view Emission_key = "EMISSION";
       // also scaling factor
 
       // First Order Loss
-      static constexpr const char* FirstOrderLoss_key = "FIRST_ORDER_LOSS";
+      inline constexpr std::string_view FirstOrderLoss_key = "FIRST_ORDER_LOSS";
       // also scaling factor
 
       // User Defined
-      static constexpr const char* UserDefined_key = "USER_DEFINED";
+      inline constexpr std::string_view UserDefined_key = "USER_DEFINED";
       // also
       // gas phase
       // reactants
@@ -127,8 +127,8 @@ namespace mechanism_configuration
       // scaling factor
 
       // Lambda Rate Constant
-      static constexpr const char* LambdaRateConstant_key = "LAMBDA_RATE_CONSTANT";
-      static constexpr const char* lambda_function = "lambda function";
+      inline constexpr std::string_view LambdaRateConstant_key = "LAMBDA_RATE_CONSTANT";
+      inline constexpr std::string_view lambda_function = "lambda function";
       // also
       // gas phase
       // reactants

@@ -11,8 +11,8 @@ namespace mechanism_configuration
 {
   Errors ValidateSchema(
       const YAML::Node& object,
-      const std::vector<std::string>& required_keys,
-      const std::vector<std::string>& optional_keys)
+      const std::vector<std::string_view>& required_keys,
+      const std::vector<std::string_view>& optional_keys)
   {
     Errors errors;
     ErrorLocation error_location{ object.Mark().line, object.Mark().column };
@@ -32,9 +32,9 @@ namespace mechanism_configuration
       object_keys.emplace_back(key.first.as<std::string>());
     }
 
-    // Sort keys for comparison
-    auto sorted_required_keys = required_keys;
-    auto sorted_optional_keys = optional_keys;
+    // Sort keys for comparison (own the strings so comparisons stay homogeneous)
+    std::vector<std::string> sorted_required_keys(required_keys.begin(), required_keys.end());
+    std::vector<std::string> sorted_optional_keys(optional_keys.begin(), optional_keys.end());
     std::sort(object_keys.begin(), object_keys.end());
     std::sort(sorted_required_keys.begin(), sorted_required_keys.end());
     std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());

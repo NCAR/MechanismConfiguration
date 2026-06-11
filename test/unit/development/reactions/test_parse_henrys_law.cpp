@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -71,7 +71,7 @@ TEST(ParseHenrysLaw, DetectsUnknownSpecies)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -96,7 +96,7 @@ TEST(ParseHenrysLaw, DetectsGasSpeciesInReactionNotFoundInGasPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -121,7 +121,7 @@ TEST(ParseHenrysLaw, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -146,7 +146,7 @@ TEST(ParseHenrysLaw, DetectsWhenRequestedSolventIsNotRegisteredInCorrectPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -184,7 +184,7 @@ TEST(ValidateHenrysLaw, ValidationWithUnknownSpeciesUnknownPhaseFailsValidation)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -224,7 +224,7 @@ TEST(ValidateHenrysLaw, ValidationWithSpeciesNotInPhasesFailsValidation)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -249,7 +249,7 @@ TEST(ValidateHenrysLaw, ValidationWithMissingRequiredKeysFailsValidation)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -353,7 +353,7 @@ TEST(ValidateHenrysLaw, InvalidNumberSolventFailsValidation)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }

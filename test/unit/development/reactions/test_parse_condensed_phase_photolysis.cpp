@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -65,7 +65,7 @@ TEST(ParseCondensedPhasePhotolysis, DetectsUnknownSpecies)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -90,7 +90,7 @@ TEST(ParseCondensedPhasePhotolysis, DetectsBadReactionComponent)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -115,7 +115,7 @@ TEST(ParseCondensedPhasePhotolysis, DetectsUnknownPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -140,7 +140,7 @@ TEST(ParseCondensedPhasePhotolysis, DoesNotAcceptMoreThanOneReactant)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -165,7 +165,7 @@ TEST(ParseCondensedPhasePhotolysis, DetectsWhenRequestedSpeciesAreNotInAqueousPh
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -199,7 +199,7 @@ TEST(ValidateCondensedPhasePhotolysis, InvalidNumberReactantUnknownSpeciesUnknow
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }

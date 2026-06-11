@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/development/reaction_parsers.hpp>
-#include <mechanism_configuration/development/reaction_types.hpp>
-#include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 
 namespace mechanism_configuration

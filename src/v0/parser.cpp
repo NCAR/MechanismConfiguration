@@ -40,7 +40,7 @@ namespace mechanism_configuration::v0
 
   Errors ParseMechanism(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
   {
-    std::vector<std::string> required = { validation::NAME, validation::REACTIONS, validation::TYPE };
+    std::vector<std::string_view> required = { validation::NAME, validation::REACTIONS, validation::TYPE };
 
     Errors errors;
     auto validate = ValidateSchema(object, required, {});

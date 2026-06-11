@@ -21,8 +21,8 @@ namespace mechanism_configuration
       Errors errors;
       types::Emission emission;
 
-      std::vector<std::string> required_keys = { validation::products, validation::type, validation::gas_phase };
-      std::vector<std::string> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string_view> required_keys = { validation::products, validation::type, validation::gas_phase };
+      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());

@@ -9,10 +9,10 @@ namespace mechanism_configuration::v0
   Errors SurfaceParser(Mechanism& mechanism, const YAML::Node& object)
   {
     Errors errors;
-    std::vector<std::string> required = {
+    std::vector<std::string_view> required = {
       validation::TYPE, validation::GAS_PHASE_PRODUCTS, validation::GAS_PHASE_REACTANT, validation::MUSICA_NAME
     };
-    std::vector<std::string> optional = { validation::PROBABILITY };
+    std::vector<std::string_view> optional = { validation::PROBABILITY };
 
     auto validate = ValidateSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());

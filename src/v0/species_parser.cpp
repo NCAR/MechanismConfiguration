@@ -8,8 +8,8 @@ namespace mechanism_configuration::v0
   Errors ParseChemicalSpecies(Mechanism& mechanism, const YAML::Node& object)
   {
     Errors errors;
-    std::vector<std::string> required = { validation::NAME, validation::TYPE };
-    std::vector<std::string> optional = {
+    std::vector<std::string_view> required = { validation::NAME, validation::TYPE };
+    std::vector<std::string_view> optional = {
       validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT
     };
 
@@ -52,7 +52,7 @@ namespace mechanism_configuration::v0
   Errors ParseRelativeTolerance(Mechanism& mechanism, const YAML::Node& object)
   {
     Errors errors;
-    std::vector<std::string> required = { validation::VALUE, validation::TYPE };
+    std::vector<std::string_view> required = { validation::VALUE, validation::TYPE };
 
     auto validate = ValidateSchema(object, required, {});
     errors.insert(errors.end(), validate.begin(), validate.end());

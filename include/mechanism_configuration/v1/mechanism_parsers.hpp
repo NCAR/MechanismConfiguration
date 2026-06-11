@@ -25,7 +25,7 @@ namespace mechanism_configuration
     std::pair<Errors, types::ReactionComponent> ParseReactionComponent(const YAML::Node& object);
 
     std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
-        const std::string& key,
+        std::string_view key,
         const YAML::Node& object);
 
     std::pair<Errors, types::Reactions> ParseReactions(

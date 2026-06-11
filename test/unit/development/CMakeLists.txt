@@ -12,5 +12,4 @@ add_custom_target(copy_development_unit_test_configs ALL ${CMAKE_COMMAND} -E cop
 
 ################################################################################
 
-add_subdirectory(models)
 add_subdirectory(reactions)

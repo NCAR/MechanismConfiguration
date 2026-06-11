@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/type_validators.hpp>
 
 #include <gtest/gtest.h>
@@ -64,7 +64,7 @@ TEST(ParsePhases, DetectsDuplicatePhases)
     for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ErrorCode::DuplicatePhasesDetected);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
   }
 }
@@ -88,7 +88,7 @@ TEST(ParsePhases, DetectsMissingRequiredKeys)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -113,7 +113,7 @@ TEST(ParsePhases, DetectsInvalidKeys)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -138,7 +138,7 @@ TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -161,7 +161,7 @@ TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
     for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ErrorCode::DuplicateSpeciesInPhaseDetected);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
   }
 }
@@ -185,7 +185,7 @@ TEST(ParsePhases, DetectsInvalidSpeciesObject)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -237,12 +237,12 @@ TEST(ParsePhases, CanParsePhaseSpeciesProperties)
 
 TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
-  development::types::Species species2;
+  types::Species species2;
   species2.name = "B";
   existing_species.emplace_back(species2);
 
@@ -264,8 +264,8 @@ TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
 
 TEST(ValidatePhases, DetectsMissingPhaseName)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -285,15 +285,15 @@ TEST(ValidatePhases, DetectsMissingPhaseName)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsMissingSpeciesList)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -312,15 +312,15 @@ TEST(ValidatePhases, DetectsMissingSpeciesList)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsInvalidKeysInPhase)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -338,15 +338,15 @@ TEST(ValidatePhases, DetectsInvalidKeysInPhase)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -365,15 +365,15 @@ TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -392,15 +392,15 @@ TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "FOO";
   existing_species.emplace_back(species1);
 
@@ -424,8 +424,8 @@ TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
 
 TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
@@ -444,19 +444,19 @@ TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidatePhases, DetectsDuplicatePhaseNames)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
-  development::types::Species species2;
+  types::Species species2;
   species2.name = "B";
   existing_species.emplace_back(species2);
 
@@ -484,8 +484,8 @@ TEST(ValidatePhases, DetectsDuplicatePhaseNames)
 
 TEST(ValidatePhases, ValidatesAllSpeciesOptionalKeys)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "FOO";
   existing_species.emplace_back(species1);
 

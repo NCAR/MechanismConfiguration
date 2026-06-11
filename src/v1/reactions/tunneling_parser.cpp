@@ -21,10 +21,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Tunneling tunneling;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::products, validation::reactants, validation::type, validation::gas_phase
       };
-      std::vector<std::string> optional_keys = { validation::name, validation::A, validation::B, validation::C };
+      std::vector<std::string_view> optional_keys = { validation::name, validation::A, validation::B, validation::C };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());

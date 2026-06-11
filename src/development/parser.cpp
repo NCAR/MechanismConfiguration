@@ -2,12 +2,12 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -47,10 +47,10 @@ namespace mechanism_configuration
 
       Errors errors;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::version, validation::species, validation::phases, validation::reactions
       };
-      std::vector<std::string> optional_keys = { validation::name, validation::models };
+      std::vector<std::string_view> optional_keys = { validation::name };
 
       // Return early if the required keys are not found
       auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
@@ -102,22 +102,12 @@ namespace mechanism_configuration
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
       }
 
-      if (object[validation::models])
-      {
-        validation_errors = ValidateModels(object[validation::models], parsed_phases);
-        if (!validation_errors.empty())
-        {
-          AppendFilePath(config_path_, validation_errors);
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        }
-      }
-
       return errors;
     }
 
-    types::Mechanism Parser::Parse(const YAML::Node& object)
+    Mechanism Parser::Parse(const YAML::Node& object)
     {
-      types::Mechanism mechanism;
+      Mechanism mechanism;
 
       mechanism.version = Version(object[validation::version].as<std::string>());
       mechanism.species = ParseSpecies(object[validation::species]);
@@ -127,10 +117,6 @@ namespace mechanism_configuration
       if (object[validation::name])
       {
         mechanism.name = object[validation::name].as<std::string>();
-      }
-      if (object[validation::models])
-      {
-        mechanism.models = ParseModels(object[validation::models]);
       }
 
       return mechanism;

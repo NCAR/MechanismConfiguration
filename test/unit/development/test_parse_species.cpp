@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/type_validators.hpp>
 
 #include <gtest/gtest.h>
@@ -79,7 +79,7 @@ TEST(ParseSpecies, DetectsDuplicateSpecies)
     for (const auto& [status, message] : validation_errors)
     {
       EXPECT_EQ(status, ErrorCode::DuplicateSpeciesDetected);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
   }
 }
@@ -103,7 +103,7 @@ TEST(ParseSpecies, DetectsMissingRequiredKeys)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -128,7 +128,7 @@ TEST(ParseSpecies, DetectsInvalidKeys)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -167,7 +167,7 @@ TEST(ValidateSpecies, DetectsMissingNameKey)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -189,7 +189,7 @@ TEST(ValidateSpecies, DetectsInvalidKeysInSpecies)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -214,7 +214,7 @@ TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
   {
     actual.insert(status);
     EXPECT_NE(message.find("A"), std::string::npos);  // Error message should contain species "name"
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
@@ -235,7 +235,7 @@ TEST(ValidateSpecies, DetectsMultipleDuplicateSpecies)
   for (const auto& [status, message] : errors)
   {
     EXPECT_EQ(status, ErrorCode::DuplicateSpeciesDetected);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
 }
 

@@ -34,8 +34,8 @@ namespace mechanism_configuration::v1
     for (const auto& object : objects)
     {
       types::Species species;
-      std::vector<std::string> required_keys = { validation::name };
-      std::vector<std::string> optional_keys = { validation::molecular_weight,
+      std::vector<std::string_view> required_keys = { validation::name };
+      std::vector<std::string_view> optional_keys = { validation::molecular_weight,
                                                  validation::constant_concentration,
                                                  validation::constant_mixing_ratio,
                                                  validation::is_third_body };
@@ -95,8 +95,8 @@ namespace mechanism_configuration::v1
     std::vector<types::Phase> all_phases;
     std::vector<std::pair<types::Phase, YAML::Node>> phase_node_pairs;
 
-    const std::vector<std::string> phase_required_keys = { validation::name, validation::species };
-    const std::vector<std::string> phase_optional_keys = {};
+    const std::vector<std::string_view> phase_required_keys = { validation::name, validation::species };
+    const std::vector<std::string_view> phase_optional_keys = {};
 
     for (const auto& object : objects)
     {
@@ -222,8 +222,8 @@ namespace mechanism_configuration::v1
     Errors errors;
     ErrorCode status = ErrorCode::Success;
     types::ReactionComponent component;
-    const std::vector<std::string> reaction_component_required_keys = { validation::species_name };
-    const std::vector<std::string> reaction_component_optional_keys = { validation::coefficient };
+    const std::vector<std::string_view> reaction_component_required_keys = { validation::species_name };
+    const std::vector<std::string_view> reaction_component_optional_keys = { validation::coefficient };
 
     auto validate = ValidateSchema(object, reaction_component_required_keys, reaction_component_optional_keys);
     errors.insert(errors.end(), validate.begin(), validate.end());
@@ -246,7 +246,7 @@ namespace mechanism_configuration::v1
   }
 
   std::pair<Errors, std::vector<types::ReactionComponent>> ParseReactantsOrProducts(
-      const std::string& key,
+      std::string_view key,
       const YAML::Node& object)
   {
     Errors errors;
@@ -272,18 +272,18 @@ namespace mechanism_configuration::v1
     types::Reactions reactions;
 
     std::map<std::string, std::unique_ptr<IReactionParser>> parsers;
-    parsers[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
-    parsers[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
-    parsers[validation::Emission_key] = std::make_unique<EmissionParser>();
-    parsers[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
-    parsers[validation::Surface_key] = std::make_unique<SurfaceParser>();
-    parsers[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
-    parsers[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
-    parsers[validation::Branched_key] = std::make_unique<BranchedParser>();
-    parsers[validation::Troe_key] = std::make_unique<TroeParser>();
-    parsers[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
-    parsers[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
-    parsers[validation::LambdaRateConstant_key] = std::make_unique<LambdaRateConstantParser>();
+    parsers[std::string(validation::Arrhenius_key)] = std::make_unique<ArrheniusParser>();
+    parsers[std::string(validation::FirstOrderLoss_key)] = std::make_unique<FirstOrderLossParser>();
+    parsers[std::string(validation::Emission_key)] = std::make_unique<EmissionParser>();
+    parsers[std::string(validation::Photolysis_key)] = std::make_unique<PhotolysisParser>();
+    parsers[std::string(validation::Surface_key)] = std::make_unique<SurfaceParser>();
+    parsers[std::string(validation::TaylorSeries_key)] = std::make_unique<TaylorSeriesParser>();
+    parsers[std::string(validation::Tunneling_key)] = std::make_unique<TunnelingParser>();
+    parsers[std::string(validation::Branched_key)] = std::make_unique<BranchedParser>();
+    parsers[std::string(validation::Troe_key)] = std::make_unique<TroeParser>();
+    parsers[std::string(validation::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
+    parsers[std::string(validation::UserDefined_key)] = std::make_unique<UserDefinedParser>();
+    parsers[std::string(validation::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
 
     for (const auto& object : objects)
     {

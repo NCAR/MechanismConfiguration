@@ -10,10 +10,10 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string> required = {
+    std::vector<std::string_view> required = {
       validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME
     };
-    std::vector<std::string> optional = { validation::SCALING_FACTOR };
+    std::vector<std::string_view> optional = { validation::SCALING_FACTOR };
 
     auto validate = ValidateSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());

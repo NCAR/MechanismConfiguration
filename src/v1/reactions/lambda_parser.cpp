@@ -25,10 +25,10 @@ namespace mechanism_configuration
       Errors errors;
       types::LambdaRateConstant lambda_rate_constant;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::reactants, validation::products, validation::type, validation::gas_phase, validation::lambda_function
       };
-      std::vector<std::string> optional_keys = { validation::name };
+      std::vector<std::string_view> optional_keys = { validation::name };
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())

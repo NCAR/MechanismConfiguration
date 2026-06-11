@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -74,7 +74,7 @@ TEST(ParseTunneling, DetectsUnknownSpecies)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -99,7 +99,7 @@ TEST(ParseTunneling, DetectsBadReactionComponent)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -124,7 +124,7 @@ TEST(ParseTunneling, DetectsUnknownPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -159,7 +159,7 @@ TEST(ValidateTunneling, UnknownSpeciesAndUnknownPhaseFailsValidation)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }

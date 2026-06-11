@@ -2,12 +2,11 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/development/model_parsers.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 #include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/development/validation.hpp>
-#include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/validation.hpp>
+#include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
 {
@@ -85,7 +84,7 @@ namespace mechanism_configuration
       return all_phases;
     }
 
-    std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, const std::string& key)
+    std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, std::string_view key)
     {
       std::vector<types::ReactionComponent> component_list;
       for (const auto& elem : AsSequence(object[key]))
@@ -105,7 +104,7 @@ namespace mechanism_configuration
       return component_list;
     };
 
-    types::ReactionComponent ParseReactionComponent(const YAML::Node& object, const std::string& key)
+    types::ReactionComponent ParseReactionComponent(const YAML::Node& object, std::string_view key)
     {
       auto reaction_components = ParseReactionComponents(object, key);
 
@@ -132,23 +131,6 @@ namespace mechanism_configuration
       }
 
       return reactions;
-    }
-
-    types::Models ParseModels(const YAML::Node& objects)
-    {
-      auto& parsers = GetModelParserMap();
-      types::Models models;
-
-      for (const auto& object : objects)
-      {
-        auto it = parsers.find(object[validation::type].as<std::string>());
-        if (it != parsers.end())
-        {
-          it->second->Parse(object, models);
-        }
-      }
-
-      return models;
     }
 
   }  // namespace development

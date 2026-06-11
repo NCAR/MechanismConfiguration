@@ -21,10 +21,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Surface surface;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::gas_phase_products, validation::gas_phase_species, validation::type, validation::gas_phase
       };
-      std::vector<std::string> optional_keys = { validation::name, validation::reaction_probability };
+      std::vector<std::string_view> optional_keys = { validation::name, validation::reaction_probability };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), validate.begin(), validate.end());

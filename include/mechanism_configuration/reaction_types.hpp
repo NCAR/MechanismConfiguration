@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/types.hpp>
+#include <mechanism_configuration/types.hpp>
 
 #include <array>
 #include <optional>

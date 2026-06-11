@@ -9,53 +9,53 @@
 
 namespace mechanism_configuration::v0::validation
 {
-  static constexpr const char* NAME = "name";
-  static constexpr const char* TYPE = "type";
+  inline constexpr std::string_view NAME = "name";
+  inline constexpr std::string_view TYPE = "type";
 
-  static constexpr const char* VALUE = "value";
+  inline constexpr std::string_view VALUE = "value";
 
-  static constexpr const char* REACTIONS = "reactions";
+  inline constexpr std::string_view REACTIONS = "reactions";
 
-  static constexpr const char* TRACER_TYPE = "tracer type";
-  static constexpr const char* ABS_TOLERANCE = "absolute tolerance";
-  static constexpr const char* DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
-  static constexpr const char* MOL_WEIGHT = "molecular weight [kg mol-1]";
-  static constexpr const char* THIRD_BODY = "THIRD_BODY";
+  inline constexpr std::string_view TRACER_TYPE = "tracer type";
+  inline constexpr std::string_view ABS_TOLERANCE = "absolute tolerance";
+  inline constexpr std::string_view DIFFUSION_COEFF = "diffusion coefficient [m2 s-1]";
+  inline constexpr std::string_view MOL_WEIGHT = "molecular weight [kg mol-1]";
+  inline constexpr std::string_view THIRD_BODY = "THIRD_BODY";
 
-  static constexpr const char* REACTANTS = "reactants";
-  static constexpr const char* PRODUCTS = "products";
-  static constexpr const char* MUSICA_NAME = "MUSICA name";
-  static constexpr const char* SCALING_FACTOR = "scaling factor";
-  static constexpr const char* GAS_PHASE_REACTANT = "gas-phase reactant";
-  static constexpr const char* GAS_PHASE_PRODUCTS = "gas-phase products";
+  inline constexpr std::string_view REACTANTS = "reactants";
+  inline constexpr std::string_view PRODUCTS = "products";
+  inline constexpr std::string_view MUSICA_NAME = "MUSICA name";
+  inline constexpr std::string_view SCALING_FACTOR = "scaling factor";
+  inline constexpr std::string_view GAS_PHASE_REACTANT = "gas-phase reactant";
+  inline constexpr std::string_view GAS_PHASE_PRODUCTS = "gas-phase products";
 
-  static constexpr const char* QTY = "qty";
-  static constexpr const char* YIELD = "yield";
+  inline constexpr std::string_view QTY = "qty";
+  inline constexpr std::string_view YIELD = "yield";
 
-  static constexpr const char* SPECIES = "species";
+  inline constexpr std::string_view SPECIES = "species";
 
-  static constexpr const char* ALKOXY_PRODUCTS = "alkoxy products";
-  static constexpr const char* NITRATE_PRODUCTS = "nitrate products";
-  static constexpr const char* X = "X";
-  static constexpr const char* Y = "Y";
-  static constexpr const char* A0 = "a0";
-  static constexpr const char* N = "N";
-  static constexpr const char* n = "n";
+  inline constexpr std::string_view ALKOXY_PRODUCTS = "alkoxy products";
+  inline constexpr std::string_view NITRATE_PRODUCTS = "nitrate products";
+  inline constexpr std::string_view X = "X";
+  inline constexpr std::string_view Y = "Y";
+  inline constexpr std::string_view A0 = "a0";
+  inline constexpr std::string_view N = "N";
+  inline constexpr std::string_view n = "n";
 
-  static constexpr const char* PROBABILITY = "reaction probability";
+  inline constexpr std::string_view PROBABILITY = "reaction probability";
 
-  static constexpr const char* A = "A";
-  static constexpr const char* B = "B";
-  static constexpr const char* C = "C";
-  static constexpr const char* D = "D";
-  static constexpr const char* E = "E";
-  static constexpr const char* Ea = "Ea";
+  inline constexpr std::string_view A = "A";
+  inline constexpr std::string_view B = "B";
+  inline constexpr std::string_view C = "C";
+  inline constexpr std::string_view D = "D";
+  inline constexpr std::string_view E = "E";
+  inline constexpr std::string_view Ea = "Ea";
 
-  static constexpr const char* K0_A = "k0_A";
-  static constexpr const char* K0_B = "k0_B";
-  static constexpr const char* K0_C = "k0_C";
-  static constexpr const char* KINF_A = "kinf_A";
-  static constexpr const char* KINF_B = "kinf_B";
-  static constexpr const char* KINF_C = "kinf_C";
-  static constexpr const char* FC = "Fc";
+  inline constexpr std::string_view K0_A = "k0_A";
+  inline constexpr std::string_view K0_B = "k0_B";
+  inline constexpr std::string_view K0_C = "k0_C";
+  inline constexpr std::string_view KINF_A = "kinf_A";
+  inline constexpr std::string_view KINF_B = "kinf_B";
+  inline constexpr std::string_view KINF_C = "kinf_C";
+  inline constexpr std::string_view FC = "Fc";
 }  // namespace mechanism_configuration::v0::validation

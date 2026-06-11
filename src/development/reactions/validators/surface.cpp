@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/development/reaction_parsers.hpp>
-#include <mechanism_configuration/development/reaction_types.hpp>
+#include <mechanism_configuration/types.hpp>
 #include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/type_validators.hpp>
 #include <mechanism_configuration/development/utils.hpp>
-#include <mechanism_configuration/error_location.hpp>
+#include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
 
@@ -27,12 +27,12 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string> required_keys = { validation::gas_phase_products,
+      std::vector<std::string_view> required_keys = { validation::gas_phase_products,
                                                  validation::gas_phase_species,
                                                  validation::type,
                                                  validation::gas_phase,
                                                  validation::condensed_phase };
-      std::vector<std::string> optional_keys = { validation::name, validation::reaction_probability };
+      std::vector<std::string_view> optional_keys = { validation::name, validation::reaction_probability };
 
       Errors errors;
 

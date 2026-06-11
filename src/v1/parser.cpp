@@ -28,10 +28,10 @@ namespace mechanism_configuration::v1
     {
       YAML::Node object = YAML::Load(content);
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::version, validation::species, validation::phases, validation::reactions
       };
-      std::vector<std::string> optional_keys = { validation::name };
+      std::vector<std::string_view> optional_keys = { validation::name };
 
       auto validate_errors = ValidateSchema(object, required_keys, optional_keys);
       if (!validate_errors.empty())
@@ -75,10 +75,10 @@ namespace mechanism_configuration::v1
       {
         YAML::Node object = YAML::LoadFile(config_path.string());
 
-        std::vector<std::string> mechanism_required_keys = {
+        std::vector<std::string_view> mechanism_required_keys = {
           validation::version, validation::species, validation::phases, validation::reactions
         };
-        std::vector<std::string> mechanism_optional_keys = { validation::name };
+        std::vector<std::string_view> mechanism_optional_keys = { validation::name };
 
         auto validate_errors = ValidateSchema(object, mechanism_required_keys, mechanism_optional_keys);
 
@@ -102,8 +102,9 @@ namespace mechanism_configuration::v1
             EntityFormat phs_format = GetEntityFormat(object[validation::phases]);
             EntityFormat rxn_format = GetEntityFormat(object[validation::reactions]);
 
-            auto check_invalid = [&](const std::string& entity, EntityFormat fmt)
+            auto check_invalid = [&](std::string_view entity_view, EntityFormat fmt)
             {
+              const std::string entity(entity_view);
               if (fmt == EntityFormat::Invalid)
               {
                 if (object[entity] && object[entity].IsMap())
@@ -196,7 +197,7 @@ namespace mechanism_configuration::v1
 
     std::filesystem::path base_dir = config_path.parent_path();
 
-    auto load_files = [&](const std::string& entity) -> std::pair<Errors, YAML::Node>
+    auto load_files = [&](std::string_view entity) -> std::pair<Errors, YAML::Node>
     {
       Errors errors;
       YAML::Node merged = YAML::Node(YAML::NodeType::Sequence);
@@ -223,7 +224,7 @@ namespace mechanism_configuration::v1
       return { errors, merged };
     };
 
-    auto resolve_section = [&](const std::string& entity, EntityFormat fmt) -> std::pair<Errors, YAML::Node>
+    auto resolve_section = [&](std::string_view entity, EntityFormat fmt) -> std::pair<Errors, YAML::Node>
     {
       if (fmt == EntityFormat::Inline)
         return { {}, object[entity] };

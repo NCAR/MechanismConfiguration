@@ -21,10 +21,10 @@ namespace mechanism_configuration
       Errors errors;
       types::TaylorSeries taylor_series;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::products, validation::reactants, validation::type, validation::gas_phase
       };
-      std::vector<std::string> optional_keys = { validation::A,
+      std::vector<std::string_view> optional_keys = { validation::A,
                                                  validation::B,
                                                  validation::C,
                                                  validation::D,

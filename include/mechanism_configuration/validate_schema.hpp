@@ -15,6 +15,6 @@ namespace mechanism_configuration
 {
   Errors ValidateSchema(
       const YAML::Node& object,
-      const std::vector<std::string>& required_keys,
-      const std::vector<std::string>& optional_keys);
+      const std::vector<std::string_view>& required_keys,
+      const std::vector<std::string_view>& optional_keys);
 }  // namespace mechanism_configuration

@@ -4,9 +4,8 @@
 
 #pragma once
 
-#include <mechanism_configuration/development/reaction_types.hpp>
-#include <mechanism_configuration/development/types.hpp>
-#include <mechanism_configuration/development/validation.hpp>
+#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/validation.hpp>
 #include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>
@@ -245,24 +244,24 @@ namespace mechanism_configuration
       static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers = []
       {
         std::map<std::string, std::unique_ptr<IReactionParser>> map;
-        map[validation::Arrhenius_key] = std::make_unique<ArrheniusParser>();
-        map[validation::HenrysLaw_key] = std::make_unique<HenrysLawParser>();
-        map[validation::WetDeposition_key] = std::make_unique<WetDepositionParser>();
-        map[validation::AqueousPhaseEquilibrium_key] = std::make_unique<AqueousEquilibriumParser>();
-        map[validation::SimpolPhaseTransfer_key] = std::make_unique<SimpolPhaseTransferParser>();
-        map[validation::FirstOrderLoss_key] = std::make_unique<FirstOrderLossParser>();
-        map[validation::Emission_key] = std::make_unique<EmissionParser>();
-        map[validation::CondensedPhasePhotolysis_key] = std::make_unique<CondensedPhasePhotolysisParser>();
-        map[validation::Photolysis_key] = std::make_unique<PhotolysisParser>();
-        map[validation::Surface_key] = std::make_unique<SurfaceParser>();
-        map[validation::TaylorSeries_key] = std::make_unique<TaylorSeriesParser>();
-        map[validation::Tunneling_key] = std::make_unique<TunnelingParser>();
-        map[validation::Branched_key] = std::make_unique<BranchedParser>();
-        map[validation::Troe_key] = std::make_unique<TroeParser>();
-        map[validation::TernaryChemicalActivation_key] = std::make_unique<TernaryChemicalActivationParser>();
-        map[validation::CondensedPhaseArrhenius_key] = std::make_unique<CondensedPhaseArrheniusParser>();
-        map[validation::UserDefined_key] = std::make_unique<UserDefinedParser>();
-        map[validation::LambdaRateConstant_key] = std::make_unique<LambdaRateConstantParser>();
+        map[std::string(validation::Arrhenius_key)] = std::make_unique<ArrheniusParser>();
+        map[std::string(validation::HenrysLaw_key)] = std::make_unique<HenrysLawParser>();
+        map[std::string(validation::WetDeposition_key)] = std::make_unique<WetDepositionParser>();
+        map[std::string(validation::AqueousPhaseEquilibrium_key)] = std::make_unique<AqueousEquilibriumParser>();
+        map[std::string(validation::SimpolPhaseTransfer_key)] = std::make_unique<SimpolPhaseTransferParser>();
+        map[std::string(validation::FirstOrderLoss_key)] = std::make_unique<FirstOrderLossParser>();
+        map[std::string(validation::Emission_key)] = std::make_unique<EmissionParser>();
+        map[std::string(validation::CondensedPhasePhotolysis_key)] = std::make_unique<CondensedPhasePhotolysisParser>();
+        map[std::string(validation::Photolysis_key)] = std::make_unique<PhotolysisParser>();
+        map[std::string(validation::Surface_key)] = std::make_unique<SurfaceParser>();
+        map[std::string(validation::TaylorSeries_key)] = std::make_unique<TaylorSeriesParser>();
+        map[std::string(validation::Tunneling_key)] = std::make_unique<TunnelingParser>();
+        map[std::string(validation::Branched_key)] = std::make_unique<BranchedParser>();
+        map[std::string(validation::Troe_key)] = std::make_unique<TroeParser>();
+        map[std::string(validation::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
+        map[std::string(validation::CondensedPhaseArrhenius_key)] = std::make_unique<CondensedPhaseArrheniusParser>();
+        map[std::string(validation::UserDefined_key)] = std::make_unique<UserDefinedParser>();
+        map[std::string(validation::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
         return map;
       }();
 

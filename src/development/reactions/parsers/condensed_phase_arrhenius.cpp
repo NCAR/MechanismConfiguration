@@ -4,7 +4,7 @@
 
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
-#include <mechanism_configuration/development/reaction_types.hpp>
+#include <mechanism_configuration/types.hpp>
 #include <mechanism_configuration/development/type_parsers.hpp>
 #include <mechanism_configuration/development/utils.hpp>
 

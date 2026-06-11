@@ -1,4 +1,4 @@
-#include <mechanism_configuration/development/mechanism.hpp>
+#include <mechanism_configuration/development/parser.hpp>
 #include <mechanism_configuration/development/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
@@ -55,7 +55,7 @@ TEST(ParseWetDeposition, DetectsUnknownPhase)
     for (const auto& [status, message] : validation_errors)
     {
       actual.insert(status);
-      std::cout << message << " " << configParseStatusToString(status) << std::endl;
+      std::cout << message << " " << ErrorCodeToString(status) << std::endl;
     }
     EXPECT_EQ(actual, expected);
   }
@@ -63,13 +63,13 @@ TEST(ParseWetDeposition, DetectsUnknownPhase)
 
 TEST(ValidateWetDeposition, ReturnsEmptyErrorsForValidReaction)
 {
-  std::vector<development::types::Species> existing_species;
-  development::types::Species species1;
+  std::vector<types::Species> existing_species;
+  types::Species species1;
   species1.name = "A";
   existing_species.emplace_back(species1);
 
-  std::vector<development::types::Phase> existing_phases;
-  development::types::Phase phase1;
+  std::vector<types::Phase> existing_phases;
+  types::Phase phase1;
   phase1.name = "cloud";
   existing_phases.emplace_back(phase1);
 
@@ -87,9 +87,9 @@ TEST(ValidateWetDeposition, ReturnsEmptyErrorsForValidReaction)
 
 TEST(ValidateWetDeposition, DetectsMissingRequiredType)
 {
-  std::vector<development::types::Species> existing_species;
-  std::vector<development::types::Phase> existing_phases;
-  development::types::Phase phase1;
+  std::vector<types::Species> existing_species;
+  std::vector<types::Phase> existing_phases;
+  types::Phase phase1;
   phase1.name = "cloud";
   existing_phases.emplace_back(phase1);
 
@@ -107,16 +107,16 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredType)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
 {
-  std::vector<development::types::Species> existing_species;
-  std::vector<development::types::Phase> existing_phases;
-  development::types::Phase phase1;
+  std::vector<types::Species> existing_species;
+  std::vector<types::Phase> existing_phases;
+  types::Phase phase1;
   phase1.name = "cloud";
   existing_phases.emplace_back(phase1);
 
@@ -134,16 +134,16 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
   for (const auto& [status, message] : errors)
   {
     actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    std::cout << message << " " << ErrorCodeToString(status) << std::endl;
   }
   EXPECT_EQ(actual, expected);
 }
 
 TEST(ValidateWetDeposition, ValidatesWithOptionalScalingFactor)
 {
-  std::vector<development::types::Species> existing_species;
-  std::vector<development::types::Phase> existing_phases;
-  development::types::Phase phase1;
+  std::vector<types::Species> existing_species;
+  std::vector<types::Phase> existing_phases;
+  types::Phase phase1;
   phase1.name = "cloud";
   existing_phases.emplace_back(phase1);
 

@@ -11,7 +11,7 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string> required = { validation::TYPE,
+    std::vector<std::string_view> required = { validation::TYPE,
                                           validation::REACTANTS,
                                           validation::ALKOXY_PRODUCTS,
                                           validation::NITRATE_PRODUCTS,

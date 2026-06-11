@@ -21,10 +21,10 @@ namespace mechanism_configuration
       Errors errors;
       types::Arrhenius arrhenius;
 
-      std::vector<std::string> required_keys = {
+      std::vector<std::string_view> required_keys = {
         validation::products, validation::reactants, validation::type, validation::gas_phase
       };
-      std::vector<std::string> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
+      std::vector<std::string_view> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
                                                  validation::E, validation::Ea, validation::name };
 
       auto validate = ValidateSchema(object, required_keys, optional_keys);
