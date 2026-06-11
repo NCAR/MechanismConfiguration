@@ -15,31 +15,31 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     std::string file = "./v0_unit_configs/arrhenius/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
 
     file = "./v0_unit_configs/arrhenius/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
 
     file = "./v0_unit_configs/arrhenius/mutually_exclusive/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::MutuallyExclusiveOption);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::MutuallyExclusiveOption);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
@@ -54,17 +54,17 @@ TEST(ArrheniusConfig, ParseConfig)
     std::string file = "./v0_unit_configs/arrhenius/valid/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_TRUE(parsed);
-    v0::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
 
     // first reaction
     {
       EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].species_name, "foo");
-      EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[1].species_name, "quz");
+      EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].name, "foo");
+      EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[1].name, "quz");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].species_name, "bar");
+      EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].name, "bar");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].coefficient, 1.0);
-      EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].species_name, "baz");
+      EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].name, "baz");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].coefficient, 3.2);
       EXPECT_EQ(
           mechanism.reactions.arrhenius[0].A, 1.0 * conversions::MolesM3ToMoleculesCm3 * conversions::MolesM3ToMoleculesCm3);
@@ -77,12 +77,12 @@ TEST(ArrheniusConfig, ParseConfig)
     // second reaction
     {
       EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[0].species_name, "bar");
-      EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[1].species_name, "baz");
+      EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[0].name, "bar");
+      EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[1].name, "baz");
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].species_name, "bar");
+      EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].name, "bar");
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].coefficient, 0.5);
-      EXPECT_EQ(mechanism.reactions.arrhenius[1].products[1].species_name, "foo");
+      EXPECT_EQ(mechanism.reactions.arrhenius[1].products[1].name, "foo");
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products[1].coefficient, 1.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].B, -2.3);
@@ -94,12 +94,12 @@ TEST(ArrheniusConfig, ParseConfig)
     // third reaction
     {
       EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[0].species_name, "bar");
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[1].species_name, "baz");
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[0].name, "bar");
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[1].name, "baz");
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products.size(), 2);
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].species_name, "bar");
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].name, "bar");
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].coefficient, 0.5);
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].products[1].species_name, "foo");
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].products[1].name, "foo");
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products[1].coefficient, 1.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].B, -2.3);
@@ -119,13 +119,13 @@ TEST(ArrheniusConfig, DetectsNonstandardKeys)
     std::string file = "./v0_unit_configs/arrhenius/contains_nonstandard_key/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 3);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.errors[1].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.errors[2].first, ErrorCode::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 3);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[2].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
@@ -139,11 +139,11 @@ TEST(ArrheniusConfig, DetectsNonstandardProductCoefficient)
     std::string file = "./v0_unit_configs/arrhenius/nonstandard_product_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
@@ -157,11 +157,11 @@ TEST(ArrheniusConfig, DetectsNonstandardReactantCoefficient)
     std::string file = "./v0_unit_configs/arrhenius/nonstandard_reactant_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ErrorCode::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }

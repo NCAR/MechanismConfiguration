@@ -17,12 +17,12 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     EXPECT_TRUE(parsed);
     if (!parsed)
     {
-      for (auto& error : parsed.errors)
+      for (auto& error : parsed.error())
       {
         std::cerr << error.second << std::endl;
       }
     }
-    v0::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
 
     auto& species_vector = mechanism.species;
     EXPECT_EQ(species_vector.size(), 4);

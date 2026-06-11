@@ -38,7 +38,7 @@ target_include_directories(mechanism_configuration
     $<INSTALL_INTERFACE:include>
 )
 
-# add_subdirectory(v0)
+add_subdirectory(v0)
 add_subdirectory(v1)
 # add_subdirectory(development)
 

@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <expected>
 
 namespace mechanism_configuration::v0
 {

@@ -90,5 +90,7 @@ namespace mechanism_configuration
     types::Models models;
     /// @brief Version of the mechanism configuration format used, in major.minor.patch format
     Version version;
+    /// @brief Relative tolerance for solver (optional, default: 1e-6)
+    double relative_tolerance{ 1e-6 };
   };
 }  // namespace mechanism_configuration

@@ -6,6 +6,7 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/mechanism.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -14,20 +15,20 @@
 namespace mechanism_configuration::v0
 {
   // species and mechanism
-  Errors ParseChemicalSpecies(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+  Errors ParseChemicalSpecies(Mechanism& mechanism, const YAML::Node& object);
   Errors ParseProducts(const YAML::Node& object, std::vector<types::ReactionComponent>& products);
   Errors ParseReactants(const YAML::Node& object, std::vector<types::ReactionComponent>& reactants);
-  Errors ParseRelativeTolerance(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+  Errors ParseRelativeTolerance(Mechanism& mechanism, const YAML::Node& object);
 
   // reactions
-  Errors ArrheniusParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors BranchedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors FirstOrderLossParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors PhotolysisParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors SurfaceParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors TernaryChemicalActivationParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors TroeParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors TunnelingParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
-  Errors UserDefinedParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object);
+  Errors ArrheniusParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors BranchedParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors EmissionParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors FirstOrderLossParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors PhotolysisParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors SurfaceParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors TernaryChemicalActivationParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors TroeParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors TunnelingParser(Mechanism& mechanism, const YAML::Node& object);
+  Errors UserDefinedParser(Mechanism& mechanism, const YAML::Node& object);
 }  // namespace mechanism_configuration::v0
