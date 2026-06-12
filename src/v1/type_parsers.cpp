@@ -66,12 +66,21 @@ namespace mechanism_configuration
         {
           types::PhaseSpecies phase_species;
 
-          phase_species.name = spec[validation::name].as<std::string>();
-          if (spec[validation::diffusion_coefficient])
+          if (spec.IsScalar())
           {
-            phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+            // Shorthand: a bare string is the species name.
+            phase_species.name = spec.as<std::string>();
           }
-          phase_species.unknown_properties = GetComments(spec);
+          else
+          {
+            // Object form: a name plus optional properties.
+            phase_species.name = spec[validation::name].as<std::string>();
+            if (spec[validation::diffusion_coefficient])
+            {
+              phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+            }
+            phase_species.unknown_properties = GetComments(spec);
+          }
 
           species.emplace_back(phase_species);
         }

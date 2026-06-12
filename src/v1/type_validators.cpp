@@ -104,6 +104,9 @@ namespace mechanism_configuration
 
         for (const auto& spec : object[validation::species])
         {
+          // A bare string is shorthand for a species name and needs no schema validation.
+          if (spec.IsScalar())
+            continue;
           auto species_validation_errors = ValidateSchema(spec, species_required_keys, species_optional_keys);
           if (!species_validation_errors.empty())
           {
@@ -123,10 +126,16 @@ namespace mechanism_configuration
         for (const auto& spec : object[validation::species])
         {
           types::PhaseSpecies phase_species;
-          phase_species.name = spec[validation::name].as<std::string>();
-
-          if (spec[validation::diffusion_coefficient])
-            phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+          if (spec.IsScalar())
+          {
+            phase_species.name = spec.as<std::string>();
+          }
+          else
+          {
+            phase_species.name = spec[validation::name].as<std::string>();
+            if (spec[validation::diffusion_coefficient])
+              phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+          }
 
           species_node_pairs.emplace_back(phase_species, spec);
         }
