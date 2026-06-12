@@ -21,18 +21,6 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    struct NodeInfo
-    {
-      std::string name;
-      YAML::Node nodes;
-    };
-
-    struct DuplicateEntryInfo
-    {
-      std::string name;
-      std::vector<YAML::Node> nodes;
-    };
-
     /// @brief Ensures a YAML node is treated as a sequence
     /// @param node The YAML node to convert
     /// @return A YAML sequence node containing the original node(s)
@@ -46,112 +34,6 @@ namespace mechanism_configuration
     ///        canonical `name` key or the legacy `species name` alias (v1 files).
     /// @note Assumes the component has already been validated to contain exactly one of them.
     std::string GetReactionComponentName(const YAML::Node& component);
-
-    /// @brief Extract species names from a vector of PhaseSpecies
-    std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species);
-
-    void ReportUnknownSpecies(
-        const YAML::Node& object,
-        const std::vector<NodeInfo>& unknown_species,
-        Errors& errors,
-        const ErrorCode& parser_status = ErrorCode::UnknownSpecies);
-
-    std::optional<std::reference_wrapper<const types::Phase>> CheckPhaseExists(
-        const YAML::Node& object,
-        std::string_view phase_key,
-        const std::vector<types::Phase>& existing_phases,
-        Errors& errors,
-        const ErrorCode& parser_status = ErrorCode::UnknownPhase,
-        std::string type = {});
-
-    void CheckSpeciesPresenceInPhase(
-        const YAML::Node& object,
-        const types::Phase& phase,
-        const std::vector<std::pair<types::ReactionComponent, YAML::Node>>& species_node_pairs,
-        Errors& errors,
-        const ErrorCode& parser_status = ErrorCode::RequestedSpeciesNotRegisteredInPhase);
-
-    template<typename T>
-    std::vector<DuplicateEntryInfo> FindDuplicateObjectsByName(const std::vector<std::pair<T, YAML::Node>>& collection)
-    {
-      std::unordered_map<std::string, std::vector<YAML::Node>> name_to_nodes;
-
-      if constexpr (std::is_same_v<T, std::string>)
-      {
-        for (const auto& [elem, node] : collection)
-        {
-          name_to_nodes[elem].push_back(node);
-        }
-      }
-      else
-      {
-        for (const auto& [elem, node] : collection)
-        {
-          name_to_nodes[elem.name].push_back(node);
-        }
-      }
-
-      std::vector<DuplicateEntryInfo> duplicates;
-
-      for (const auto& [name, nodes] : name_to_nodes)
-      {
-        if (nodes.size() > 1)
-        {
-          duplicates.push_back({ name, nodes });
-        }
-      }
-
-      return duplicates;
-    }
-
-    template<typename ExistingType, typename RequestedType>
-    std::vector<NodeInfo> FindUnknownObjectsByName(
-        const std::vector<ExistingType>& existing_objects,
-        std::vector<std::pair<RequestedType, YAML::Node>>& requested_objects)
-    {
-      std::unordered_set<std::string> existing_names;
-
-      if constexpr (std::is_same_v<ExistingType, std::string>)
-      {
-        for (const auto& name : existing_objects)
-        {
-          existing_names.insert(name);
-        }
-      }
-      else
-      {
-        for (const auto& object : existing_objects)
-        {
-          existing_names.insert(object.name);
-        }
-      }
-
-      std::vector<NodeInfo> unknowns;
-
-      if constexpr (std::is_same_v<RequestedType, std::string>)
-      {
-        for (const auto& [name, node] : requested_objects)
-        {
-          if (existing_names.find(name) == existing_names.end())
-          {
-            unknowns.emplace_back(name, node);
-          }
-        }
-      }
-      else
-      {
-        for (const auto& [elem, node] : requested_objects)
-        {
-          const auto& name = elem.name;
-          if (existing_names.find(name) == existing_names.end())
-          {
-            unknowns.emplace_back(name, node);
-          }
-        }
-      }
-
-      return unknowns;
-    }
 
   }  // namespace v1
 }  // namespace mechanism_configuration
