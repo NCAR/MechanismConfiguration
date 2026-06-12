@@ -65,18 +65,19 @@ namespace mechanism_configuration
       if (!is_valid)
         return errors;
 
-      std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs;
-
+      // The gas-phase species (reactant) must belong to the reaction's phase; gas-phase
+      // products may reference any phase, so only the reactant is phase-checked below.
+      std::vector<std::pair<types::ReactionComponent, YAML::Node>> reactant_node_pairs;
       for (const auto& obj : object[validation::gas_phase_species])
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(obj);
-        species_node_pairs.emplace_back(component, obj);
+        reactant_node_pairs.emplace_back(component, obj);
       }
 
       // Validates the number of reactants
       // This must be done before collecting errors from the products
-      if (species_node_pairs.size() > 1)
+      if (reactant_node_pairs.size() > 1)
       {
         const auto& node = object[validation::gas_phase_species];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
@@ -85,11 +86,12 @@ namespace mechanism_configuration
             "{} error: '{}' reaction requires one reactant, but {} were provided.",
             error_location,
             object[validation::type].as<std::string>(),
-            species_node_pairs.size());
+            reactant_node_pairs.size());
 
         errors.push_back({ ErrorCode::TooManyReactionComponents, message });
       }
 
+      std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs = reactant_node_pairs;
       for (const auto& obj : object[validation::gas_phase_products])
       {
         types::ReactionComponent component;
@@ -122,7 +124,7 @@ namespace mechanism_configuration
 
       // Check if phase-specific species in reaction is found in phase
       const auto& gas_phase = gas_phase_optional->get();
-      CheckSpeciesPresenceInPhase(object, gas_phase, species_node_pairs, errors);
+      CheckSpeciesPresenceInPhase(object, gas_phase, reactant_node_pairs, errors);
 
       return errors;
     }

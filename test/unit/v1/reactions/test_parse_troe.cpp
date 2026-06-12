@@ -72,7 +72,7 @@ TEST(ParserBase, TroeDetectsUnknownSpecies)
     std::string file = std::string("v1_unit_configs/reactions/troe/unknown_species") + extension;
     auto parsed = parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 2);
+    EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {

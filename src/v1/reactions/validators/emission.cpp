@@ -75,9 +75,8 @@ namespace mechanism_configuration
         return errors;
       }
 
-      // Check if phase-specific species in reaction is found in phase
-      const auto& phase = phase_optional->get();
-      CheckSpeciesPresenceInPhase(object, phase, species_node_pairs, errors);
+      // Emission has only products, which may reference species from any phase, so there is
+      // no reactant to check for phase membership here.
 
       return errors;
     }

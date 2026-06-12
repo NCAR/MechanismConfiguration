@@ -77,14 +77,16 @@ namespace mechanism_configuration
       if (!is_valid)
         return errors;
 
-      std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs;
-
+      // Reactants must belong to the reaction's phase; products may reference species from
+      // any phase, so only reactants are phase-checked below.
+      std::vector<std::pair<types::ReactionComponent, YAML::Node>> reactant_node_pairs;
       for (const auto& obj : object[validation::reactants])
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(obj);
-        species_node_pairs.emplace_back(component, obj);
+        reactant_node_pairs.emplace_back(component, obj);
       }
+      std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs = reactant_node_pairs;
       for (const auto& obj : object[validation::products])
       {
         types::ReactionComponent component;
@@ -108,7 +110,7 @@ namespace mechanism_configuration
 
       // Check if phase-specific species in reaction is found in phase
       const auto& phase = phase_optional->get();
-      CheckSpeciesPresenceInPhase(object, phase, species_node_pairs, errors);
+      CheckSpeciesPresenceInPhase(object, phase, reactant_node_pairs, errors);
 
       return errors;
     }
