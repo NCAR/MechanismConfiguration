@@ -1,5 +1,5 @@
 name: Arrhenius using the legacy 'species name' alias
-version: 2.0.0
+version: 1.0.0
 species:
 - name: A
 - name: B

@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseTaylorSeries, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/taylor_series/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -86,7 +86,7 @@ TEST(ParseTaylorSeries, ParseValidConfig)
 
 TEST(ParseTaylorSeries, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/taylor_series/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -112,7 +112,7 @@ TEST(ParseTaylorSeries, DetectsUnknownSpecies)
 
 TEST(ParseTaylorSeries, DetectsMutuallyExclusiveOptions)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/taylor_series/mutually_exclusive";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -137,7 +137,7 @@ TEST(ParseTaylorSeries, DetectsMutuallyExclusiveOptions)
 
 TEST(ParseTaylorSeries, DetectsBadReactionComponent)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/taylor_series/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -162,7 +162,7 @@ TEST(ParseTaylorSeries, DetectsBadReactionComponent)
 
 TEST(ParseTaylorSeries, DetectsUnknownPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/taylor_series/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -187,7 +187,7 @@ TEST(ParseTaylorSeries, DetectsUnknownPhase)
 
 TEST(ValidateTaylorSeries, MutuallyExclusiveEaAndCFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };

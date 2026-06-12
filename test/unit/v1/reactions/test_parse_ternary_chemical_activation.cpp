@@ -1,6 +1,6 @@
 #include <mechanism_configuration/constants.hpp>
 #include <mechanism_configuration/conversions.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -8,13 +8,12 @@ using namespace mechanism_configuration;
 
 TEST(TernaryChemicalActivationConfig, ParseValidConfig)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/valid/config" + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     if (!parsed)
     {
       for (auto& error : parsed.error())
@@ -77,12 +76,11 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
 
 TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 12);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
@@ -107,12 +105,11 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
 
 TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {
@@ -123,12 +120,11 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
 
 TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {

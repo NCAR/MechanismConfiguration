@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseSurface, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/surface/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -55,7 +55,7 @@ TEST(ParseSurface, ParseValidConfig)
 
 TEST(ParseSurface, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/surface/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -81,7 +81,7 @@ TEST(ParseSurface, DetectsUnknownSpecies)
 
 TEST(ParseSurface, DetectsBadReactionComponent)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/surface/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -106,7 +106,7 @@ TEST(ParseSurface, DetectsBadReactionComponent)
 
 TEST(ParseSurface, DetectsUnknownCondensedPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/surface/missing_condensed_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -131,7 +131,7 @@ TEST(ParseSurface, DetectsUnknownCondensedPhase)
 
 TEST(ParseSurface, DetectsUnknownGasPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/surface/missing_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -156,7 +156,7 @@ TEST(ParseSurface, DetectsUnknownGasPhase)
 
 TEST(ValidateSurface, InvalidNumberReactantUnknownSpeciesUnknownPhaseFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };

@@ -1,4 +1,4 @@
-version: 2.0.0
+version: 1.0.0
 name: Gas species in reactions are not found in gas phase
 species:
   - name: A

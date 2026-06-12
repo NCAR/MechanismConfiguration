@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseWetDeposition, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/wet_deposition/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -38,7 +38,7 @@ TEST(ParseWetDeposition, ParseValidConfig)
 
 TEST(ParseWetDeposition, DetectsUnknownPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/wet_deposition/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -80,7 +80,7 @@ TEST(ValidateWetDeposition, ReturnsEmptyErrorsForValidReaction)
     "scaling factor": 12.3
   )");
 
-  development::WetDepositionParser parser;
+  v1::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_TRUE(errors.empty());
 }
@@ -98,7 +98,7 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredType)
     name: "rxn cloud"
   )");
 
-  development::WetDepositionParser parser;
+  v1::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
@@ -125,7 +125,7 @@ TEST(ValidateWetDeposition, DetectsMissingRequiredCondensedPhase)
     name: "rxn cloud"
   )");
 
-  development::WetDepositionParser parser;
+  v1::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_EQ(errors.size(), 1);
 
@@ -153,7 +153,7 @@ TEST(ValidateWetDeposition, ValidatesWithOptionalScalingFactor)
     "scaling factor": 5.7
   )");
 
-  development::WetDepositionParser parser;
+  v1::WetDepositionParser parser;
   auto errors = parser.Validate(reaction, existing_species, existing_phases);
   EXPECT_TRUE(errors.empty());
 }

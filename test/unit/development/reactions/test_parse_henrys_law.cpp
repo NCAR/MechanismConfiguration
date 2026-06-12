@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseHenrysLaw, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/henrys_law/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -54,7 +54,7 @@ TEST(ParseHenrysLaw, ParseValidConfig)
 
 TEST(ParseHenrysLaw, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/henrys_law/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -79,7 +79,7 @@ TEST(ParseHenrysLaw, DetectsUnknownSpecies)
 
 TEST(ParseHenrysLaw, DetectsGasSpeciesInReactionNotFoundInGasPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/henrys_law/species_not_found_in_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -104,7 +104,7 @@ TEST(ParseHenrysLaw, DetectsGasSpeciesInReactionNotFoundInGasPhase)
 
 TEST(ParseHenrysLaw, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/henrys_law/species_not_in_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -129,7 +129,7 @@ TEST(ParseHenrysLaw, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 
 TEST(ParseHenrysLaw, DetectsWhenRequestedSolventIsNotRegisteredInCorrectPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/henrys_law/solvent_species_not_registered_in_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -154,7 +154,7 @@ TEST(ParseHenrysLaw, DetectsWhenRequestedSolventIsNotRegisteredInCorrectPhase)
 
 TEST(ValidateHenrysLaw, ValidationWithUnknownSpeciesUnknownPhaseFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "H2O" } };
   std::vector<types::Phase> existing_phases = {
@@ -191,7 +191,7 @@ TEST(ValidateHenrysLaw, ValidationWithUnknownSpeciesUnknownPhaseFailsValidation)
 
 TEST(ValidateHenrysLaw, ValidationWithSpeciesNotInPhasesFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },
@@ -231,7 +231,7 @@ TEST(ValidateHenrysLaw, ValidationWithSpeciesNotInPhasesFailsValidation)
 
 TEST(ValidateHenrysLaw, ValidationWithMissingRequiredKeysFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "H2O" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" }, types::Phase{ .name = "aqueous" } };
@@ -256,7 +256,7 @@ TEST(ValidateHenrysLaw, ValidationWithMissingRequiredKeysFailsValidation)
 
 TEST(ValidateHenrysLaw, ValidationWithValidConfigurationPassesValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },
@@ -287,7 +287,7 @@ TEST(ValidateHenrysLaw, ValidationWithValidConfigurationPassesValidation)
 
 TEST(ValidateHenrysLaw, ValidationWithMultipleSolutes)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },
@@ -318,7 +318,7 @@ TEST(ValidateHenrysLaw, ValidationWithMultipleSolutes)
 
 TEST(ValidateHenrysLaw, InvalidNumberSolventFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },

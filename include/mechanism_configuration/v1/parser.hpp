@@ -9,6 +9,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <expected>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -22,6 +24,14 @@ namespace mechanism_configuration::v1
     /// @brief Load a YAML file and return its root node
     /// @throws std::runtime_error If the file is missing, not a regular file, or cannot be parsed
     YAML::Node FileToYaml(const std::filesystem::path& config_path);
+
+    /// @brief Loads a configuration file and resolves any file-list sections into a single
+    ///        inline node. A v1.1+ configuration may organize species/phases/reactions across
+    ///        multiple files via a `{ files: [...] }` object; this merges them inline so the
+    ///        resulting node can be validated and parsed normally. Inline sections pass through.
+    /// @param config_path Path to the main configuration file.
+    /// @return The combined inline node, or the collected structural / file-loading errors.
+    std::expected<YAML::Node, Errors> ResolveFileConfig(const std::filesystem::path& config_path);
 
     /// @brief Validates mechanism YAML node.
     /// @param object The YAML node to validate

@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/type_validators.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/type_validators.hpp>
 
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
@@ -10,7 +10,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseSpecies, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/species/valid_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -64,7 +64,7 @@ TEST(ParseSpecies, ParseValidConfig)
 
 TEST(ParseSpecies, DetectsDuplicateSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/species/duplicate_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -86,7 +86,7 @@ TEST(ParseSpecies, DetectsDuplicateSpecies)
 
 TEST(ParseSpecies, DetectsMissingRequiredKeys)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/species/missing_required_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -111,7 +111,7 @@ TEST(ParseSpecies, DetectsMissingRequiredKeys)
 
 TEST(ParseSpecies, DetectsInvalidKeys)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/species/invalid_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -145,7 +145,7 @@ TEST(ValidateSpecies, ReturnsEmptyErrorsForValidSpecies)
       "density [kg m-3]": 1000.0
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_TRUE(errors.empty());
 }
 
@@ -158,7 +158,7 @@ TEST(ValidateSpecies, DetectsMissingNameKey)
       "molecular weight [kg mol-1]": 0.034
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_FALSE(errors.empty());
   EXPECT_EQ(errors.size(), 1);
 
@@ -181,7 +181,7 @@ TEST(ValidateSpecies, DetectsInvalidKeysInSpecies)
       "absolute tolerance": 1.0e-30
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
@@ -205,7 +205,7 @@ TEST(ValidateSpecies, DetectsDuplicateSpeciesNames)
       "density [kg m-3]": 1000.0
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 2);
 
   std::multiset<ErrorCode> expected = { ErrorCode::DuplicateSpeciesDetected, ErrorCode::DuplicateSpeciesDetected };
@@ -229,7 +229,7 @@ TEST(ValidateSpecies, DetectsMultipleDuplicateSpecies)
     - "name": "B"
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_EQ(errors.size(), 4);  // 2 for "A" duplicates + 2 for "B" duplicates
 
   for (const auto& [status, message] : errors)
@@ -256,6 +256,6 @@ TEST(ValidateSpecies, ValidatesAllOptionalKeys)
       "is third body": true
   )");
 
-  auto errors = development::ValidateSpecies(species_list);
+  auto errors = v1::ValidateSpecies(species_list);
   EXPECT_TRUE(errors.empty());
 }

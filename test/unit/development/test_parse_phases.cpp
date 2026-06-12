@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/type_validators.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/type_validators.hpp>
 
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
@@ -10,7 +10,7 @@ using namespace mechanism_configuration;
 
 TEST(ParsePhases, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/valid_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -49,7 +49,7 @@ TEST(ParsePhases, ParseValidConfig)
 
 TEST(ParsePhases, DetectsDuplicatePhases)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/duplicate_phases";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(ParsePhases, DetectsDuplicatePhases)
 
 TEST(ParsePhases, DetectsMissingRequiredKeys)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/missing_required_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -96,7 +96,7 @@ TEST(ParsePhases, DetectsMissingRequiredKeys)
 
 TEST(ParsePhases, DetectsInvalidKeys)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/invalid_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -121,7 +121,7 @@ TEST(ParsePhases, DetectsInvalidKeys)
 
 TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -146,7 +146,7 @@ TEST(ParsePhases, DetectsPhaseRequestingUnknownSpecies)
 
 TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/duplicate_species_in_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -168,7 +168,7 @@ TEST(ParsePhases, DetectsDuplicateSpeciesInPhase)
 
 TEST(ParsePhases, DetectsInvalidSpeciesObject)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/invalid_species_object";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -193,7 +193,7 @@ TEST(ParsePhases, DetectsInvalidSpeciesObject)
 
 TEST(ParsePhases, CanParsePhaseSpeciesProperties)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/phases/phase_species_properties";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -258,7 +258,7 @@ TEST(ValidatePhases, ReturnsEmptyErrorsForValidPhases)
           "diffusion coefficient [m2 s-1]": 2.3e-06
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_TRUE(errors.empty());
 }
 
@@ -277,7 +277,7 @@ TEST(ValidatePhases, DetectsMissingPhaseName)
         - name: "A"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
@@ -304,7 +304,7 @@ TEST(ValidatePhases, DetectsMissingSpeciesList)
         - name: "A"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
@@ -330,7 +330,7 @@ TEST(ValidatePhases, DetectsInvalidKeysInPhase)
         - name: "A"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 2);
 
   std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey, ErrorCode::RequiredKeyNotFound };
@@ -357,7 +357,7 @@ TEST(ValidatePhases, DetectsMissingSpeciesNameInPhase)
         - name: "A"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::RequiredKeyNotFound };
@@ -384,7 +384,7 @@ TEST(ValidatePhases, DetectsInvalidKeysInSpecies)
           Coefficient: 4.23e-5
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::InvalidKey };
@@ -412,7 +412,7 @@ TEST(ValidatePhases, DetectsDuplicateSpeciesInPhase)
           "diffusion coefficient [m2 s-1]": 1.5e-05
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 2);  // Two entries for the duplicate species
 
   for (const auto& [status, message] : errors)
@@ -436,7 +436,7 @@ TEST(ValidatePhases, DetectsUnknownSpeciesInPhase)
         - name: "FOO"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 1);
 
   std::multiset<ErrorCode> expected = { ErrorCode::PhaseRequiresUnknownSpecies };
@@ -472,7 +472,7 @@ TEST(ValidatePhases, DetectsDuplicatePhaseNames)
         - name: "B"
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_EQ(errors.size(), 2);  // Two entries for the duplicate phase
 
   for (const auto& [status, message] : errors)
@@ -496,6 +496,6 @@ TEST(ValidatePhases, ValidatesAllSpeciesOptionalKeys)
           "diffusion coefficient [m2 s-1]": 1.46e-05
   )");
 
-  auto errors = development::ValidatePhases(phases_list, existing_species);
+  auto errors = v1::ValidatePhases(phases_list, existing_species);
   EXPECT_TRUE(errors.empty());
 }

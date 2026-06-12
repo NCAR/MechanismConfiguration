@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseUserDefined, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/user_defined/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -51,7 +51,7 @@ TEST(ParseUserDefined, ParseValidConfig)
 
 TEST(ParseUserDefined, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/user_defined/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -78,7 +78,7 @@ TEST(ParseUserDefined, DetectsUnknownSpecies)
 
 TEST(ParseUserDefined, DetectsBadReactionComponent)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/user_defined/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -103,7 +103,7 @@ TEST(ParseUserDefined, DetectsBadReactionComponent)
 
 TEST(ParseUserDefined, DetectsUnknownPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/user_defined/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -128,7 +128,7 @@ TEST(ParseUserDefined, DetectsUnknownPhase)
 
 TEST(ValidateUserDefined, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" },
                                                    types::Species{ .name = "bar" },

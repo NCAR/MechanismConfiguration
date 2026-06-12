@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParserTernary, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/ternary_chemical_activation/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -71,7 +71,7 @@ TEST(ParserTernary, ParseValidConfig)
 
 TEST(ParserTernary, DetectsNonStandardKey)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -100,7 +100,7 @@ TEST(ParserTernary, DetectsNonStandardKey)
 
 TEST(ParserTernary, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/ternary_chemical_activation/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -126,7 +126,7 @@ TEST(ParserTernary, DetectsUnknownSpecies)
 
 TEST(ParserTernary, DetectsMissingProducts)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/ternary_chemical_activation/missing_products";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -151,7 +151,7 @@ TEST(ParserTernary, DetectsMissingProducts)
 
 TEST(ParserTernary, DetectsMissingReactants)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/ternary_chemical_activation/missing_reactants";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -176,7 +176,7 @@ TEST(ParserTernary, DetectsMissingReactants)
 
 TEST(ValidateTernary, UnknownSpeciesAndUnknownPhaseFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" },
                                                    types::Species{ .name = "bar" },

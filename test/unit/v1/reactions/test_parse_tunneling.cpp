@@ -1,4 +1,4 @@
-#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -6,11 +6,10 @@ using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidTunnelingReaction)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/tunneling/valid") + extension);
+    auto parsed = parse(std::string("v1_unit_configs/reactions/tunneling/valid") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
@@ -48,12 +47,11 @@ TEST(ParserBase, CanParseValidTunnelingReaction)
 
 TEST(ParserBase, TunnelingDetectsUnknownSpecies)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/tunneling/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
@@ -66,12 +64,11 @@ TEST(ParserBase, TunnelingDetectsUnknownSpecies)
 
 TEST(ParserBase, TunnelingDetectsBadReactionComponent)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/tunneling/bad_reaction_component") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
@@ -85,12 +82,11 @@ TEST(ParserBase, TunnelingDetectsBadReactionComponent)
 
 TEST(ParserBase, TunnelingDetectsUnknownPhase)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/tunneling/missing_phase") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownPhase);

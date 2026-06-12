@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseSimpolPhaseTransfer, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/simpol_phase_transfer/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -54,7 +54,7 @@ TEST(ParseSimpolPhaseTransfer, ParseValidConfig)
 
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/simpol_phase_transfer/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -80,7 +80,7 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownSpecies)
 
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -105,7 +105,7 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhase)
 
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -130,7 +130,7 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhase)
 
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/simpol_phase_transfer/missing_gas_phase_species_in_gas_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -155,7 +155,7 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownGasPhaseSpeciesNotInGasPhase)
 
 TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path =
       "development_unit_configs/reactions/simpol_phase_transfer/missing_aqueous_phase_species_in_aqueous_phase";
@@ -181,7 +181,7 @@ TEST(ParseSimpolPhaseTransfer, DetectsUnknownAqueousPhaseSpeciesNotInAqueousPhas
 
 TEST(ValidateSimpolPhaseTransfer, InvalidBParameterNotSequenceFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
   std::vector<types::Phase> existing_phases = {
@@ -215,7 +215,7 @@ TEST(ValidateSimpolPhaseTransfer, InvalidBParameterNotSequenceFailsValidation)
 
 TEST(ValidateSimpolPhaseTransfer, InvalidBParameterWrongCountFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
   std::vector<types::Phase> existing_phases = {
@@ -249,7 +249,7 @@ TEST(ValidateSimpolPhaseTransfer, InvalidBParameterWrongCountFailsValidation)
 
 TEST(ValidateSimpolPhaseTransfer, TooManyGasSpeciesFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },
@@ -286,7 +286,7 @@ TEST(ValidateSimpolPhaseTransfer, TooManyGasSpeciesFailsValidation)
 
 TEST(ValidateSimpolPhaseTransfer, TooManyCondensedSpeciesFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" },
                                                    types::Species{ .name = "B" },
@@ -323,7 +323,7 @@ TEST(ValidateSimpolPhaseTransfer, TooManyCondensedSpeciesFailsValidation)
 
 TEST(ValidateSimpolPhaseTransfer, MultipleErrorsFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "A" }, types::Species{ .name = "B" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "gas" } };  // Missing aqueous phase

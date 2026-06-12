@@ -1,4 +1,4 @@
-#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -6,11 +6,10 @@ using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidUserDefinedReaction)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/user_defined/valid") + extension);
+    auto parsed = parse(std::string("v1_unit_configs/reactions/user_defined/valid") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
@@ -43,12 +42,11 @@ TEST(ParserBase, CanParseValidUserDefinedReaction)
 
 TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
@@ -61,12 +59,11 @@ TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
 
 TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/bad_reaction_component") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
@@ -79,12 +76,11 @@ TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
 
 TEST(ParserBase, UserDefinedDetectsUnknownPhase)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/missing_phase") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownPhase);

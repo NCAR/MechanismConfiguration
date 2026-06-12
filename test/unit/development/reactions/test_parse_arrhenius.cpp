@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseArrhenius, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/arrhenius/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -78,7 +78,7 @@ TEST(ParseArrhenius, ParseValidConfig)
 
 TEST(ParseArrhenius, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/arrhenius/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -106,7 +106,7 @@ TEST(ParseArrhenius, DetectsUnknownSpecies)
 
 TEST(ParseArrhenius, DetectsMutuallyExclusiveOptions)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/arrhenius/mutually_exclusive";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -131,7 +131,7 @@ TEST(ParseArrhenius, DetectsMutuallyExclusiveOptions)
 
 TEST(ParseArrhenius, DetectsBadReactionComponent)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/arrhenius/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -156,7 +156,7 @@ TEST(ParseArrhenius, DetectsBadReactionComponent)
 
 TEST(ParseArrhenius, DetectsUnknownPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/arrhenius/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -181,7 +181,7 @@ TEST(ParseArrhenius, DetectsUnknownPhase)
 
 TEST(ValidateArrhenius, MutuallyExclusiveEaAndCFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   YAML::Node reaction_node;
   reaction_node["reactants"] = YAML::Load("[{ name: foo }]");
@@ -214,7 +214,7 @@ TEST(ValidateArrhenius, MutuallyExclusiveEaAndCFailsValidation)
 // alias (used by v1 configuration files) in place of the canonical 'name'.
 TEST(ParseArrhenius, AcceptsSpeciesNameAlias)
 {
-  development::Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)
@@ -237,7 +237,7 @@ TEST(ParseArrhenius, AcceptsSpeciesNameAlias)
 // Supplying both 'name' and 'species name' on one component is ambiguous and rejected.
 TEST(ParseArrhenius, RejectsBothNameAndSpeciesName)
 {
-  development::Parser parser;
+  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
 
   for (auto& extension : extensions)

@@ -45,19 +45,6 @@ namespace mechanism_configuration
     return Version(object[validation::version].as<std::string>());
   }
 
-  // Validates and builds a v1 mechanism from an already-loaded YAML node.
-  // `read_from_config_file` controls whether validation errors are prefixed with the config path.
-  static std::expected<Mechanism, Errors> ParseV1Node(const YAML::Node& object, bool read_from_config_file)
-  {
-    v1::Parser parser;
-    auto errors = parser.Validate(object, read_from_config_file);
-    if (!errors.empty())
-    {
-      return std::unexpected(std::move(errors));
-    }
-    return parser.Parse(object);
-  }
-
   std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path)
   {
     // Version-0 mechanisms may be provided as a directory of CAMP files.
@@ -90,13 +77,18 @@ namespace mechanism_configuration
         v1::Parser parser;
         try
         {
-          YAML::Node object = parser.FileToYaml(config_path);
-          auto errors = parser.Validate(object);
+          // Resolve any file-list sections (v1.1+) into a single inline node first.
+          auto object = parser.ResolveFileConfig(config_path);
+          if (!object)
+          {
+            return std::unexpected(std::move(object.error()));
+          }
+          auto errors = parser.Validate(*object);
           if (!errors.empty())
           {
             return std::unexpected(std::move(errors));
           }
-          return parser.Parse(object);
+          return parser.Parse(*object);
         }
         catch (const std::exception& e)
         {
@@ -107,34 +99,6 @@ namespace mechanism_configuration
       default:
         return std::unexpected(
             Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("Unsupported version number '{}'.", version->to_string()) } });
-    }
-  }
-
-  std::expected<Mechanism, Errors> parse(const std::string& content)
-  {
-    YAML::Node object;
-    try
-    {
-      object = YAML::Load(content);
-    }
-    catch (const std::exception& e)
-    {
-      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse content: {}", e.what()) } });
-    }
-
-    if (!object[validation::version])
-    {
-      return std::unexpected(Errors{ { ErrorCode::MissingVersionField, "The version field was not found." } });
-    }
-
-    Version version(object[validation::version].as<std::string>());
-    switch (version.major)
-    {
-      case 1:
-        return ParseV1Node(object, /*read_from_config_file=*/false);
-      default:
-        return std::unexpected(
-            Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("Unsupported version number '{}' for string input.", version.to_string()) } });
     }
   }
 

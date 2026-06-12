@@ -1,5 +1,5 @@
-#include <mechanism_configuration/development/parser.hpp>
-#include <mechanism_configuration/development/reaction_parsers.hpp>
+#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
 
 #include <gtest/gtest.h>
 
@@ -9,7 +9,7 @@ using namespace mechanism_configuration;
 
 TEST(ParseCondensedPhaseArrhenius, ParseValidConfig)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/valid";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -78,7 +78,7 @@ TEST(ParseCondensedPhaseArrhenius, ParseValidConfig)
 
 TEST(ParseCondensedPhaseArrhenius, DetectsUnknownSpecies)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/unknown_species";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -104,7 +104,7 @@ TEST(ParseCondensedPhaseArrhenius, DetectsUnknownSpecies)
 
 TEST(ParseCondensedPhaseArrhenius, DetectsMutuallyExclusiveOptions)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/mutually_exclusive";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -129,7 +129,7 @@ TEST(ParseCondensedPhaseArrhenius, DetectsMutuallyExclusiveOptions)
 
 TEST(ParseCondensedPhaseArrhenius, DetectsBadReactionComponent)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/bad_reaction_component";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -154,7 +154,7 @@ TEST(ParseCondensedPhaseArrhenius, DetectsBadReactionComponent)
 
 TEST(ParseCondensedPhaseArrhenius, DetectsWhenRequestedSpeciesAreNotInAqueousPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/species_not_in_aqueous_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -180,7 +180,7 @@ TEST(ParseCondensedPhaseArrhenius, DetectsWhenRequestedSpeciesAreNotInAqueousPha
 
 TEST(ParseCondensedPhaseArrhenius, DetectsMissingPhase)
 {
-  development::Parser parser;
+  v1::Parser parser;
 
   std::string path = "development_unit_configs/reactions/condensed_phase_arrhenius/missing_phase";
   std::vector<std::string> extensions = { ".json", ".yaml" };
@@ -205,7 +205,7 @@ TEST(ParseCondensedPhaseArrhenius, DetectsMissingPhase)
 
 TEST(ValidateCondensedPhaseArrhenius, MutuallyExclusiveEaAndCFailsValidation)
 {
-  using namespace development;
+  using namespace v1;
 
   std::vector<types::Species> existing_species = { types::Species{ .name = "foo" }, types::Species{ .name = "bar" } };
   std::vector<types::Phase> existing_phases = { types::Phase{ .name = "aqueous" } };
