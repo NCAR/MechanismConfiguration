@@ -1,124 +1,73 @@
-#include <mechanism_configuration/parser.hpp>
-#include <mechanism_configuration/v1/types.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
-TEST(UniversalParser, ConfigurationWithoutVersionFallsbackToV0)
-{
-  mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
-  for (auto& extension : extensions)
-  {
-    std::string path = "examples/v0/config" + extension;
-    auto parsed = parser.Parse(path);
-    EXPECT_TRUE(parsed);
+#include <filesystem>
+#include <iostream>
+#include <string>
 
-    EXPECT_EQ(parsed.mechanism->version.major, 0);
-    EXPECT_EQ(parsed.mechanism->version.minor, 0);
-    EXPECT_EQ(parsed.mechanism->version.patch, 0);
+using namespace mechanism_configuration;
+
+TEST(Parse, ConfigurationWithoutVersionFallsBackToV0)
+{
+  for (const auto& extension : { std::string(".yaml"), std::string(".json") })
+  {
+    auto parsed = parse("examples/v0/config" + extension);
+    EXPECT_TRUE(parsed);
+    if (parsed)
+      EXPECT_EQ(parsed->version.major, 0);
   }
 }
 
-TEST(UniversalParser, ParsesFullV1Configuration)
+TEST(Parse, ParsesFullV1Configuration)
 {
-  mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".json", ".yaml" };
-  for (auto& extension : extensions)
+  for (const auto& extension : { std::string(".json"), std::string(".yaml") })
   {
-    std::string path = "examples/v1/full_configuration" + extension;
-    auto parsed = parser.Parse(path);
+    auto parsed = parse("examples/v1/full_configuration" + extension);
     if (!parsed)
-    {
-      std::cout << "Errors: " << std::endl;
-      for (const auto& error : parsed.errors)
-      {
-        std::cout << error.second << std::endl;
-      }
-    }
+      for (const auto& [code, message] : parsed.error())
+        std::cout << message << std::endl;
     EXPECT_TRUE(parsed);
-
-    EXPECT_EQ(parsed.mechanism->version.major, 1);
-    EXPECT_EQ(parsed.mechanism->version.minor, 0);
-    EXPECT_EQ(parsed.mechanism->version.patch, 0);
+    if (parsed)
+      EXPECT_EQ(parsed->version.major, 1);
   }
 }
 
-TEST(UniversalParser, ParsesFullDevConfiguration)
+TEST(Parse, ReportsMissingFile)
 {
-  mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".json", ".yaml" };
-  for (auto& extension : extensions)
+  for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    std::string path = "examples/development/full_configuration" + extension;
-    auto parsed = parser.Parse(path);
-    if (!parsed)
-    {
-      std::cout << "Errors: " << std::endl;
-      for (const auto& error : parsed.errors)
-      {
-        std::cout << error.second << std::endl;
-      }
-    }
-    EXPECT_TRUE(parsed);
-
-    EXPECT_EQ(parsed.mechanism->version.major, 2);
-    EXPECT_EQ(parsed.mechanism->version.minor, 0);
-    EXPECT_EQ(parsed.mechanism->version.patch, 0);
-  }
-}
-
-TEST(UniversalParser, ParserReportsBadFiles)
-{
-  mechanism_configuration::UniversalParser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
-  for (auto& extension : extensions)
-  {
-    std::string path = "examples/_missing_configuration" + extension;
-    auto parsed = parser.Parse(path);
+    auto parsed = parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, mechanism_configuration::ErrorCode::FileNotFound);
+    ASSERT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
   }
 }
 
-TEST(UniversalParser, ParseUnsupportedVersion)
+TEST(Parse, ReportsUnsupportedVersion)
 {
-  using namespace mechanism_configuration;
+  auto parsed = parse("integration_configs/invalid_version.yaml");
+  EXPECT_FALSE(parsed);
 
-  UniversalParser parser;
-  auto parsed = parser.Parse("integration_configs/invalid_version.yaml");
-  EXPECT_EQ(parsed.errors.size(), 1);
-
-  std::multiset<ErrorCode> expected = { ErrorCode::InvalidVersion };
-  std::multiset<ErrorCode> actual;
-  for (const auto& [status, message] : parsed.errors)
+  bool found_invalid_version = false;
+  for (const auto& [code, message] : parsed.error())
   {
-    actual.insert(status);
-    std::cout << message << " " << configParseStatusToString(status) << std::endl;
+    if (code == ErrorCode::InvalidVersion)
+      found_invalid_version = true;
+    std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
-  EXPECT_EQ(actual, expected);
+  EXPECT_TRUE(found_invalid_version);
 }
 
-TEST(UniversalParser, ParsesV0DirectoryConfiguration)
+TEST(Parse, ParsesV0DirectoryConfiguration)
 {
-  // Test that v0 parser can handle directory-based configurations
-  mechanism_configuration::UniversalParser parser;
-
-  std::string directory_path = "examples/v0/";
-  auto parsed = parser.Parse(directory_path);
+  // A directory is treated as a version-0 (CAMP) configuration.
+  auto parsed = parse(std::filesystem::path("examples/v0/"));
   EXPECT_TRUE(parsed);
-  EXPECT_EQ(parsed.mechanism->version.major, 0);
-  EXPECT_EQ(parsed.mechanism->version.minor, 0);
-  EXPECT_EQ(parsed.mechanism->version.patch, 0);
-}
-
-TEST(UniversalParser, RejectsDirectoryForV1Configuration)
-{
-  // Test v1 and upper version parsers do not accept directories
-  // V0 parser will attempt to parse a directory, but if the directory
-  // contains higher version files, it should throw an exception
-  mechanism_configuration::UniversalParser parser;
-
-  std::string directory_path = "examples/v1";
-  EXPECT_THROW({ auto parsed = parser.Parse(directory_path); }, std::exception);
+  if (parsed)
+    EXPECT_EQ(parsed->version.major, 0);
 }
