@@ -6,6 +6,7 @@
 
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -16,6 +17,10 @@
 
 namespace mechanism_configuration::v1
 {
+  /// @brief Extracts a located semantics::Input from a fully-resolved (inline) v1 YAML node, so
+  ///        the version-neutral ValidateSemantics can run the semantic checks with line:col.
+  semantics::Input BuildSemanticInput(const YAML::Node& object);
+
   class Parser
   {
    public:

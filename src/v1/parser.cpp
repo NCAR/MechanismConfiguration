@@ -39,7 +39,67 @@ namespace mechanism_configuration
           return EntityFormat::Inline;
         return EntityFormat::Invalid;
       }
+
+      ErrorLocation LocationOf(const YAML::Node& node)
+      {
+        return ErrorLocation{ node.Mark().line, node.Mark().column };
+      }
+
+      // Appends each component under `key` (reactant- or product-like) as a located reference.
+      void CollectComponents(const YAML::Node& reaction, std::string_view key, std::vector<semantics::NamedRef>& out)
+      {
+        const std::string k(key);
+        if (!reaction[k])
+          return;
+        for (const auto& item : AsSequence(reaction[k]))
+          out.push_back({ GetReactionComponentName(item), LocationOf(item) });
+      }
     }  // namespace
+
+    semantics::Input BuildSemanticInput(const YAML::Node& object)
+    {
+      semantics::Input input;
+
+      if (object[std::string(validation::species)])
+        for (const auto& s : object[std::string(validation::species)])
+          input.species.push_back({ GetReactionComponentName(s), LocationOf(s) });
+
+      if (object[std::string(validation::phases)])
+        for (const auto& phase : object[std::string(validation::phases)])
+        {
+          semantics::PhaseRef pr;
+          pr.name = phase[std::string(validation::name)].as<std::string>();
+          pr.location = LocationOf(phase);
+          if (phase[std::string(validation::species)])
+            for (const auto& ps : phase[std::string(validation::species)])
+              pr.species.push_back({ GetReactionComponentName(ps), LocationOf(ps) });
+          input.phases.push_back(std::move(pr));
+        }
+
+      if (object[std::string(validation::reactions)])
+        for (const auto& reaction : object[std::string(validation::reactions)])
+        {
+          semantics::ReactionRef rr;
+          if (reaction[std::string(validation::type)])
+            rr.type = reaction[std::string(validation::type)].as<std::string>();
+          if (reaction[std::string(validation::gas_phase)])
+          {
+            rr.phase = reaction[std::string(validation::gas_phase)].as<std::string>();
+            rr.phase_location = LocationOf(reaction[std::string(validation::gas_phase)]);
+          }
+          // Reactant-like keys (must be in the reaction's phase).
+          CollectComponents(reaction, validation::reactants, rr.reactants);
+          CollectComponents(reaction, validation::gas_phase_species, rr.reactants);
+          // Product-like keys (may reference any phase).
+          CollectComponents(reaction, validation::products, rr.products);
+          CollectComponents(reaction, validation::alkoxy_products, rr.products);
+          CollectComponents(reaction, validation::nitrate_products, rr.products);
+          CollectComponents(reaction, validation::gas_phase_products, rr.products);
+          input.reactions.push_back(std::move(rr));
+        }
+
+      return input;
+    }
 
     YAML::Node Parser::FileToYaml(const std::filesystem::path& config_path)
     {
