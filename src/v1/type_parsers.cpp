@@ -100,11 +100,16 @@ namespace mechanism_configuration
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(elem);
-        component.unknown_properties = GetComments(elem);
 
-        if (elem[validation::coefficient])
+        // A bare-string component carries only its name; coefficients/comments
+        // are only present on the object form.
+        if (!elem.IsScalar())
         {
-          component.coefficient = elem[validation::coefficient].as<double>();
+          component.unknown_properties = GetComments(elem);
+          if (elem[validation::coefficient])
+          {
+            component.coefficient = elem[validation::coefficient].as<double>();
+          }
         }
 
         component_list.emplace_back(std::move(component));

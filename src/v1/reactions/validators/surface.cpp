@@ -30,9 +30,10 @@ namespace mechanism_configuration
       std::vector<std::string_view> required_keys = { validation::gas_phase_products,
                                                  validation::gas_phase_species,
                                                  validation::type,
-                                                 validation::gas_phase,
+                                                 validation::gas_phase };
+      std::vector<std::string_view> optional_keys = { validation::name,
+                                                 validation::reaction_probability,
                                                  validation::condensed_phase };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::reaction_probability };
 
       Errors errors;
 
@@ -109,10 +110,14 @@ namespace mechanism_configuration
       {
         return errors;
       }
-      auto condensed_phase_optional = CheckPhaseExists(object, validation::condensed_phase, existing_phases, errors);
-      if (!condensed_phase_optional)
+      // condensed_phase is optional; only verify it when present.
+      if (object[validation::condensed_phase])
       {
-        return errors;
+        auto condensed_phase_optional = CheckPhaseExists(object, validation::condensed_phase, existing_phases, errors);
+        if (!condensed_phase_optional)
+        {
+          return errors;
+        }
       }
 
       // Check if phase-specific species in reaction is found in phase

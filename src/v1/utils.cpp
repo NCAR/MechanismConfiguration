@@ -29,6 +29,10 @@ namespace mechanism_configuration
 
     std::string GetReactionComponentName(const YAML::Node& component)
     {
+      // A component may be given as a bare string (shorthand for its name),
+      // or as an object keyed by the canonical `name` or the legacy `species name`.
+      if (component.IsScalar())
+        return component.as<std::string>();
       if (component[validation::name])
         return component[validation::name].as<std::string>();
       return component[validation::species_name].as<std::string>();

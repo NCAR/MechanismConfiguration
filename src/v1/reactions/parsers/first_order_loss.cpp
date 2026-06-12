@@ -17,6 +17,10 @@ namespace mechanism_configuration
 
       first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
       first_order_loss.reactants = ParseReactionComponent(object, validation::reactants);
+      if (object[validation::products])
+      {
+        first_order_loss.products = ParseReactionComponents(object, validation::products);
+      }
       first_order_loss.unknown_properties = GetComments(object);
 
       if (object[validation::scaling_factor])

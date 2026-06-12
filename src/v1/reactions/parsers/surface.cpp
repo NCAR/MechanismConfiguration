@@ -16,7 +16,10 @@ namespace mechanism_configuration
       types::Surface surface;
 
       surface.gas_phase = object[validation::gas_phase].as<std::string>();
-      surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      if (object[validation::condensed_phase])
+      {
+        surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      }
       surface.gas_phase_species = ParseReactionComponent(object, validation::gas_phase_species);
       surface.gas_phase_products = ParseReactionComponents(object, validation::gas_phase_products);
       surface.unknown_properties = GetComments(object);

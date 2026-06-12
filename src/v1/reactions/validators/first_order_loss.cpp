@@ -28,7 +28,7 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = { validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor, validation::products };
 
       Errors errors;
 
