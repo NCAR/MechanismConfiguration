@@ -5,42 +5,45 @@
 #pragma once
 
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/types.hpp>
 
-#include <filesystem>
-#include <expected>
+#include <yaml-cpp/yaml.h>
 
-namespace YAML
+#include <string>
+#include <vector>
+
+namespace mechanism_configuration::v1
 {
-  class Node;
-}  // namespace YAML
-
-namespace mechanism_configuration
-{
-  namespace v1
+  class Parser
   {
-    class Parser
+   public:
+    Parser() = default;
+
+    /// @brief Load a YAML file and return its root node
+    /// @throws std::runtime_error If the file is missing, not a regular file, or cannot be parsed
+    YAML::Node FileToYaml(const std::filesystem::path& config_path);
+
+    /// @brief Validates mechanism YAML node.
+    /// @param object The YAML node to validate
+    /// @param read_from_config_file Whether to use the provided config path or the default
+    /// @return A collection of validation errors; empty if the node is valid
+    Errors Validate(const YAML::Node& object, bool read_from_config_file = true);
+
+    /// @brief Constructs a Mechanism object from the provided YAML node
+    /// @note Must be called only after successful validation
+    Mechanism Parse(const YAML::Node& object);
+
+    inline void SetConfigPath(const std::string& config_path)
     {
-     private:
-      enum class EntityFormat
-      {
-        FileList,  // { "files": [...] }
-        Inline,    // [ { "name": ... }, ... ]
-        Invalid,
-      };
+      config_path_ = config_path;
+    }
 
-      EntityFormat GetEntityFormat(const YAML::Node& node);
+   private:
+    std::string config_path_;
 
-      std::expected<Mechanism, Errors> ParseFromFileConfig(
-          const YAML::Node& object,
-          const std::filesystem::path& config_path,
-          EntityFormat spc_format,
-          EntityFormat phs_format,
-          EntityFormat rxn_format);
-
-     public:
-      std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
-      std::expected<Mechanism, Errors> ParseFromString(const std::string& content);
-      std::expected<Mechanism, Errors> ParseFromNode(const YAML::Node& object);
-    };
-  }  // namespace v1
-}  // namespace mechanism_configuration
+    inline void SetDefaultConfigPath()
+    {
+      config_path_ = "";
+    }
+  };
+}  // namespace mechanism_configuration::v1

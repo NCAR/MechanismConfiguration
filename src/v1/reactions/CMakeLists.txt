@@ -1,15 +1,2 @@
-target_sources(mechanism_configuration
-  PRIVATE
-    arrhenius_parser.cpp
-    branched_parser.cpp
-    emission_parser.cpp
-    first_order_loss_parser.cpp
-    lambda_parser.cpp
-    photolysis_parser.cpp
-    surface_parser.cpp
-    taylor_series_parser.cpp
-    troe_parser.cpp
-    ternary_chemical_activation_parser.cpp
-    tunneling_parser.cpp
-    user_defined_parser.cpp
-)
+add_subdirectory(parsers)
+add_subdirectory(validators)

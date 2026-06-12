@@ -1,0 +1,37 @@
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/v1/type_parsers.hpp>
+#include <mechanism_configuration/v1/utils.hpp>
+
+namespace mechanism_configuration
+{
+  namespace v1
+  {
+    void SurfaceParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::Surface surface;
+
+      surface.gas_phase = object[validation::gas_phase].as<std::string>();
+      surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      surface.gas_phase_species = ParseReactionComponent(object, validation::gas_phase_species);
+      surface.gas_phase_products = ParseReactionComponents(object, validation::gas_phase_products);
+      surface.unknown_properties = GetComments(object);
+
+      if (object[validation::reaction_probability])
+      {
+        surface.reaction_probability = object[validation::reaction_probability].as<double>();
+      }
+      if (object[validation::name])
+      {
+        surface.name = object[validation::name].as<std::string>();
+      }
+
+      reactions.surface.emplace_back(std::move(surface));
+    }
+
+  }  // namespace v1
+}  // namespace mechanism_configuration
