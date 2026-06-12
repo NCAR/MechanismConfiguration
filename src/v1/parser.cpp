@@ -295,6 +295,16 @@ namespace mechanism_configuration
       {
         AppendFilePath(config_path_, validation_errors);
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        return errors;
+      }
+
+      // Structure is valid; run the version-neutral semantic checks over a located intermediate
+      // so errors carry line:col. These rules live only in ValidateSemantics.
+      auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
+      if (!semantic_errors.empty())
+      {
+        AppendFilePath(config_path_, semantic_errors);
+        errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
       }
 
       return errors;

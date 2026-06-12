@@ -91,41 +91,8 @@ namespace mechanism_configuration
         errors.push_back({ ErrorCode::TooManyReactionComponents, message });
       }
 
-      std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs = reactant_node_pairs;
-      for (const auto& obj : object[validation::gas_phase_products])
-      {
-        types::ReactionComponent component;
-        component.name = GetReactionComponentName(obj);
-        species_node_pairs.emplace_back(component, obj);
-      }
-
-      // Check for unknown species in reactants and products
-      std::vector<NodeInfo> unknown_species = FindUnknownObjectsByName(existing_species, species_node_pairs);
-      if (!unknown_species.empty())
-      {
-        ReportUnknownSpecies(object, unknown_species, errors, ErrorCode::ReactionRequiresUnknownSpecies);
-      }
-
-      // Check for phase existence and get phase reference
-      auto gas_phase_optional = CheckPhaseExists(object, validation::gas_phase, existing_phases, errors);
-      if (!gas_phase_optional)
-      {
-        return errors;
-      }
-      // condensed_phase is optional; only verify it when present.
-      if (object[validation::condensed_phase])
-      {
-        auto condensed_phase_optional = CheckPhaseExists(object, validation::condensed_phase, existing_phases, errors);
-        if (!condensed_phase_optional)
-        {
-          return errors;
-        }
-      }
-
-      // Check if phase-specific species in reaction is found in phase
-      const auto& gas_phase = gas_phase_optional->get();
-      CheckSpeciesPresenceInPhase(object, gas_phase, reactant_node_pairs, errors);
-
+      // Semantic checks (species existence, phase membership) are performed by the
+      // version-neutral ValidateSemantics over the canonical Mechanism.
       return errors;
     }
   }  // namespace v1
