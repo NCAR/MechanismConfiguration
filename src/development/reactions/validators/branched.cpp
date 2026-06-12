@@ -79,19 +79,19 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::reactants])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         species_node_pairs.emplace_back(component, obj);
       }
       for (const auto& obj : object[validation::alkoxy_products])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         species_node_pairs.emplace_back(component, obj);
       }
       for (const auto& obj : object[validation::nitrate_products])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         species_node_pairs.emplace_back(component, obj);
       }
 

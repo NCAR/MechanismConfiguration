@@ -90,7 +90,7 @@ namespace mechanism_configuration
       for (const auto& elem : AsSequence(object[key]))
       {
         types::ReactionComponent component;
-        component.name = elem[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(elem);
         component.unknown_properties = GetComments(elem);
 
         if (elem[validation::coefficient])

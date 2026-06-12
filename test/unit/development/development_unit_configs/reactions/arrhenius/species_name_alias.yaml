@@ -1,0 +1,19 @@
+name: Arrhenius using the legacy 'species name' alias
+version: 2.0.0
+species:
+- name: A
+- name: B
+phases:
+- name: gas
+  species:
+    - name: A
+    - name: B
+reactions:
+- type: ARRHENIUS
+  gas phase: gas
+  name: aliased
+  reactants:
+  - species name: A
+  products:
+  - coefficient: 1.2
+    species name: B

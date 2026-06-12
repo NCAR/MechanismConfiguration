@@ -11,6 +11,9 @@ namespace mechanism_configuration::validation
   // Shared, but also Mechanism
   inline constexpr std::string_view version = "version";
   inline constexpr std::string_view name = "name";
+  // Legacy alias for a reaction component's species reference, accepted alongside `name`
+  // for backward compatibility with v1 configuration files.
+  inline constexpr std::string_view species_name = "species name";
 
   // Configuration
   inline constexpr std::string_view species = "species";

@@ -42,6 +42,11 @@ namespace mechanism_configuration
 
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
+    /// @brief Reads a reaction component's species reference, accepting either the
+    ///        canonical `name` key or the legacy `species name` alias (v1 files).
+    /// @note Assumes the component has already been validated to contain exactly one of them.
+    std::string GetReactionComponentName(const YAML::Node& component);
+
     /// @brief Extract species names from a vector of PhaseSpecies
     std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species);
 

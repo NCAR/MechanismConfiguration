@@ -27,6 +27,13 @@ namespace mechanism_configuration
       return sequence;
     }
 
+    std::string GetReactionComponentName(const YAML::Node& component)
+    {
+      if (component[validation::name])
+        return component[validation::name].as<std::string>();
+      return component[validation::species_name].as<std::string>();
+    }
+
     void AppendFilePath(const std::string& config_path, Errors& errors)
     {
       for (auto& error : errors)

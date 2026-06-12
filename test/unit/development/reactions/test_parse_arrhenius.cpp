@@ -209,3 +209,48 @@ TEST(ValidateArrhenius, MutuallyExclusiveEaAndCFailsValidation)
   }
   EXPECT_EQ(actual, expected);
 }
+
+// A reaction component may reference its species with the legacy 'species name'
+// alias (used by v1 configuration files) in place of the canonical 'name'.
+TEST(ParseArrhenius, AcceptsSpeciesNameAlias)
+{
+  development::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
+  for (auto& extension : extensions)
+  {
+    YAML::Node object = parser.FileToYaml("development_unit_configs/reactions/arrhenius/species_name_alias" + extension);
+
+    auto validation_errors = parser.Validate(object);
+    EXPECT_EQ(validation_errors.size(), 0) << "Unexpected validation errors for extension " << extension;
+
+    auto mechanism = parser.Parse(object);
+    ASSERT_EQ(mechanism.reactions.arrhenius.size(), 1);
+    ASSERT_EQ(mechanism.reactions.arrhenius[0].reactants.size(), 1);
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].name, "A");
+    ASSERT_EQ(mechanism.reactions.arrhenius[0].products.size(), 1);
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].name, "B");
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].coefficient, 1.2);
+  }
+}
+
+// Supplying both 'name' and 'species name' on one component is ambiguous and rejected.
+TEST(ParseArrhenius, RejectsBothNameAndSpeciesName)
+{
+  development::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
+  for (auto& extension : extensions)
+  {
+    YAML::Node object = parser.FileToYaml("development_unit_configs/reactions/arrhenius/species_name_conflict" + extension);
+
+    auto errors = parser.Validate(object);
+    bool found_conflict = false;
+    for (const auto& [status, message] : errors)
+    {
+      if (status == ErrorCode::MutuallyExclusiveOption)
+        found_conflict = true;
+    }
+    EXPECT_TRUE(found_conflict) << "Expected MutuallyExclusiveOption for extension " << extension;
+  }
+}

@@ -69,7 +69,7 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::gas_phase_species])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         species_node_pairs.emplace_back(component, obj);
       }
 
@@ -92,7 +92,7 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::gas_phase_products])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         species_node_pairs.emplace_back(component, obj);
       }
 

@@ -69,7 +69,7 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::gas][validation::species])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         gas_species_node_pairs.emplace_back(std::move(component), obj);
       }
 
@@ -79,7 +79,7 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::particle][validation::solvent])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         particle_species_node_pairs.emplace_back(component, obj);
       }
 
@@ -103,7 +103,7 @@ namespace mechanism_configuration
       for (const auto& obj : object[validation::particle][validation::solutes])
       {
         types::ReactionComponent component;
-        component.name = obj[validation::name].as<std::string>();
+        component.name = GetReactionComponentName(obj);
         particle_species_node_pairs.emplace_back(std::move(component), obj);
       }
 

@@ -194,14 +194,19 @@ namespace mechanism_configuration
 
     Errors ValidateReactantsOrProducts(const YAML::Node& list)
     {
-      const std::vector<std::string_view> required_keys = { validation::name };
+      const std::vector<std::string_view> required_keys = {};
       const std::vector<std::string_view> optional_keys = { validation::coefficient };
+      // A component's species reference may use the canonical `name` or the legacy
+      // `species name` alias, but exactly one of them.
+      const std::vector<std::vector<std::string_view>> exactly_one_of = {
+        { validation::name, validation::species_name }
+      };
 
       Errors errors;
 
       for (const auto& object : list)
       {
-        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        auto validation_errors = ValidateSchema(object, required_keys, optional_keys, exactly_one_of);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

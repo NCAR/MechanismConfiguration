@@ -12,7 +12,8 @@ namespace mechanism_configuration
   Errors ValidateSchema(
       const YAML::Node& object,
       const std::vector<std::string_view>& required_keys,
-      const std::vector<std::string_view>& optional_keys)
+      const std::vector<std::string_view>& optional_keys,
+      const std::vector<std::vector<std::string_view>>& exactly_one_of)
   {
     Errors errors;
     ErrorLocation error_location{ object.Mark().line, object.Mark().column };
@@ -53,6 +54,43 @@ namespace mechanism_configuration
       std::string message = mc_fmt::format("{} error: Required key '{}' is missing.", error_location, key);
       errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
     }
+
+    // Exactly-one-of groups: exactly one member of each group must be present.
+    // Group members also count as allowed keys, so they are never flagged as invalid.
+    for (const auto& group : exactly_one_of)
+    {
+      std::vector<std::string> present;
+      for (const auto& key : group)
+      {
+        std::string key_str(key);
+        sorted_optional_keys.push_back(key_str);
+        if (std::find(object_keys.begin(), object_keys.end(), key_str) != object_keys.end())
+          present.push_back(key_str);
+      }
+
+      if (present.size() != 1)
+      {
+        std::string joined;
+        for (size_t i = 0; i < group.size(); ++i)
+        {
+          joined += "'" + std::string(group[i]) + "'";
+          if (i + 1 < group.size())
+            joined += ", ";
+        }
+
+        if (present.empty())
+        {
+          std::string message = mc_fmt::format("{} error: Exactly one of {} is required.", error_location, joined);
+          errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
+        }
+        else
+        {
+          std::string message = mc_fmt::format("{} error: Only one of {} may be specified.", error_location, joined);
+          errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
+        }
+      }
+    }
+    std::sort(sorted_optional_keys.begin(), sorted_optional_keys.end());
 
     // Find keys that are neither required nor optional
     std::vector<std::string> extra_keys;

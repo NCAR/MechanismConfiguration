@@ -1,0 +1,19 @@
+name: Arrhenius with both 'name' and 'species name' on one component
+version: 2.0.0
+species:
+- name: A
+- name: B
+phases:
+- name: gas
+  species:
+    - name: A
+    - name: B
+reactions:
+- type: ARRHENIUS
+  gas phase: gas
+  name: conflict
+  reactants:
+  - name: A
+    species name: A
+  products:
+  - species name: B
