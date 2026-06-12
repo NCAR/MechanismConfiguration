@@ -94,8 +94,6 @@ namespace mechanism_configuration
       if (object[validation::name])
         combined[std::string(validation::name)] = object[validation::name];
 
-      bool any_filelist = false;
-
       // Loads and concatenates every file referenced under `<entity>.files`.
       auto load_files = [&](std::string_view entity) -> YAML::Node
       {
@@ -136,7 +134,6 @@ namespace mechanism_configuration
             combined[key] = object[key];
             break;
           case EntityFormat::FileList:
-            any_filelist = true;
             combined[key] = load_files(entity);
             break;
           case EntityFormat::Invalid:
@@ -147,15 +144,25 @@ namespace mechanism_configuration
             break;
         }
       };
-      resolve_section(validation::species);
-      resolve_section(validation::phases);
-      resolve_section(validation::reactions);
-
-      if (any_filelist && version.minor < 1)
+      // A file-list layout requires minor version >= 1; check before loading any files.
+      const bool uses_filelist =
+          (object[std::string(validation::species)] &&
+           GetEntityFormat(object[std::string(validation::species)]) == EntityFormat::FileList) ||
+          (object[std::string(validation::phases)] &&
+           GetEntityFormat(object[std::string(validation::phases)]) == EntityFormat::FileList) ||
+          (object[std::string(validation::reactions)] &&
+           GetEntityFormat(object[std::string(validation::reactions)]) == EntityFormat::FileList);
+      if (uses_filelist && version.minor < 1)
       {
         errors.push_back({ ErrorCode::InvalidVersion,
                            "File-list format requires minor version >= 1, got " + std::to_string(version.minor) + "." });
+        AppendFilePath(config_path_, errors);
+        return std::unexpected(std::move(errors));
       }
+
+      resolve_section(validation::species);
+      resolve_section(validation::phases);
+      resolve_section(validation::reactions);
 
       if (!errors.empty())
       {

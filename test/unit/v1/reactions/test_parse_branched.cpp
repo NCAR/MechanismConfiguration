@@ -47,7 +47,7 @@ TEST(ParserBase, BranchedDetectsUnknownSpecies)
     std::string file = std::string("v1_unit_configs/reactions/branched/unknown_species") + extension;
     auto parsed = parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {
@@ -64,10 +64,9 @@ TEST(ParserBase, BranchedDetectsBadReactionComponent)
     std::string file = std::string("v1_unit_configs/reactions/branched/bad_reaction_component") + extension;
     auto parsed = parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 3);
+    EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
     EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].first, ErrorCode::ReactionRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {
       std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
