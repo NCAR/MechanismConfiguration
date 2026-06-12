@@ -40,6 +40,7 @@
         {"name": "A"},
         {"name": "B"},
         {"name": "C"},
+        {"name": "M"},
         {
           "name": "ethanol",
           "diffusion coefficient [m2 s-1]": 2.1e-5
@@ -154,21 +155,21 @@
       "N": 32.1,
       "reactants": [
         {
-          "species name": "bar",
+          "species name": "A",
           "coefficient": 1
         },
         {
-          "species name": "baz",
+          "species name": "B",
           "coefficient": 1
         }
       ],
       "products": [
         {
-          "species name": "bar",
+          "species name": "B",
           "coefficient": 0.5
         },
         {
-          "species name": "foo",
+          "species name": "C",
           "coefficient": 0.3
         }
       ]
