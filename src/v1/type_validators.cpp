@@ -98,39 +98,6 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors ValidateParticles(const YAML::Node& list)
-    {
-      const std::vector<std::string_view> required_keys = { validation::phase, validation::solutes, validation::solvent };
-      const std::vector<std::string_view> optional_keys = {};
-
-      Errors errors;
-
-      for (const auto& object : AsSequence(list))
-      {
-        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
-        if (!validation_errors.empty())
-        {
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        }
-
-        // Solutes
-        validation_errors = ValidateReactantsOrProducts(object[validation::solutes]);
-        if (!validation_errors.empty())
-        {
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        }
-
-        // Solvent
-        validation_errors = ValidateReactantsOrProducts(object[validation::solvent]);
-        if (!validation_errors.empty())
-        {
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        }
-      }
-
-      return errors;
-    }
-
     Errors ValidateReactions(
         const YAML::Node& reactions_list,
         const std::vector<types::Species>& existing_species,

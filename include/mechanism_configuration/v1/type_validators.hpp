@@ -13,44 +13,33 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Validates a list of species definitions from a YAML node.
-    ///        This function checks each species object in the input YAML list to ensure that:
-    ///        - All required keys are present
-    ///        - Optional keys are properly handled
-    ///        - No duplicate species names exist
+    // Structural (schema) validation of v1 YAML. These check required/optional keys and value
+    // shape only; semantic invariants (duplicate names, unknown species, phase membership) are
+    // checked separately by the version-neutral ValidateSemantics on the built Mechanism.
+
+    /// @brief Schema-validates each species entry's keys.
     /// @param species_list YAML node containing species entries
-    /// @return List of validation errors, or empty if all entries are valid
+    /// @return List of structural errors, or empty if all entries conform
     Errors ValidateSpecies(const YAML::Node& species_list);
 
-    /// @brief Validates the structure and content of phase definitions in a YAML node.
-    ///        Performs schema validation for each phase and its associated species.
-    ///        - All required keys are present
-    ///        - Detects duplicate species within a single phase
-    ///        - Detects species not defined in the existing_species list
-    ///        - Detects duplicate phase names
+    /// @brief Schema-validates each phase and its phase-species entries.
     /// @param phases_list YAML node containing the list of phase entries
-    /// @param existing_species List of defined species to validate against
-    /// @return List of validation errors, or empty if all entries are valid
+    /// @param existing_species Unused; retained for call-site compatibility
+    /// @return List of structural errors, or empty if all entries conform
     Errors ValidatePhases(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species);
 
-    /// @brief Validates the content of reactants or products definitions in a YAML node
-    /// @param list YAML node representing a sequence of reactants or products.
-    /// @return List of validation errors, or empty if all entries are valid
+    /// @brief Schema-validates a sequence of reaction components (reactants or products),
+    ///        requiring exactly one of `name` / `species name` plus an optional coefficient.
+    /// @param object YAML node representing a sequence of reactants or products
+    /// @return List of structural errors, or empty if all entries conform
     Errors ValidateReactantsOrProducts(const YAML::Node& object);
 
-    /// @brief Validates a list of particle definitions in a YAML node
-    /// @param list YAML node containing particle
-    /// @return List of validation errors, or empty if all entries are valid
-    Errors ValidateParticles(const YAML::Node& list);
-
-    /// @brief Validates a YAML list of reactions for type correctness and supported schema.
-    ///        Performs a two-pass validation over the reaction list. The first pass checks that each
-    ///        reaction has a defined and recognized type. The second pass validates the content of
-    ///        reactions using their respective parser.
+    /// @brief Schema-validates a YAML list of reactions: each has a defined, recognized type,
+    ///        and then each reaction's keys are validated by its parser.
     /// @param reactions_list YAML node containing the list of reactions
-    /// @param existing_species List of known species to validate species references
-    /// @param existing_phases List of known phases to validate phase references
-    /// @return list of validation errors, if any
+    /// @param existing_species Unused; retained for call-site compatibility
+    /// @param existing_phases Unused; retained for call-site compatibility
+    /// @return List of structural errors, or empty if all entries conform
     Errors ValidateReactions(
         const YAML::Node& reactions_list,
         const std::vector<types::Species>& existing_species,
