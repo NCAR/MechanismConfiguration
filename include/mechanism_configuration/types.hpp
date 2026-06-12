@@ -30,61 +30,12 @@ namespace mechanism_configuration::types
     std::unordered_map<std::string, std::string> unknown_properties;
   };
 
-  struct Particle
-  {
-    /// @brief Describes the physical state of the particle
-    std::string phase;
-    /// @brief Lists the chemical species dissolved in the solvent
-    std::vector<ReactionComponent> solutes;
-    /// @brief Specifies the liquid medium in which solutes are dissolved
-    ReactionComponent solvent;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
   struct Phase
   {
     std::string name;
     std::vector<PhaseSpecies> species;
     /// @brief Unknown properties, prefixed with two underscores (__)
     std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  struct GasModel
-  {
-    std::string name;
-    std::string type;
-    std::string phase;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  /// @brief Represents a single mode with log-normal size distribution
-  struct Mode
-  {
-    std::string name;
-    double geometric_mean_diameter;
-    double geometric_standard_deviation;
-    std::string phase;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  /// @brief Models a collection of multiple modes
-  struct ModalModel
-  {
-    std::string name;
-    std::string type;
-    std::vector<Mode> modes;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  /// @brief Represents a collection of different model types
-  struct Models
-  {
-    GasModel gas_model;
-    ModalModel modal_model;
   };
 
   struct Arrhenius

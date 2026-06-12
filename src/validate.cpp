@@ -5,6 +5,7 @@
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate.hpp>
 
+#include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -15,128 +16,166 @@ namespace mechanism_configuration
 {
   namespace
   {
-    // Emits one DuplicateSpeciesDetected/DuplicatePhasesDetected-style error per occurrence
-    // of each name that appears more than once.
+    // Formats a message, prefixing "line:col error:" when a source location is known.
+    std::string Message(const std::optional<ErrorLocation>& location, const std::string& body)
+    {
+      if (location)
+        return mc_fmt::format("{} error: {}", *location, body);
+      return "error: " + body;
+    }
+
+    // Emits one error per occurrence of each name that appears more than once.
     void ReportDuplicates(
-        const std::vector<std::string>& names,
+        const std::vector<semantics::NamedRef>& refs,
         ErrorCode code,
         std::string_view what,
         Errors& errors)
     {
       std::unordered_map<std::string, int> counts;
-      for (const auto& n : names)
-        ++counts[n];
-      for (const auto& n : names)
+      for (const auto& ref : refs)
+        ++counts[ref.name];
+      for (const auto& ref : refs)
       {
-        int total = counts[n];
-        if (total > 1)
-          errors.push_back({ code, mc_fmt::format("Duplicate {} name '{}' found.", what, n) });
+        if (counts[ref.name] > 1)
+          errors.push_back({ code, Message(ref.location, mc_fmt::format("Duplicate {} name '{}' found.", what, ref.name)) });
       }
     }
   }  // namespace
 
-  Errors validate(const Mechanism& mechanism)
+  Errors ValidateSemantics(const semantics::Input& input)
   {
     Errors errors;
 
     // ---- Species ----------------------------------------------------------------------------
     std::unordered_set<std::string> species_names;
-    {
-      std::vector<std::string> names;
-      names.reserve(mechanism.species.size());
-      for (const auto& species : mechanism.species)
-      {
-        names.push_back(species.name);
-        species_names.insert(species.name);
-      }
-      ReportDuplicates(names, ErrorCode::DuplicateSpeciesDetected, "species", errors);
-    }
+    for (const auto& s : input.species)
+      species_names.insert(s.name);
+    ReportDuplicates(input.species, ErrorCode::DuplicateSpeciesDetected, "species", errors);
 
     // ---- Phases -----------------------------------------------------------------------------
     std::unordered_map<std::string, std::unordered_set<std::string>> phase_species;
+    std::vector<semantics::NamedRef> phase_names;
+    for (const auto& phase : input.phases)
     {
-      std::vector<std::string> phase_names;
-      for (const auto& phase : mechanism.phases)
+      phase_names.push_back({ phase.name, phase.location });
+      auto& registered = phase_species[phase.name];
+      for (const auto& ps : phase.species)
       {
-        phase_names.push_back(phase.name);
-        auto& registered = phase_species[phase.name];
-
-        std::vector<std::string> within;
-        for (const auto& ps : phase.species)
-        {
-          within.push_back(ps.name);
-          registered.insert(ps.name);
-          if (!species_names.contains(ps.name))
-            errors.push_back({ ErrorCode::PhaseRequiresUnknownSpecies,
-                               mc_fmt::format("Unknown species name '{}' found in '{}' phase.", ps.name, phase.name) });
-        }
-        ReportDuplicates(within, ErrorCode::DuplicateSpeciesInPhaseDetected, "species", errors);
+        registered.insert(ps.name);
+        if (!species_names.contains(ps.name))
+          errors.push_back({ ErrorCode::PhaseRequiresUnknownSpecies,
+                             Message(ps.location, mc_fmt::format("Unknown species name '{}' found in '{}' phase.",
+                                                                 ps.name, phase.name)) });
       }
-      ReportDuplicates(phase_names, ErrorCode::DuplicatePhasesDetected, "phase", errors);
+      ReportDuplicates(phase.species, ErrorCode::DuplicateSpeciesInPhaseDetected, "species", errors);
     }
+    ReportDuplicates(phase_names, ErrorCode::DuplicatePhasesDetected, "phase", errors);
 
     // ---- Reactions --------------------------------------------------------------------------
-    // Reactants must exist and be registered in the reaction's phase; products must exist but
-    // may reference species from any phase.
-    auto check_reaction = [&](std::string_view type,
-                              const std::string& gas_phase,
-                              const std::vector<types::ReactionComponent>& reactants,
-                              const std::vector<types::ReactionComponent>& products)
+    for (const auto& reaction : input.reactions)
     {
-      const auto phase_it = phase_species.find(gas_phase);
+      const auto phase_it = phase_species.find(reaction.phase);
       const bool phase_exists = phase_it != phase_species.end();
       if (!phase_exists)
-        errors.push_back(
-            { ErrorCode::UnknownPhase, mc_fmt::format("Unknown phase '{}' in '{}' reaction.", gas_phase, type) });
+        errors.push_back({ ErrorCode::UnknownPhase,
+                           Message(reaction.phase_location,
+                                   mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
 
-      for (const auto& reactant : reactants)
+      for (const auto& reactant : reaction.reactants)
       {
         if (!species_names.contains(reactant.name))
           errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
-                             mc_fmt::format("Unknown species '{}' used in '{}' reaction.", reactant.name, type) });
+                             Message(reactant.location, mc_fmt::format("Unknown species '{}' used in '{}' reaction.",
+                                                                       reactant.name, reaction.type)) });
         else if (phase_exists && !phase_it->second.contains(reactant.name))
           errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                             mc_fmt::format("Species '{}' used in '{}' is not defined in the '{}' phase.",
-                                            reactant.name, type, gas_phase) });
+                             Message(reactant.location,
+                                     mc_fmt::format("Species '{}' used in '{}' is not defined in the '{}' phase.",
+                                                    reactant.name, reaction.type, reaction.phase)) });
       }
-      for (const auto& product : products)
+      for (const auto& product : reaction.products)
       {
         if (!species_names.contains(product.name))
           errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
-                             mc_fmt::format("Unknown species '{}' used in '{}' reaction.", product.name, type) });
+                             Message(product.location, mc_fmt::format("Unknown species '{}' used in '{}' reaction.",
+                                                                      product.name, reaction.type)) });
       }
-    };
+    }
+
+    return errors;
+  }
+
+  namespace
+  {
+    // Builds a location-free list of component references from a struct component list.
+    std::vector<semantics::NamedRef> Refs(const std::vector<types::ReactionComponent>& components)
+    {
+      std::vector<semantics::NamedRef> refs;
+      refs.reserve(components.size());
+      for (const auto& c : components)
+        refs.push_back({ c.name, std::nullopt });
+      return refs;
+    }
+
+    semantics::ReactionRef ReactionRefOf(
+        std::string_view type,
+        const std::string& phase,
+        std::vector<semantics::NamedRef> reactants,
+        std::vector<semantics::NamedRef> products)
+    {
+      return semantics::ReactionRef{ std::string(type), phase, std::nullopt, std::move(reactants), std::move(products) };
+    }
+  }  // namespace
+
+  Errors validate(const Mechanism& mechanism)
+  {
+    semantics::Input input;
+
+    for (const auto& s : mechanism.species)
+      input.species.push_back({ s.name, std::nullopt });
+
+    for (const auto& phase : mechanism.phases)
+    {
+      semantics::PhaseRef pr{ phase.name, std::nullopt, {} };
+      for (const auto& ps : phase.species)
+        pr.species.push_back({ ps.name, std::nullopt });
+      input.phases.push_back(std::move(pr));
+    }
 
     const auto& r = mechanism.reactions;
+    auto add = [&](std::string_view type, const std::string& phase,
+                   std::vector<semantics::NamedRef> reactants, std::vector<semantics::NamedRef> products)
+    { input.reactions.push_back(ReactionRefOf(type, phase, std::move(reactants), std::move(products))); };
+
     for (const auto& x : r.arrhenius)
-      check_reaction("ARRHENIUS", x.gas_phase, x.reactants, x.products);
+      add("ARRHENIUS", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.troe)
-      check_reaction("TROE", x.gas_phase, x.reactants, x.products);
+      add("TROE", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.ternary_chemical_activation)
-      check_reaction("TERNARY_CHEMICAL_ACTIVATION", x.gas_phase, x.reactants, x.products);
+      add("TERNARY_CHEMICAL_ACTIVATION", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.tunneling)
-      check_reaction("TUNNELING", x.gas_phase, x.reactants, x.products);
+      add("TUNNELING", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.taylor_series)
-      check_reaction("TAYLOR_SERIES", x.gas_phase, x.reactants, x.products);
+      add("TAYLOR_SERIES", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.user_defined)
-      check_reaction("USER_DEFINED", x.gas_phase, x.reactants, x.products);
+      add("USER_DEFINED", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.lambda_rate_constant)
-      check_reaction("LAMBDA_RATE_CONSTANT", x.gas_phase, x.reactants, x.products);
+      add("LAMBDA_RATE_CONSTANT", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.emission)
-      check_reaction("EMISSION", x.gas_phase, {}, x.products);
+      add("EMISSION", x.gas_phase, {}, Refs(x.products));
     for (const auto& x : r.first_order_loss)
-      check_reaction("FIRST_ORDER_LOSS", x.gas_phase, { x.reactants }, x.products);
+      add("FIRST_ORDER_LOSS", x.gas_phase, Refs({ x.reactants }), Refs(x.products));
     for (const auto& x : r.photolysis)
-      check_reaction("PHOTOLYSIS", x.gas_phase, { x.reactants }, x.products);
+      add("PHOTOLYSIS", x.gas_phase, Refs({ x.reactants }), Refs(x.products));
     for (const auto& x : r.surface)
-      check_reaction("SURFACE", x.gas_phase, { x.gas_phase_species }, x.gas_phase_products);
+      add("SURFACE", x.gas_phase, Refs({ x.gas_phase_species }), Refs(x.gas_phase_products));
     for (const auto& x : r.branched)
     {
       std::vector<types::ReactionComponent> products = x.alkoxy_products;
       products.insert(products.end(), x.nitrate_products.begin(), x.nitrate_products.end());
-      check_reaction("BRANCHED", x.gas_phase, x.reactants, products);
+      add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
     }
 
-    return errors;
+    return ValidateSemantics(input);
   }
 }  // namespace mechanism_configuration

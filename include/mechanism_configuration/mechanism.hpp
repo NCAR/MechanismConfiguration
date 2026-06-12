@@ -86,8 +86,6 @@ namespace mechanism_configuration
     /// @brief Represents a collection of different reaction types, each stored in a vector
     ///        corresponding to a specific mechanism
     types::Reactions reactions;
-    /// @brief Represents a general model (optional)
-    types::Models models;
     /// @brief Version of the mechanism configuration format used, in major.minor.patch format
     Version version;
     /// @brief Relative tolerance for solver (optional, default: 1e-6)
