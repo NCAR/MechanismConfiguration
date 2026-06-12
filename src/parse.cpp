@@ -8,7 +8,7 @@
 #include <mechanism_configuration/parse.hpp>
 #include <mechanism_configuration/v0/parser.hpp>
 #include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/validation.hpp>
+#include <mechanism_configuration/validation_keys.hpp>
 
 #include <yaml-cpp/yaml.h>
 

@@ -10,7 +10,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
-#include <mechanism_configuration/validation.hpp>
+#include <mechanism_configuration/validation_keys.hpp>
 
 #include <yaml-cpp/yaml.h>
 

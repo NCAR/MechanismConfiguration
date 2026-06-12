@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/v1/utils.hpp>
-#include <mechanism_configuration/validation.hpp>
+#include <mechanism_configuration/validation_keys.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/validate_schema.hpp>
