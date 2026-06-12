@@ -1,15 +1,10 @@
 target_sources(mechanism_configuration
   PRIVATE
-    aqueous_equilibrium.cpp
     arrhenius.cpp
     branched.cpp
-    condensed_phase_arrhenius.cpp
-    condensed_phase_photolysis.cpp
     emission.cpp
     first_order_loss.cpp
-    henrys_law.cpp
     photolysis.cpp
-    simpol_phase_transfer.cpp
     surface.cpp
     taylor_series.cpp
     ternary_chemical_activation.cpp
@@ -17,5 +12,4 @@ target_sources(mechanism_configuration
     tunneling.cpp
     user_defined.cpp
     lambda_rate_constant.cpp
-    wet_deposition.cpp
 )

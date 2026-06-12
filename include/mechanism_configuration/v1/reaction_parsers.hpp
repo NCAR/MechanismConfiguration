@@ -62,28 +62,6 @@ namespace mechanism_configuration
       void Parse(const YAML::Node& object, types::Reactions& reactions) override;
     };
 
-    class CondensedPhaseArrheniusParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
-    class CondensedPhasePhotolysisParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
     class EmissionParser : public IReactionParser
     {
      public:
@@ -96,50 +74,6 @@ namespace mechanism_configuration
     };
 
     class FirstOrderLossParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
-    class SimpolPhaseTransferParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
-    class AqueousEquilibriumParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
-    class WetDepositionParser : public IReactionParser
-    {
-     public:
-      Errors Validate(
-          const YAML::Node& object,
-          const std::vector<types::Species>& existing_species,
-          const std::vector<types::Phase>& existing_phases) override;
-
-      void Parse(const YAML::Node& object, types::Reactions& reactions) override;
-    };
-
-    class HenrysLawParser : public IReactionParser
     {
      public:
       Errors Validate(
@@ -245,13 +179,8 @@ namespace mechanism_configuration
       {
         std::map<std::string, std::unique_ptr<IReactionParser>> map;
         map[std::string(validation::Arrhenius_key)] = std::make_unique<ArrheniusParser>();
-        map[std::string(validation::HenrysLaw_key)] = std::make_unique<HenrysLawParser>();
-        map[std::string(validation::WetDeposition_key)] = std::make_unique<WetDepositionParser>();
-        map[std::string(validation::AqueousPhaseEquilibrium_key)] = std::make_unique<AqueousEquilibriumParser>();
-        map[std::string(validation::SimpolPhaseTransfer_key)] = std::make_unique<SimpolPhaseTransferParser>();
         map[std::string(validation::FirstOrderLoss_key)] = std::make_unique<FirstOrderLossParser>();
         map[std::string(validation::Emission_key)] = std::make_unique<EmissionParser>();
-        map[std::string(validation::CondensedPhasePhotolysis_key)] = std::make_unique<CondensedPhasePhotolysisParser>();
         map[std::string(validation::Photolysis_key)] = std::make_unique<PhotolysisParser>();
         map[std::string(validation::Surface_key)] = std::make_unique<SurfaceParser>();
         map[std::string(validation::TaylorSeries_key)] = std::make_unique<TaylorSeriesParser>();
@@ -259,7 +188,6 @@ namespace mechanism_configuration
         map[std::string(validation::Branched_key)] = std::make_unique<BranchedParser>();
         map[std::string(validation::Troe_key)] = std::make_unique<TroeParser>();
         map[std::string(validation::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
-        map[std::string(validation::CondensedPhaseArrhenius_key)] = std::make_unique<CondensedPhaseArrheniusParser>();
         map[std::string(validation::UserDefined_key)] = std::make_unique<UserDefinedParser>();
         map[std::string(validation::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
         return map;
