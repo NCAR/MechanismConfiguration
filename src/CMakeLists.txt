@@ -37,6 +37,8 @@ target_include_directories(mechanism_configuration
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_subdirectory(v0)

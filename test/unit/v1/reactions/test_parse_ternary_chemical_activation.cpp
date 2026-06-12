@@ -1,5 +1,5 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/conversions.hpp>
+#include "detail/constants.hpp"
+#include "detail/conversions.hpp"
 #include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>

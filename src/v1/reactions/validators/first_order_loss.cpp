@@ -2,14 +2,14 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
-#include <mechanism_configuration/v1/type_parsers.hpp>
-#include <mechanism_configuration/v1/type_validators.hpp>
-#include <mechanism_configuration/v1/utils.hpp>
+#include <detail/v1/type_parsers.hpp>
+#include <detail/v1/type_validators.hpp>
+#include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
+#include <detail/validate_schema.hpp>
 
 namespace mechanism_configuration
 {

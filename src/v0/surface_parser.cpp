@@ -1,8 +1,8 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v0/parser_types.hpp>
-#include <mechanism_configuration/v0/validation.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
+#include "detail/constants.hpp"
+#include "detail/v0/parser.hpp"
+#include "detail/v0/parser_types.hpp"
+#include "detail/v0/validation.hpp"
+#include "detail/validate_schema.hpp"
 
 namespace mechanism_configuration::v0
 {

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/types.hpp>
-#include <mechanism_configuration/validation_keys.hpp>
+#include <detail/validation_keys.hpp>
 #include <mechanism_configuration/errors.hpp>
 
 #include <yaml-cpp/yaml.h>

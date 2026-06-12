@@ -2,11 +2,11 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v1/reaction_parsers.hpp>
+#include <detail/constants.hpp>
+#include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
-#include <mechanism_configuration/v1/type_parsers.hpp>
-#include <mechanism_configuration/v1/utils.hpp>
+#include <detail/v1/type_parsers.hpp>
+#include <detail/v1/utils.hpp>
 
 namespace mechanism_configuration
 {

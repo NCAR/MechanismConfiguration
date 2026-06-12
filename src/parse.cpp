@@ -6,9 +6,10 @@
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parse.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/validation_keys.hpp>
+
+#include "detail/v0/parser.hpp"
+#include "detail/v1/parser.hpp"
+#include "detail/validation_keys.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -25,6 +26,10 @@ namespace mechanism_configuration
           Errors{ { ErrorCode::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) } });
     }
 
+    if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path)) {
+      return Version(0, 0, 0);
+    }
+
     YAML::Node object;
     try
     {
@@ -38,8 +43,8 @@ namespace mechanism_configuration
 
     if (!object[validation::version])
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::MissingVersionField, mc_fmt::format("The version field was not found in '{}'.", config_path.string()) } });
+      // assume it's a v0 config
+      return Version(0, 0, 0);
     }
 
     return Version(object[validation::version].as<std::string>());
@@ -47,25 +52,11 @@ namespace mechanism_configuration
 
   std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path)
   {
-    // Version-0 mechanisms may be provided as a directory of CAMP files.
-    if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path))
-    {
-      return v0::Parser{}.Parse(config_path);
-    }
-
     auto version = GetVersion(config_path);
+
     if (!version)
     {
-      // A missing version field indicates a legacy version-0 configuration. This is
-      // temporary and fragile, but required to keep supporting version-0 files.
-      for (const auto& [code, message] : version.error())
-      {
-        if (code == ErrorCode::MissingVersionField)
-        {
-          return v0::Parser{}.Parse(config_path);
-        }
-      }
-      return std::unexpected(version.error());
+      return std::unexpected(std::move(version.error()));
     }
 
     switch (version->major)

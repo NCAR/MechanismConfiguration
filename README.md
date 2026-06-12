@@ -23,8 +23,7 @@ a `Mechanism` in code and **validate** it. `validate()` runs the same semantic c
 uses, so it applies to any mechanism regardless of where it came from.
 
 ```cpp
-#include <mechanism_configuration/parse.hpp>     // parse(path)
-#include <mechanism_configuration/validate.hpp>  // validate(const Mechanism&)
+#include <mechanism_configuration/mechanism_configuration.hpp>
 
 #include <iostream>
 

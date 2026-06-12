@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/constants.hpp>
+#include <detail/constants.hpp>
 
 namespace mechanism_configuration
 {

@@ -1,6 +1,6 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/conversions.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
+#include "detail/constants.hpp"
+#include "detail/conversions.hpp"
+#include "detail/v0/parser.hpp"
 
 #include <gtest/gtest.h>
 
