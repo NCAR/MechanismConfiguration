@@ -6,6 +6,7 @@
 
 #include <mechanism_configuration/format_compat.hpp>
 
+#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>
