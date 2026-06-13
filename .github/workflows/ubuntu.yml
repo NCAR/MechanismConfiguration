@@ -24,9 +24,9 @@ jobs:
           - { cpp: clang++, c: clang }
         build_type: [Release]
         use_fmt: [OFF, ON]
-      exclude:
-        - compiler: { cpp: g++-12, c: gcc-12 }
-          use_fmt: OFF
+        exclude:
+          - compiler: { cpp: g++-12, c: gcc-12 }
+            use_fmt: OFF
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
