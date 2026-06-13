@@ -12,7 +12,7 @@
 .. ~ for subsubsubsections
 .. " for paragraphs
 
-.. |project_version| replace:: 1.1.2
+.. |project_version| replace:: 2.0.0
 
 ###############################################################
 Welcome to the NSF NCAR Mechanism Configuration documentation!
@@ -24,6 +24,7 @@ Welcome to the NSF NCAR Mechanism Configuration documentation!
 
    v0/index
    v1/index
+   changelog
    bibliography
 
 
