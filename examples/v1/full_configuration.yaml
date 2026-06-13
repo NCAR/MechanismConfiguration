@@ -189,3 +189,13 @@ reactions:
     products:
       - species name: C
         coefficient: 1
+  - type: LAMBDA_RATE_CONSTANT
+    name: my lambda rate constant
+    gas phase: gas
+    lambda function: "[](double T, double P) { return 1.2e-5 * exp(-500.0 / T); }"
+    reactants:
+      - species name: B
+        coefficient: 1
+    products:
+      - species name: C
+        coefficient: 1

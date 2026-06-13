@@ -11,6 +11,7 @@ Their configuration is defined in this repository, as are the algorithms that mi
 * :doc:`branched` - :cpp:class:`micm::BranchedRateConstant`
 * :doc:`emission` - :cpp:class:`micm::UserDefinedRateConstant`
 * :doc:`first_order_loss` - :cpp:class:`micm::UserDefinedRateConstant`
+* :doc:`lambda_rate_constant` - :cpp:class:`micm::UserDefinedRateConstant`
 * :doc:`photolysis` - :cpp:class:`micm::UserDefinedRateConstant`
 * :doc:`surface` - :cpp:class:`micm::SurfaceRateConstant`
 * :doc:`taylor_series` - :cpp:class:`micm::TaylorSeriesRateConstant`
@@ -29,6 +30,7 @@ Their configuration is defined in this repository, as are the algorithms that mi
    branched
    emission
    first_order_loss
+   lambda_rate_constant
    photolysis
    surface
    taylor_series
