@@ -2,7 +2,7 @@
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
 #include "detail/v0/validation.hpp"
-#include "detail/validate_schema.hpp"
+#include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
 {
@@ -13,7 +13,7 @@ namespace mechanism_configuration::v0
     std::vector<std::string_view> required = { validation::TYPE, validation::SPECIES, validation::MUSICA_NAME };
     std::vector<std::string_view> optional = { validation::SCALING_FACTOR };
 
-    auto validate = ValidateSchema(object, required, optional);
+    auto validate = CheckSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());
     if (validate.empty())
     {

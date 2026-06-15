@@ -10,7 +10,7 @@
 #include "detail/v1/type_validators.hpp"
 #include "detail/v1/utils.hpp"
 #include "detail/validation_keys.hpp"
-#include "detail/validate_schema.hpp"
+#include "detail/check_schema.hpp"
 
 #include <string>
 #include <vector>
@@ -19,7 +19,7 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    Errors ValidateSpecies(const YAML::Node& species_list)
+    Errors CheckSpeciesSchema(const YAML::Node& species_list)
     {
       const std::vector<std::string_view> required_keys = { validation::name };
       const std::vector<std::string_view> optional_keys = { validation::absolute_tolerance,
@@ -38,13 +38,13 @@ namespace mechanism_configuration
       Errors errors;
       for (const auto& object : species_list)
       {
-        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        auto validation_errors = CheckSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
       }
       return errors;
     }
 
-    Errors ValidatePhases(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species)
+    Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species)
     {
       // Phase
       const std::vector<std::string_view> required_keys = { validation::name, validation::species };
@@ -60,7 +60,7 @@ namespace mechanism_configuration
       Errors errors;
       for (const auto& object : AsSequence(phases_list))
       {
-        auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+        auto validation_errors = CheckSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
 
         for (const auto& spec : object[validation::species])
@@ -68,14 +68,14 @@ namespace mechanism_configuration
           // A bare string is shorthand for a species name and needs no schema validation.
           if (spec.IsScalar())
             continue;
-          auto species_validation_errors = ValidateSchema(spec, species_required_keys, species_optional_keys);
+          auto species_validation_errors = CheckSchema(spec, species_required_keys, species_optional_keys);
           errors.insert(errors.end(), species_validation_errors.begin(), species_validation_errors.end());
         }
       }
       return errors;
     }
 
-    Errors ValidateReactantsOrProducts(const YAML::Node& list)
+    Errors CheckReactantsOrProductsSchema(const YAML::Node& list)
     {
       const std::vector<std::string_view> required_keys = {};
       const std::vector<std::string_view> optional_keys = { validation::coefficient };
@@ -89,7 +89,7 @@ namespace mechanism_configuration
 
       for (const auto& object : list)
       {
-        auto validation_errors = ValidateSchema(object, required_keys, optional_keys, exactly_one_of);
+        auto validation_errors = CheckSchema(object, required_keys, optional_keys, exactly_one_of);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -99,7 +99,7 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors ValidateReactions(
+    Errors CheckReactionsSchema(
         const YAML::Node& reactions_list,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
@@ -145,7 +145,7 @@ namespace mechanism_configuration
 
       for (const auto& [reaction_node, parser] : valid_reactions)
       {
-        auto validation_errors = parser->Validate(reaction_node, existing_species, existing_phases);
+        auto validation_errors = parser->CheckSchema(reaction_node, existing_species, existing_phases);
         if (!validation_errors.empty())
         {
           errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

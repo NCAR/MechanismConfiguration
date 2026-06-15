@@ -91,7 +91,7 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
 }
 
 // ── missing_species_set ───────────────────────────────────────────────────────
-// "species" key absent from main.json : RequiredKeyNotFound from ValidateSchema
+// "species" key absent from main.json : RequiredKeyNotFound from CheckSchema
 
 TEST(ParseFromFileConfigs, MissingSpeciesSet)
 {

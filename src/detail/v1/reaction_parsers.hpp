@@ -18,12 +18,12 @@ namespace mechanism_configuration::v1
   class IReactionParser
   {
    public:
-    /// @brief Validates a YAML node representing a chemical reaction
+    /// @brief Checks the schema of a YAML node representing a chemical reaction
     /// @param object The YAML node containing reaction information
     /// @param existing_species A list of species previously defined in the mechanism
     /// @param existing_phases A list of chemical phases relevant to the reaction
     /// @return A list of any validation errors encountered
-    virtual Errors Validate(
+    virtual Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) = 0;
@@ -40,7 +40,7 @@ namespace mechanism_configuration::v1
   class ArrheniusParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -51,7 +51,7 @@ namespace mechanism_configuration::v1
   class BranchedParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -62,7 +62,7 @@ namespace mechanism_configuration::v1
   class EmissionParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -73,7 +73,7 @@ namespace mechanism_configuration::v1
   class FirstOrderLossParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -84,7 +84,7 @@ namespace mechanism_configuration::v1
   class PhotolysisParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -95,7 +95,7 @@ namespace mechanism_configuration::v1
   class SurfaceParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -106,7 +106,7 @@ namespace mechanism_configuration::v1
   class TaylorSeriesParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -117,7 +117,7 @@ namespace mechanism_configuration::v1
   class TroeParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -128,7 +128,7 @@ namespace mechanism_configuration::v1
   class TernaryChemicalActivationParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -139,7 +139,7 @@ namespace mechanism_configuration::v1
   class TunnelingParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -150,7 +150,7 @@ namespace mechanism_configuration::v1
   class UserDefinedParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;
@@ -161,7 +161,7 @@ namespace mechanism_configuration::v1
   class LambdaRateConstantParser : public IReactionParser
   {
    public:
-    Errors Validate(
+    Errors CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases) override;

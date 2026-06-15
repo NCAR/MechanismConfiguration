@@ -1,7 +1,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include "detail/v0/parser_types.hpp"
 #include "detail/v0/validation.hpp"
-#include "detail/validate_schema.hpp"
+#include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
 {
@@ -13,7 +13,7 @@ namespace mechanism_configuration::v0
       validation::TRACER_TYPE, validation::ABS_TOLERANCE, validation::DIFFUSION_COEFF, validation::MOL_WEIGHT
     };
 
-    auto validate = ValidateSchema(object, required, optional);
+    auto validate = CheckSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());
     if (validate.empty())
     {
@@ -54,7 +54,7 @@ namespace mechanism_configuration::v0
     Errors errors;
     std::vector<std::string_view> required = { validation::VALUE, validation::TYPE };
 
-    auto validate = ValidateSchema(object, required, {});
+    auto validate = CheckSchema(object, required, {});
     errors.insert(errors.end(), validate.begin(), validate.end());
     if (validate.empty())
     {
@@ -72,7 +72,7 @@ namespace mechanism_configuration::v0
       auto key = it->first.as<std::string>();
       auto value = it->second;
 
-      auto validate = ValidateSchema(value, {}, { validation::QTY });
+      auto validate = CheckSchema(value, {}, { validation::QTY });
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {
@@ -95,7 +95,7 @@ namespace mechanism_configuration::v0
       auto key = it->first.as<std::string>();
       auto value = it->second;
 
-      auto validate = ValidateSchema(value, {}, { validation::YIELD });
+      auto validate = CheckSchema(value, {}, { validation::YIELD });
       errors.insert(errors.end(), validate.begin(), validate.end());
       if (validate.empty())
       {

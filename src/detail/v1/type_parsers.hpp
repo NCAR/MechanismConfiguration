@@ -15,7 +15,7 @@
 namespace mechanism_configuration::v1
 {
   /// @brief Parses a YAML node into a vector of Species
-  ///        The input must be validated using ValidateSpecies().
+  ///        The input must be validated using CheckSpeciesSchema().
   ///        This function assumes the structure and types are correct.
   /// @param objects YAML node representing species list
   /// @return A vector of parsed species

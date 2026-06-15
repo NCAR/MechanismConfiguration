@@ -6,7 +6,7 @@
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/type_validators.hpp"
 #include "detail/v1/utils.hpp"
-#include "detail/validate_schema.hpp"
+#include "detail/check_schema.hpp"
 #include "detail/validation_keys.hpp"
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
@@ -228,7 +228,7 @@ namespace mechanism_configuration::v1
     return combined;
   }
 
-  Errors Parser::Validate(const YAML::Node& object, bool read_from_config_file)
+  Errors Parser::CheckSchema(const YAML::Node& object, bool read_from_config_file)
   {
     if (!read_from_config_file)
     {
@@ -243,7 +243,7 @@ namespace mechanism_configuration::v1
     std::vector<std::string_view> optional_keys = { validation::name };
 
     // Return early if the required keys are not found
-    auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+    auto validation_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
     if (!validation_errors.empty())
     {
       AppendFilePath(config_path_, validation_errors);
@@ -265,7 +265,7 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
-    validation_errors = ValidateSpecies(object[validation::species]);
+    validation_errors = CheckSpeciesSchema(object[validation::species]);
     if (!validation_errors.empty())
     {
       AppendFilePath(config_path_, validation_errors);
@@ -275,7 +275,7 @@ namespace mechanism_configuration::v1
 
     auto parsed_species = ParseSpecies(object[validation::species]);
 
-    validation_errors = ValidatePhases(object[validation::phases], parsed_species);
+    validation_errors = CheckPhasesSchema(object[validation::phases], parsed_species);
     if (!validation_errors.empty())
     {
       AppendFilePath(config_path_, validation_errors);
@@ -285,7 +285,7 @@ namespace mechanism_configuration::v1
 
     auto parsed_phases = ParsePhases(object[validation::phases]);
 
-    validation_errors = ValidateReactions(object[validation::reactions], parsed_species, parsed_phases);
+    validation_errors = CheckReactionsSchema(object[validation::reactions], parsed_species, parsed_phases);
     if (!validation_errors.empty())
     {
       AppendFilePath(config_path_, validation_errors);

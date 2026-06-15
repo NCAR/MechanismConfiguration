@@ -9,20 +9,20 @@
 #include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
-#include <detail/validate_schema.hpp>
+#include <detail/check_schema.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Validates a YAML-defined Branched reaction entry
-    ///        Performs schema validation, ensures all referenced species and phases exist,
+    /// @brief Checks the structural schema of a YAML-defined Branched reaction entry
+    ///        Performs structural (schema) validation only;
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
-    /// @param existing_species The list of known species used for validation
-    /// @param existing_phases The list of known phases used for validation
+    /// @param existing_species Unused; semantic checks live in ValidateSemantics
+    /// @param existing_phases Unused; semantic checks live in ValidateSemantics
     /// @return A list of validation errors, if any
-    Errors BranchedParser::Validate(
+    Errors BranchedParser::CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
@@ -38,7 +38,7 @@ namespace mechanism_configuration
 
       Errors errors;
 
-      auto validation_errors = ValidateSchema(object, required_keys, optional_keys);
+      auto validation_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -48,7 +48,7 @@ namespace mechanism_configuration
       bool is_valid = true;
 
       // Reactants
-      validation_errors = ValidateReactantsOrProducts(object[validation::reactants]);
+      validation_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -56,7 +56,7 @@ namespace mechanism_configuration
       }
 
       // Alkoxy products
-      validation_errors = ValidateReactantsOrProducts(object[validation::alkoxy_products]);
+      validation_errors = CheckReactantsOrProductsSchema(object[validation::alkoxy_products]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
@@ -64,7 +64,7 @@ namespace mechanism_configuration
       }
 
       // Nitrate products
-      validation_errors = ValidateReactantsOrProducts(object[validation::nitrate_products]);
+      validation_errors = CheckReactantsOrProductsSchema(object[validation::nitrate_products]);
       if (!validation_errors.empty())
       {
         errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());

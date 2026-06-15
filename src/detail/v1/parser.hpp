@@ -38,11 +38,11 @@ namespace mechanism_configuration::v1
     /// @return The combined inline node, or the collected structural / file-loading errors.
     std::expected<YAML::Node, Errors> ResolveFileConfig(const std::filesystem::path& config_path);
 
-    /// @brief Validates mechanism YAML node.
+    /// @brief Checks the structural schema of a mechanism YAML node.
     /// @param object The YAML node to validate
     /// @param read_from_config_file Whether to use the provided config path or the default
     /// @return A collection of validation errors; empty if the node is valid
-    Errors Validate(const YAML::Node& object, bool read_from_config_file = true);
+    Errors CheckSchema(const YAML::Node& object, bool read_from_config_file = true);
 
     /// @brief Constructs a Mechanism object from the provided YAML node
     /// @note Must be called only after successful validation

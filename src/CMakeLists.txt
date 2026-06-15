@@ -30,7 +30,7 @@ target_sources(mechanism_configuration
     errors.cpp
     parse.cpp
     validate.cpp
-    validate_schema.cpp
+    check_schema.cpp
 )
 
 target_include_directories(mechanism_configuration

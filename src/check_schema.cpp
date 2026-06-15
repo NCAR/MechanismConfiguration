@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/format_compat.hpp>
-#include "detail/validate_schema.hpp"
+#include "detail/check_schema.hpp"
 
 #include <iostream>
 
 namespace mechanism_configuration
 {
-  Errors ValidateSchema(
+  Errors CheckSchema(
       const YAML::Node& object,
       const std::vector<std::string_view>& required_keys,
       const std::vector<std::string_view>& optional_keys,
