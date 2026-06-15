@@ -89,5 +89,26 @@ namespace mechanism_configuration
       return errors;
     }
 
+    void PhotolysisParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::Photolysis photolysis;
+
+      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
+      photolysis.reactants = ParseReactionComponent(object, validation::reactants);
+      photolysis.products = ParseReactionComponents(object, validation::products);
+      photolysis.unknown_properties = GetComments(object);
+
+      if (object[validation::scaling_factor])
+      {
+        photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
+      }
+      if (object[validation::name])
+      {
+        photolysis.name = object[validation::name].as<std::string>();
+      }
+
+      reactions.photolysis.emplace_back(std::move(photolysis));
+    }
+
   }  // namespace v1
 }  // namespace mechanism_configuration

@@ -91,5 +91,30 @@ namespace mechanism_configuration
       // version-neutral ValidateSemantics over the canonical Mechanism.
       return errors;
     }
+    void SurfaceParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::Surface surface;
+
+      surface.gas_phase = object[validation::gas_phase].as<std::string>();
+      if (object[validation::condensed_phase])
+      {
+        surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+      }
+      surface.gas_phase_species = ParseReactionComponent(object, validation::gas_phase_species);
+      surface.gas_phase_products = ParseReactionComponents(object, validation::gas_phase_products);
+      surface.unknown_properties = GetComments(object);
+
+      if (object[validation::reaction_probability])
+      {
+        surface.reaction_probability = object[validation::reaction_probability].as<double>();
+      }
+      if (object[validation::name])
+      {
+        surface.name = object[validation::name].as<std::string>();
+      }
+
+      reactions.surface.emplace_back(std::move(surface));
+    }
+
   }  // namespace v1
 }  // namespace mechanism_configuration

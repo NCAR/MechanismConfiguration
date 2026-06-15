@@ -8,21 +8,20 @@
 #include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <detail/check_schema.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Checks the structural schema of a YAML-defined User-defined reaction entry
+    /// @brief Checks the structural schema of a YAML-defined Ternary ChemicalActivation reaction entry
     ///        Performs structural (schema) validation only;
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species Unused; semantic checks live in ValidateSemantics
     /// @param existing_phases Unused; semantic checks live in ValidateSemantics
     /// @return A list of validation errors, if any
-    Errors UserDefinedParser::CheckSchema(
+    Errors TernaryChemicalActivationParser::CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
@@ -30,8 +29,9 @@ namespace mechanism_configuration
       std::vector<std::string_view> required_keys = {
         validation::reactants, validation::products, validation::type, validation::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
-
+      std::vector<std::string_view> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B,
+                                                 validation::k0_C,   validation::kinf_A, validation::kinf_B,
+                                                 validation::kinf_C, validation::Fc,     validation::N };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -58,6 +58,55 @@ namespace mechanism_configuration
       // Semantic checks are performed by the version-neutral ValidateSemantics.
 
       return errors;
+    }
+
+    void TernaryChemicalActivationParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::TernaryChemicalActivation ternary;
+
+      ternary.gas_phase = object[validation::gas_phase].as<std::string>();
+      ternary.reactants = ParseReactionComponents(object, validation::reactants);
+      ternary.products = ParseReactionComponents(object, validation::products);
+      ternary.unknown_properties = GetComments(object);
+
+      if (object[validation::k0_A])
+      {
+        ternary.k0_A = object[validation::k0_A].as<double>();
+      }
+      if (object[validation::k0_B])
+      {
+        ternary.k0_B = object[validation::k0_B].as<double>();
+      }
+      if (object[validation::k0_C])
+      {
+        ternary.k0_C = object[validation::k0_C].as<double>();
+      }
+      if (object[validation::kinf_A])
+      {
+        ternary.kinf_A = object[validation::kinf_A].as<double>();
+      }
+      if (object[validation::kinf_B])
+      {
+        ternary.kinf_B = object[validation::kinf_B].as<double>();
+      }
+      if (object[validation::kinf_C])
+      {
+        ternary.kinf_C = object[validation::kinf_C].as<double>();
+      }
+      if (object[validation::Fc])
+      {
+        ternary.Fc = object[validation::Fc].as<double>();
+      }
+      if (object[validation::N])
+      {
+        ternary.N = object[validation::N].as<double>();
+      }
+      if (object[validation::name])
+      {
+        ternary.name = object[validation::name].as<std::string>();
+      }
+
+      reactions.ternary_chemical_activation.emplace_back(std::move(ternary));
     }
 
   }  // namespace v1

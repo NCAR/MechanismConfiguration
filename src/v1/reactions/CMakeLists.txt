@@ -1,2 +1,15 @@
-add_subdirectory(parsers)
-add_subdirectory(schema)
+target_sources(mechanism_configuration
+  PRIVATE
+    arrhenius.cpp
+    branched.cpp
+    emission.cpp
+    first_order_loss.cpp
+    photolysis.cpp
+    surface.cpp
+    taylor_series.cpp
+    ternary_chemical_activation.cpp
+    troe.cpp
+    tunneling.cpp
+    user_defined.cpp
+    lambda_rate_constant.cpp
+)

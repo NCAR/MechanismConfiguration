@@ -2,7 +2,6 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <detail/constants.hpp>
 #include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
 #include <detail/v1/type_parsers.hpp>
@@ -16,23 +15,22 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Checks the structural schema of a YAML-defined Arrhenius reaction entry
-    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
-    ///        and collects any structural errors found.
+    /// @brief Checks the structural schema of a YAML-defined Lambda Rate Constant reaction entry
+    ///        Performs structural (schema) validation only;
+    ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species Unused; semantic checks live in ValidateSemantics
     /// @param existing_phases Unused; semantic checks live in ValidateSemantics
     /// @return A list of validation errors, if any
-    Errors ArrheniusParser::CheckSchema(
+    Errors LambdaRateConstantParser::CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        validation::reactants, validation::products, validation::type, validation::gas_phase, validation::lambda_function
       };
-      std::vector<std::string_view> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
-                                                 validation::E, validation::Ea, validation::name };
+      std::vector<std::string_view> optional_keys = { validation::name };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -56,22 +54,27 @@ namespace mechanism_configuration
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      if (object[validation::Ea] && object[validation::C])
+      // Semantic checks are performed by the version-neutral ValidateSemantics.
+
+      return errors;
+    }
+
+    void LambdaRateConstantParser::Parse(const YAML::Node& object, types::Reactions& reactions)
+    {
+      types::LambdaRateConstant lambda_rate_constant;
+
+      lambda_rate_constant.reactants = ParseReactionComponents(object, validation::reactants);
+      lambda_rate_constant.products = ParseReactionComponents(object, validation::products);
+      lambda_rate_constant.gas_phase = object[validation::gas_phase].as<std::string>();
+      lambda_rate_constant.lambda_function = object[validation::lambda_function].as<std::string>();
+      lambda_rate_constant.unknown_properties = GetComments(object);
+
+      if (object[validation::name])
       {
-        const auto& node = object[validation::Ea];
-        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
-        std::string message = mc_fmt::format(
-            "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
-            error_location,
-            object[validation::type].as<std::string>());
-
-        errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
+        lambda_rate_constant.name = object[validation::name].as<std::string>();
       }
 
-      // Semantic checks (species existence, phase membership) are performed by the
-      // version-neutral ValidateSemantics over the canonical Mechanism.
-      return errors;
+      reactions.lambda_rate_constant.emplace_back(std::move(lambda_rate_constant));
     }
 
   }  // namespace v1
