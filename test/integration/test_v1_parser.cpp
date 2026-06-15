@@ -18,9 +18,7 @@ namespace
   // Parses an in-memory v1 document through the engine (validate, then build).
   std::expected<Mechanism, Errors> ParseString(const std::string& content)
   {
-    YAML::Node node = YAML::Load(content);
-    v1::Parser parser;
-    return parser.Parse(node);
+    return v1::Parser{}.Parse(content);
   }
 
   const std::string kYamlConfig = R"(

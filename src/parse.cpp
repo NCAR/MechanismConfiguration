@@ -64,24 +64,7 @@ namespace mechanism_configuration
       case 0:
         return v0::Parser{}.Parse(config_path);
       case 1:
-      {
-        v1::Parser parser;
-        try
-        {
-          // Resolve any file-list sections (v1.1+) into a single inline node first.
-          auto object = parser.ResolveFileConfig(config_path);
-          if (!object)
-          {
-            return std::unexpected(std::move(object.error()));
-          }
-          return parser.Parse(*object);
-        }
-        catch (const std::exception& e)
-        {
-          return std::unexpected(
-              Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
-        }
-      }
+        return v1::Parser{}.Parse(config_path);
       default:
         return std::unexpected(
             Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("Unsupported version number '{}'.", version->to_string()) } });
