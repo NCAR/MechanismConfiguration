@@ -36,6 +36,8 @@ void print_errors(const Errors& errors)
 
 int main()
 {
+  int status = 0;
+
   // 1) Parse from a file (YAML or JSON; v0 or v1). Returns std::expected<Mechanism, Errors>
   //    with both structural and semantic errors reported.
   if (auto parsed = parse("examples/v1/full_configuration.yaml"))
@@ -48,6 +50,7 @@ int main()
   {
     std::cerr << "Failed to parse file:\n";
     print_errors(parsed.error());
+    status = 1;
   }
 
   // 2) Build a Mechanism in code and validate it (species exist, reactants are in their
@@ -70,9 +73,10 @@ int main()
   {
     std::cerr << "In-code mechanism is invalid:\n";
     print_errors(errors);
+    status = 1;
   }
 
-  return 0;
+  return status;
 }
 ```
 
