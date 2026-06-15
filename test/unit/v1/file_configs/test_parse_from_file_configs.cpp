@@ -105,7 +105,7 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
-// version "1.3.0" : minor != 1 for file-list format : InvalidVersion
+// version "1.0.0" : file-list layout requires minor >= 1 (v1.1+) : InvalidVersion
 
 TEST(ParseFromFileConfigs, VersionMismatch)
 {
