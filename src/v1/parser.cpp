@@ -208,13 +208,8 @@ namespace mechanism_configuration::v1
     return combined;
   }
 
-  Errors Parser::CheckSchema(const YAML::Node& object, bool read_from_config_file)
+  Errors Parser::CheckSchema(const YAML::Node& object)
   {
-    if (!read_from_config_file)
-    {
-      SetDefaultConfigPath();
-    }
-
     Errors errors;
 
     std::vector<std::string_view> required_keys = {
@@ -287,17 +282,18 @@ namespace mechanism_configuration::v1
 
   std::expected<Mechanism, Errors> Parser::Parse(const std::filesystem::path& config_path)
   {
+    // ResolveFileConfig sets config_path_ so errors carry the file path.
     auto object = ResolveFileConfig(config_path);
     if (!object)
     {
       return std::unexpected(std::move(object.error()));
     }
-    return Parse(*object, /*read_from_config_file=*/true);
+    return ValidateAndBuild(*object);
   }
 
   std::expected<Mechanism, Errors> Parser::Parse(const std::string& content)
   {
-    SetDefaultConfigPath();
+    SetDefaultConfigPath();  // no file backing this document
     YAML::Node object;
     try
     {
@@ -307,14 +303,20 @@ namespace mechanism_configuration::v1
     {
       return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse document: {}", e.what()) } });
     }
-    return Parse(object, /*read_from_config_file=*/false);
+    return ValidateAndBuild(object);
   }
 
-  std::expected<Mechanism, Errors> Parser::Parse(const YAML::Node& object, bool read_from_config_file)
+  std::expected<Mechanism, Errors> Parser::Parse(const YAML::Node& object)
+  {
+    SetDefaultConfigPath();  // no file backing this node
+    return ValidateAndBuild(object);
+  }
+
+  std::expected<Mechanism, Errors> Parser::ValidateAndBuild(const YAML::Node& object)
   {
     try
     {
-      if (Errors errors = CheckSchema(object, read_from_config_file); !errors.empty())
+      if (Errors errors = CheckSchema(object); !errors.empty())
       {
         return std::unexpected(std::move(errors));
       }

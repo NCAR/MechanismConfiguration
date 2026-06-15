@@ -42,10 +42,8 @@ namespace mechanism_configuration::v1
     ///        Mechanism. Validation always runs first, so a caller cannot build from an
     ///        unvalidated node.
     /// @param object The YAML node to validate and parse
-    /// @param read_from_config_file Whether to keep the loaded config path (for error
-    ///        message prefixes) or reset it to the default
     /// @return The parsed Mechanism, or all structural and semantic errors encountered
-    std::expected<Mechanism, Errors> Parse(const YAML::Node& object, bool read_from_config_file = true);
+    std::expected<Mechanism, Errors> Parse(const YAML::Node& object);
 
    private:
     std::string config_path_;
@@ -53,8 +51,12 @@ namespace mechanism_configuration::v1
     /// @brief Resolves a configuration file's file-list sections into a single inline node.
     std::expected<YAML::Node, Errors> ResolveFileConfig(const std::filesystem::path& config_path);
 
+    /// @brief Validates `object` (structure + semantics) and builds the Mechanism, mapping any
+    ///        thrown exception to an error. Uses config_path_ (set by the caller) for messages.
+    std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
+
     /// @brief Checks the structural schema and semantic invariants of a mechanism YAML node.
-    Errors CheckSchema(const YAML::Node& object, bool read_from_config_file = true);
+    Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node.
     Mechanism Build(const YAML::Node& object);
