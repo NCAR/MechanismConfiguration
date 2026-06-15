@@ -67,8 +67,11 @@ namespace mechanism_configuration
       case 1:
         return v1::Parser{}.Parse(config_path);
       default:
-        return std::unexpected(
-            Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("Unsupported version number '{}'.", version->to_string()) } });
+        // We only reach here after successfully reading the version out of config_path, so it
+        // names a real file; prefix it so the error points at the offending document.
+        return std::unexpected(Errors{
+            { ErrorCode::InvalidVersion,
+              mc_fmt::format("{}: Unsupported version number '{}'.", config_path.string(), version->to_string()) } });
     }
   }
 
