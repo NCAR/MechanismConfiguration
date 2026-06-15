@@ -20,9 +20,6 @@ namespace
   {
     YAML::Node node = YAML::Load(content);
     v1::Parser parser;
-    auto errors = parser.CheckSchema(node, /*read_from_config_file=*/false);
-    if (!errors.empty())
-      return std::unexpected(std::move(errors));
     return parser.Parse(node);
   }
 

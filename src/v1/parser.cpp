@@ -305,7 +305,16 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  Mechanism Parser::Parse(const YAML::Node& object)
+  std::expected<Mechanism, Errors> Parser::Parse(const YAML::Node& object, bool read_from_config_file)
+  {
+    if (Errors errors = CheckSchema(object, read_from_config_file); !errors.empty())
+    {
+      return std::unexpected(std::move(errors));
+    }
+    return Build(object);
+  }
+
+  Mechanism Parser::Build(const YAML::Node& object)
   {
     Mechanism mechanism;
 

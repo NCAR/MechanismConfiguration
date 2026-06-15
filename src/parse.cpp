@@ -74,11 +74,6 @@ namespace mechanism_configuration
           {
             return std::unexpected(std::move(object.error()));
           }
-          auto errors = parser.CheckSchema(*object);
-          if (!errors.empty())
-          {
-            return std::unexpected(std::move(errors));
-          }
           return parser.Parse(*object);
         }
         catch (const std::exception& e)
