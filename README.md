@@ -3,8 +3,7 @@
 An attempt at defining a model-independent configuration schema for atmospheric chemical systems in JSON and YAML.
 
 [![GitHub Releases](https://img.shields.io/github/release/ncar/MechanismConfiguration.svg)](https://github.com/ncar/MechanismConfiguration/releases)
-[![License](https://img.shields.io/github/license/ncar/MechanismConfiguration.svg)](https://github.com/ncar/MechanismConfiguration/blob/master/LICENSE)
-[![Docs build](https://github.com/ncar/MechanismConfiguration/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/gh-pages.yml)
+[![License](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](https://github.com/NCAR/MechanismConfiguration/blob/main/LICENSE)
 [![Windows](https://github.com/ncar/MechanismConfiguration/actions/workflows/windows.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/windows.yml)
 [![Mac](https://github.com/ncar/MechanismConfiguration/actions/workflows/mac.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/mac.yml)
 [![Ubuntu](https://github.com/ncar/MechanismConfiguration/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ncar/MechanismConfiguration/actions/workflows/ubuntu.yml)
