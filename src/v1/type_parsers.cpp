@@ -5,7 +5,7 @@
 #include "detail/v1/reaction_parsers.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/utils.hpp"
-#include "detail/keys.hpp"
+#include "detail/v1/keys.hpp"
 #include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration

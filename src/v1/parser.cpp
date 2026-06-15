@@ -7,7 +7,7 @@
 #include "detail/v1/type_schema.hpp"
 #include "detail/v1/utils.hpp"
 #include "detail/check_schema.hpp"
-#include "detail/keys.hpp"
+#include "detail/v1/keys.hpp"
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>

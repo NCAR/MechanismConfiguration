@@ -6,7 +6,7 @@
 
 #include <string_view>
 
-namespace mechanism_configuration::keys
+namespace mechanism_configuration::v1::keys
 {
   // Shared, but also Mechanism
   inline constexpr std::string_view version = "version";
@@ -214,4 +214,4 @@ namespace mechanism_configuration::keys
   // name
   // phase
 
-}  // namespace mechanism_configuration::keys
+}  // namespace mechanism_configuration::v1::keys
