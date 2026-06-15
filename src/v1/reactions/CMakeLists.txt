@@ -1,2 +1,2 @@
 add_subdirectory(parsers)
-add_subdirectory(validators)
+add_subdirectory(schema)

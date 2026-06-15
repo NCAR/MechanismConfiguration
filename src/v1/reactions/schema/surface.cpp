@@ -5,7 +5,7 @@
 #include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
 #include <detail/v1/type_parsers.hpp>
-#include <detail/v1/type_validators.hpp>
+#include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>

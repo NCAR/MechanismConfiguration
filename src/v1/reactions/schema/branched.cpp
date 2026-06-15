@@ -5,7 +5,7 @@
 #include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
 #include <detail/v1/type_parsers.hpp>
-#include <detail/v1/type_validators.hpp>
+#include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
@@ -15,22 +15,26 @@ namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Checks the structural schema of a YAML-defined User-defined reaction entry
+    /// @brief Checks the structural schema of a YAML-defined Branched reaction entry
     ///        Performs structural (schema) validation only;
     ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species Unused; semantic checks live in ValidateSemantics
     /// @param existing_phases Unused; semantic checks live in ValidateSemantics
     /// @return A list of validation errors, if any
-    Errors UserDefinedParser::CheckSchema(
+    Errors BranchedParser::CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+      std::vector<std::string_view> required_keys = { validation::type,
+                                                 validation::gas_phase,
+                                                 validation::reactants,
+                                                 validation::alkoxy_products,
+                                                 validation::nitrate_products };
+      std::vector<std::string_view> optional_keys = {
+        validation::name, validation::X, validation::Y, validation::a0, validation::n
       };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
 
       Errors errors;
 
@@ -48,15 +52,22 @@ namespace mechanism_configuration
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      // Alkoxy products
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::alkoxy_products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      // Semantic checks are performed by the version-neutral ValidateSemantics.
+      // Nitrate products
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::nitrate_products]);
+      if (!schema_errors.empty())
+      {
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
 
+      // Semantic checks (species existence, phase membership) are performed by the
+      // version-neutral ValidateSemantics over the canonical Mechanism.
       return errors;
     }
 

@@ -2,28 +2,26 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <detail/constants.hpp>
 #include <detail/v1/reaction_parsers.hpp>
 #include <mechanism_configuration/types.hpp>
 #include <detail/v1/type_parsers.hpp>
-#include <detail/v1/type_validators.hpp>
+#include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <detail/check_schema.hpp>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
-    /// @brief Checks the structural schema of a YAML-defined Arrhenius reaction entry
-    ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
-    ///        and collects any structural errors found.
+    /// @brief Checks the structural schema of a YAML-defined Troe reaction entry
+    ///        Performs structural (schema) validation only;
+    ///        and collects any errors found.
     /// @param object The YAML node representing the reaction
     /// @param existing_species Unused; semantic checks live in ValidateSemantics
     /// @param existing_phases Unused; semantic checks live in ValidateSemantics
     /// @return A list of validation errors, if any
-    Errors ArrheniusParser::CheckSchema(
+    Errors TroeParser::CheckSchema(
         const YAML::Node& object,
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
@@ -31,8 +29,9 @@ namespace mechanism_configuration
       std::vector<std::string_view> required_keys = {
         validation::reactants, validation::products, validation::type, validation::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
-                                                 validation::E, validation::Ea, validation::name };
+      std::vector<std::string_view> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B,
+                                                 validation::k0_C,   validation::kinf_A, validation::kinf_B,
+                                                 validation::kinf_C, validation::Fc,     validation::N };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -56,21 +55,8 @@ namespace mechanism_configuration
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      if (object[validation::Ea] && object[validation::C])
-      {
-        const auto& node = object[validation::Ea];
-        ErrorLocation error_location{ node.Mark().line, node.Mark().column };
+      // Semantic checks are performed by the version-neutral ValidateSemantics.
 
-        std::string message = mc_fmt::format(
-            "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
-            error_location,
-            object[validation::type].as<std::string>());
-
-        errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
-      }
-
-      // Semantic checks (species existence, phase membership) are performed by the
-      // version-neutral ValidateSemantics over the canonical Mechanism.
       return errors;
     }
 
