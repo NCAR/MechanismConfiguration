@@ -36,29 +36,25 @@ namespace mechanism_configuration
                                                  validation::name, validation::taylor_coefficients };
       Errors errors;
 
-      auto validation_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
-      if (!validation_errors.empty())
+      auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
         return errors;
       }
 
-      bool is_valid = true;
-
       // Reactants
-      validation_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
-      if (!validation_errors.empty())
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      validation_errors = CheckReactantsOrProductsSchema(object[validation::products]);
-      if (!validation_errors.empty())
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       if (object[validation::Ea] && object[validation::C])
@@ -72,11 +68,7 @@ namespace mechanism_configuration
             object[validation::type].as<std::string>());
 
         errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
-        is_valid = false;
       }
-
-      if (!is_valid)
-        return errors;
 
       // Semantic checks are performed by the version-neutral ValidateSemantics.
 

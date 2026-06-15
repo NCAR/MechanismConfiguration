@@ -243,11 +243,11 @@ namespace mechanism_configuration::v1
     std::vector<std::string_view> optional_keys = { validation::name };
 
     // Return early if the required keys are not found
-    auto validation_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
-    if (!validation_errors.empty())
+    auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
+    if (!schema_errors.empty())
     {
-      AppendFilePath(config_path_, validation_errors);
-      errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+      AppendFilePath(config_path_, schema_errors);
+      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       return errors;
     }
 
@@ -265,31 +265,31 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
-    validation_errors = CheckSpeciesSchema(object[validation::species]);
-    if (!validation_errors.empty())
+    schema_errors = CheckSpeciesSchema(object[validation::species]);
+    if (!schema_errors.empty())
     {
-      AppendFilePath(config_path_, validation_errors);
-      errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+      AppendFilePath(config_path_, schema_errors);
+      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       return errors;
     }
 
     auto parsed_species = ParseSpecies(object[validation::species]);
 
-    validation_errors = CheckPhasesSchema(object[validation::phases], parsed_species);
-    if (!validation_errors.empty())
+    schema_errors = CheckPhasesSchema(object[validation::phases], parsed_species);
+    if (!schema_errors.empty())
     {
-      AppendFilePath(config_path_, validation_errors);
-      errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+      AppendFilePath(config_path_, schema_errors);
+      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       return errors;
     }
 
     auto parsed_phases = ParsePhases(object[validation::phases]);
 
-    validation_errors = CheckReactionsSchema(object[validation::reactions], parsed_species, parsed_phases);
-    if (!validation_errors.empty())
+    schema_errors = CheckReactionsSchema(object[validation::reactions], parsed_species, parsed_phases);
+    if (!schema_errors.empty())
     {
-      AppendFilePath(config_path_, validation_errors);
-      errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+      AppendFilePath(config_path_, schema_errors);
+      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       return errors;
     }
 

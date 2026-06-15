@@ -37,32 +37,28 @@ namespace mechanism_configuration
 
       Errors errors;
 
-      auto validation_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
-      if (!validation_errors.empty())
+      auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
         return errors;
       }
 
-      bool is_valid = true;
-
       // Gas phase species reactant
-      validation_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_species]);
-      if (!validation_errors.empty())
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_species]);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      validation_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_products]);
-      if (!validation_errors.empty())
+      schema_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_products]);
+      if (!schema_errors.empty())
       {
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
-        is_valid = false;
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      if (!is_valid)
+      if (!errors.empty())
         return errors;
 
       // The gas-phase species (reactant) must belong to the reaction's phase; gas-phase

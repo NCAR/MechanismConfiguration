@@ -38,8 +38,8 @@ namespace mechanism_configuration
       Errors errors;
       for (const auto& object : species_list)
       {
-        auto validation_errors = CheckSchema(object, required_keys, optional_keys);
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        auto schema_errors = CheckSchema(object, required_keys, optional_keys);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
       return errors;
     }
@@ -60,16 +60,16 @@ namespace mechanism_configuration
       Errors errors;
       for (const auto& object : AsSequence(phases_list))
       {
-        auto validation_errors = CheckSchema(object, required_keys, optional_keys);
-        errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+        auto schema_errors = CheckSchema(object, required_keys, optional_keys);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
 
         for (const auto& spec : object[validation::species])
         {
           // A bare string is shorthand for a species name and needs no schema validation.
           if (spec.IsScalar())
             continue;
-          auto species_validation_errors = CheckSchema(spec, species_required_keys, species_optional_keys);
-          errors.insert(errors.end(), species_validation_errors.begin(), species_validation_errors.end());
+          auto species_schema_errors = CheckSchema(spec, species_required_keys, species_optional_keys);
+          errors.insert(errors.end(), species_schema_errors.begin(), species_schema_errors.end());
         }
       }
       return errors;
@@ -89,10 +89,10 @@ namespace mechanism_configuration
 
       for (const auto& object : list)
       {
-        auto validation_errors = CheckSchema(object, required_keys, optional_keys, exactly_one_of);
-        if (!validation_errors.empty())
+        auto schema_errors = CheckSchema(object, required_keys, optional_keys, exactly_one_of);
+        if (!schema_errors.empty())
         {
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+          errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
         }
       }
 
@@ -105,7 +105,6 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       Errors errors;
-      bool is_valid = true;
 
       auto& parsers = GetReactionParserMap();
 
@@ -118,7 +117,6 @@ namespace mechanism_configuration
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = mc_fmt::format("{} error: Missing 'type' object in reaction.", error_location);
           errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
-          is_valid = false;
           continue;
         }
 
@@ -133,22 +131,21 @@ namespace mechanism_configuration
           std::string message = mc_fmt::format("{} error: Unknown reaction type '{}' found.", error_location, type);
 
           errors.push_back({ ErrorCode::UnknownType, message });
-          is_valid = false;
 
           continue;
         }
         valid_reactions.emplace_back(object, it->second.get());
       }
 
-      if (!is_valid)
+      if (!errors.empty())
         return errors;
 
       for (const auto& [reaction_node, parser] : valid_reactions)
       {
-        auto validation_errors = parser->CheckSchema(reaction_node, existing_species, existing_phases);
-        if (!validation_errors.empty())
+        auto schema_errors = parser->CheckSchema(reaction_node, existing_species, existing_phases);
+        if (!schema_errors.empty())
         {
-          errors.insert(errors.end(), validation_errors.begin(), validation_errors.end());
+          errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
         }
       }
 
