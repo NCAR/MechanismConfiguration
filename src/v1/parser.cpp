@@ -268,15 +268,6 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    // Structure is valid; run the version-neutral semantic checks over a located intermediate
-    // so errors carry line:col. These rules live only in ValidateSemantics.
-    auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
-    if (!semantic_errors.empty())
-    {
-      AppendFilePath(config_path_, semantic_errors);
-      errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
-    }
-
     return errors;
   }
 
@@ -316,10 +307,24 @@ namespace mechanism_configuration::v1
   {
     try
     {
-      if (Errors errors = CheckSchema(object); !errors.empty())
+      // 1) Structural (schema) validation.
+      Errors errors = CheckSchema(object);
+
+      // 2) Semantic validation — needs a structurally-valid document, so only run it when
+      //    the structure is clean. Located via BuildSemanticInput so errors carry line:col.
+      if (errors.empty())
+      {
+        auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
+        AppendFilePath(config_path_, semantic_errors);
+        errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
+      }
+
+      if (!errors.empty())
       {
         return std::unexpected(std::move(errors));
       }
+
+      // 3) Build the Mechanism (only reached when fully valid).
       return Build(object);
     }
     catch (const std::exception& e)
