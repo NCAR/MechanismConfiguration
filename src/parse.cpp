@@ -13,11 +13,20 @@
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
+#include <optional>
 #include <vector>
 
 namespace mechanism_configuration
 {
-  std::expected<Version, Errors> GetVersion(const std::filesystem::path& config_path)
+  // The detected version plus the source location of the `version` field, when the document
+  // had one (a directory or version-less document has no location).
+  struct DetectedVersion
+  {
+    Version version;
+    std::optional<ErrorLocation> location;
+  };
+
+  std::expected<DetectedVersion, Errors> GetVersion(const std::filesystem::path& config_path)
   {
     if (!std::filesystem::exists(config_path))
     {
@@ -26,7 +35,7 @@ namespace mechanism_configuration
     }
 
     if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path)) {
-      return Version(0, 0, 0);
+      return DetectedVersion{ Version(0, 0, 0), std::nullopt };
     }
 
     YAML::Node object;
@@ -45,10 +54,12 @@ namespace mechanism_configuration
     if (!object["version"])
     {
       // assume it's a v0 config
-      return Version(0, 0, 0);
+      return DetectedVersion{ Version(0, 0, 0), std::nullopt };
     }
 
-    return Version(object["version"].as<std::string>());
+    const YAML::Node version_node = object["version"];
+    return DetectedVersion{ Version(version_node.as<std::string>()),
+                            ErrorLocation{ version_node.Mark().line, version_node.Mark().column } };
   }
 
   std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path)
@@ -60,18 +71,22 @@ namespace mechanism_configuration
       return std::unexpected(std::move(version.error()));
     }
 
-    switch (version->major)
+    switch (version->version.major)
     {
       case 0:
         return v0::Parser{}.Parse(config_path);
       case 1:
         return v1::Parser{}.Parse(config_path);
       default:
-        // We only reach here after successfully reading the version out of config_path, so it
-        // names a real file; prefix it so the error points at the offending document.
-        return std::unexpected(Errors{
-            { ErrorCode::InvalidVersion,
-              mc_fmt::format("{}: Unsupported version number '{}'.", config_path.string(), version->to_string()) } });
+      {
+        // We only reach here after reading the version out of config_path, so it names a real
+        // file and the version field has a location; point the error at it (path:line:col).
+        const std::string body = version->location
+                                     ? mc_fmt::format("{} error: Unsupported version number '{}'.",
+                                                      *version->location, version->version.to_string())
+                                     : mc_fmt::format("error: Unsupported version number '{}'.", version->version.to_string());
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body } });
+      }
     }
   }
 
