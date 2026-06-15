@@ -2,7 +2,7 @@
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/validation.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
@@ -11,14 +11,14 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string_view> required = { validation::TYPE,
-                                          validation::REACTANTS,
-                                          validation::ALKOXY_PRODUCTS,
-                                          validation::NITRATE_PRODUCTS,
-                                          validation::X,
-                                          validation::Y,
-                                          validation::A0,
-                                          validation::n };
+    std::vector<std::string_view> required = { keys::TYPE,
+                                          keys::REACTANTS,
+                                          keys::ALKOXY_PRODUCTS,
+                                          keys::NITRATE_PRODUCTS,
+                                          keys::X,
+                                          keys::Y,
+                                          keys::A0,
+                                          keys::n };
 
     auto validate = CheckSchema(object, required, {});
     errors.insert(errors.end(), validate.begin(), validate.end());
@@ -28,17 +28,17 @@ namespace mechanism_configuration::v0
       std::vector<types::ReactionComponent> alkoxy_products;
       std::vector<types::ReactionComponent> nitrate_products;
 
-      auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+      auto parse_error = ParseReactants(object[keys::REACTANTS], reactants);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      parse_error = ParseProducts(object[validation::ALKOXY_PRODUCTS], alkoxy_products);
+      parse_error = ParseProducts(object[keys::ALKOXY_PRODUCTS], alkoxy_products);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      parse_error = ParseProducts(object[validation::NITRATE_PRODUCTS], nitrate_products);
+      parse_error = ParseProducts(object[keys::NITRATE_PRODUCTS], nitrate_products);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
       types::Branched parameters;
-      parameters.X = object[validation::X].as<double>();
+      parameters.X = object[keys::X].as<double>();
       // Account for the conversion of reactant concentrations to molecules cm-3
       int total_moles = 0;
       for (const auto& reactant : reactants)
@@ -46,9 +46,9 @@ namespace mechanism_configuration::v0
         total_moles += reactant.coefficient;
       }
       parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
-      parameters.Y = object[validation::Y].as<double>();
-      parameters.a0 = object[validation::A0].as<double>();
-      parameters.n = object[validation::n].as<int>();
+      parameters.Y = object[keys::Y].as<double>();
+      parameters.a0 = object[keys::A0].as<double>();
+      parameters.n = object[keys::n].as<int>();
 
       parameters.reactants = reactants;
       parameters.alkoxy_products = alkoxy_products;

@@ -27,11 +27,11 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B,
-                                                 validation::k0_C,   validation::kinf_A, validation::kinf_B,
-                                                 validation::kinf_C, validation::Fc,     validation::N };
+      std::vector<std::string_view> optional_keys = { keys::name,   keys::k0_A,   keys::k0_B,
+                                                 keys::k0_C,   keys::kinf_A, keys::kinf_B,
+                                                 keys::kinf_C, keys::Fc,     keys::N };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -42,14 +42,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -64,46 +64,46 @@ namespace mechanism_configuration
     {
       types::TernaryChemicalActivation ternary;
 
-      ternary.gas_phase = object[validation::gas_phase].as<std::string>();
-      ternary.reactants = ParseReactionComponents(object, validation::reactants);
-      ternary.products = ParseReactionComponents(object, validation::products);
+      ternary.gas_phase = object[keys::gas_phase].as<std::string>();
+      ternary.reactants = ParseReactionComponents(object, keys::reactants);
+      ternary.products = ParseReactionComponents(object, keys::products);
       ternary.unknown_properties = GetComments(object);
 
-      if (object[validation::k0_A])
+      if (object[keys::k0_A])
       {
-        ternary.k0_A = object[validation::k0_A].as<double>();
+        ternary.k0_A = object[keys::k0_A].as<double>();
       }
-      if (object[validation::k0_B])
+      if (object[keys::k0_B])
       {
-        ternary.k0_B = object[validation::k0_B].as<double>();
+        ternary.k0_B = object[keys::k0_B].as<double>();
       }
-      if (object[validation::k0_C])
+      if (object[keys::k0_C])
       {
-        ternary.k0_C = object[validation::k0_C].as<double>();
+        ternary.k0_C = object[keys::k0_C].as<double>();
       }
-      if (object[validation::kinf_A])
+      if (object[keys::kinf_A])
       {
-        ternary.kinf_A = object[validation::kinf_A].as<double>();
+        ternary.kinf_A = object[keys::kinf_A].as<double>();
       }
-      if (object[validation::kinf_B])
+      if (object[keys::kinf_B])
       {
-        ternary.kinf_B = object[validation::kinf_B].as<double>();
+        ternary.kinf_B = object[keys::kinf_B].as<double>();
       }
-      if (object[validation::kinf_C])
+      if (object[keys::kinf_C])
       {
-        ternary.kinf_C = object[validation::kinf_C].as<double>();
+        ternary.kinf_C = object[keys::kinf_C].as<double>();
       }
-      if (object[validation::Fc])
+      if (object[keys::Fc])
       {
-        ternary.Fc = object[validation::Fc].as<double>();
+        ternary.Fc = object[keys::Fc].as<double>();
       }
-      if (object[validation::N])
+      if (object[keys::N])
       {
-        ternary.N = object[validation::N].as<double>();
+        ternary.N = object[keys::N].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        ternary.name = object[validation::name].as<std::string>();
+        ternary.name = object[keys::name].as<std::string>();
       }
 
       reactions.ternary_chemical_activation.emplace_back(std::move(ternary));

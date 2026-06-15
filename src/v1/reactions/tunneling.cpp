@@ -27,9 +27,9 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::A, validation::B, validation::C };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::A, keys::B, keys::C };
 
       Errors errors;
 
@@ -41,14 +41,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -63,26 +63,26 @@ namespace mechanism_configuration
     {
       types::Tunneling tunneling;
 
-      tunneling.gas_phase = object[validation::gas_phase].as<std::string>();
-      tunneling.reactants = ParseReactionComponents(object, validation::reactants);
-      tunneling.products = ParseReactionComponents(object, validation::products);
+      tunneling.gas_phase = object[keys::gas_phase].as<std::string>();
+      tunneling.reactants = ParseReactionComponents(object, keys::reactants);
+      tunneling.products = ParseReactionComponents(object, keys::products);
       tunneling.unknown_properties = GetComments(object);
 
-      if (object[validation::A])
+      if (object[keys::A])
       {
-        tunneling.A = object[validation::A].as<double>();
+        tunneling.A = object[keys::A].as<double>();
       }
-      if (object[validation::B])
+      if (object[keys::B])
       {
-        tunneling.B = object[validation::B].as<double>();
+        tunneling.B = object[keys::B].as<double>();
       }
-      if (object[validation::C])
+      if (object[keys::C])
       {
-        tunneling.C = object[validation::C].as<double>();
+        tunneling.C = object[keys::C].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        tunneling.name = object[validation::name].as<std::string>();
+        tunneling.name = object[keys::name].as<std::string>();
       }
 
       reactions.tunneling.emplace_back(std::move(tunneling));

@@ -9,7 +9,7 @@
 #include "detail/v1/reaction_parsers.hpp"
 #include "detail/v1/type_schema.hpp"
 #include "detail/v1/utils.hpp"
-#include "detail/validation_keys.hpp"
+#include "detail/keys.hpp"
 #include "detail/check_schema.hpp"
 
 #include <string>
@@ -21,18 +21,18 @@ namespace mechanism_configuration
   {
     Errors CheckSpeciesSchema(const YAML::Node& species_list)
     {
-      const std::vector<std::string_view> required_keys = { validation::name };
-      const std::vector<std::string_view> optional_keys = { validation::absolute_tolerance,
-                                                       validation::diffusion_coefficient,
-                                                       validation::molecular_weight,
-                                                       validation::henrys_law_constant_298,
-                                                       validation::henrys_law_constant_exponential_factor,
-                                                       validation::n_star,
-                                                       validation::density,
-                                                       validation::tracer_type,
-                                                       validation::constant_concentration,
-                                                       validation::constant_mixing_ratio,
-                                                       validation::is_third_body };
+      const std::vector<std::string_view> required_keys = { keys::name };
+      const std::vector<std::string_view> optional_keys = { keys::absolute_tolerance,
+                                                       keys::diffusion_coefficient,
+                                                       keys::molecular_weight,
+                                                       keys::henrys_law_constant_298,
+                                                       keys::henrys_law_constant_exponential_factor,
+                                                       keys::n_star,
+                                                       keys::density,
+                                                       keys::tracer_type,
+                                                       keys::constant_concentration,
+                                                       keys::constant_mixing_ratio,
+                                                       keys::is_third_body };
       // Structural validation only. Duplicate-species detection (a semantic check) is performed
       // by the version-neutral ValidateSemantics.
       Errors errors;
@@ -47,11 +47,11 @@ namespace mechanism_configuration
     Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species)
     {
       // Phase
-      const std::vector<std::string_view> required_keys = { validation::name, validation::species };
+      const std::vector<std::string_view> required_keys = { keys::name, keys::species };
       const std::vector<std::string_view> optional_keys = {};
       // PhaseSpecies
-      const std::vector<std::string_view> species_required_keys = { validation::name };
-      const std::vector<std::string_view> species_optional_keys = { validation::diffusion_coefficient };
+      const std::vector<std::string_view> species_required_keys = { keys::name };
+      const std::vector<std::string_view> species_optional_keys = { keys::diffusion_coefficient };
 
       // Structural validation only. Duplicate detection, phase-species existence, and
       // phase-membership (semantic checks) are performed by the version-neutral
@@ -63,7 +63,7 @@ namespace mechanism_configuration
         auto schema_errors = CheckSchema(object, required_keys, optional_keys);
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
 
-        for (const auto& spec : object[validation::species])
+        for (const auto& spec : object[keys::species])
         {
           // A bare string is shorthand for a species name and needs no schema validation.
           if (spec.IsScalar())
@@ -78,11 +78,11 @@ namespace mechanism_configuration
     Errors CheckReactantsOrProductsSchema(const YAML::Node& list)
     {
       const std::vector<std::string_view> required_keys = {};
-      const std::vector<std::string_view> optional_keys = { validation::coefficient };
+      const std::vector<std::string_view> optional_keys = { keys::coefficient };
       // A component's species reference may use the canonical `name` or the legacy
       // `species name` alias, but exactly one of them.
       const std::vector<std::vector<std::string_view>> exactly_one_of = {
-        { validation::name, validation::species_name }
+        { keys::name, keys::species_name }
       };
 
       Errors errors;
@@ -112,7 +112,7 @@ namespace mechanism_configuration
 
       for (const auto& object : reactions_list)
       {
-        if (!object[validation::type])
+        if (!object[keys::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
           std::string message = mc_fmt::format("{} error: Missing 'type' object in reaction.", error_location);
@@ -120,12 +120,12 @@ namespace mechanism_configuration
           continue;
         }
 
-        std::string type = object[validation::type].as<std::string>();
+        std::string type = object[keys::type].as<std::string>();
 
         auto it = parsers.find(type);
         if (it == parsers.end())
         {
-          const auto& node = object[validation::type];
+          const auto& node = object[keys::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
           std::string message = mc_fmt::format("{} error: Unknown reaction type '{}' found.", error_location, type);

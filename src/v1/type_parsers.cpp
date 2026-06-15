@@ -5,7 +5,7 @@
 #include "detail/v1/reaction_parsers.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/utils.hpp"
-#include "detail/validation_keys.hpp"
+#include "detail/keys.hpp"
 #include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
@@ -19,31 +19,31 @@ namespace mechanism_configuration
       {
         types::Species species;
 
-        species.name = object[validation::name].as<std::string>();
+        species.name = object[keys::name].as<std::string>();
 
-        if (object[validation::tracer_type])
-          species.tracer_type = object[validation::tracer_type].as<std::string>();
-        if (object[validation::absolute_tolerance])
-          species.absolute_tolerance = object[validation::absolute_tolerance].as<double>();
-        if (object[validation::diffusion_coefficient])
-          species.diffusion_coefficient = object[validation::diffusion_coefficient].as<double>();
-        if (object[validation::molecular_weight])
-          species.molecular_weight = object[validation::molecular_weight].as<double>();
-        if (object[validation::henrys_law_constant_298])
-          species.henrys_law_constant_298 = object[validation::henrys_law_constant_298].as<double>();
-        if (object[validation::henrys_law_constant_exponential_factor])
+        if (object[keys::tracer_type])
+          species.tracer_type = object[keys::tracer_type].as<std::string>();
+        if (object[keys::absolute_tolerance])
+          species.absolute_tolerance = object[keys::absolute_tolerance].as<double>();
+        if (object[keys::diffusion_coefficient])
+          species.diffusion_coefficient = object[keys::diffusion_coefficient].as<double>();
+        if (object[keys::molecular_weight])
+          species.molecular_weight = object[keys::molecular_weight].as<double>();
+        if (object[keys::henrys_law_constant_298])
+          species.henrys_law_constant_298 = object[keys::henrys_law_constant_298].as<double>();
+        if (object[keys::henrys_law_constant_exponential_factor])
           species.henrys_law_constant_exponential_factor =
-              object[validation::henrys_law_constant_exponential_factor].as<double>();
-        if (object[validation::n_star])
-          species.n_star = object[validation::n_star].as<double>();
-        if (object[validation::density])
-          species.density = object[validation::density].as<double>();
-        if (object[validation::constant_concentration])
-          species.constant_concentration = object[validation::constant_concentration].as<double>();
-        if (object[validation::constant_mixing_ratio])
-          species.constant_mixing_ratio = object[validation::constant_mixing_ratio].as<double>();
-        if (object[validation::is_third_body])
-          species.is_third_body = object[validation::is_third_body].as<bool>();
+              object[keys::henrys_law_constant_exponential_factor].as<double>();
+        if (object[keys::n_star])
+          species.n_star = object[keys::n_star].as<double>();
+        if (object[keys::density])
+          species.density = object[keys::density].as<double>();
+        if (object[keys::constant_concentration])
+          species.constant_concentration = object[keys::constant_concentration].as<double>();
+        if (object[keys::constant_mixing_ratio])
+          species.constant_mixing_ratio = object[keys::constant_mixing_ratio].as<double>();
+        if (object[keys::is_third_body])
+          species.is_third_body = object[keys::is_third_body].as<bool>();
 
         species.unknown_properties = GetComments(object);
 
@@ -58,11 +58,11 @@ namespace mechanism_configuration
       for (const auto& object : objects)
       {
         types::Phase phase;
-        phase.name = object[validation::name].as<std::string>();
+        phase.name = object[keys::name].as<std::string>();
 
         std::vector<types::PhaseSpecies> species;
 
-        for (const auto& spec : object[validation::species])
+        for (const auto& spec : object[keys::species])
         {
           types::PhaseSpecies phase_species;
 
@@ -74,10 +74,10 @@ namespace mechanism_configuration
           else
           {
             // Object form: a name plus optional properties.
-            phase_species.name = spec[validation::name].as<std::string>();
-            if (spec[validation::diffusion_coefficient])
+            phase_species.name = spec[keys::name].as<std::string>();
+            if (spec[keys::diffusion_coefficient])
             {
-              phase_species.diffusion_coefficient = spec[validation::diffusion_coefficient].as<double>();
+              phase_species.diffusion_coefficient = spec[keys::diffusion_coefficient].as<double>();
             }
             phase_species.unknown_properties = GetComments(spec);
           }
@@ -106,9 +106,9 @@ namespace mechanism_configuration
         if (!elem.IsScalar())
         {
           component.unknown_properties = GetComments(elem);
-          if (elem[validation::coefficient])
+          if (elem[keys::coefficient])
           {
-            component.coefficient = elem[validation::coefficient].as<double>();
+            component.coefficient = elem[keys::coefficient].as<double>();
           }
         }
 
@@ -137,7 +137,7 @@ namespace mechanism_configuration
 
       for (const auto& object : objects)
       {
-        auto it = parsers.find(object[validation::type].as<std::string>());
+        auto it = parsers.find(object[keys::type].as<std::string>());
         if (it != parsers.end())
         {
           it->second->Parse(object, reactions);

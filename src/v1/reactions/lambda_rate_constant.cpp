@@ -28,9 +28,9 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase, validation::lambda_function
+        keys::reactants, keys::products, keys::type, keys::gas_phase, keys::lambda_function
       };
-      std::vector<std::string_view> optional_keys = { validation::name };
+      std::vector<std::string_view> optional_keys = { keys::name };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -41,14 +41,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -63,15 +63,15 @@ namespace mechanism_configuration
     {
       types::LambdaRateConstant lambda_rate_constant;
 
-      lambda_rate_constant.reactants = ParseReactionComponents(object, validation::reactants);
-      lambda_rate_constant.products = ParseReactionComponents(object, validation::products);
-      lambda_rate_constant.gas_phase = object[validation::gas_phase].as<std::string>();
-      lambda_rate_constant.lambda_function = object[validation::lambda_function].as<std::string>();
+      lambda_rate_constant.reactants = ParseReactionComponents(object, keys::reactants);
+      lambda_rate_constant.products = ParseReactionComponents(object, keys::products);
+      lambda_rate_constant.gas_phase = object[keys::gas_phase].as<std::string>();
+      lambda_rate_constant.lambda_function = object[keys::lambda_function].as<std::string>();
       lambda_rate_constant.unknown_properties = GetComments(object);
 
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        lambda_rate_constant.name = object[validation::name].as<std::string>();
+        lambda_rate_constant.name = object[keys::name].as<std::string>();
       }
 
       reactions.lambda_rate_constant.emplace_back(std::move(lambda_rate_constant));

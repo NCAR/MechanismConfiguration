@@ -27,13 +27,13 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = { validation::type,
-                                                 validation::gas_phase,
-                                                 validation::reactants,
-                                                 validation::alkoxy_products,
-                                                 validation::nitrate_products };
+      std::vector<std::string_view> required_keys = { keys::type,
+                                                 keys::gas_phase,
+                                                 keys::reactants,
+                                                 keys::alkoxy_products,
+                                                 keys::nitrate_products };
       std::vector<std::string_view> optional_keys = {
-        validation::name, validation::X, validation::Y, validation::a0, validation::n
+        keys::name, keys::X, keys::Y, keys::a0, keys::n
       };
 
       Errors errors;
@@ -46,21 +46,21 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Alkoxy products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::alkoxy_products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::alkoxy_products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Nitrate products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::nitrate_products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::nitrate_products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -75,31 +75,31 @@ namespace mechanism_configuration
     {
       types::Branched branched;
 
-      branched.gas_phase = object[validation::gas_phase].as<std::string>();
-      branched.reactants = ParseReactionComponents(object, validation::reactants);
-      branched.alkoxy_products = ParseReactionComponents(object, validation::alkoxy_products);
-      branched.nitrate_products = ParseReactionComponents(object, validation::nitrate_products);
+      branched.gas_phase = object[keys::gas_phase].as<std::string>();
+      branched.reactants = ParseReactionComponents(object, keys::reactants);
+      branched.alkoxy_products = ParseReactionComponents(object, keys::alkoxy_products);
+      branched.nitrate_products = ParseReactionComponents(object, keys::nitrate_products);
       branched.unknown_properties = GetComments(object);
 
-      if (object[validation::X])
+      if (object[keys::X])
       {
-        branched.X = object[validation::X].as<double>();
+        branched.X = object[keys::X].as<double>();
       }
-      if (object[validation::Y])
+      if (object[keys::Y])
       {
-        branched.Y = object[validation::Y].as<double>();
+        branched.Y = object[keys::Y].as<double>();
       }
-      if (object[validation::a0])
+      if (object[keys::a0])
       {
-        branched.a0 = object[validation::a0].as<double>();
+        branched.a0 = object[keys::a0].as<double>();
       }
-      if (object[validation::n])
+      if (object[keys::n])
       {
-        branched.n = object[validation::n].as<double>();
+        branched.n = object[keys::n].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        branched.name = object[validation::name].as<std::string>();
+        branched.name = object[keys::name].as<std::string>();
       }
 
       reactions.branched.emplace_back(std::move(branched));

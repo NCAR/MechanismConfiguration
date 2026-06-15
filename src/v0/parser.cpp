@@ -6,7 +6,7 @@
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/validation.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/check_schema.hpp"
 
 #include <yaml-cpp/yaml.h>
@@ -22,7 +22,7 @@ namespace mechanism_configuration::v0
     Errors errors;
     for (const auto& element : object)
     {
-      std::string type = element[validation::TYPE].as<std::string>();
+      std::string type = element[keys::TYPE].as<std::string>();
       auto it = parsers.find(type);
       if (it != parsers.end())
       {
@@ -40,15 +40,15 @@ namespace mechanism_configuration::v0
 
   Errors ParseMechanism(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
   {
-    std::vector<std::string_view> required = { validation::NAME, validation::REACTIONS, validation::TYPE };
+    std::vector<std::string_view> required = { keys::NAME, keys::REACTIONS, keys::TYPE };
 
     Errors errors;
     auto validate = CheckSchema(object, required, {});
     errors.insert(errors.end(), validate.begin(), validate.end());
     if (validate.empty())
     {
-      mechanism.name = object[validation::NAME].as<std::string>();
-      auto parse_errors = run_parsers(parsers, mechanism, object[validation::REACTIONS]);
+      mechanism.name = object[keys::NAME].as<std::string>();
+      auto parse_errors = run_parsers(parsers, mechanism, object[keys::REACTIONS]);
       errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
     }
 

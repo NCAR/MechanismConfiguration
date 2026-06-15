@@ -27,8 +27,8 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = { validation::products, validation::type, validation::gas_phase };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string_view> required_keys = { keys::products, keys::type, keys::gas_phase };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::scaling_factor };
 
       Errors errors;
 
@@ -40,7 +40,7 @@ namespace mechanism_configuration
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -55,17 +55,17 @@ namespace mechanism_configuration
     {
       types::Emission emission;
 
-      emission.gas_phase = object[validation::gas_phase].as<std::string>();
-      emission.products = ParseReactionComponents(object, validation::products);
+      emission.gas_phase = object[keys::gas_phase].as<std::string>();
+      emission.products = ParseReactionComponents(object, keys::products);
       emission.unknown_properties = GetComments(object);
 
-      if (object[validation::scaling_factor])
+      if (object[keys::scaling_factor])
       {
-        emission.scaling_factor = object[validation::scaling_factor].as<double>();
+        emission.scaling_factor = object[keys::scaling_factor].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        emission.name = object[validation::name].as<std::string>();
+        emission.name = object[keys::name].as<std::string>();
       }
 
       reactions.emission.emplace_back(std::move(emission));

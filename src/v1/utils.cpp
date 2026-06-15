@@ -6,7 +6,7 @@
 #include <mechanism_configuration/format_compat.hpp>
 
 #include "detail/v1/utils.hpp"
-#include "detail/validation_keys.hpp"
+#include "detail/keys.hpp"
 #include "detail/check_schema.hpp"
 
 #include <functional>
@@ -34,9 +34,9 @@ namespace mechanism_configuration
       // or as an object keyed by the canonical `name` or the legacy `species name`.
       if (component.IsScalar())
         return component.as<std::string>();
-      if (component[validation::name])
-        return component[validation::name].as<std::string>();
-      return component[validation::species_name].as<std::string>();
+      if (component[keys::name])
+        return component[keys::name].as<std::string>();
+      return component[keys::species_name].as<std::string>();
     }
 
     void AppendFilePath(const std::string& config_path, Errors& errors)

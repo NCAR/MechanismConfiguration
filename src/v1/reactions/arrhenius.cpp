@@ -29,10 +29,10 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::A, validation::B,  validation::C,   validation::D,
-                                                 validation::E, validation::Ea, validation::name };
+      std::vector<std::string_view> optional_keys = { keys::A, keys::B,  keys::C,   keys::D,
+                                                 keys::E, keys::Ea, keys::name };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -43,28 +43,28 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      if (object[validation::Ea] && object[validation::C])
+      if (object[keys::Ea] && object[keys::C])
       {
-        const auto& node = object[validation::Ea];
+        const auto& node = object[keys::Ea];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = mc_fmt::format(
             "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
             error_location,
-            object[validation::type].as<std::string>());
+            object[keys::type].as<std::string>());
 
         errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
       }
@@ -83,38 +83,38 @@ namespace mechanism_configuration
     {
       types::Arrhenius arrhenius;
 
-      arrhenius.gas_phase = object[validation::gas_phase].as<std::string>();
-      arrhenius.reactants = ParseReactionComponents(object, validation::reactants);
-      arrhenius.products = ParseReactionComponents(object, validation::products);
+      arrhenius.gas_phase = object[keys::gas_phase].as<std::string>();
+      arrhenius.reactants = ParseReactionComponents(object, keys::reactants);
+      arrhenius.products = ParseReactionComponents(object, keys::products);
       arrhenius.unknown_properties = GetComments(object);
 
-      if (object[validation::A])
+      if (object[keys::A])
       {
-        arrhenius.A = object[validation::A].as<double>();
+        arrhenius.A = object[keys::A].as<double>();
       }
-      if (object[validation::B])
+      if (object[keys::B])
       {
-        arrhenius.B = object[validation::B].as<double>();
+        arrhenius.B = object[keys::B].as<double>();
       }
-      if (object[validation::C])
+      if (object[keys::C])
       {
-        arrhenius.C = object[validation::C].as<double>();
+        arrhenius.C = object[keys::C].as<double>();
       }
-      if (object[validation::D])
+      if (object[keys::D])
       {
-        arrhenius.D = object[validation::D].as<double>();
+        arrhenius.D = object[keys::D].as<double>();
       }
-      if (object[validation::E])
+      if (object[keys::E])
       {
-        arrhenius.E = object[validation::E].as<double>();
+        arrhenius.E = object[keys::E].as<double>();
       }
-      if (object[validation::Ea])
+      if (object[keys::Ea])
       {
-        arrhenius.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
+        arrhenius.C = -1 * object[keys::Ea].as<double>() / constants::boltzmann;
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        arrhenius.name = object[validation::name].as<std::string>();
+        arrhenius.name = object[keys::name].as<std::string>();
       }
 
       reactions.arrhenius.emplace_back(std::move(arrhenius));

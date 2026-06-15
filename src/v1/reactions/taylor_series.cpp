@@ -29,12 +29,12 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::A,    validation::B,
-                                                 validation::C,    validation::D,
-                                                 validation::E,    validation::Ea,
-                                                 validation::name, validation::taylor_coefficients };
+      std::vector<std::string_view> optional_keys = { keys::A,    keys::B,
+                                                 keys::C,    keys::D,
+                                                 keys::E,    keys::Ea,
+                                                 keys::name, keys::taylor_coefficients };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -45,28 +45,28 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      if (object[validation::Ea] && object[validation::C])
+      if (object[keys::Ea] && object[keys::C])
       {
-        const auto& node = object[validation::Ea];
+        const auto& node = object[keys::Ea];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = mc_fmt::format(
             "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
             error_location,
-            object[validation::type].as<std::string>());
+            object[keys::type].as<std::string>());
 
         errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
       }
@@ -85,42 +85,42 @@ namespace mechanism_configuration
     {
       types::TaylorSeries taylor_series;
 
-      taylor_series.gas_phase = object[validation::gas_phase].as<std::string>();
-      taylor_series.reactants = ParseReactionComponents(object, validation::reactants);
-      taylor_series.products = ParseReactionComponents(object, validation::products);
+      taylor_series.gas_phase = object[keys::gas_phase].as<std::string>();
+      taylor_series.reactants = ParseReactionComponents(object, keys::reactants);
+      taylor_series.products = ParseReactionComponents(object, keys::products);
       taylor_series.unknown_properties = GetComments(object);
 
-      if (object[validation::A])
+      if (object[keys::A])
       {
-        taylor_series.A = object[validation::A].as<double>();
+        taylor_series.A = object[keys::A].as<double>();
       }
-      if (object[validation::B])
+      if (object[keys::B])
       {
-        taylor_series.B = object[validation::B].as<double>();
+        taylor_series.B = object[keys::B].as<double>();
       }
-      if (object[validation::C])
+      if (object[keys::C])
       {
-        taylor_series.C = object[validation::C].as<double>();
+        taylor_series.C = object[keys::C].as<double>();
       }
-      if (object[validation::D])
+      if (object[keys::D])
       {
-        taylor_series.D = object[validation::D].as<double>();
+        taylor_series.D = object[keys::D].as<double>();
       }
-      if (object[validation::E])
+      if (object[keys::E])
       {
-        taylor_series.E = object[validation::E].as<double>();
+        taylor_series.E = object[keys::E].as<double>();
       }
-      if (object[validation::Ea])
+      if (object[keys::Ea])
       {
-        taylor_series.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
+        taylor_series.C = -1 * object[keys::Ea].as<double>() / constants::boltzmann;
       }
-      if (object[validation::taylor_coefficients])
+      if (object[keys::taylor_coefficients])
       {
-        taylor_series.taylor_coefficients = object[validation::taylor_coefficients].as<std::vector<double>>();
+        taylor_series.taylor_coefficients = object[keys::taylor_coefficients].as<std::vector<double>>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        taylor_series.name = object[validation::name].as<std::string>();
+        taylor_series.name = object[keys::name].as<std::string>();
       }
 
       reactions.taylor_series.emplace_back(std::move(taylor_series));

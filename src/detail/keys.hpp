@@ -6,7 +6,7 @@
 
 #include <string_view>
 
-namespace mechanism_configuration::validation
+namespace mechanism_configuration::keys
 {
   // Shared, but also Mechanism
   inline constexpr std::string_view version = "version";
@@ -214,4 +214,4 @@ namespace mechanism_configuration::validation
   // name
   // phase
 
-}  // namespace mechanism_configuration::validation
+}  // namespace mechanism_configuration::keys

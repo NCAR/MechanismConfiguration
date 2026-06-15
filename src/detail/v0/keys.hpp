@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace mechanism_configuration::v0::validation
+namespace mechanism_configuration::v0::keys
 {
   inline constexpr std::string_view NAME = "name";
   inline constexpr std::string_view TYPE = "type";
@@ -58,4 +58,4 @@ namespace mechanism_configuration::v0::validation
   inline constexpr std::string_view KINF_B = "kinf_B";
   inline constexpr std::string_view KINF_C = "kinf_C";
   inline constexpr std::string_view FC = "Fc";
-}  // namespace mechanism_configuration::v0::validation
+}  // namespace mechanism_configuration::v0::keys

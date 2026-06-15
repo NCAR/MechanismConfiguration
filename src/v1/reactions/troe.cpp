@@ -27,11 +27,11 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name,   validation::k0_A,   validation::k0_B,
-                                                 validation::k0_C,   validation::kinf_A, validation::kinf_B,
-                                                 validation::kinf_C, validation::Fc,     validation::N };
+      std::vector<std::string_view> optional_keys = { keys::name,   keys::k0_A,   keys::k0_B,
+                                                 keys::k0_C,   keys::kinf_A, keys::kinf_B,
+                                                 keys::kinf_C, keys::Fc,     keys::N };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -42,14 +42,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -64,46 +64,46 @@ namespace mechanism_configuration
     {
       types::Troe troe;
 
-      troe.gas_phase = object[validation::gas_phase].as<std::string>();
-      troe.reactants = ParseReactionComponents(object, validation::reactants);
-      troe.products = ParseReactionComponents(object, validation::products);
+      troe.gas_phase = object[keys::gas_phase].as<std::string>();
+      troe.reactants = ParseReactionComponents(object, keys::reactants);
+      troe.products = ParseReactionComponents(object, keys::products);
       troe.unknown_properties = GetComments(object);
 
-      if (object[validation::k0_A])
+      if (object[keys::k0_A])
       {
-        troe.k0_A = object[validation::k0_A].as<double>();
+        troe.k0_A = object[keys::k0_A].as<double>();
       }
-      if (object[validation::k0_B])
+      if (object[keys::k0_B])
       {
-        troe.k0_B = object[validation::k0_B].as<double>();
+        troe.k0_B = object[keys::k0_B].as<double>();
       }
-      if (object[validation::k0_C])
+      if (object[keys::k0_C])
       {
-        troe.k0_C = object[validation::k0_C].as<double>();
+        troe.k0_C = object[keys::k0_C].as<double>();
       }
-      if (object[validation::kinf_A])
+      if (object[keys::kinf_A])
       {
-        troe.kinf_A = object[validation::kinf_A].as<double>();
+        troe.kinf_A = object[keys::kinf_A].as<double>();
       }
-      if (object[validation::kinf_B])
+      if (object[keys::kinf_B])
       {
-        troe.kinf_B = object[validation::kinf_B].as<double>();
+        troe.kinf_B = object[keys::kinf_B].as<double>();
       }
-      if (object[validation::kinf_C])
+      if (object[keys::kinf_C])
       {
-        troe.kinf_C = object[validation::kinf_C].as<double>();
+        troe.kinf_C = object[keys::kinf_C].as<double>();
       }
-      if (object[validation::Fc])
+      if (object[keys::Fc])
       {
-        troe.Fc = object[validation::Fc].as<double>();
+        troe.Fc = object[keys::Fc].as<double>();
       }
-      if (object[validation::N])
+      if (object[keys::N])
       {
-        troe.N = object[validation::N].as<double>();
+        troe.N = object[keys::N].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        troe.name = object[validation::name].as<std::string>();
+        troe.name = object[keys::name].as<std::string>();
       }
 
       reactions.troe.emplace_back(std::move(troe));

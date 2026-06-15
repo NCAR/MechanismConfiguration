@@ -28,9 +28,9 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::scaling_factor };
 
       Errors errors;
 
@@ -42,14 +42,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -64,19 +64,19 @@ namespace mechanism_configuration
     {
       types::UserDefined user_defined;
 
-      user_defined.reactants = ParseReactionComponents(object, validation::reactants);
-      user_defined.products = ParseReactionComponents(object, validation::products);
-      user_defined.gas_phase = object[validation::gas_phase].as<std::string>();
+      user_defined.reactants = ParseReactionComponents(object, keys::reactants);
+      user_defined.products = ParseReactionComponents(object, keys::products);
+      user_defined.gas_phase = object[keys::gas_phase].as<std::string>();
       user_defined.unknown_properties = GetComments(object);
 
-      if (object[validation::scaling_factor])
+      if (object[keys::scaling_factor])
       {
-        user_defined.scaling_factor = object[validation::scaling_factor].as<double>();
+        user_defined.scaling_factor = object[keys::scaling_factor].as<double>();
       }
 
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        user_defined.name = object[validation::name].as<std::string>();
+        user_defined.name = object[keys::name].as<std::string>();
       }
 
       reactions.user_defined.emplace_back(std::move(user_defined));

@@ -7,7 +7,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types.hpp>
 
-#include <detail/validation_keys.hpp>
+#include <detail/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <vector>
@@ -175,18 +175,18 @@ namespace mechanism_configuration::v1
     static std::map<std::string, std::unique_ptr<IReactionParser>> reaction_parsers = []
     {
       std::map<std::string, std::unique_ptr<IReactionParser>> map;
-      map[std::string(validation::Arrhenius_key)] = std::make_unique<ArrheniusParser>();
-      map[std::string(validation::FirstOrderLoss_key)] = std::make_unique<FirstOrderLossParser>();
-      map[std::string(validation::Emission_key)] = std::make_unique<EmissionParser>();
-      map[std::string(validation::Photolysis_key)] = std::make_unique<PhotolysisParser>();
-      map[std::string(validation::Surface_key)] = std::make_unique<SurfaceParser>();
-      map[std::string(validation::TaylorSeries_key)] = std::make_unique<TaylorSeriesParser>();
-      map[std::string(validation::Tunneling_key)] = std::make_unique<TunnelingParser>();
-      map[std::string(validation::Branched_key)] = std::make_unique<BranchedParser>();
-      map[std::string(validation::Troe_key)] = std::make_unique<TroeParser>();
-      map[std::string(validation::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
-      map[std::string(validation::UserDefined_key)] = std::make_unique<UserDefinedParser>();
-      map[std::string(validation::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
+      map[std::string(keys::Arrhenius_key)] = std::make_unique<ArrheniusParser>();
+      map[std::string(keys::FirstOrderLoss_key)] = std::make_unique<FirstOrderLossParser>();
+      map[std::string(keys::Emission_key)] = std::make_unique<EmissionParser>();
+      map[std::string(keys::Photolysis_key)] = std::make_unique<PhotolysisParser>();
+      map[std::string(keys::Surface_key)] = std::make_unique<SurfaceParser>();
+      map[std::string(keys::TaylorSeries_key)] = std::make_unique<TaylorSeriesParser>();
+      map[std::string(keys::Tunneling_key)] = std::make_unique<TunnelingParser>();
+      map[std::string(keys::Branched_key)] = std::make_unique<BranchedParser>();
+      map[std::string(keys::Troe_key)] = std::make_unique<TroeParser>();
+      map[std::string(keys::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
+      map[std::string(keys::UserDefined_key)] = std::make_unique<UserDefinedParser>();
+      map[std::string(keys::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
       return map;
     }();
 

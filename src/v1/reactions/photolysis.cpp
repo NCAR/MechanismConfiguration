@@ -28,9 +28,9 @@ namespace mechanism_configuration
         const std::vector<types::Phase>& existing_phases)
     {
       std::vector<std::string_view> required_keys = {
-        validation::reactants, validation::products, validation::type, validation::gas_phase
+        keys::reactants, keys::products, keys::type, keys::gas_phase
       };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::scaling_factor };
 
       Errors errors;
 
@@ -42,14 +42,14 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -60,7 +60,7 @@ namespace mechanism_configuration
 
       // Reactants must belong to the reaction's phase; products may reference any phase.
       std::vector<std::pair<types::ReactionComponent, YAML::Node>> reactant_node_pairs;
-      for (const auto& obj : object[validation::reactants])
+      for (const auto& obj : object[keys::reactants])
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(obj);
@@ -72,13 +72,13 @@ namespace mechanism_configuration
       // This must be done before collecting errors from the products
       if (species_node_pairs.size() > 1)
       {
-        const auto& node = object[validation::reactants];
+        const auto& node = object[keys::reactants];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one reactant, but {} were provided.",
             error_location,
-            object[validation::type].as<std::string>(),
+            object[keys::type].as<std::string>(),
             species_node_pairs.size());
 
         errors.push_back({ ErrorCode::TooManyReactionComponents, message });
@@ -93,18 +93,18 @@ namespace mechanism_configuration
     {
       types::Photolysis photolysis;
 
-      photolysis.gas_phase = object[validation::gas_phase].as<std::string>();
-      photolysis.reactants = ParseReactionComponent(object, validation::reactants);
-      photolysis.products = ParseReactionComponents(object, validation::products);
+      photolysis.gas_phase = object[keys::gas_phase].as<std::string>();
+      photolysis.reactants = ParseReactionComponent(object, keys::reactants);
+      photolysis.products = ParseReactionComponents(object, keys::products);
       photolysis.unknown_properties = GetComments(object);
 
-      if (object[validation::scaling_factor])
+      if (object[keys::scaling_factor])
       {
-        photolysis.scaling_factor = object[validation::scaling_factor].as<double>();
+        photolysis.scaling_factor = object[keys::scaling_factor].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        photolysis.name = object[validation::name].as<std::string>();
+        photolysis.name = object[keys::name].as<std::string>();
       }
 
       reactions.photolysis.emplace_back(std::move(photolysis));

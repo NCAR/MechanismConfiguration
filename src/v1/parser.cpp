@@ -7,7 +7,7 @@
 #include "detail/v1/type_schema.hpp"
 #include "detail/v1/utils.hpp"
 #include "detail/check_schema.hpp"
-#include "detail/validation_keys.hpp"
+#include "detail/keys.hpp"
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
@@ -58,41 +58,41 @@ namespace mechanism_configuration::v1
   {
     semantics::Input input;
 
-    if (object[std::string(validation::species)])
-      for (const auto& s : object[std::string(validation::species)])
+    if (object[std::string(keys::species)])
+      for (const auto& s : object[std::string(keys::species)])
         input.species.push_back({ GetReactionComponentName(s), LocationOf(s) });
 
-    if (object[std::string(validation::phases)])
-      for (const auto& phase : object[std::string(validation::phases)])
+    if (object[std::string(keys::phases)])
+      for (const auto& phase : object[std::string(keys::phases)])
       {
         semantics::PhaseRef pr;
-        pr.name = phase[std::string(validation::name)].as<std::string>();
+        pr.name = phase[std::string(keys::name)].as<std::string>();
         pr.location = LocationOf(phase);
-        if (phase[std::string(validation::species)])
-          for (const auto& ps : phase[std::string(validation::species)])
+        if (phase[std::string(keys::species)])
+          for (const auto& ps : phase[std::string(keys::species)])
             pr.species.push_back({ GetReactionComponentName(ps), LocationOf(ps) });
         input.phases.push_back(std::move(pr));
       }
 
-    if (object[std::string(validation::reactions)])
-      for (const auto& reaction : object[std::string(validation::reactions)])
+    if (object[std::string(keys::reactions)])
+      for (const auto& reaction : object[std::string(keys::reactions)])
       {
         semantics::ReactionRef rr;
-        if (reaction[std::string(validation::type)])
-          rr.type = reaction[std::string(validation::type)].as<std::string>();
-        if (reaction[std::string(validation::gas_phase)])
+        if (reaction[std::string(keys::type)])
+          rr.type = reaction[std::string(keys::type)].as<std::string>();
+        if (reaction[std::string(keys::gas_phase)])
         {
-          rr.phase = reaction[std::string(validation::gas_phase)].as<std::string>();
-          rr.phase_location = LocationOf(reaction[std::string(validation::gas_phase)]);
+          rr.phase = reaction[std::string(keys::gas_phase)].as<std::string>();
+          rr.phase_location = LocationOf(reaction[std::string(keys::gas_phase)]);
         }
         // Reactant-like keys (must be in the reaction's phase).
-        CollectComponents(reaction, validation::reactants, rr.reactants);
-        CollectComponents(reaction, validation::gas_phase_species, rr.reactants);
+        CollectComponents(reaction, keys::reactants, rr.reactants);
+        CollectComponents(reaction, keys::gas_phase_species, rr.reactants);
         // Product-like keys (may reference any phase).
-        CollectComponents(reaction, validation::products, rr.products);
-        CollectComponents(reaction, validation::alkoxy_products, rr.products);
-        CollectComponents(reaction, validation::nitrate_products, rr.products);
-        CollectComponents(reaction, validation::gas_phase_products, rr.products);
+        CollectComponents(reaction, keys::products, rr.products);
+        CollectComponents(reaction, keys::alkoxy_products, rr.products);
+        CollectComponents(reaction, keys::nitrate_products, rr.products);
+        CollectComponents(reaction, keys::gas_phase_products, rr.products);
         input.reactions.push_back(std::move(rr));
       }
 
@@ -125,13 +125,13 @@ namespace mechanism_configuration::v1
 
     Errors errors;
     const std::filesystem::path base_dir = config_path.parent_path();
-    const Version version = object[validation::version] ? Version(object[validation::version].as<std::string>()) : Version();
+    const Version version = object[keys::version] ? Version(object[keys::version].as<std::string>()) : Version();
 
     YAML::Node combined;
-    if (object[validation::version])
-      combined[std::string(validation::version)] = object[validation::version];
-    if (object[validation::name])
-      combined[std::string(validation::name)] = object[validation::name];
+    if (object[keys::version])
+      combined[std::string(keys::version)] = object[keys::version];
+    if (object[keys::name])
+      combined[std::string(keys::name)] = object[keys::name];
 
     // Loads and concatenates every file referenced under `<entity>.files`.
     auto load_files = [&](std::string_view entity) -> YAML::Node
@@ -180,12 +180,12 @@ namespace mechanism_configuration::v1
       }
     };
     // A file-list layout requires minor version >= 1; check before loading any files.
-    const bool uses_filelist = (object[std::string(validation::species)] &&
-                                GetEntityFormat(object[std::string(validation::species)]) == EntityFormat::FileList) ||
-                               (object[std::string(validation::phases)] &&
-                                GetEntityFormat(object[std::string(validation::phases)]) == EntityFormat::FileList) ||
-                               (object[std::string(validation::reactions)] &&
-                                GetEntityFormat(object[std::string(validation::reactions)]) == EntityFormat::FileList);
+    const bool uses_filelist = (object[std::string(keys::species)] &&
+                                GetEntityFormat(object[std::string(keys::species)]) == EntityFormat::FileList) ||
+                               (object[std::string(keys::phases)] &&
+                                GetEntityFormat(object[std::string(keys::phases)]) == EntityFormat::FileList) ||
+                               (object[std::string(keys::reactions)] &&
+                                GetEntityFormat(object[std::string(keys::reactions)]) == EntityFormat::FileList);
     if (uses_filelist && version.minor < 1)
     {
       errors.push_back(
@@ -195,9 +195,9 @@ namespace mechanism_configuration::v1
       return std::unexpected(std::move(errors));
     }
 
-    resolve_section(validation::species);
-    resolve_section(validation::phases);
-    resolve_section(validation::reactions);
+    resolve_section(keys::species);
+    resolve_section(keys::phases);
+    resolve_section(keys::reactions);
 
     if (!errors.empty())
     {
@@ -213,9 +213,9 @@ namespace mechanism_configuration::v1
     Errors errors;
 
     std::vector<std::string_view> required_keys = {
-      validation::version, validation::species, validation::phases, validation::reactions
+      keys::version, keys::species, keys::phases, keys::reactions
     };
-    std::vector<std::string_view> optional_keys = { validation::name };
+    std::vector<std::string_view> optional_keys = { keys::name };
 
     // Return early if the required keys are not found
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -227,10 +227,10 @@ namespace mechanism_configuration::v1
     }
 
     constexpr unsigned int MAJOR_VERSION = 1;
-    Version version = Version(object[validation::version].as<std::string>());
+    Version version = Version(object[keys::version].as<std::string>());
     if (version.major != MAJOR_VERSION)
     {
-      ErrorLocation error_location{ object[validation::version].Mark().line, object[validation::version].Mark().column };
+      ErrorLocation error_location{ object[keys::version].Mark().line, object[keys::version].Mark().column };
 
       std::string message = mc_fmt::format(
           "{} error: The version must be '{}' but the invalid version number '{}' found.",
@@ -240,7 +240,7 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
-    schema_errors = CheckSpeciesSchema(object[validation::species]);
+    schema_errors = CheckSpeciesSchema(object[keys::species]);
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -248,9 +248,9 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_species = ParseSpecies(object[validation::species]);
+    auto parsed_species = ParseSpecies(object[keys::species]);
 
-    schema_errors = CheckPhasesSchema(object[validation::phases], parsed_species);
+    schema_errors = CheckPhasesSchema(object[keys::phases], parsed_species);
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -258,9 +258,9 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_phases = ParsePhases(object[validation::phases]);
+    auto parsed_phases = ParsePhases(object[keys::phases]);
 
-    schema_errors = CheckReactionsSchema(object[validation::reactions], parsed_species, parsed_phases);
+    schema_errors = CheckReactionsSchema(object[keys::reactions], parsed_species, parsed_phases);
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -339,14 +339,14 @@ namespace mechanism_configuration::v1
   {
     Mechanism mechanism;
 
-    mechanism.version = Version(object[validation::version].as<std::string>());
-    mechanism.species = ParseSpecies(object[validation::species]);
-    mechanism.phases = ParsePhases(object[validation::phases]);
-    mechanism.reactions = ParseReactions(object[validation::reactions]);
+    mechanism.version = Version(object[keys::version].as<std::string>());
+    mechanism.species = ParseSpecies(object[keys::species]);
+    mechanism.phases = ParsePhases(object[keys::phases]);
+    mechanism.reactions = ParseReactions(object[keys::reactions]);
 
-    if (object[validation::name])
+    if (object[keys::name])
     {
-      mechanism.name = object[validation::name].as<std::string>();
+      mechanism.name = object[keys::name].as<std::string>();
     }
 
     return mechanism;

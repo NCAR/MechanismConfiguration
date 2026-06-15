@@ -1,7 +1,7 @@
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/validation.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
@@ -10,8 +10,8 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string_view> required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
-    std::vector<std::string_view> optional = { validation::A, validation::B, validation::C };
+    std::vector<std::string_view> required = { keys::TYPE, keys::REACTANTS, keys::PRODUCTS };
+    std::vector<std::string_view> optional = { keys::A, keys::B, keys::C };
 
     auto validate = CheckSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());
@@ -20,16 +20,16 @@ namespace mechanism_configuration::v0
       std::vector<types::ReactionComponent> reactants;
       std::vector<types::ReactionComponent> products;
 
-      auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+      auto parse_error = ParseReactants(object[keys::REACTANTS], reactants);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      parse_error = ParseProducts(object[validation::PRODUCTS], products);
+      parse_error = ParseProducts(object[keys::PRODUCTS], products);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
       types::Tunneling parameters;
-      if (object[validation::A])
+      if (object[keys::A])
       {
-        parameters.A = object[validation::A].as<double>();
+        parameters.A = object[keys::A].as<double>();
       }
       // Account for the conversion of reactant concentrations to molecules cm-3
       int total_moles = 0;
@@ -38,13 +38,13 @@ namespace mechanism_configuration::v0
         total_moles += reactant.coefficient;
       }
       parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
-      if (object[validation::B])
+      if (object[keys::B])
       {
-        parameters.B = object[validation::B].as<double>();
+        parameters.B = object[keys::B].as<double>();
       }
-      if (object[validation::C])
+      if (object[keys::C])
       {
-        parameters.C = object[validation::C].as<double>();
+        parameters.C = object[keys::C].as<double>();
       }
 
       parameters.reactants = reactants;

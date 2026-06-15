@@ -1,7 +1,7 @@
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/validation.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
@@ -10,9 +10,9 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string_view> required = { validation::TYPE, validation::REACTANTS, validation::PRODUCTS };
-    std::vector<std::string_view> optional = { validation::A, validation::B,  validation::C,          validation::D,
-                                          validation::E, validation::Ea, validation::MUSICA_NAME };
+    std::vector<std::string_view> required = { keys::TYPE, keys::REACTANTS, keys::PRODUCTS };
+    std::vector<std::string_view> optional = { keys::A, keys::B,  keys::C,          keys::D,
+                                          keys::E, keys::Ea, keys::MUSICA_NAME };
 
     auto validate = CheckSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());
@@ -21,16 +21,16 @@ namespace mechanism_configuration::v0
       std::vector<types::ReactionComponent> reactants;
       std::vector<types::ReactionComponent> products;
 
-      auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+      auto parse_error = ParseReactants(object[keys::REACTANTS], reactants);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      parse_error = ParseProducts(object[validation::PRODUCTS], products);
+      parse_error = ParseProducts(object[keys::PRODUCTS], products);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
       types::Arrhenius parameters;
-      if (object[validation::A])
+      if (object[keys::A])
       {
-        parameters.A = object[validation::A].as<double>();
+        parameters.A = object[keys::A].as<double>();
       }
       int total_moles = 0;
       for (const auto& reactant : reactants)
@@ -38,35 +38,35 @@ namespace mechanism_configuration::v0
         total_moles += reactant.coefficient;
       }
       parameters.A *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
-      if (object[validation::B])
+      if (object[keys::B])
       {
-        parameters.B = object[validation::B].as<double>();
+        parameters.B = object[keys::B].as<double>();
       }
-      if (object[validation::C])
+      if (object[keys::C])
       {
-        parameters.C = object[validation::C].as<double>();
+        parameters.C = object[keys::C].as<double>();
       }
-      if (object[validation::D])
+      if (object[keys::D])
       {
-        parameters.D = object[validation::D].as<double>();
+        parameters.D = object[keys::D].as<double>();
       }
-      if (object[validation::E])
+      if (object[keys::E])
       {
-        parameters.E = object[validation::E].as<double>();
+        parameters.E = object[keys::E].as<double>();
       }
-      if (object[validation::Ea])
+      if (object[keys::Ea])
       {
         if (parameters.C != 0)
         {
-          std::string line = std::to_string(object[validation::Ea].Mark().line + 1);
-          std::string column = std::to_string(object[validation::Ea].Mark().column + 1);
+          std::string line = std::to_string(object[keys::Ea].Mark().line + 1);
+          std::string column = std::to_string(object[keys::Ea].Mark().column + 1);
           errors.push_back(
               { ErrorCode::MutuallyExclusiveOption, line + ":" + column + ": Cannot specify both 'C' and 'Ea'" });
         }
         else
         {
           // Calculate 'C' using 'Ea'
-          parameters.C = -1 * object[validation::Ea].as<double>() / constants::boltzmann;
+          parameters.C = -1 * object[keys::Ea].as<double>() / constants::boltzmann;
         }
       }
 

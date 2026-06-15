@@ -27,8 +27,8 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = { validation::reactants, validation::type, validation::gas_phase };
-      std::vector<std::string_view> optional_keys = { validation::name, validation::scaling_factor, validation::products };
+      std::vector<std::string_view> required_keys = { keys::reactants, keys::type, keys::gas_phase };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::scaling_factor, keys::products };
 
       Errors errors;
 
@@ -40,7 +40,7 @@ namespace mechanism_configuration
       }
 
       // Reactants
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::reactants]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::reactants]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -51,7 +51,7 @@ namespace mechanism_configuration
 
       std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs;
 
-      for (const auto& obj : object[validation::reactants])
+      for (const auto& obj : object[keys::reactants])
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(obj);
@@ -60,13 +60,13 @@ namespace mechanism_configuration
 
       if (species_node_pairs.size() > 1)
       {
-        const auto& node = object[validation::reactants];
+        const auto& node = object[keys::reactants];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one reactant, but {} were provided.",
             error_location,
-            object[validation::type].as<std::string>(),
+            object[keys::type].as<std::string>(),
             species_node_pairs.size());
 
         errors.push_back({ ErrorCode::TooManyReactionComponents, message });
@@ -81,21 +81,21 @@ namespace mechanism_configuration
     {
       types::FirstOrderLoss first_order_loss;
 
-      first_order_loss.gas_phase = object[validation::gas_phase].as<std::string>();
-      first_order_loss.reactants = ParseReactionComponent(object, validation::reactants);
-      if (object[validation::products])
+      first_order_loss.gas_phase = object[keys::gas_phase].as<std::string>();
+      first_order_loss.reactants = ParseReactionComponent(object, keys::reactants);
+      if (object[keys::products])
       {
-        first_order_loss.products = ParseReactionComponents(object, validation::products);
+        first_order_loss.products = ParseReactionComponents(object, keys::products);
       }
       first_order_loss.unknown_properties = GetComments(object);
 
-      if (object[validation::scaling_factor])
+      if (object[keys::scaling_factor])
       {
-        first_order_loss.scaling_factor = object[validation::scaling_factor].as<double>();
+        first_order_loss.scaling_factor = object[keys::scaling_factor].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        first_order_loss.name = object[validation::name].as<std::string>();
+        first_order_loss.name = object[keys::name].as<std::string>();
       }
 
       reactions.first_order_loss.emplace_back(std::move(first_order_loss));

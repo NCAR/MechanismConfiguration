@@ -1,7 +1,7 @@
 #include "detail/constants.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/validation.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
@@ -11,9 +11,9 @@ namespace mechanism_configuration::v0
     Errors errors;
 
     std::vector<std::string_view> required = {
-      validation::TYPE, validation::REACTANTS, validation::PRODUCTS, validation::MUSICA_NAME
+      keys::TYPE, keys::REACTANTS, keys::PRODUCTS, keys::MUSICA_NAME
     };
-    std::vector<std::string_view> optional = { validation::SCALING_FACTOR };
+    std::vector<std::string_view> optional = { keys::SCALING_FACTOR };
 
     auto validate = CheckSchema(object, required, optional);
     errors.insert(errors.end(), validate.begin(), validate.end());
@@ -22,15 +22,15 @@ namespace mechanism_configuration::v0
       std::vector<types::ReactionComponent> reactants;
       std::vector<types::ReactionComponent> products;
 
-      auto parse_error = ParseReactants(object[validation::REACTANTS], reactants);
+      auto parse_error = ParseReactants(object[keys::REACTANTS], reactants);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      parse_error = ParseProducts(object[validation::PRODUCTS], products);
+      parse_error = ParseProducts(object[keys::PRODUCTS], products);
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
-      double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
+      double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
-      std::string name = "USER." + object[validation::MUSICA_NAME].as<std::string>();
+      std::string name = "USER." + object[keys::MUSICA_NAME].as<std::string>();
 
       types::UserDefined user_defined = {
         .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name

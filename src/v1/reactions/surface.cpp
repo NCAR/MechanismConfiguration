@@ -27,13 +27,13 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = { validation::gas_phase_products,
-                                                 validation::gas_phase_species,
-                                                 validation::type,
-                                                 validation::gas_phase };
-      std::vector<std::string_view> optional_keys = { validation::name,
-                                                 validation::reaction_probability,
-                                                 validation::condensed_phase };
+      std::vector<std::string_view> required_keys = { keys::gas_phase_products,
+                                                 keys::gas_phase_species,
+                                                 keys::type,
+                                                 keys::gas_phase };
+      std::vector<std::string_view> optional_keys = { keys::name,
+                                                 keys::reaction_probability,
+                                                 keys::condensed_phase };
 
       Errors errors;
 
@@ -45,14 +45,14 @@ namespace mechanism_configuration
       }
 
       // Gas phase species reactant
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_species]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::gas_phase_species]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
       // Products
-      schema_errors = CheckReactantsOrProductsSchema(object[validation::gas_phase_products]);
+      schema_errors = CheckReactantsOrProductsSchema(object[keys::gas_phase_products]);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
@@ -64,7 +64,7 @@ namespace mechanism_configuration
       // The gas-phase species (reactant) must belong to the reaction's phase; gas-phase
       // products may reference any phase, so only the reactant is phase-checked below.
       std::vector<std::pair<types::ReactionComponent, YAML::Node>> reactant_node_pairs;
-      for (const auto& obj : object[validation::gas_phase_species])
+      for (const auto& obj : object[keys::gas_phase_species])
       {
         types::ReactionComponent component;
         component.name = GetReactionComponentName(obj);
@@ -75,13 +75,13 @@ namespace mechanism_configuration
       // This must be done before collecting errors from the products
       if (reactant_node_pairs.size() > 1)
       {
-        const auto& node = object[validation::gas_phase_species];
+        const auto& node = object[keys::gas_phase_species];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
         std::string message = mc_fmt::format(
             "{} error: '{}' reaction requires one reactant, but {} were provided.",
             error_location,
-            object[validation::type].as<std::string>(),
+            object[keys::type].as<std::string>(),
             reactant_node_pairs.size());
 
         errors.push_back({ ErrorCode::TooManyReactionComponents, message });
@@ -95,22 +95,22 @@ namespace mechanism_configuration
     {
       types::Surface surface;
 
-      surface.gas_phase = object[validation::gas_phase].as<std::string>();
-      if (object[validation::condensed_phase])
+      surface.gas_phase = object[keys::gas_phase].as<std::string>();
+      if (object[keys::condensed_phase])
       {
-        surface.condensed_phase = object[validation::condensed_phase].as<std::string>();
+        surface.condensed_phase = object[keys::condensed_phase].as<std::string>();
       }
-      surface.gas_phase_species = ParseReactionComponent(object, validation::gas_phase_species);
-      surface.gas_phase_products = ParseReactionComponents(object, validation::gas_phase_products);
+      surface.gas_phase_species = ParseReactionComponent(object, keys::gas_phase_species);
+      surface.gas_phase_products = ParseReactionComponents(object, keys::gas_phase_products);
       surface.unknown_properties = GetComments(object);
 
-      if (object[validation::reaction_probability])
+      if (object[keys::reaction_probability])
       {
-        surface.reaction_probability = object[validation::reaction_probability].as<double>();
+        surface.reaction_probability = object[keys::reaction_probability].as<double>();
       }
-      if (object[validation::name])
+      if (object[keys::name])
       {
-        surface.name = object[validation::name].as<std::string>();
+        surface.name = object[keys::name].as<std::string>();
       }
 
       reactions.surface.emplace_back(std::move(surface));

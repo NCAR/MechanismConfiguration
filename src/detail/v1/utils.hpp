@@ -7,7 +7,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types.hpp>
 
-#include <detail/validation_keys.hpp>
+#include <detail/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>

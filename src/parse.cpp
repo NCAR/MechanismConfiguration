@@ -9,7 +9,7 @@
 
 #include "detail/v0/parser.hpp"
 #include "detail/v1/parser.hpp"
-#include "detail/validation_keys.hpp"
+#include "detail/keys.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -41,13 +41,13 @@ namespace mechanism_configuration
           Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
     }
 
-    if (!object[validation::version])
+    if (!object[keys::version])
     {
       // assume it's a v0 config
       return Version(0, 0, 0);
     }
 
-    return Version(object[validation::version].as<std::string>());
+    return Version(object[keys::version].as<std::string>());
   }
 
   std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path)
