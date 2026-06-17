@@ -83,7 +83,7 @@ namespace mechanism_configuration::v1
         if (reaction[std::string(keys::gas_phase)])
         {
           rr.phase = reaction[std::string(keys::gas_phase)].as<std::string>();
-          rr.phase_location = LocationOf(reaction[std::string(keys::gas_phase)]);
+          rr.location = LocationOf(reaction[std::string(keys::gas_phase)]);
         }
         // Reactant-like keys (must be in the reaction's phase).
         CollectComponents(reaction, keys::reactants, rr.reactants);

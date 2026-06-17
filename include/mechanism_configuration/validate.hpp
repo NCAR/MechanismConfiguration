@@ -28,17 +28,17 @@ namespace mechanism_configuration
     struct PhaseRef
     {
       std::string name;
-      std::optional<ErrorLocation> location;
       std::vector<NamedRef> species;
+      std::optional<ErrorLocation> location;
     };
 
     struct ReactionRef
     {
       std::string type;
       std::string phase;
-      std::optional<ErrorLocation> phase_location;
       std::vector<NamedRef> reactants;  // must exist and be registered in `phase`
       std::vector<NamedRef> products;   // must exist; may belong to any phase
+      std::optional<ErrorLocation> location;
     };
 
     struct Input

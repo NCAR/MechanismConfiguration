@@ -78,7 +78,7 @@ namespace mechanism_configuration
       const bool phase_exists = phase_it != phase_species.end();
       if (!phase_exists)
         errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(reaction.phase_location,
+                           Message(reaction.location,
                                    mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
 
       for (const auto& reactant : reaction.reactants)
@@ -123,7 +123,7 @@ namespace mechanism_configuration
         std::vector<semantics::NamedRef> reactants,
         std::vector<semantics::NamedRef> products)
     {
-      return semantics::ReactionRef{ std::string(type), phase, std::nullopt, std::move(reactants), std::move(products) };
+      return semantics::ReactionRef{ std::string(type), phase, std::move(reactants), std::move(products), std::nullopt };
     }
   }  // namespace
 
@@ -136,7 +136,7 @@ namespace mechanism_configuration
 
     for (const auto& phase : mechanism.phases)
     {
-      semantics::PhaseRef pr{ phase.name, std::nullopt, {} };
+      semantics::PhaseRef pr{ phase.name, {}, std::nullopt };
       for (const auto& ps : phase.species)
         pr.species.push_back({ ps.name, std::nullopt });
       input.phases.push_back(std::move(pr));
