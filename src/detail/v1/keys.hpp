@@ -27,7 +27,6 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view molecular_weight = "molecular weight [kg mol-1]";
   inline constexpr std::string_view henrys_law_constant_298 = "HLC(298K) [mol m-3 Pa-1]";
   inline constexpr std::string_view henrys_law_constant_exponential_factor = "HLC exponential factor [K]";
-  inline constexpr std::string_view phase = "phase";
   inline constexpr std::string_view n_star = "N star";
   inline constexpr std::string_view density = "density [kg m-3]";
   inline constexpr std::string_view tracer_type = "tracer type";

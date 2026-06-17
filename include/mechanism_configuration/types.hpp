@@ -14,10 +14,21 @@
 
 namespace mechanism_configuration::types
 {
-  struct ReactionComponent
+
+  struct Species
   {
     std::string name;
-    double coefficient{ 1.0 };
+    std::optional<double> absolute_tolerance;
+    std::optional<double> diffusion_coefficient;
+    std::optional<double> molecular_weight;
+    std::optional<double> henrys_law_constant_298;
+    std::optional<double> henrys_law_constant_exponential_factor;
+    std::optional<double> n_star;
+    std::optional<double> density;
+    std::optional<std::string> tracer_type;
+    std::optional<double> constant_concentration;
+    std::optional<double> constant_mixing_ratio;
+    std::optional<bool> is_third_body;
     /// @brief Unknown properties, prefixed with two underscores (__)
     std::unordered_map<std::string, std::string> unknown_properties;
   };
@@ -34,6 +45,14 @@ namespace mechanism_configuration::types
   {
     std::string name;
     std::vector<PhaseSpecies> species;
+    /// @brief Unknown properties, prefixed with two underscores (__)
+    std::unordered_map<std::string, std::string> unknown_properties;
+  };
+
+  struct ReactionComponent
+  {
+    std::string name;
+    double coefficient{ 1.0 };
     /// @brief Unknown properties, prefixed with two underscores (__)
     std::unordered_map<std::string, std::string> unknown_properties;
   };
@@ -305,25 +324,6 @@ namespace mechanism_configuration::types
     std::vector<Tunneling> tunneling;
     std::vector<UserDefined> user_defined;
     std::vector<LambdaRateConstant> lambda_rate_constant;
-  };
-
-  struct Species
-  {
-    std::string name;
-    std::optional<double> absolute_tolerance;
-    std::optional<double> diffusion_coefficient;
-    std::optional<double> molecular_weight;
-    std::optional<double> henrys_law_constant_298;
-    std::optional<double> henrys_law_constant_exponential_factor;
-    std::optional<double> n_star;
-    std::optional<double> density;
-    std::optional<std::string> tracer_type;
-    std::optional<double> constant_concentration;
-    std::optional<double> constant_mixing_ratio;
-    std::optional<bool> is_third_body;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-    Errors validate();
   };
 
 }  // namespace mechanism_configuration
