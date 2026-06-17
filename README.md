@@ -18,7 +18,7 @@ The configuration documentation can be found [here](https://ncar.github.io/Mecha
 
 Everything goes through the canonical `mechanism_configuration::Mechanism`. You can either
 **parse** a configuration file (the version is detected and dispatched automatically), or build
-a `Mechanism` in code and **validate** it. `validate()` runs the same semantic checks the parser
+a `Mechanism` in code and **validate** it. `Validate()` runs the same semantic checks the parser
 uses, so it applies to any mechanism regardless of where it came from.
 
 ```cpp
@@ -40,7 +40,7 @@ int main()
 
   // 1) Parse from a file (YAML or JSON; v0 or v1). Returns std::expected<Mechanism, Errors>
   //    with both structural and semantic errors reported.
-  if (auto parsed = parse("examples/v1/full_configuration.yaml"))
+  if (auto parsed = Parse("examples/v1/full_configuration.yaml"))
   {
     const Mechanism& mechanism = *parsed;
     std::cout << "Parsed '" << mechanism.name << "': " << mechanism.species.size()
@@ -67,7 +67,7 @@ int main()
   reaction.products = { { .name = "B" } };   // products may reference any phase
   mechanism.reactions.arrhenius = { reaction };
 
-  if (Errors errors = validate(mechanism); errors.empty())
+  if (Errors errors = Validate(mechanism); errors.empty())
     std::cout << "In-code mechanism is valid\n";
   else
   {

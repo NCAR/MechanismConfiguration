@@ -12,9 +12,9 @@ API Changes
 ^^^^^^^^^^^
 
 - Parsing is now a free function that returns ``std::expected``:
-  ``std::expected<Mechanism, Errors> parse(const std::filesystem::path&)``.
+  ``std::expected<Mechanism, Errors> Parse(const std::filesystem::path&)``.
   The previous ``UniversalParser`` / ``ParserResult<GlobalMechanism>`` interface has been removed.
-- A version-neutral ``Errors validate(const Mechanism&)`` has been added so an in-code
+- A version-neutral ``Errors Validate(const Mechanism&)`` has been added so an in-code
   ``Mechanism`` can be checked with the same semantic rules the parser uses.
 - A single canonical ``mechanism_configuration::Mechanism`` (with ``mechanism_configuration::types::*``)
   replaces the version-specific ``v0::types::Mechanism`` and ``v1::types::Mechanism``.
@@ -88,7 +88,7 @@ New approach (2.0):
 
     using namespace mechanism_configuration;
 
-    if (auto parsed = parse("config.yaml"))
+    if (auto parsed = Parse("config.yaml"))
     {
       const Mechanism& mechanism = *parsed;
       // ...

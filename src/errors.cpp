@@ -27,10 +27,8 @@ namespace mechanism_configuration
       case ErrorCode::UnknownPhase: return "UnknownPhase";
       case ErrorCode::RequestedSpeciesNotRegisteredInPhase: return "RequestedSpeciesNotRegisteredInPhase";
       case ErrorCode::TooManyReactionComponents: return "TooManyReactionComponents";
-      case ErrorCode::InvalidIonPair: return "InvalidIonPair";
       case ErrorCode::InvalidVersion: return "InvalidVersion";
       case ErrorCode::MissingVersionField: return "MissingVersionField";
-      case ErrorCode::InvalidParameterNumber: return "InvalidParameterNumber";
       case ErrorCode::InvalidType: return "InvalidType";
       case ErrorCode::UnknownType: return "UnknownType";
       case ErrorCode::FileNotFound: return "FileNotFound";

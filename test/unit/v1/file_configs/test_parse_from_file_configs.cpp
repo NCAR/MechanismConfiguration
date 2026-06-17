@@ -21,7 +21,7 @@ const std::string configBase = "test/unit/v1/file_configs/configs/";
 
 TEST(ParseFromFileConfigs, TwoSpeciesSets)
 {
-  auto parsed = parse(configBase + "two_species_sets/main.json");
+  auto parsed = Parse(configBase + "two_species_sets/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -48,7 +48,7 @@ TEST(ParseFromFileConfigs, TwoSpeciesSets)
 
 TEST(ParseFromFileConfigs, TwoPhasesSets)
 {
-  auto parsed = parse(configBase + "two_phases_sets/main.json");
+  auto parsed = Parse(configBase + "two_phases_sets/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -68,7 +68,7 @@ TEST(ParseFromFileConfigs, TwoPhasesSets)
 
 TEST(ParseFromFileConfigs, MissingPhaseSet)
 {
-  auto parsed = parse(configBase + "missing_phase_set/main.json");
+  auto parsed = Parse(configBase + "missing_phase_set/main.json");
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
@@ -82,7 +82,7 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
 
 TEST(ParseFromFileConfigs, MissingReactionSet)
 {
-  auto parsed = parse(configBase + "missing_reaction_set/main.json");
+  auto parsed = Parse(configBase + "missing_reaction_set/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -95,7 +95,7 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
 
 TEST(ParseFromFileConfigs, MissingSpeciesSet)
 {
-  auto parsed = parse(configBase + "missing_species_set/main.json");
+  auto parsed = Parse(configBase + "missing_species_set/main.json");
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
@@ -109,7 +109,7 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
 
 TEST(ParseFromFileConfigs, VersionMismatch)
 {
-  auto parsed = parse(configBase + "version_mismatch/main.json");
+  auto parsed = Parse(configBase + "version_mismatch/main.json");
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
@@ -123,7 +123,7 @@ TEST(ParseFromFileConfigs, VersionMismatch)
 
 TEST(ParseFromFileConfigs, MixedInlineSpecies)
 {
-  auto parsed = parse(configBase + "mixed_inline_species/main.json");
+  auto parsed = Parse(configBase + "mixed_inline_species/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -145,7 +145,7 @@ TEST(ParseFromFileConfigs, MixedInlineSpecies)
 
 TEST(ParseFromFileConfigs, MixedInlineReactions)
 {
-  auto parsed = parse(configBase + "mixed_inline_reactions/main.json");
+  auto parsed = Parse(configBase + "mixed_inline_reactions/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -165,7 +165,7 @@ TEST(ParseFromFileConfigs, MixedInlineReactions)
 
 TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
 {
-  auto parsed = parse(configBase + "duplicate_species_set/main.json");
+  auto parsed = Parse(configBase + "duplicate_species_set/main.json");
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 6);

@@ -47,7 +47,7 @@ reactions:
 
 TEST(V1Parser, ParsesFullV1Configuration)
 {
-  auto parsed = parse("examples/v1/full_configuration.json");
+  auto parsed = Parse("examples/v1/full_configuration.json");
   if (!parsed)
     for (const auto& [code, message] : parsed.error())
       std::cout << message << std::endl;
@@ -77,7 +77,7 @@ TEST(V1Parser, ReportsMissingFile)
 {
   for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    auto parsed = parse("examples/_missing_configuration" + extension);
+    auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);

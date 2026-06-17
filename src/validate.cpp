@@ -127,7 +127,7 @@ namespace mechanism_configuration
     }
   }  // namespace
 
-  Errors validate(const Mechanism& mechanism)
+  Errors Validate(const Mechanism& mechanism)
   {
     semantics::Input input;
 

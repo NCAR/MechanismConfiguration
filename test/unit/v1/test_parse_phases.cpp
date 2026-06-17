@@ -9,7 +9,7 @@ TEST(ParserBase, CanParseValidPhases)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parse(std::string("v1_unit_configs/phases/valid_phases") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/phases/valid_phases") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
@@ -37,7 +37,7 @@ TEST(ParserBase, DetectsDuplicatePhases)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/duplicate_phases") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed) << "Parsing should have failed due to duplicate phases, but it succeeded.";
     EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicatePhasesDetected);
@@ -54,7 +54,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/missing_required_key") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
@@ -71,7 +71,7 @@ TEST(ParserBase, DetectsInvalidKeys)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/invalid_key") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
@@ -88,7 +88,7 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/unknown_species") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::PhaseRequiresUnknownSpecies);
@@ -105,7 +105,7 @@ TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/duplicate_species_in_phase") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicateSpeciesInPhaseDetected);
@@ -121,7 +121,7 @@ TEST(ParserBase, CanParsePhaseSpeciesProperties)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parse(std::string("v1_unit_configs/phases/phase_species_properties") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/phases/phase_species_properties") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
@@ -159,7 +159,7 @@ TEST(ParserBase, DetectsInvalidSpeciesObject)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/phases/invalid_species_object") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_GE(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);

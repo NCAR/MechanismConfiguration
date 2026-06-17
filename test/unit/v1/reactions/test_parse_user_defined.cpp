@@ -9,7 +9,7 @@ TEST(ParserBase, CanParseValidUserDefinedReaction)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parse(std::string("v1_unit_configs/reactions/user_defined/valid") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/reactions/user_defined/valid") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
@@ -46,7 +46,7 @@ TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/unknown_species") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
@@ -63,7 +63,7 @@ TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/bad_reaction_component") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
@@ -80,7 +80,7 @@ TEST(ParserBase, UserDefinedDetectsUnknownPhase)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/user_defined/missing_phase") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownPhase);

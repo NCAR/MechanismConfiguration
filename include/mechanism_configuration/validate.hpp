@@ -59,5 +59,5 @@ namespace mechanism_configuration
   ///
   /// Structural/deserialization concerns (YAML keys, types, formatting) are the responsibility
   /// of the version-specific parsers and are not repeated here.
-  Errors validate(const Mechanism& mechanism);
+  Errors Validate(const Mechanism& mechanism);
 }  // namespace mechanism_configuration

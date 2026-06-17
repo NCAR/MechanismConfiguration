@@ -9,7 +9,6 @@
 
 #include <expected>
 #include <filesystem>
-#include <string>
 
 namespace mechanism_configuration
 {
@@ -17,5 +16,5 @@ namespace mechanism_configuration
   /// @param config_path Path to a configuration file (a std::string converts implicitly),
   ///        or a directory of version-0 CAMP files.
   /// @return The parsed Mechanism, or all structural and semantic errors encountered.
-  std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path);
+  std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
 }  // namespace mechanism_configuration

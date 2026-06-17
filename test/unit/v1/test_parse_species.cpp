@@ -9,7 +9,7 @@ TEST(ParserBase, CanParseValidSpecies)
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parse(std::string("v1_unit_configs/species/valid_species") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/species/valid_species") + extension);
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
@@ -45,7 +45,7 @@ TEST(ParserBase, DetectsDuplicateSpecies)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/duplicate_species") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 4);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicateSpeciesDetected);
@@ -65,7 +65,7 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/missing_required_key") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
@@ -83,7 +83,7 @@ TEST(ParserBase, DetectsInvalidKeys)
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/invalid_key") + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);

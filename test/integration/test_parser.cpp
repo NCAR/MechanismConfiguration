@@ -16,7 +16,7 @@ TEST(Parse, ConfigurationWithoutVersionFallsBackToV0)
 {
   for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    auto parsed = parse("examples/v0/config" + extension);
+    auto parsed = Parse("examples/v0/config" + extension);
     EXPECT_TRUE(parsed);
     if (parsed)
       EXPECT_EQ(parsed->version.major, 0);
@@ -27,7 +27,7 @@ TEST(Parse, ParsesFullV1Configuration)
 {
   for (const auto& extension : { std::string(".json"), std::string(".yaml") })
   {
-    auto parsed = parse("examples/v1/full_configuration" + extension);
+    auto parsed = Parse("examples/v1/full_configuration" + extension);
     if (!parsed)
       for (const auto& [code, message] : parsed.error())
         std::cout << message << std::endl;
@@ -41,7 +41,7 @@ TEST(Parse, ReportsMissingFile)
 {
   for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    auto parsed = parse("examples/_missing_configuration" + extension);
+    auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
@@ -50,7 +50,7 @@ TEST(Parse, ReportsMissingFile)
 
 TEST(Parse, ReportsUnsupportedVersion)
 {
-  auto parsed = parse("integration_configs/invalid_version.yaml");
+  auto parsed = Parse("integration_configs/invalid_version.yaml");
   EXPECT_FALSE(parsed);
 
   bool found_invalid_version = false;
@@ -66,7 +66,7 @@ TEST(Parse, ReportsUnsupportedVersion)
 TEST(Parse, ParsesV0DirectoryConfiguration)
 {
   // A directory is treated as a version-0 (CAMP) configuration.
-  auto parsed = parse(std::filesystem::path("examples/v0/"));
+  auto parsed = Parse(std::filesystem::path("examples/v0/"));
   EXPECT_TRUE(parsed);
   if (parsed)
     EXPECT_EQ(parsed->version.major, 0);

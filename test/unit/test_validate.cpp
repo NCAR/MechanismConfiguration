@@ -63,7 +63,7 @@ TEST(Validate, AcceptsValidInCodeMechanism)
   rxn.products = { component("B") };
   m.reactions.arrhenius = { rxn };
 
-  EXPECT_TRUE(validate(m).empty());
+  EXPECT_TRUE(Validate(m).empty());
 }
 
 TEST(Validate, DetectsUnknownSpeciesInReaction)
@@ -74,7 +74,7 @@ TEST(Validate, DetectsUnknownSpeciesInReaction)
   rxn.reactants = { component("Z") };  // not in the species list
   m.reactions.arrhenius = { rxn };
 
-  auto errors = validate(m);
+  auto errors = Validate(m);
   EXPECT_TRUE(HasCode(errors, ErrorCode::ReactionRequiresUnknownSpecies));
 }
 
@@ -86,7 +86,7 @@ TEST(Validate, DetectsReactantNotInReactionPhase)
   rxn.reactants = { component("C") };  // C is known, but only in the aqueous phase
   m.reactions.arrhenius = { rxn };
 
-  auto errors = validate(m);
+  auto errors = Validate(m);
   EXPECT_TRUE(HasCode(errors, ErrorCode::RequestedSpeciesNotRegisteredInPhase));
 }
 
@@ -100,7 +100,7 @@ TEST(Validate, AllowsCrossPhaseProduct)
   rxn.products = { component("C") };  // C lives in aqueous; allowed as a product
   m.reactions.arrhenius = { rxn };
 
-  EXPECT_TRUE(validate(m).empty());
+  EXPECT_TRUE(Validate(m).empty());
 }
 
 TEST(Validate, DetectsDuplicateSpecies)
@@ -108,7 +108,7 @@ TEST(Validate, DetectsDuplicateSpecies)
   Mechanism m = BaseMechanism();
   m.species.push_back(species("A"));  // duplicate
 
-  EXPECT_TRUE(HasCode(validate(m), ErrorCode::DuplicateSpeciesDetected));
+  EXPECT_TRUE(HasCode(Validate(m), ErrorCode::DuplicateSpeciesDetected));
 }
 
 TEST(Validate, DetectsUnknownPhase)
@@ -119,5 +119,5 @@ TEST(Validate, DetectsUnknownPhase)
   rxn.reactants = { component("A") };
   m.reactions.arrhenius = { rxn };
 
-  EXPECT_TRUE(HasCode(validate(m), ErrorCode::UnknownPhase));
+  EXPECT_TRUE(HasCode(Validate(m), ErrorCode::UnknownPhase));
 }

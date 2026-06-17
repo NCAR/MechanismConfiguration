@@ -13,7 +13,7 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/valid/config" + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     if (!parsed)
     {
       for (auto& error : parsed.error())
@@ -80,7 +80,7 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 12);
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
@@ -109,7 +109,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {
@@ -124,7 +124,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
   for (auto& extension : extensions)
   {
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
-    auto parsed = parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {

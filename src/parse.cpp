@@ -62,7 +62,7 @@ namespace mechanism_configuration
                             ErrorLocation{ version_node.Mark().line, version_node.Mark().column } };
   }
 
-  std::expected<Mechanism, Errors> parse(const std::filesystem::path& config_path)
+  std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path)
   {
     auto version = GetVersion(config_path);
 
