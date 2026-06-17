@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "detail/v1/parser.hpp"
+
+#include "detail/check_schema.hpp"
+#include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/type_schema.hpp"
 #include "detail/v1/utils.hpp"
-#include "detail/check_schema.hpp"
-#include "detail/v1/keys.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
@@ -103,10 +105,9 @@ namespace mechanism_configuration::v1
   {
     if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::FileNotFound,
-                    mc_fmt::format(
-                        "Configuration file '{}' does not exist or is not a regular file.", config_path.string()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::FileNotFound,
+            mc_fmt::format("Configuration file '{}' does not exist or is not a regular file.", config_path.string()) } });
     }
 
     SetConfigPath(config_path.string());
@@ -118,9 +119,8 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(
-          Errors{
-              { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
     }
 
     Errors errors;
@@ -188,9 +188,8 @@ namespace mechanism_configuration::v1
                                 GetEntityFormat(object[std::string(keys::reactions)]) == EntityFormat::FileList);
     if (uses_filelist && version.minor < 1)
     {
-      errors.push_back(
-          { ErrorCode::InvalidVersion,
-            "File-list format requires minor version >= 1, got " + std::to_string(version.minor) + "." });
+      errors.push_back({ ErrorCode::InvalidVersion,
+                         "File-list format requires minor version >= 1, got " + std::to_string(version.minor) + "." });
       AppendFilePath(config_path_, errors);
       return std::unexpected(std::move(errors));
     }
@@ -212,9 +211,7 @@ namespace mechanism_configuration::v1
   {
     Errors errors;
 
-    std::vector<std::string_view> required_keys = {
-      keys::version, keys::species, keys::phases, keys::reactions
-    };
+    std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases, keys::reactions };
     std::vector<std::string_view> optional_keys = { keys::name };
 
     // Return early if the required keys are not found
@@ -292,7 +289,8 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse document: {}", e.what()) } });
+      return std::unexpected(
+          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse document: {}", e.what()) } });
     }
     return ValidateAndBuild(object);
   }

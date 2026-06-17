@@ -9,9 +9,9 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <expected>
 #include <filesystem>
 #include <iostream>
-#include <expected>
 
 namespace mechanism_configuration::v0
 {

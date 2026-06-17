@@ -15,8 +15,8 @@ using namespace mechanism_configuration;
 // Parse() resolves and merges them into one mechanism.
 TEST(V1FileConfigs, ParsesMultiFileConfiguration)
 {
-  for (const auto& main : { std::string("examples/v1/config/json/main.json"),
-                            std::string("examples/v1/config/yaml/main.yaml") })
+  for (const auto& main :
+       { std::string("examples/v1/config/json/main.json"), std::string("examples/v1/config/yaml/main.yaml") })
   {
     auto parsed = Parse(main);
     if (!parsed)

@@ -2,10 +2,12 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include "detail/v1/reaction_parsers.hpp"
 #include "detail/v1/type_parsers.hpp"
-#include "detail/v1/utils.hpp"
+
 #include "detail/v1/keys.hpp"
+#include "detail/v1/reaction_parsers.hpp"
+#include "detail/v1/utils.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 
 namespace mechanism_configuration
@@ -32,8 +34,7 @@ namespace mechanism_configuration
         if (object[keys::henrys_law_constant_298])
           species.henrys_law_constant_298 = object[keys::henrys_law_constant_298].as<double>();
         if (object[keys::henrys_law_constant_exponential_factor])
-          species.henrys_law_constant_exponential_factor =
-              object[keys::henrys_law_constant_exponential_factor].as<double>();
+          species.henrys_law_constant_exponential_factor = object[keys::henrys_law_constant_exponential_factor].as<double>();
         if (object[keys::n_star])
           species.n_star = object[keys::n_star].as<double>();
         if (object[keys::density])

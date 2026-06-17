@@ -2,14 +2,15 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <detail/v1/reaction_parsers.hpp>
+#include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/types.hpp>
+
+#include <detail/check_schema.hpp>
+#include <detail/v1/reaction_parsers.hpp>
 #include <detail/v1/type_parsers.hpp>
 #include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
-#include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
-#include <detail/check_schema.hpp>
 
 namespace mechanism_configuration
 {
@@ -27,14 +28,10 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = { keys::type,
-                                                 keys::gas_phase,
-                                                 keys::reactants,
-                                                 keys::alkoxy_products,
-                                                 keys::nitrate_products };
-      std::vector<std::string_view> optional_keys = {
-        keys::name, keys::X, keys::Y, keys::a0, keys::n
+      std::vector<std::string_view> required_keys = {
+        keys::type, keys::gas_phase, keys::reactants, keys::alkoxy_products, keys::nitrate_products
       };
+      std::vector<std::string_view> optional_keys = { keys::name, keys::X, keys::Y, keys::a0, keys::n };
 
       Errors errors;
 

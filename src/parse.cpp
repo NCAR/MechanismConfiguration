@@ -2,13 +2,13 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "detail/v0/parser.hpp"
+#include "detail/v1/parser.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parse.hpp>
-
-#include "detail/v0/parser.hpp"
-#include "detail/v1/parser.hpp"
 
 #include <yaml-cpp/yaml.h>
 
@@ -30,11 +30,12 @@ namespace mechanism_configuration
   {
     if (!std::filesystem::exists(config_path))
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) } });
     }
 
-    if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path)) {
+    if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path))
+    {
       return DetectedVersion{ Version(0, 0, 0), std::nullopt };
     }
 
@@ -45,8 +46,8 @@ namespace mechanism_configuration
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
     }
 
     // The version field is version-agnostic (it's how we dispatch), so read it literally
@@ -73,18 +74,17 @@ namespace mechanism_configuration
 
     switch (version->version.major)
     {
-      case 0:
-        return v0::Parser{}.Parse(config_path);
-      case 1:
-        return v1::Parser{}.Parse(config_path);
+      case 0: return v0::Parser{}.Parse(config_path);
+      case 1: return v1::Parser{}.Parse(config_path);
       default:
       {
         // We only reach here after reading the version out of config_path, so it names a real
         // file and the version field has a location; point the error at it (path:line:col).
-        const std::string body = version->location
-                                     ? mc_fmt::format("{} error: Unsupported version number '{}'.",
-                                                      *version->location, version->version.to_string())
-                                     : mc_fmt::format("error: Unsupported version number '{}'.", version->version.to_string());
+        const std::string body =
+            version->location
+                ? mc_fmt::format(
+                      "{} error: Unsupported version number '{}'.", *version->location, version->version.to_string())
+                : mc_fmt::format("error: Unsupported version number '{}'.", version->version.to_string());
         return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body } });
       }
     }
