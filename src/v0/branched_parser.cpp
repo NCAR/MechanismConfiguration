@@ -2,12 +2,12 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "detail/check_schema.hpp"
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
+#include "detail/v0/keys.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
-#include "detail/v0/keys.hpp"
-#include "detail/check_schema.hpp"
 
 namespace mechanism_configuration::v0
 {
@@ -15,14 +15,9 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
 
-    std::vector<std::string_view> required = { keys::TYPE,
-                                          keys::REACTANTS,
-                                          keys::ALKOXY_PRODUCTS,
-                                          keys::NITRATE_PRODUCTS,
-                                          keys::X,
-                                          keys::Y,
-                                          keys::A0,
-                                          keys::n };
+    std::vector<std::string_view> required = {
+      keys::TYPE, keys::REACTANTS, keys::ALKOXY_PRODUCTS, keys::NITRATE_PRODUCTS, keys::X, keys::Y, keys::A0, keys::n
+    };
 
     auto validate = CheckSchema(object, required, {});
     errors.insert(errors.end(), validate.begin(), validate.end());

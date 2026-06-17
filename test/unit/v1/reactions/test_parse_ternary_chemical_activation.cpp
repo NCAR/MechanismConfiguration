@@ -4,6 +4,7 @@
 
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
+
 #include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>

@@ -2,15 +2,15 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/errors.hpp>
+#include "detail/v1/type_schema.hpp"
+
+#include "detail/check_schema.hpp"
+#include "detail/v1/keys.hpp"
+#include "detail/v1/reaction_parsers.hpp"
+#include "detail/v1/utils.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
-
-#include "detail/v1/reaction_parsers.hpp"
-#include "detail/v1/type_schema.hpp"
-#include "detail/v1/utils.hpp"
-#include "detail/v1/keys.hpp"
-#include "detail/check_schema.hpp"
 
 #include <string>
 #include <vector>
@@ -23,16 +23,16 @@ namespace mechanism_configuration
     {
       const std::vector<std::string_view> required_keys = { keys::name };
       const std::vector<std::string_view> optional_keys = { keys::absolute_tolerance,
-                                                       keys::diffusion_coefficient,
-                                                       keys::molecular_weight,
-                                                       keys::henrys_law_constant_298,
-                                                       keys::henrys_law_constant_exponential_factor,
-                                                       keys::n_star,
-                                                       keys::density,
-                                                       keys::tracer_type,
-                                                       keys::constant_concentration,
-                                                       keys::constant_mixing_ratio,
-                                                       keys::is_third_body };
+                                                            keys::diffusion_coefficient,
+                                                            keys::molecular_weight,
+                                                            keys::henrys_law_constant_298,
+                                                            keys::henrys_law_constant_exponential_factor,
+                                                            keys::n_star,
+                                                            keys::density,
+                                                            keys::tracer_type,
+                                                            keys::constant_concentration,
+                                                            keys::constant_mixing_ratio,
+                                                            keys::is_third_body };
       // Structural validation only. Duplicate-species detection (a semantic check) is performed
       // by the version-neutral ValidateSemantics.
       Errors errors;
@@ -81,9 +81,7 @@ namespace mechanism_configuration
       const std::vector<std::string_view> optional_keys = { keys::coefficient };
       // A component's species reference may use the canonical `name` or the legacy
       // `species name` alias, but exactly one of them.
-      const std::vector<std::vector<std::string_view>> exactly_one_of = {
-        { keys::name, keys::species_name }
-      };
+      const std::vector<std::vector<std::string_view>> exactly_one_of = { { keys::name, keys::species_name } };
 
       Errors errors;
 

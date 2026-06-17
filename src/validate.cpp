@@ -25,11 +25,8 @@ namespace mechanism_configuration
     }
 
     // Emits one error per occurrence of each name that appears more than once.
-    void ReportDuplicates(
-        const std::vector<semantics::NamedRef>& refs,
-        ErrorCode code,
-        std::string_view what,
-        Errors& errors)
+    void
+    ReportDuplicates(const std::vector<semantics::NamedRef>& refs, ErrorCode code, std::string_view what, Errors& errors)
     {
       std::unordered_map<std::string, int> counts;
       for (const auto& ref : refs)
@@ -63,9 +60,10 @@ namespace mechanism_configuration
       {
         registered.insert(ps.name);
         if (!species_names.contains(ps.name))
-          errors.push_back({ ErrorCode::PhaseRequiresUnknownSpecies,
-                             Message(ps.location, mc_fmt::format("Unknown species name '{}' found in '{}' phase.",
-                                                                 ps.name, phase.name)) });
+          errors.push_back(
+              { ErrorCode::PhaseRequiresUnknownSpecies,
+                Message(
+                    ps.location, mc_fmt::format("Unknown species name '{}' found in '{}' phase.", ps.name, phase.name)) });
       }
       ReportDuplicates(phase.species, ErrorCode::DuplicateSpeciesInPhaseDetected, "species", errors);
     }
@@ -78,27 +76,36 @@ namespace mechanism_configuration
       const bool phase_exists = phase_it != phase_species.end();
       if (!phase_exists)
         errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(reaction.location,
-                                   mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
+                           Message(
+                               reaction.location,
+                               mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
 
       for (const auto& reactant : reaction.reactants)
       {
         if (!species_names.contains(reactant.name))
-          errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
-                             Message(reactant.location, mc_fmt::format("Unknown species '{}' used in '{}' reaction.",
-                                                                       reactant.name, reaction.type)) });
+          errors.push_back(
+              { ErrorCode::ReactionRequiresUnknownSpecies,
+                Message(
+                    reactant.location,
+                    mc_fmt::format("Unknown species '{}' used in '{}' reaction.", reactant.name, reaction.type)) });
         else if (phase_exists && !phase_it->second.contains(reactant.name))
           errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                             Message(reactant.location,
-                                     mc_fmt::format("Species '{}' used in '{}' is not defined in the '{}' phase.",
-                                                    reactant.name, reaction.type, reaction.phase)) });
+                             Message(
+                                 reactant.location,
+                                 mc_fmt::format(
+                                     "Species '{}' used in '{}' is not defined in the '{}' phase.",
+                                     reactant.name,
+                                     reaction.type,
+                                     reaction.phase)) });
       }
       for (const auto& product : reaction.products)
       {
         if (!species_names.contains(product.name))
-          errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
-                             Message(product.location, mc_fmt::format("Unknown species '{}' used in '{}' reaction.",
-                                                                      product.name, reaction.type)) });
+          errors.push_back(
+              { ErrorCode::ReactionRequiresUnknownSpecies,
+                Message(
+                    product.location,
+                    mc_fmt::format("Unknown species '{}' used in '{}' reaction.", product.name, reaction.type)) });
       }
     }
 
@@ -143,8 +150,10 @@ namespace mechanism_configuration
     }
 
     const auto& r = mechanism.reactions;
-    auto add = [&](std::string_view type, const std::string& phase,
-                   std::vector<semantics::NamedRef> reactants, std::vector<semantics::NamedRef> products)
+    auto add = [&](std::string_view type,
+                   const std::string& phase,
+                   std::vector<semantics::NamedRef> reactants,
+                   std::vector<semantics::NamedRef> products)
     { input.reactions.push_back(ReactionRefOf(type, phase, std::move(reactants), std::move(products))); };
 
     for (const auto& x : r.arrhenius)

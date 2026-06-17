@@ -2,15 +2,16 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/format_compat.hpp>
+#include <mechanism_configuration/types.hpp>
+
+#include <detail/check_schema.hpp>
 #include <detail/constants.hpp>
 #include <detail/v1/reaction_parsers.hpp>
-#include <mechanism_configuration/types.hpp>
 #include <detail/v1/type_parsers.hpp>
 #include <detail/v1/type_schema.hpp>
 #include <detail/v1/utils.hpp>
-#include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
-#include <detail/check_schema.hpp>
 
 namespace mechanism_configuration
 {
@@ -28,11 +29,8 @@ namespace mechanism_configuration
         const std::vector<types::Species>& existing_species,
         const std::vector<types::Phase>& existing_phases)
     {
-      std::vector<std::string_view> required_keys = {
-        keys::reactants, keys::products, keys::type, keys::gas_phase
-      };
-      std::vector<std::string_view> optional_keys = { keys::A, keys::B,  keys::C,   keys::D,
-                                                 keys::E, keys::Ea, keys::name };
+      std::vector<std::string_view> required_keys = { keys::reactants, keys::products, keys::type, keys::gas_phase };
+      std::vector<std::string_view> optional_keys = { keys::A, keys::B, keys::C, keys::D, keys::E, keys::Ea, keys::name };
       Errors errors;
 
       auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);

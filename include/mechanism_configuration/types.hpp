@@ -6,11 +6,11 @@
 
 #include <mechanism_configuration/errors.hpp>
 
+#include <array>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <array>
 
 namespace mechanism_configuration::types
 {
@@ -326,4 +326,4 @@ namespace mechanism_configuration::types
     std::vector<LambdaRateConstant> lambda_rate_constant;
   };
 
-}  // namespace mechanism_configuration
+}  // namespace mechanism_configuration::types
