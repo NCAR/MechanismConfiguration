@@ -5,7 +5,6 @@
 #pragma once
 
 #include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/types.hpp>
 #include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
@@ -13,7 +12,6 @@
 #include <expected>
 #include <filesystem>
 #include <string>
-#include <vector>
 
 namespace mechanism_configuration::v1
 {

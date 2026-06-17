@@ -154,30 +154,11 @@ namespace mechanism_configuration::v1::keys
   // condensed-phase species
   // B
 
-  // Aqueous Equilibrium
-  inline constexpr std::string_view AqueousPhaseEquilibrium_key = "AQUEOUS_EQUILIBRIUM";
-  inline constexpr std::string_view condensed_phase_water = "condensed-phase water";
-  // also
-  // condensed phase
-  // A
-  // C
-  inline constexpr std::string_view k_reverse = "k_reverse";
-
   // Wet Deposition
   inline constexpr std::string_view WetDeposition_key = "WET_DEPOSITION";
   // also
   // scaling factor
   // condensed phase
-
-  // Henry's Law Phase Transfer
-  inline constexpr std::string_view HenrysLaw_key = "HL_PHASE_TRANSFER";
-  inline constexpr std::string_view gas = "gas";
-  inline constexpr std::string_view particle = "particle";
-  inline constexpr std::string_view solutes = "solutes";
-  inline constexpr std::string_view solvent = "solvent";
-  // also
-  // phase
-  // species
 
   // User Defined
   inline constexpr std::string_view UserDefined_key = "USER_DEFINED";
@@ -195,23 +176,5 @@ namespace mechanism_configuration::v1::keys
   // reactants
   // products
   // name
-
-  // ----------------------------------------
-  // Model types
-  // ----------------------------------------
-  // Gas model
-  inline constexpr std::string_view GasModel_key = "GAS_PHASE";
-  // also
-  // name
-  // phases
-
-  // Modal model
-  inline constexpr std::string_view ModalModel_key = "MODAL";
-  inline constexpr std::string_view modes = "modes";
-  inline constexpr std::string_view geometric_mean_diameter = "geometric mean diameter [m]";
-  inline constexpr std::string_view geometric_standard_deviation = "geometric standard deviation";
-  // also
-  // name
-  // phase
 
 }  // namespace mechanism_configuration::v1::keys
