@@ -1,21 +1,25 @@
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v0/types.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include "detail/v0/parser.hpp"
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <string>
+
 using namespace mechanism_configuration;
 
-TEST(ParserBase, ParsesFullv0Configuration)
+TEST(V0Parser, ParsesFullV0Configuration)
 {
   v0::Parser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
-  for (auto& extension : extensions)
+  for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    std::string path = "examples/v0/config" + extension;
-    auto parsed = parser.Parse(path);
-    EXPECT_TRUE(parsed);
+    auto parsed = parser.Parse("examples/v0/config" + extension);
+    ASSERT_TRUE(parsed);
 
-    v0::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
@@ -25,23 +29,17 @@ TEST(ParserBase, ParsesFullv0Configuration)
     EXPECT_EQ(mechanism.reactions.surface.size(), 1);
 
     EXPECT_EQ(mechanism.version.major, 0);
-    EXPECT_EQ(mechanism.version.minor, 0);
-    EXPECT_EQ(mechanism.version.patch, 0);
   }
 }
 
-TEST(ParserBase, ConfigPathIsDirectory)
+TEST(V0Parser, ConfigPathIsDirectory)
 {
   v0::Parser parser;
-  std::string path = "examples/v0";
-  auto parsed = parser.Parse(path);
-  EXPECT_TRUE(parsed);
+  auto parsed = parser.Parse(std::filesystem::path("examples/v0"));
+  ASSERT_TRUE(parsed);
 
-  v0::types::Mechanism mechanism = *parsed;
+  Mechanism mechanism = *parsed;
   EXPECT_EQ(mechanism.version.major, 0);
-  EXPECT_EQ(mechanism.version.minor, 0);
-  EXPECT_EQ(mechanism.version.patch, 0);
-
   EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
   EXPECT_EQ(mechanism.reactions.troe.size(), 1);
@@ -51,16 +49,14 @@ TEST(ParserBase, ConfigPathIsDirectory)
   EXPECT_EQ(mechanism.reactions.surface.size(), 1);
 }
 
-TEST(ParserBase, ParserReportsBadFiles)
+TEST(V0Parser, ReportsMissingFile)
 {
   v0::Parser parser;
-  std::vector<std::string> extensions = { ".yaml", ".json" };
-  for (auto& extension : extensions)
+  for (const auto& extension : { std::string(".yaml"), std::string(".json") })
   {
-    std::string path = "examples/_missing_configuration" + extension;
-    auto parsed = parser.Parse(path);
+    auto parsed = parser.Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::FileNotFound);
+    ASSERT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
   }
 }

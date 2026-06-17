@@ -2,14 +2,51 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/v1/utils.hpp>
-#include <mechanism_configuration/v1/validation.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
+#include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/format_compat.hpp>
+
+#include "detail/v1/utils.hpp"
+#include "detail/v1/keys.hpp"
+#include "detail/check_schema.hpp"
+
+#include <functional>
+#include <optional>
+#include <unordered_set>
 
 namespace mechanism_configuration
 {
   namespace v1
   {
+    YAML::Node AsSequence(const YAML::Node& node)
+    {
+      if (node.IsSequence())
+        return node;
+
+      YAML::Node sequence;
+      sequence.push_back(node);
+
+      return sequence;
+    }
+
+    std::string GetReactionComponentName(const YAML::Node& component)
+    {
+      // A component may be given as a bare string (shorthand for its name),
+      // or as an object keyed by the canonical `name` or the legacy `species name`.
+      if (component.IsScalar())
+        return component.as<std::string>();
+      if (component[keys::name])
+        return component[keys::name].as<std::string>();
+      return component[keys::species_name].as<std::string>();
+    }
+
+    void AppendFilePath(const std::string& config_path, Errors& errors)
+    {
+      for (auto& error : errors)
+      {
+        error.second = config_path + ":" + error.second;
+      }
+    }
+
     std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object)
     {
       std::unordered_map<std::string, std::string> unknown_properties;
@@ -38,17 +75,6 @@ namespace mechanism_configuration
 
       // Return the map of extracted comments
       return unknown_properties;
-    }
-
-    std::vector<std::string> GetSpeciesNames(const std::vector<types::PhaseSpecies>& phase_species)
-    {
-      std::vector<std::string> names;
-      names.reserve(phase_species.size());
-      for (const auto& species : phase_species)
-      {
-        names.push_back(species.name);
-      }
-      return names;
     }
 
   }  // namespace v1

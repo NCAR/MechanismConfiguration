@@ -1,4 +1,8 @@
-#include <mechanism_configuration/v1/parser.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -6,13 +10,12 @@ using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidSpecies)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/species/valid_species") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/species/valid_species") + extension);
     EXPECT_TRUE(parsed);
-    v1::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
     EXPECT_EQ(mechanism.species.size(), 3);
 
     EXPECT_EQ(mechanism.species[0].name, "A");
@@ -42,58 +45,55 @@ TEST(ParserBase, CanParseValidSpecies)
 
 TEST(ParserBase, DetectsDuplicateSpecies)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/duplicate_species") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 4);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[2].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.errors[3].first, ConfigParseStatus::DuplicateSpeciesDetected);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 4);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[1].first, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[2].first, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[3].first, ErrorCode::DuplicateSpeciesDetected);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
 
 TEST(ParserBase, DetectsMissingRequiredKeys)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/missing_required_key") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 2);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
 
 TEST(ParserBase, DetectsInvalidKeys)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/species/invalid_key") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }

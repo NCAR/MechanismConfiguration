@@ -1,141 +1,135 @@
-// Copyright (C) 2023-2024 National Center for Atmospheric Research, University of Illinois at Urbana-Champaign
-//
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/conversions.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v0/parser_types.hpp>
-#include <mechanism_configuration/v0/validation.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
+#include "detail/constants.hpp"
+#include "detail/conversions.hpp"
+#include "detail/v0/parser.hpp"
+#include "detail/v0/parser_types.hpp"
+#include "detail/v0/keys.hpp"
+#include "detail/check_schema.hpp"
 
 #include <yaml-cpp/yaml.h>
 
 #include <functional>
 
-namespace mechanism_configuration
+namespace mechanism_configuration::v0
 {
-  namespace v0
+  using ParserMap = std::map<std::string, std::function<Errors(Mechanism&, const YAML::Node&)>>;
+
+  Errors run_parsers(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
   {
-
-    using ParserMap = std::map<std::string, std::function<Errors(std::unique_ptr<types::Mechanism>&, const YAML::Node&)>>;
-
-    Errors run_parsers(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors errors;
+    for (const auto& element : object)
     {
-      Errors errors;
-      for (const auto& element : object)
+      std::string type = element[keys::TYPE].as<std::string>();
+      auto it = parsers.find(type);
+      if (it != parsers.end())
       {
-        std::string type = element[validation::TYPE].as<std::string>();
-        auto it = parsers.find(type);
-        if (it != parsers.end())
-        {
-          auto parse_errors = it->second(mechanism, element);
-          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-        }
-        else
-        {
-          const std::string& msg = "Unknown type: " + type;
-          throw std::runtime_error(msg);
-        }
-      }
-      return errors;
-    }
-
-    Errors ParseMechanism(const ParserMap& parsers, std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
-    {
-      std::vector<std::string> required = { validation::NAME, validation::REACTIONS, validation::TYPE };
-
-      Errors errors;
-      auto validate = ValidateSchema(object, required, {});
-      errors.insert(errors.end(), validate.begin(), validate.end());
-      if (validate.empty())
-      {
-        mechanism->name = object[validation::NAME].as<std::string>();
-        auto parse_errors = run_parsers(parsers, mechanism, object[validation::REACTIONS]);
+        auto parse_errors = it->second(mechanism, element);
         errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-      }
-
-      return errors;
-    }
-
-    Errors Parser::GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files)
-    {
-      Errors errors;
-      // Look for CAMP config path
-      if (!std::filesystem::exists(config_path))
-      {
-        errors.push_back({ ConfigParseStatus::FileNotFound, "File not found" });
-        return errors;
-      }
-
-      std::filesystem::path config_dir;
-      std::filesystem::path config_file;
-
-      if (std::filesystem::is_directory(config_path))
-      {
-        // If config path is a directory, use default config file name
-        config_dir = config_path;
-        if (std::filesystem::exists(config_dir / DEFAULT_CONFIG_FILE_YAML))
-        {
-          config_file = config_dir / DEFAULT_CONFIG_FILE_YAML;
-        }
-        else
-        {
-          config_file = config_dir / DEFAULT_CONFIG_FILE_JSON;
-        }
       }
       else
       {
-        // Extract configuration dir from configuration file path
-        config_dir = config_path.parent_path();
-        config_file = config_path;
+        const std::string& msg = "Unknown type: " + type;
+        throw std::runtime_error(msg);
       }
+    }
+    return errors;
+  }
 
-      // Load the CAMP file list YAML
-      YAML::Node camp_data = YAML::LoadFile(config_file.string());
-      if (!camp_data[CAMP_FILES])
-      {
-        std::string msg = "Required key not found: " + CAMP_FILES;
-        errors.push_back({ ConfigParseStatus::RequiredKeyNotFound, msg });
-        return errors;
-      }
+  Errors ParseMechanism(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
+  {
+    std::vector<std::string_view> required = { keys::NAME, keys::REACTIONS, keys::TYPE };
 
-      // Build a list of individual CAMP config files
-      for (const auto& element : camp_data[CAMP_FILES])
-      {
-        std::filesystem::path camp_file = config_dir / element.as<std::string>();
-        if (!std::filesystem::exists(camp_file))
-        {
-          errors.push_back({ ConfigParseStatus::FileNotFound, "File not found: " + camp_file.string() });
-        }
-        else
-        {
-          camp_files.push_back(camp_file);
-        }
-      }
+    Errors errors;
+    auto validate = CheckSchema(object, required, {});
+    errors.insert(errors.end(), validate.begin(), validate.end());
+    if (validate.empty())
+    {
+      mechanism.name = object[keys::NAME].as<std::string>();
+      auto parse_errors = run_parsers(parsers, mechanism, object[keys::REACTIONS]);
+      errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+    }
 
+    return errors;
+  }
+
+  Errors Parser::GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files)
+  {
+    Errors errors;
+    // Look for CAMP config path
+    if (!std::filesystem::exists(config_path))
+    {
+      errors.push_back({ ErrorCode::FileNotFound, "File not found" });
       return errors;
     }
 
-    ParserResult<types::Mechanism> Parser::Parse(const std::filesystem::path& config_path)
+    std::filesystem::path config_dir;
+    std::filesystem::path config_file;
+
+    if (std::filesystem::is_directory(config_path))
     {
-      ParserResult<types::Mechanism> result;
-      result.mechanism = std::make_unique<types::Mechanism>();
-
-      std::vector<std::filesystem::path> camp_files;
-      auto errors = GetCampFiles(config_path, camp_files);
-
-      if (!errors.empty())
+      // If config path is a directory, use default config file name
+      config_dir = config_path;
+      if (std::filesystem::exists(config_dir / DEFAULT_CONFIG_FILE_YAML))
       {
-        result.errors = errors;
-        return result;
+        config_file = config_dir / DEFAULT_CONFIG_FILE_YAML;
       }
+      else
+      {
+        config_file = config_dir / DEFAULT_CONFIG_FILE_JSON;
+      }
+    }
+    else
+    {
+      // Extract configuration dir from configuration file path
+      config_dir = config_path.parent_path();
+      config_file = config_path;
+    }
 
+    // Load the CAMP file list YAML
+    YAML::Node camp_data = YAML::LoadFile(config_file.string());
+    if (!camp_data[CAMP_FILES])
+    {
+      std::string msg = "Required key not found: " + CAMP_FILES;
+      errors.push_back({ ErrorCode::RequiredKeyNotFound, msg });
+      return errors;
+    }
+
+    // Build a list of individual CAMP config files
+    for (const auto& element : camp_data[CAMP_FILES])
+    {
+      std::filesystem::path camp_file = config_dir / element.as<std::string>();
+      if (!std::filesystem::exists(camp_file))
+      {
+        errors.push_back({ ErrorCode::FileNotFound, "File not found: " + camp_file.string() });
+      }
+      else
+      {
+        camp_files.push_back(camp_file);
+      }
+    }
+
+    return errors;
+  }
+
+  std::expected<Mechanism, Errors> Parser::Parse(const std::filesystem::path& config_path)
+  {
+    Errors errors;
+    auto mechanism = Mechanism();
+
+    std::vector<std::filesystem::path> camp_files;
+    auto file_errors = GetCampFiles(config_path, camp_files);
+    errors.insert(errors.end(), file_errors.begin(), file_errors.end());
+
+    // Only attempt to parse the mechanism if we were able to gather the CAMP files.
+    if (errors.empty())
+    {
       ParserMap parsers;
 
-      std::function<Errors(std::unique_ptr<types::Mechanism>&, const YAML::Node&)> ParseMechanismArray =
-          [&](std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
-      { return ParseMechanism(parsers, mechanism, object); };
+      std::function<Errors(Mechanism&, const YAML::Node&)> ParseMechanismArray =
+          [&](Mechanism& mechanism, const YAML::Node& object) { return ParseMechanism(parsers, mechanism, object); };
 
       parsers["CHEM_SPEC"] = ParseChemicalSpecies;
       parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;
@@ -155,28 +149,48 @@ namespace mechanism_configuration
 
       for (const auto& camp_file : camp_files)
       {
-        YAML::Node config_subset = YAML::LoadFile(camp_file.string());
-
-        auto parse_errors = run_parsers(parsers, result.mechanism, config_subset[CAMP_DATA]);
-        // prepend the file name to the error messages
-        for (auto& error : parse_errors)
+        // Parse each file independently so one malformed file does not abort the rest.
+        try
         {
-          error.second = camp_file.string() + ":" + error.second;
+          YAML::Node config_subset = YAML::LoadFile(camp_file.string());
+
+          auto parse_errors = run_parsers(parsers, mechanism, config_subset[CAMP_DATA]);
+          // prepend the file name to the error messages
+          for (auto& error : parse_errors)
+          {
+            error.second = camp_file.string() + ":" + error.second;
+          }
+          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
         }
-        result.errors.insert(result.errors.end(), parse_errors.begin(), parse_errors.end());
+        catch (const std::exception& e)
+        {
+          errors.push_back({ ErrorCode::UnexpectedError, camp_file.string() + ":" + e.what() });
+        }
       }
 
       // all species in version 0 are in the gas phase
       types::Phase gas_phase;
       gas_phase.name = "GAS";
-      for (auto& species : result.mechanism->species)
+      for (auto& species : mechanism.species)
       {
-        gas_phase.species.push_back(species.name);
+        types::PhaseSpecies phase_species;
+        phase_species.name = species.name;
+        gas_phase.species.push_back(phase_species);
       }
+      mechanism.phases.push_back(gas_phase);
 
-      result.mechanism->version = Version(0, 0, 0);
-
-      return result;
+      mechanism.version = Version(0, 0, 0);
     }
-  }  // namespace v0
-}  // namespace mechanism_configuration
+
+    std::expected<Mechanism, Errors> result;
+    if (!errors.empty())
+    {
+      result = std::unexpected(std::move(errors));
+    }
+    else
+    {
+      result = mechanism;
+    }
+    return result;
+  }
+}  // namespace mechanism_configuration::v0

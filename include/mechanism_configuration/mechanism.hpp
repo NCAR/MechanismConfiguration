@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/parse_status.hpp>
+#include <mechanism_configuration/types.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -13,7 +13,7 @@
 
 namespace mechanism_configuration
 {
-// Trying to build on linux for the python release, I learned that glibc had a bug which defined
+  // Trying to build on linux for the python release, I learned that glibc had a bug which defined
 // a macro called major and minor. This caused a conflict with the Version struct. To fix this, I
 // undefine the macros before defining the struct and then redefine them after the struct.
 // https://stackoverflow.com/a/22253389/5217293
@@ -74,20 +74,21 @@ namespace mechanism_configuration
 #pragma pop_macro("minor")
 #pragma pop_macro("major")
 
+  /// @brief Represents a full mechanism definition
   struct Mechanism
   {
+    /// @brief Mechanism name (optional)
+    std::string name;
+    /// @brief Species list
+    std::vector<types::Species> species;
+    /// @brief Phases list
+    std::vector<types::Phase> phases;
+    /// @brief Represents a collection of different reaction types, each stored in a vector
+    ///        corresponding to a specific mechanism
+    types::Reactions reactions;
+    /// @brief Version of the mechanism configuration format used, in major.minor.patch format
     Version version;
-
-    Mechanism(Version version)
-        : version(version)
-    {
-    }
-    Mechanism()
-        : version()
-    {
-    }
-    virtual ~Mechanism() = default;
+    /// @brief Relative tolerance for solver (optional, default: 1e-6)
+    double relative_tolerance{ 1e-6 };
   };
-
-  using GlobalMechanism = ::mechanism_configuration::Mechanism;
 }  // namespace mechanism_configuration

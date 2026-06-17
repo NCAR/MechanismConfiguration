@@ -1,3 +1,7 @@
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
 // clang-format off
 #pragma once
 
@@ -9,19 +13,19 @@ extern "C" {
 
   const char* getVersionString()
   {
-    return "1.1.2";
+    return "2.0.0";
   }
   unsigned getVersionMajor()
   {
-    return 1;
+    return 2;
   }
   unsigned getVersionMinor()
   {
-    return 1+0;
+    return 0+0;
   }
   unsigned getVersionPatch()
   {
-    return 2+0;
+    return 0+0;
   }
   unsigned getVersionTweak()
   {

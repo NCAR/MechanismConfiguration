@@ -1,39 +1,40 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
-#include <mechanism_configuration/v0/parser_types.hpp>
-#include <mechanism_configuration/v0/validation.hpp>
-#include <mechanism_configuration/validate_schema.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
 
-namespace mechanism_configuration
+#include "detail/constants.hpp"
+#include "detail/v0/parser.hpp"
+#include "detail/v0/parser_types.hpp"
+#include "detail/v0/keys.hpp"
+#include "detail/check_schema.hpp"
+
+namespace mechanism_configuration::v0
 {
-  namespace v0
+  Errors EmissionParser(Mechanism& mechanism, const YAML::Node& object)
   {
-    Errors EmissionParser(std::unique_ptr<types::Mechanism>& mechanism, const YAML::Node& object)
+    Errors errors;
+
+    std::vector<std::string_view> required = { keys::TYPE, keys::SPECIES, keys::MUSICA_NAME };
+    std::vector<std::string_view> optional = { keys::SCALING_FACTOR, keys::PRODUCTS };
+
+    auto validate = CheckSchema(object, required, optional);
+    errors.insert(errors.end(), validate.begin(), validate.end());
+    if (validate.empty())
     {
-      Errors errors;
+      std::string species = object[keys::SPECIES].as<std::string>();
+      YAML::Node products_object{};
+      std::vector<types::ReactionComponent> reactants;
+      std::vector<types::ReactionComponent> products;
+      products.push_back({ .name = species, .coefficient = 1.0 });
+      double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
-      std::vector<std::string> required = { validation::TYPE, validation::SPECIES, validation::MUSICA_NAME };
-      std::vector<std::string> optional = { validation::SCALING_FACTOR, validation::PRODUCTS };
-
-      auto validate = ValidateSchema(object, required, optional);
-      errors.insert(errors.end(), validate.begin(), validate.end());
-      if (validate.empty())
-      {
-        std::string species = object[validation::SPECIES].as<std::string>();
-        YAML::Node products_object{};
-        std::vector<types::ReactionComponent> reactants;
-        std::vector<types::ReactionComponent> products;
-        products.push_back({ .species_name = species, .coefficient = 1.0 });
-        double scaling_factor = object[validation::SCALING_FACTOR] ? object[validation::SCALING_FACTOR].as<double>() : 1.0;
-
-        std::string name = "EMIS." + object[validation::MUSICA_NAME].as<std::string>();
-        types::UserDefined user_defined = {
-          .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
-        };
-        mechanism->reactions.user_defined.push_back(user_defined);
-      }
-
-      return errors;
+      std::string name = "EMIS." + object[keys::MUSICA_NAME].as<std::string>();
+      types::UserDefined user_defined = {
+        .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
+      };
+      mechanism.reactions.user_defined.push_back(user_defined);
     }
-  }  // namespace v0
-}  // namespace mechanism_configuration
+
+    return errors;
+  }
+}  // namespace mechanism_configuration::v0
