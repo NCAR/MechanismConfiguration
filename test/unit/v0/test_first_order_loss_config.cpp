@@ -1,3 +1,7 @@
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
 #include "detail/constants.hpp"
 #include "detail/v0/parser.hpp"
 
