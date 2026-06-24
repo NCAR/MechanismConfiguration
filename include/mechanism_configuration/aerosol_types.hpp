@@ -19,7 +19,7 @@ namespace mechanism_configuration::types
   // Rate constants
   // ----------------------------------------
 
-  /// @brief Reference-temperature Arrhenius / van 't Hoff form:
+  /// @brief Reference-temperature Arrhenius
   ///        f(T) = A * exp( C * (1/T0 - 1/T) )      (C = +Ea/R, positive)
   struct ArrheniusReferenceTemperature
   {
@@ -32,7 +32,7 @@ namespace mechanism_configuration::types
   using EquilibriumConstant = ArrheniusReferenceTemperature;
 
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
-  ///        Same van 't Hoff kernel as ArrheniusReferenceTemperature but with the
+  ///        Same as ArrheniusReferenceTemperature but with the
   ///        opposite temperature trend (solubility rises as T falls)
   struct HenryLawConstant
   {
@@ -52,23 +52,23 @@ namespace mechanism_configuration::types
   {
     std::string name;
     std::vector<std::string> phases;
-    double min_radius;   ///< Minimum section radius [m]
-    double max_radius;   ///< Maximum section radius [m]
+    double min_radius;   ///< [m]
+    double max_radius;   ///< [m]
   };
 
   struct SingleMomentMode
   {
     std::string name;
     std::vector<std::string> phases;
-    double geometric_mean_radius;          ///< Geometric mean radius [m]
-    double geometric_standard_deviation;   ///< Geometric standard deviation [-]
+    double geometric_mean_radius;          ///< [m]
+    double geometric_standard_deviation;   ///< dimensionless
   };
 
   struct TwoMomentMode
   {
     std::string name;
     std::vector<std::string> phases;
-    double geometric_standard_deviation;   ///< Geometric standard deviation [-]
+    double geometric_standard_deviation;   ///< dimensionless
   };
 
   using Representation = std::variant<UniformSection, SingleMomentMode, TwoMomentMode>;
@@ -90,7 +90,7 @@ namespace mechanism_configuration::types
   struct DissolvedReversibleReaction
   {
     std::string phase;
-    std::string solvent;  ///< Solvent species name (config key: "solvent")
+    std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
     /// @brief Per-representation forward / reverse rate constants; keys are representation names.
@@ -128,8 +128,8 @@ namespace mechanism_configuration::types
     std::string condensed_species;
     std::string solvent;
     HenryLawConstant henry_law_constant;
-    double solvent_molecular_weight;  ///< Solvent molecular weight [kg mol-1]
-    double solvent_density;           ///< Solvent density [kg m-3]
+    double solvent_molecular_weight;  ///< [kg mol-1]
+    double solvent_density;           ///< [kg m-3]
   };
 
   struct DissolvedEquilibrium
