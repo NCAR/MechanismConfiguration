@@ -52,23 +52,23 @@ namespace mechanism_configuration::types
   {
     std::string name;
     std::vector<std::string> phases;
-    double min_radius;   ///< [m]
-    double max_radius;   ///< [m]
+    double min_radius;  ///< [m]
+    double max_radius;  ///< [m]
   };
 
   struct SingleMomentMode
   {
     std::string name;
     std::vector<std::string> phases;
-    double geometric_mean_radius;          ///< [m]
-    double geometric_standard_deviation;   ///< dimensionless
+    double geometric_mean_radius;         ///< [m]
+    double geometric_standard_deviation;  ///< dimensionless
   };
 
   struct TwoMomentMode
   {
     std::string name;
     std::vector<std::string> phases;
-    double geometric_standard_deviation;   ///< dimensionless
+    double geometric_standard_deviation;  ///< dimensionless
   };
 
   using Representation = std::variant<UniformSection, SingleMomentMode, TwoMomentMode>;
@@ -110,8 +110,8 @@ namespace mechanism_configuration::types
     std::string solvent;
     HenryLawConstant henry_law_constant;
     HenryLawConstant henry_law_constant;
-    double diffusion_coefficient;       ///< Gas-phase diffusion coefficient [m2 s-1]
-    double accommodation_coefficient;   ///< Mass accommodation coefficient, dimensionless
+    double diffusion_coefficient;      ///< Gas-phase diffusion coefficient [m2 s-1]
+    double accommodation_coefficient;  ///< Mass accommodation coefficient, dimensionless
   };
 
   using Process = std::variant<DissolvedReaction, DissolvedReversibleReaction, HenryLawPhaseTransfer>;
@@ -151,8 +151,13 @@ namespace mechanism_configuration::types
 
   /// @brief RHS constant C of a LinearConstraint:  G = sum(coeff_i * [species_i]) - C = 0
   ///        Choose exactly one mode (mutually exclusive):
-  struct FixedConstant     { double value = 0.0; };   ///< Fixed value [mol m-3], shared by all instances
-  struct DiagnoseFromState {};                        ///< Computed per representation instance
+  struct FixedConstant
+  {
+    double value = 0.0;
+  };  ///< Fixed value [mol m-3], shared by all instances
+  struct DiagnoseFromState
+  {
+  };  ///< Computed per representation instance
 
   struct LinearConstraint
   {
