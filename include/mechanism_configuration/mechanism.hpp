@@ -13,9 +13,8 @@
 
 namespace mechanism_configuration
 {
-  // Trying to build on linux for the python release, I learned that glibc had a bug which defined
-// a macro called major and minor. This caused a conflict with the Version struct. To fix this, I
-// undefine the macros before defining the struct and then redefine them after the struct.
+// glibc defines `major` and `minor` as macros, which conflict with the `Version` struct fields.
+// Temporarily undefine the macros before the struct definition and restore them afterward.
 // https://stackoverflow.com/a/22253389/5217293
 #pragma push_macro("major")
 #undef major

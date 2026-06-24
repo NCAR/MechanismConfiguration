@@ -28,9 +28,6 @@ namespace mechanism_configuration::types
     double T0 = 298.15;  ///< Reference temperature [K]
   };
 
-  /// @brief Equilibrium constants use the same reference-temperature form.
-  using EquilibriumConstant = ArrheniusReferenceTemperature;
-
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
   ///        Same as ArrheniusReferenceTemperature but with the
   ///        opposite temperature trend (solubility rises as T falls)
@@ -42,7 +39,8 @@ namespace mechanism_configuration::types
   };
 
   /// @brief A reaction rate constant parsed from config.
-  using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>;
+  // using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>; // TODO
+  using RateConstant = std::variant<ArrheniusReferenceTemperature, std::function<double(double)>>;
 
   // ----------------------------------------
   // Representations
@@ -98,7 +96,7 @@ namespace mechanism_configuration::types
     std::map<std::string, RateConstant> forward_rate_constants;
     std::map<std::string, RateConstant> reverse_rate_constants;
     /// @brief Shared, intrinsic equilibrium constant (NOT per representation).
-    std::optional<EquilibriumConstant> equilibrium_constant;
+    std::optional<ArrheniusReferenceTemperature> equilibrium_constant;
   };
 
   struct HenryLawPhaseTransfer
@@ -108,7 +106,6 @@ namespace mechanism_configuration::types
     std::string condensed_phase;
     std::string condensed_species;
     std::string solvent;
-    HenryLawConstant henry_law_constant;
     HenryLawConstant henry_law_constant;
     double diffusion_coefficient;      ///< Gas-phase diffusion coefficient [m2 s-1]
     double accommodation_coefficient;  ///< Mass accommodation coefficient, dimensionless
@@ -139,7 +136,7 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    EquilibriumConstant equilibrium_constant;
+    ArrheniusReferenceTemperature equilibrium_constant;
   };
 
   struct LinearConstraintTerm
@@ -168,5 +165,17 @@ namespace mechanism_configuration::types
   };
 
   using Constraint = std::variant<HenryLawEquilibrium, DissolvedEquilibrium, LinearConstraint>;
+
+  // ----------------------------------------
+  // Container
+  // ----------------------------------------
+
+  /// @brief Collection of parsed aerosol entries
+  struct Aerosol
+  {
+    std::vector<Representation> representations;
+    std::vector<Process> processes;
+    std::vector<Constraint> constraints;
+  };
 
 }  // namespace mechanism_configuration::types

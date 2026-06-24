@@ -1,0 +1,273 @@
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include "detail/v1/aerosol_type_parsers.hpp"
+
+#include "detail/v1/aerosol_keys.hpp"
+#include "detail/v1/keys.hpp"
+#include "detail/v1/type_parsers.hpp"
+
+namespace mechanism_configuration
+{
+  namespace v1
+  {
+    // ----------------------------------------
+    // Rate constants parser
+    // ----------------------------------------
+
+    types::ArrheniusReferenceTemperature ParseArrheniusReferenceTemperature(const YAML::Node& object)
+    {
+      types::ArrheniusReferenceTemperature rate_constant;
+
+      rate_constant.A = object[keys::A].as<double>();
+      if (object[keys::C])
+        rate_constant.C = object[keys::C].as<double>();
+      if (object[keys::reference_temperature])
+        rate_constant.T0 = object[keys::reference_temperature].as<double>();
+
+      return rate_constant;
+    }
+
+    types::HenryLawConstant ParseHenryLawConstant(const YAML::Node& object)
+    {
+      types::HenryLawConstant henry_law_constant;
+
+      henry_law_constant.HLC_ref = object[keys::HLC_ref].as<double>();
+      if (object[keys::henry_law_C])
+        henry_law_constant.C = object[keys::henry_law_C].as<double>();
+      if (object[keys::reference_temperature])
+        henry_law_constant.T0 = object[keys::reference_temperature].as<double>();
+
+      return henry_law_constant;
+    }
+
+    std::map<std::string, types::RateConstant> ParseRateConstantMap(const YAML::Node& object)
+    {
+      std::map<std::string, types::RateConstant> rate_constants;
+
+      // Each key is an aerosol representation name (e.g. "CLOUD"); each value is a
+      // reference-temperature Arrhenius block.
+      for (const auto& entry : object)
+      {
+        rate_constants.emplace(entry.first.as<std::string>(), ParseArrheniusReferenceTemperature(entry.second));
+      }
+
+      return rate_constants;
+    }
+
+    // ----------------------------------------
+    // Representation parsers
+    // ----------------------------------------
+
+    namespace
+    {
+      std::vector<std::string> ParsePhaseNames(const YAML::Node& object)
+      {
+        std::vector<std::string> phases;
+        for (const auto& phase : object[keys::phases])
+          phases.push_back(phase.as<std::string>());
+        return phases;
+      }
+    }  // namespace
+
+    types::UniformSection ParseUniformSection(const YAML::Node& object)
+    {
+      types::UniformSection uniform_section;
+
+      uniform_section.name = object[keys::name].as<std::string>();
+      uniform_section.phases = ParsePhaseNames(object);
+      uniform_section.min_radius = object[keys::minimum_radius].as<double>();
+      uniform_section.max_radius = object[keys::maximum_radius].as<double>();
+
+      return uniform_section;
+    }
+
+    types::SingleMomentMode ParseSingleMomentMode(const YAML::Node& object)
+    {
+      types::SingleMomentMode single_moment_mode;
+
+      single_moment_mode.name = object[keys::name].as<std::string>();
+      single_moment_mode.phases = ParsePhaseNames(object);
+      single_moment_mode.geometric_mean_radius = object[keys::geometric_mean_radius].as<double>();
+      single_moment_mode.geometric_standard_deviation = object[keys::geometric_standard_deviation].as<double>();
+
+      return single_moment_mode;
+    }
+
+    types::TwoMomentMode ParseTwoMomentMode(const YAML::Node& object)
+    {
+      types::TwoMomentMode two_moment_mode;
+
+      two_moment_mode.name = object[keys::name].as<std::string>();
+      two_moment_mode.phases = ParsePhaseNames(object);
+      two_moment_mode.geometric_standard_deviation = object[keys::geometric_standard_deviation].as<double>();
+
+      return two_moment_mode;
+    }
+
+    // ----------------------------------------
+    // Process parsers
+    // ----------------------------------------
+
+    types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(const YAML::Node& object)
+    {
+      types::HenryLawPhaseTransfer transfer;
+
+      transfer.gas_phase = object[keys::gas_phase].as<std::string>();
+      transfer.gas_species = object[keys::gas_phase_species].as<std::string>();
+      transfer.condensed_phase = object[keys::condensed_phase].as<std::string>();
+      transfer.condensed_species = object[keys::condensed_phase_species].as<std::string>();
+      transfer.solvent = object[keys::solvent].as<std::string>();
+      transfer.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
+      transfer.diffusion_coefficient = object[keys::diffusion_coefficient].as<double>();
+      transfer.accommodation_coefficient = object[keys::accommodation_coefficient].as<double>();
+
+      return transfer;
+    }
+
+    types::DissolvedReaction ParseDissolvedReaction(const YAML::Node& object)
+    {
+      types::DissolvedReaction reaction;
+
+      reaction.phase = object[keys::condensed_phase].as<std::string>();
+      reaction.solvent = object[keys::solvent].as<std::string>();
+      reaction.reactants = ParseReactionComponents(object, keys::reactants);
+      reaction.products = ParseReactionComponents(object, keys::products);
+      reaction.rate_constants = ParseRateConstantMap(object[keys::rate_constants]);
+
+      return reaction;
+    }
+
+    types::DissolvedReversibleReaction ParseDissolvedReversibleReaction(const YAML::Node& object)
+    {
+      types::DissolvedReversibleReaction reaction;
+
+      reaction.phase = object[keys::condensed_phase].as<std::string>();
+      reaction.solvent = object[keys::solvent].as<std::string>();
+      reaction.reactants = ParseReactionComponents(object, keys::reactants);
+      reaction.products = ParseReactionComponents(object, keys::products);
+
+      // Any two of {forward, reverse, equilibrium} may be supplied; the third is derived
+      // downstream, so each is parsed only when present.
+      if (object[keys::forward_rate_constants])
+        reaction.forward_rate_constants = ParseRateConstantMap(object[keys::forward_rate_constants]);
+      if (object[keys::reverse_rate_constants])
+        reaction.reverse_rate_constants = ParseRateConstantMap(object[keys::reverse_rate_constants]);
+      if (object[keys::equilibrium_constant])
+        reaction.equilibrium_constant = ParseArrheniusReferenceTemperature(object[keys::equilibrium_constant]);
+
+      return reaction;
+    }
+
+    // ----------------------------------------
+    // Constraint parsers
+    // ----------------------------------------
+
+    types::HenryLawEquilibrium ParseHenryLawEquilibrium(const YAML::Node& object)
+    {
+      types::HenryLawEquilibrium equilibrium;
+
+      equilibrium.gas_phase = object[keys::gas_phase].as<std::string>();
+      equilibrium.gas_species = object[keys::gas_phase_species].as<std::string>();
+      equilibrium.condensed_phase = object[keys::condensed_phase].as<std::string>();
+      equilibrium.condensed_species = object[keys::condensed_phase_species].as<std::string>();
+      equilibrium.solvent = object[keys::solvent].as<std::string>();
+      equilibrium.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
+
+      // Solvent properties are optional here; when omitted they are sourced from the solvent
+      // species definition downstream.
+      equilibrium.solvent_molecular_weight =
+          object[keys::solvent_molecular_weight] ? object[keys::solvent_molecular_weight].as<double>() : 0.0;
+      equilibrium.solvent_density = object[keys::solvent_density] ? object[keys::solvent_density].as<double>() : 0.0;
+
+      return equilibrium;
+    }
+
+    types::DissolvedEquilibrium ParseDissolvedEquilibrium(const YAML::Node& object)
+    {
+      types::DissolvedEquilibrium equilibrium;
+
+      equilibrium.phase = object[keys::condensed_phase].as<std::string>();
+      equilibrium.algebraic_species = object[keys::algebraic_species].as<std::string>();
+      equilibrium.solvent = object[keys::solvent].as<std::string>();
+      equilibrium.reactants = ParseReactionComponents(object, keys::reactants);
+      equilibrium.products = ParseReactionComponents(object, keys::products);
+      equilibrium.equilibrium_constant = ParseArrheniusReferenceTemperature(object[keys::equilibrium_constant]);
+
+      return equilibrium;
+    }
+
+    types::LinearConstraint ParseLinearConstraint(const YAML::Node& object)
+    {
+      types::LinearConstraint constraint;
+
+      constraint.algebraic_phase = object[keys::algebraic_phase].as<std::string>();
+      constraint.algebraic_species = object[keys::algebraic_species].as<std::string>();
+
+      for (const auto& term_node : object[keys::terms])
+      {
+        types::LinearConstraintTerm term;
+        term.phase = term_node[keys::phase].as<std::string>();
+        term.species = term_node[keys::species].as<std::string>();
+        term.coefficient = term_node[keys::coefficient].as<double>();
+        constraint.terms.push_back(term);
+      }
+
+      // RHS constant: diagnose-from-state, else a fixed value, else the default FixedConstant{0}.
+      if (object[keys::diagnose_from_state] && object[keys::diagnose_from_state].as<bool>())
+        constraint.constant = types::DiagnoseFromState{};
+      else if (object[keys::constant])
+        constraint.constant = types::FixedConstant{ object[keys::constant].as<double>() };
+
+      return constraint;
+    }
+
+    // ----------------------------------------
+    // Container parsers
+    // ----------------------------------------
+
+    std::vector<types::Representation> ParseAerosolRepresentations(const YAML::Node& objects)
+    {
+      std::vector<types::Representation> representations;
+
+      for (const auto& object : objects)
+      {
+        const auto type = object[keys::type].as<std::string>();
+
+        if (type == keys::UniformSection_key)
+          representations.emplace_back(ParseUniformSection(object));
+        else if (type == keys::SingleMomentMode_key)
+          representations.emplace_back(ParseSingleMomentMode(object));
+        else if (type == keys::TwoMomentMode_key)
+          representations.emplace_back(ParseTwoMomentMode(object));
+      }
+
+      return representations;
+    }
+
+    void ParseAerosolProcesses(const YAML::Node& objects, types::Aerosol& aerosol)
+    {
+      for (const auto& object : objects)
+      {
+        const auto type = object[keys::type].as<std::string>();
+
+        // Processes
+        if (type == keys::HenryLawPhaseTransfer_key)
+          aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(object));
+        else if (type == keys::DissolvedReaction_key)
+          aerosol.processes.emplace_back(ParseDissolvedReaction(object));
+        else if (type == keys::DissolvedReversibleReaction_key)
+          aerosol.processes.emplace_back(ParseDissolvedReversibleReaction(object));
+        // Constraints
+        else if (type == keys::HenryLawEquilibrium_key)
+          aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(object));
+        else if (type == keys::DissolvedEquilibrium_key)
+          aerosol.constraints.emplace_back(ParseDissolvedEquilibrium(object));
+        else if (type == keys::LinearConstraint_key)
+          aerosol.constraints.emplace_back(ParseLinearConstraint(object));
+      }
+    }
+
+  }  // namespace v1
+}  // namespace mechanism_configuration
