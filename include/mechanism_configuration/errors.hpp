@@ -53,6 +53,19 @@ namespace mechanism_configuration
     FileNotFound,
     UnexpectedError,
     EmptyObject,
+    // Emissions-specific error codes
+    NotAnEmissionsConfig,
+    DuplicateInventoryDetected,
+    DuplicateSpeciesMapDetected,
+    DuplicateSourceDetected,
+    DuplicateCategoryHierarchy,
+    SourceRequiresUnknownInventory,
+    SourceRequiresUnknownSpeciesMap,
+    SpeciesMapScalingExceedsOne,
+    UndefinedEnvironmentVariable,
+    OnlineSourcesNotSupported,
+    UnsupportedRegriddingType,
+    UnsupportedVerticalInjection,
   };
 
   std::string ErrorCodeToString(const ErrorCode& status);

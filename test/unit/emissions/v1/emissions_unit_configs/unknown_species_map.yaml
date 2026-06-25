@@ -1,0 +1,23 @@
+kind: emissions
+version: 1.0.0
+
+inventories:
+  cams bc:
+    directory: cams
+    file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
+    convention: uptempo
+
+species maps:
+  bc map:
+    mappings:
+      - inventory species: bc_anth_sum
+        mechanism species: BC
+
+sources:
+  - name: CAMS black carbon
+    mode: offline
+    type: anthropogenic
+    inventory: cams bc
+    species map: nonexistent map
+    category: 0
+    hierarchy: 1

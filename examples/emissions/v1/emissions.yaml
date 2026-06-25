@@ -1,0 +1,68 @@
+kind: emissions
+version: 1.0.0
+name: Example MIEM emissions configuration
+
+# Environment-expandable data root. POSIX ${VAR} / ${VAR:-default} syntax.
+# The parser expands here; MIEM receives a fully-resolved path string.
+data root: ${EMIS_DATA_ROOT:-/glade/derecho/scratch/${USER}/emissions}
+
+# Inventories: named I/O metadata. Offline sources reference by name.
+# Moving all sources to a new machine is a one-line edit to `data root`.
+inventories:
+  cams global anthro:
+    directory: cams/v6.2
+    file pattern: CAMS-GLOB-ANT_v6.2_{YYYY}-{MM}.nc
+    convention: uptempo
+  finn fires:
+    directory: finn/v2.5
+    file pattern: FINNv2.5_{YYYY}{MM}{DD}.nc
+    convention: uptempo
+
+# Species maps: inventory species → mechanism species mappings, referenced by name.
+# Scaling factors per inventory species must sum to ≤ 1.0 (mass conservation).
+species maps:
+  MOZART-T1 from CAMS:
+    mappings:
+      - inventory species: NOx
+        mechanism species: NO
+        scaling factor: 0.9
+      - inventory species: NOx
+        mechanism species: NO2
+        scaling factor: 0.1
+      - inventory species: CO
+        mechanism species: CO
+      - inventory species: bc_anth_sum
+        mechanism species: BC
+
+# Regridding: v1 supports only `type: none` (data already on the model mesh).
+# Future: `type: scrip` for ESMF/SCRIP weight-file remapping.
+regridding:
+  type: none
+
+# Sources: the emission signals. HEMCO-style category/hierarchy aggregation.
+# Sources in different categories sum; within a category the highest hierarchy
+# wins per cell. Duplicate (category, hierarchy) is a load-time error.
+sources:
+  - name: cams anthro
+    mode: offline
+    type: anthropogenic
+    inventory: cams global anthro
+    species map: MOZART-T1 from CAMS
+    temporal interpolation: linear
+    vertical injection: surface
+    category: 0
+    hierarchy: 1
+    scaling factor: 1.0
+    sector: anthropogenic
+
+  - name: finn fires
+    mode: offline
+    type: fire
+    inventory: finn fires
+    species map: MOZART-T1 from CAMS
+    temporal interpolation: nearest
+    vertical injection: surface
+    category: 1
+    hierarchy: 1
+    sector: fire
+    __notes: "FINN v2.5 daily fire emissions"
