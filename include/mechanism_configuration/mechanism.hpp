@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <mechanism_configuration/aerosol_types.hpp>
 #include <mechanism_configuration/types.hpp>
 
 #include <filesystem>
@@ -85,6 +86,8 @@ namespace mechanism_configuration
     /// @brief Represents a collection of different reaction types, each stored in a vector
     ///        corresponding to a specific mechanism
     types::Reactions reactions;
+    /// @brief Aerosol representations, processes, and constraints
+    types::Aerosol aerosol;
     /// @brief Version of the mechanism configuration format used, in major.minor.patch format
     Version version;
     /// @brief Relative tolerance for solver (optional, default: 1e-6)
