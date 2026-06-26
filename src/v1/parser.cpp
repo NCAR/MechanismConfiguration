@@ -16,6 +16,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -324,7 +325,7 @@ namespace mechanism_configuration::v1
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes], parsed_species, parsed_phases);
+      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes]);
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);
@@ -389,8 +390,19 @@ namespace mechanism_configuration::v1
         return std::unexpected(std::move(errors));
       }
 
-      // 3) Build the Mechanism (only reached when fully valid).
-      return Build(object);
+      // 3) Build the Mechanism (structurally valid; aerosol parsers source values defensively).
+      Mechanism mechanism = Build(object);
+
+      // 4) Aerosol cross-reference validation runs against the built structs (species/phase
+      //    membership and sourced properties such as diffusion coefficient, solvent density).
+      Errors aerosol_errors = ValidateAerosolModel(mechanism);
+      if (!aerosol_errors.empty())
+      {
+        AppendFilePath(config_path_, aerosol_errors);
+        return std::unexpected(std::move(aerosol_errors));
+      }
+
+      return mechanism;
     }
     catch (const std::exception& e)
     {

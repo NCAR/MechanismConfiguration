@@ -44,6 +44,7 @@ namespace mechanism_configuration
     ReactionRequiresUnknownSpecies,
     UnknownSpecies,
     UnknownPhase,
+    UnknownAerosolRepresentation,
     RequestedSpeciesNotRegisteredInPhase,
     TooManyReactionComponents,
     InvalidVersion,

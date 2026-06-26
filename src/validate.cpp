@@ -110,175 +110,6 @@ namespace mechanism_configuration
       }
     }
 
-    // ---- Aerosol Representations --------------------------------------------------------------------------
-    for (const auto& representation : input.aerosol_representations)
-    {
-      for (const auto& phase : representation.phases)
-      {
-        if (!phase_species.contains(phase.name))
-          errors.push_back(
-              { ErrorCode::UnknownPhase,
-                Message(
-                    phase.location,
-                    mc_fmt::format(
-                        "Unknown phase '{}' in '{}' aerosol representation.", phase.name, representation.name)) });
-      }
-    }
-
-    // ---- Aerosol Processes --------------------------------------------------------------------------
-    for (const auto& process : input.aerosol_processes)
-    {
-      for (const auto& species : process.species)
-      {
-        if (!species_names.contains(species.name))
-          errors.push_back(
-              { ErrorCode::UnknownSpecies,
-                Message(
-                    species.location,
-                    mc_fmt::format("Unknown species '{}' in '{}' aerosol process.", species.name, process.type)) });
-      }
-      for (const auto& phase : process.phases)
-      {
-        if (!phase_species.contains(phase.name))
-          errors.push_back(
-              { ErrorCode::UnknownPhase,
-                Message(
-                    phase.location,
-                    mc_fmt::format("Unknown phase '{}' in '{}' aerosol process.", phase.name, process.type)) });
-      }
-    }
-
-    return errors;
-  }
-
-  Errors ValidateAerosol(const Mechanism& mechanism)
-  {
-    Errors errors;
-    const auto& aerosol = mechanism.aerosol;
-    if (aerosol.processes.empty() && aerosol.constraints.empty())
-      return errors;
-
-    // Index species (for molecular weight) and phase-species (for membership / diffusion / density).
-    std::unordered_map<std::string, const types::Species*> species_index;
-    for (const auto& s : mechanism.species)
-      species_index.emplace(s.name, &s);
-
-    std::unordered_map<std::string, std::unordered_map<std::string, const types::PhaseSpecies*>> phase_index;
-    for (const auto& phase : mechanism.phases)
-    {
-      auto& registered = phase_index[phase.name];
-      for (const auto& ps : phase.species)
-        registered.emplace(ps.name, &ps);
-    }
-
-    // Verifies that `species` is registered in `phase`; returns the entry (or nullptr) and reports.
-    auto require_membership =
-        [&](const std::string& phase, const std::string& species, const std::string& context) -> const types::PhaseSpecies*
-    {
-      const auto phase_it = phase_index.find(phase);
-      if (phase_it == phase_index.end())
-      {
-        errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(std::nullopt, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase, context)) });
-        return nullptr;
-      }
-      const auto species_it = phase_it->second.find(species);
-      if (species_it == phase_it->second.end())
-      {
-        errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                           Message(std::nullopt,
-                                   mc_fmt::format(
-                                       "Species '{}' ({}) is not defined in the '{}' phase.", species, context, phase)) });
-        return nullptr;
-      }
-      return species_it->second;
-    };
-
-    auto require_diffusion = [&](const std::string& phase, const std::string& species, const std::string& context)
-    {
-      const auto* entry = require_membership(phase, species, context);
-      if (entry && !entry->diffusion_coefficient)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: gas-phase species '{}' has no diffusion coefficient defined in "
-                                                  "the '{}' phase.",
-                                                  context, species, phase)) });
-    };
-
-    auto require_density = [&](const std::string& phase, const std::string& species, const std::string& context)
-    {
-      const auto* entry = require_membership(phase, species, context);
-      if (entry && !entry->density)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: solvent species '{}' has no density defined in the '{}' phase.",
-                                                  context, species, phase)) });
-    };
-
-    auto require_molecular_weight = [&](const std::string& species, const std::string& context)
-    {
-      const auto species_it = species_index.find(species);
-      if (species_it == species_index.end())
-        errors.push_back({ ErrorCode::UnknownSpecies,
-                           Message(std::nullopt, mc_fmt::format("Unknown species '{}' referenced by {}.", species, context)) });
-      else if (!species_it->second->molecular_weight)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: solvent species '{}' has no molecular weight defined.", context, species)) });
-    };
-
-    for (const auto& process : aerosol.processes)
-    {
-      if (const auto* p = std::get_if<types::DissolvedReaction>(&process))
-      {
-        for (const auto& c : p->reactants)
-          require_membership(p->phase, c.name, "DISSOLVED_REACTION reactant");
-        for (const auto& c : p->products)
-          require_membership(p->phase, c.name, "DISSOLVED_REACTION product");
-        require_membership(p->phase, p->solvent, "DISSOLVED_REACTION solvent");
-      }
-      else if (const auto* p = std::get_if<types::DissolvedReversibleReaction>(&process))
-      {
-        for (const auto& c : p->reactants)
-          require_membership(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION reactant");
-        for (const auto& c : p->products)
-          require_membership(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION product");
-        require_membership(p->phase, p->solvent, "DISSOLVED_REVERSIBLE_REACTION solvent");
-      }
-      else if (const auto* p = std::get_if<types::HenryLawPhaseTransfer>(&process))
-      {
-        require_membership(p->condensed_phase, p->condensed_species, "HENRY_LAW_PHASE_TRANSFER condensed species");
-        require_membership(p->condensed_phase, p->solvent, "HENRY_LAW_PHASE_TRANSFER solvent");
-        require_diffusion(p->gas_phase, p->gas_species, "HENRY_LAW_PHASE_TRANSFER");
-      }
-    }
-
-    for (const auto& constraint : aerosol.constraints)
-    {
-      if (const auto* c = std::get_if<types::HenryLawEquilibrium>(&constraint))
-      {
-        require_membership(c->gas_phase, c->gas_species, "HENRY_LAW_EQUILIBRIUM gas species");
-        require_membership(c->condensed_phase, c->condensed_species, "HENRY_LAW_EQUILIBRIUM condensed species");
-        require_density(c->condensed_phase, c->solvent, "HENRY_LAW_EQUILIBRIUM");
-        require_molecular_weight(c->solvent, "HENRY_LAW_EQUILIBRIUM");
-      }
-      else if (const auto* c = std::get_if<types::DissolvedEquilibrium>(&constraint))
-      {
-        require_membership(c->phase, c->algebraic_species, "DISSOLVED_EQUILIBRIUM algebraic species");
-        require_membership(c->phase, c->solvent, "DISSOLVED_EQUILIBRIUM solvent");
-        for (const auto& x : c->reactants)
-          require_membership(c->phase, x.name, "DISSOLVED_EQUILIBRIUM reactant");
-        for (const auto& x : c->products)
-          require_membership(c->phase, x.name, "DISSOLVED_EQUILIBRIUM product");
-      }
-      else if (const auto* c = std::get_if<types::LinearConstraint>(&constraint))
-      {
-        require_membership(c->algebraic_phase, c->algebraic_species, "LINEAR_CONSTRAINT algebraic species");
-        for (const auto& t : c->terms)
-          require_membership(t.phase, t.name, "LINEAR_CONSTRAINT term");
-      }
-    }
-
     return errors;
   }
 
@@ -304,7 +135,7 @@ namespace mechanism_configuration
     }
   }  // namespace
 
-  Errors Validate(const Mechanism& mechanism)
+  Errors ValidateGasModel(const Mechanism& mechanism)
   {
     semantics::Input input;
 
@@ -319,7 +150,6 @@ namespace mechanism_configuration
       input.phases.push_back(std::move(pr));
     }
 
-    // ---- Reactions --------------------------------------------------------------------------
     const auto& r = mechanism.reactions;
     auto add = [&](std::string_view type,
                    const std::string& phase,
@@ -356,132 +186,186 @@ namespace mechanism_configuration
       add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
     }
 
-    // ---- Aerosol Representations --------------------------------------------------------------------------
-    const auto& a = mechanism.aerosol;
-    for (const auto& x : a.representations)
+    return ValidateSemantics(input);
+  }
+
+  Errors ValidateAerosolModel(const Mechanism& mechanism)
+  {
+    Errors errors;
+
+    const auto& aerosol = mechanism.aerosol;
+    if (aerosol.representations.empty() && aerosol.processes.empty() && aerosol.constraints.empty())
+      return errors;
+
+    // Index species for molecular weight.
+    std::unordered_map<std::string, const types::Species*> species_index;
+    for (const auto& s : mechanism.species)
+      species_index.emplace(s.name, &s);
+
+    // Index phase-species for membership, diffusion, density.
+    std::unordered_map<std::string, std::unordered_map<std::string, const types::PhaseSpecies*>> phase_index;
+    for (const auto& phase : mechanism.phases)
+    {
+      auto& registered = phase_index[phase.name];
+      for (const auto& ps : phase.species)
+        registered.emplace(ps.name, &ps);
+    }
+
+    // Rate-constants are keyed by its aerosol representation
+    std::unordered_set<std::string> representation_names;
+    for (const auto& representation : aerosol.representations)
+      std::visit([&](const auto& rep) { representation_names.insert(rep.name); }, representation);
+
+    // Verifies that species is registered in phase. Returns the entry (or nullptr) and reports.
+    auto require_registered_species =
+        [&](const std::string& phase, const std::string& species, const std::string& context) -> const types::PhaseSpecies*
+    {
+      const auto phase_it = phase_index.find(phase);
+      if (phase_it == phase_index.end())
+      {
+        errors.push_back({ ErrorCode::UnknownPhase,
+                           Message(std::nullopt, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase, context)) });
+        return nullptr;
+      }
+      const auto species_it = phase_it->second.find(species);
+      if (species_it == phase_it->second.end())
+      {
+        errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+                           Message(std::nullopt,
+                                   mc_fmt::format(
+                                       "Species '{}' ({}) is not defined in the '{}' phase.", species, context, phase)) });
+        return nullptr;
+      }
+      return species_it->second;
+    };
+
+    auto require_diffusion = [&](const std::string& phase, const std::string& species, const std::string& context)
+    {
+      const auto* entry = require_registered_species(phase, species, context);
+      if (entry && !entry->diffusion_coefficient)
+        errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                           Message(std::nullopt,
+                                   mc_fmt::format("{}: species '{}' has no diffusion coefficient defined in "
+                                                  "the '{}' phase.",
+                                                  context, species, phase)) });
+    };
+
+    auto require_density = [&](const std::string& phase, const std::string& species, const std::string& context)
+    {
+      const auto* entry = require_registered_species(phase, species, context);
+      if (entry && !entry->density)
+        errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                           Message(std::nullopt,
+                                   mc_fmt::format("{}: species '{}' has no density defined in the '{}' phase.",
+                                                  context, species, phase)) });
+    };
+
+    auto require_molecular_weight = [&](const std::string& species, const std::string& context)
+    {
+      const auto species_it = species_index.find(species);
+      if (species_it == species_index.end())
+        errors.push_back({ ErrorCode::UnknownSpecies,
+                           Message(std::nullopt, mc_fmt::format("Unknown species '{}' referenced by {}.", species, context)) });
+      else if (!species_it->second->molecular_weight)
+        errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                           Message(std::nullopt,
+                                   mc_fmt::format("{}: species '{}' has no molecular weight defined.", context, species)) });
+    };
+
+    // Verifies that phase exists.
+    auto require_phase = [&](const std::string& phase, const std::string& context)
+    {
+      if (!phase_index.contains(phase))
+        errors.push_back({ ErrorCode::UnknownPhase,
+                           Message(std::nullopt, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase, context)) });
+    };
+
+    // Validates that each rate-constant map entry is keyed by a declared aerosol representation.
+    auto require_representation = [&](const std::string& representation, const std::string& context)
+    {
+      if (!representation_names.contains(representation))
+        errors.push_back({ ErrorCode::UnknownAerosolRepresentation,
+                           Message(std::nullopt,
+                                   mc_fmt::format(
+                                       "Unknown aerosol representation '{}' referenced by {}.", representation, context)) });
+    };
+
+    for (const auto& representation : aerosol.representations)
     {
       std::visit(
           [&](const auto& rep)
           {
-            using T = std::decay_t<decltype(rep)>;
-            std::string_view type;
-            if constexpr (std::is_same_v<T, types::UniformSection>)
-              type = "UNIFORM_SECTION";
-            else if constexpr (std::is_same_v<T, types::SingleMomentMode>)
-              type = "SINGLE_MOMENT_MODE";
-            else if constexpr (std::is_same_v<T, types::TwoMomentMode>)
-              type = "TWO_MOMENT_MODE";
-
-            semantics::AerosolRepresentationRef ref{ std::string(type), rep.name, {}, std::nullopt };
             for (const auto& phase : rep.phases)
-              ref.phases.push_back({ phase, std::nullopt });
-            input.aerosol_representations.push_back(std::move(ref));
+              require_phase(phase, mc_fmt::format("aerosol representation '{}'", rep.name));
           },
-          x);
+          representation);
     }
 
-    // ---- Aerosol Processes --------------------------------------------------------------------------
-    for (const auto& x : a.processes)
+    for (const auto& process : aerosol.processes)
     {
-      std::visit(
-          [&](const auto& proc)
-          {
-            using T = std::decay_t<decltype(proc)>;
-            semantics::AerosolProcessRef ref;
-
-            if constexpr (std::is_same_v<T, types::DissolvedReaction>)
-            {
-              ref.type = "DISSOLVED_REACTION";
-              ref.phases.push_back({ proc.phase, std::nullopt });
-              ref.species.push_back({ proc.solvent, std::nullopt });
-              for (const auto& r : proc.reactants)
-                ref.species.push_back({ r.name, std::nullopt });
-              for (const auto& p : proc.products)
-                ref.species.push_back({ p.name, std::nullopt });
-              std::vector<semantics::NamedRef> rep_refs;
-              for (const auto& [rep_name, _] : proc.rate_constants)
-                rep_refs.push_back({ rep_name, std::nullopt });
-              ref.aerosol_representations = std::move(rep_refs);
-            }
-            else if constexpr (std::is_same_v<T, types::DissolvedReversibleReaction>)
-            {
-              ref.type = "DISSOLVED_REVERSIBLE_REACTION";
-              ref.phases.push_back({ proc.phase, std::nullopt });
-              ref.species.push_back({ proc.solvent, std::nullopt });
-              for (const auto& r : proc.reactants)
-                ref.species.push_back({ r.name, std::nullopt });
-              for (const auto& p : proc.products)
-                ref.species.push_back({ p.name, std::nullopt });
-              std::vector<semantics::NamedRef> rep_refs;
-              for (const auto& [rep_name, _] : proc.forward_rate_constants)
-                rep_refs.push_back({ rep_name, std::nullopt });
-              for (const auto& [rep_name, _] : proc.reverse_rate_constants)
-                rep_refs.push_back({ rep_name, std::nullopt });
-              ref.aerosol_representations = std::move(rep_refs);
-            }
-            else if constexpr (std::is_same_v<T, types::HenryLawPhaseTransfer>)
-            {
-              ref.type = "HENRY_LAW_PHASE_TRANSFER";
-              ref.phases.push_back({ proc.gas_phase, std::nullopt });
-              ref.phases.push_back({ proc.condensed_phase, std::nullopt });
-              ref.species.push_back({ proc.gas_species, std::nullopt });
-              ref.species.push_back({ proc.condensed_species, std::nullopt });
-              ref.species.push_back({ proc.solvent, std::nullopt });
-            }
-
-            input.aerosol_processes.push_back(std::move(ref));
-          },
-          x);
+      if (const auto* p = std::get_if<types::DissolvedReaction>(&process))
+      {
+        for (const auto& c : p->reactants)
+          require_registered_species(p->phase, c.name, "DISSOLVED_REACTION reactant");
+        for (const auto& c : p->products)
+          require_registered_species(p->phase, c.name, "DISSOLVED_REACTION product");
+        require_registered_species(p->phase, p->solvent, "DISSOLVED_REACTION solvent");
+        for (const auto& entry : p->rate_constants)
+          require_representation(entry.first, "DISSOLVED_REACTION rate constant");
+      }
+      else if (const auto* p = std::get_if<types::DissolvedReversibleReaction>(&process))
+      {
+        for (const auto& c : p->reactants)
+          require_registered_species(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION reactant");
+        for (const auto& c : p->products)
+          require_registered_species(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION product");
+        require_registered_species(p->phase, p->solvent, "DISSOLVED_REVERSIBLE_REACTION solvent");
+        for (const auto& entry : p->forward_rate_constants)
+          require_representation(entry.first, "DISSOLVED_REVERSIBLE_REACTION forward rate constant");
+        for (const auto& entry : p->reverse_rate_constants)
+          require_representation(entry.first, "DISSOLVED_REVERSIBLE_REACTION reverse rate constant");
+      }
+      else if (const auto* p = std::get_if<types::HenryLawPhaseTransfer>(&process))
+      {
+        require_registered_species(p->condensed_phase, p->condensed_species, "HENRY_LAW_PHASE_TRANSFER condensed species");
+        require_registered_species(p->condensed_phase, p->solvent, "HENRY_LAW_PHASE_TRANSFER solvent");
+        require_diffusion(p->gas_phase, p->gas_species, "HENRY_LAW_PHASE_TRANSFER");
+      }
     }
 
-    // ---- Aerosol Constraints --------------------------------------------------------------------------
-    for (const auto& x : a.constraints)
+    for (const auto& constraint : aerosol.constraints)
     {
-      std::visit(
-          [&](const auto& con)
-          {
-            using T = std::decay_t<decltype(con)>;
-            semantics::AerosolProcessRef ref;
-
-            if constexpr (std::is_same_v<T, types::HenryLawEquilibrium>)
-            {
-              ref.type = "HENRY_LAW_EQUILIBRIUM";
-              ref.phases.push_back({ con.gas_phase, std::nullopt });
-              ref.phases.push_back({ con.condensed_phase, std::nullopt });
-              ref.species.push_back({ con.gas_species, std::nullopt });
-              ref.species.push_back({ con.condensed_species, std::nullopt });
-              ref.species.push_back({ con.solvent, std::nullopt });
-            }
-            else if constexpr (std::is_same_v<T, types::DissolvedEquilibrium>)
-            {
-              ref.type = "DISSOLVED_EQUILIBRIUM";
-              ref.phases.push_back({ con.phase, std::nullopt });
-              ref.species.push_back({ con.algebraic_species, std::nullopt });
-              ref.species.push_back({ con.solvent, std::nullopt });
-              for (const auto& r : con.reactants)
-                ref.species.push_back({ r.name, std::nullopt });
-              for (const auto& p : con.products)
-                ref.species.push_back({ p.name, std::nullopt });
-            }
-            else if constexpr (std::is_same_v<T, types::LinearConstraint>)
-            {
-              ref.type = "LINEAR_CONSTRAINT";
-              ref.phases.push_back({ con.algebraic_phase, std::nullopt });
-              ref.species.push_back({ con.algebraic_species, std::nullopt });
-              for (const auto& term : con.terms)
-              {
-                ref.phases.push_back({ term.phase, std::nullopt });
-                ref.species.push_back({ term.name, std::nullopt });
-              }
-            }
-
-            input.aerosol_processes.push_back(std::move(ref));
-          },
-          x);
+      if (const auto* c = std::get_if<types::HenryLawEquilibrium>(&constraint))
+      {
+        require_registered_species(c->gas_phase, c->gas_species, "HENRY_LAW_EQUILIBRIUM gas species");
+        require_registered_species(c->condensed_phase, c->condensed_species, "HENRY_LAW_EQUILIBRIUM condensed species");
+        require_density(c->condensed_phase, c->solvent, "HENRY_LAW_EQUILIBRIUM solvent");
+        require_molecular_weight(c->solvent, "HENRY_LAW_EQUILIBRIUM solvent");
+      }
+      else if (const auto* c = std::get_if<types::DissolvedEquilibrium>(&constraint))
+      {
+        require_registered_species(c->phase, c->algebraic_species, "DISSOLVED_EQUILIBRIUM algebraic species");
+        require_registered_species(c->phase, c->solvent, "DISSOLVED_EQUILIBRIUM solvent");
+        for (const auto& x : c->reactants)
+          require_registered_species(c->phase, x.name, "DISSOLVED_EQUILIBRIUM reactant");
+        for (const auto& x : c->products)
+          require_registered_species(c->phase, x.name, "DISSOLVED_EQUILIBRIUM product");
+      }
+      else if (const auto* c = std::get_if<types::LinearConstraint>(&constraint))
+      {
+        require_registered_species(c->algebraic_phase, c->algebraic_species, "LINEAR_CONSTRAINT algebraic species");
+        for (const auto& t : c->terms)
+          require_registered_species(t.phase, t.name, "LINEAR_CONSTRAINT term");
+      }
     }
 
-    Errors errors = ValidateSemantics(input);
-    Errors aerosol_errors = ValidateAerosol(mechanism);
+    return errors;
+  }
+
+  Errors Validate(const Mechanism& mechanism)
+  {
+    Errors errors = ValidateGasModel(mechanism);
+    Errors aerosol_errors = ValidateAerosolModel(mechanism);
     errors.insert(errors.end(), aerosol_errors.begin(), aerosol_errors.end());
     return errors;
   }

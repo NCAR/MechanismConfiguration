@@ -129,10 +129,7 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors CheckAerosolProcessesSchema(
-        const YAML::Node& processes_list,
-        const std::vector<types::Species>& species,
-        const std::vector<types::Phase>& phases)
+    Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list)
     {
       Errors errors;
 
@@ -155,8 +152,8 @@ namespace mechanism_configuration
         const std::string type = object[keys::type].as<std::string>();
         if (type == keys::HenryLawPhaseTransfer_key)
         {
-          // The diffusion coefficient is not given here; it is sourced from the gas-phase
-          // species' definition in the phases section.
+          // The diffusion coefficient is not given here. It is sourced from the gas-phase
+          // species' definition in the phases section (see ValidateAerosolModel).
           required_keys = { keys::type,
                             keys::gas_phase,
                             keys::gas_phase_species,
@@ -167,26 +164,6 @@ namespace mechanism_configuration
                             keys::accommodation_coefficient };
           if (object[keys::henry_law_constant])
             nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
-          // The gas-phase species must carry a diffusion coefficient, since this process reads it
-          // from the phases section rather than from the process block itself.
-          if (object[keys::gas_phase] && object[keys::gas_phase_species])
-          {
-            const auto gas_phase = object[keys::gas_phase].as<std::string>();
-            const auto gas_species = object[keys::gas_phase_species].as<std::string>();
-            if (!FindPhaseSpeciesDiffusionCoefficient(phases, gas_phase, gas_species).has_value())
-            {
-              ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-              nested_errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format(
-                        "{} error: '{}' references gas-phase species '{}' in phase '{}', which has no "
-                        "diffusion coefficient defined in the phases section.",
-                        error_location,
-                        keys::HenryLawPhaseTransfer_key,
-                        gas_species,
-                        gas_phase) });
-            }
-          }
         }
         else if (type == keys::DissolvedReaction_key)
         {
@@ -241,8 +218,7 @@ namespace mechanism_configuration
         else if (type == keys::HenryLawEquilibrium_key)
         {
           // The solvent's molecular weight and density are not given here; they are sourced from
-          // the solvent species' definition (molecular weight from the species section, density
-          // from the condensed phase).
+          // the solvent species' definition (see ValidateAerosolModel).
           required_keys = { keys::type,
                             keys::gas_phase,
                             keys::gas_phase_species,
@@ -252,34 +228,6 @@ namespace mechanism_configuration
                             keys::henry_law_constant };
           if (object[keys::henry_law_constant])
             nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
-          if (object[keys::solvent] && object[keys::condensed_phase])
-          {
-            const auto solvent = object[keys::solvent].as<std::string>();
-            const auto condensed_phase = object[keys::condensed_phase].as<std::string>();
-            ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-            if (!FindSpeciesMolecularWeight(species, solvent).has_value())
-            {
-              nested_errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format(
-                        "{} error: '{}' solvent species '{}' has no molecular weight defined in the "
-                        "species section.",
-                        error_location,
-                        keys::HenryLawEquilibrium_key,
-                        solvent) });
-            }
-            if (!FindPhaseSpeciesDensity(phases, condensed_phase, solvent).has_value())
-            {
-              nested_errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format(
-                        "{} error: '{}' solvent species '{}' has no density defined in phase '{}'.",
-                        error_location,
-                        keys::HenryLawEquilibrium_key,
-                        solvent,
-                        condensed_phase) });
-            }
-          }
         }
         else if (type == keys::DissolvedEquilibrium_key)
         {
