@@ -25,7 +25,7 @@ namespace mechanism_configuration::v1::keys
 
   inline constexpr std::string_view SingleMomentMode_key = "SINGLE_MOMENT_MODE";
   inline constexpr std::string_view geometric_mean_radius = "geometric mean radius [m]";
-  inline constexpr std::string_view geometric_standard_deviation = "geometric standard deviation [-]";
+  inline constexpr std::string_view geometric_standard_deviation = "geometric standard deviation";
 
   inline constexpr std::string_view TwoMomentMode_key = "TWO_MOMENT_MODE";
   // also: geometric_standard_deviation
