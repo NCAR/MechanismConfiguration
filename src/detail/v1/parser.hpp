@@ -11,6 +11,7 @@
 
 #include <expected>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 namespace mechanism_configuration::v1
@@ -58,7 +59,7 @@ namespace mechanism_configuration::v1
     Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node.
-    Mechanism Build(const YAML::Node& object);
+    Mechanism Build(const YAML::Node& object, std::optional<types::EmissionsConfig> emissions);
 
     inline void SetConfigPath(const std::string& config_path)
     {

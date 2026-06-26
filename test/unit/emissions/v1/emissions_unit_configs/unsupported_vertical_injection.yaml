@@ -1,0 +1,26 @@
+version: 1.0.0
+species: []
+phases: []
+reactions: []
+emissions:
+  inventories:
+    cams bc:
+      directory: cams
+      file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
+      convention: uptempo
+
+  species maps:
+    bc map:
+      mappings:
+        - inventory species: bc_anth_sum
+          mechanism species: BC
+
+  sources:
+    - name: CAMS black carbon plume
+      mode: offline
+      type: fire
+      inventory: cams bc
+      species map: bc map
+      vertical injection: plume
+      category: 0
+      hierarchy: 1
