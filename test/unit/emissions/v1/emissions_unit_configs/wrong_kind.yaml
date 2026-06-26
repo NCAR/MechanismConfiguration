@@ -1,6 +1,0 @@
-kind: mechanism
-version: 1.0.0
-name: This is a chemistry config, not an emissions config
-species: []
-phases: []
-reactions: []

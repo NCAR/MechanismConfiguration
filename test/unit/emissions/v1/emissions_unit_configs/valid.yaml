@@ -1,35 +1,34 @@
-kind: emissions
 version: 1.0.0
-name: Valid test emissions config
+species: []
+phases: []
+reactions: []
+emissions:
+  inventories:
+    cams bc:
+      directory: cams
+      file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
+      convention: uptempo
 
-data root: /test/data
+  species maps:
+    bc map:
+      mappings:
+        - inventory species: bc_anth_sum
+          mechanism species: BC
+          scaling factor: 1.0
 
-inventories:
-  cams bc:
-    directory: cams
-    file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
-    convention: uptempo
+  regridding:
+    type: none
 
-species maps:
-  bc map:
-    mappings:
-      - inventory species: bc_anth_sum
-        mechanism species: BC
-        scaling factor: 1.0
-
-regridding:
-  type: none
-
-sources:
-  - name: CAMS black carbon
-    mode: offline
-    type: anthropogenic
-    inventory: cams bc
-    species map: bc map
-    temporal interpolation: linear
-    vertical injection: surface
-    category: 0
-    hierarchy: 1
-    scaling factor: 1.0
-    sector: anthropogenic
-    __notes: test source
+  sources:
+    - name: CAMS black carbon
+      mode: offline
+      type: anthropogenic
+      inventory: cams bc
+      species map: bc map
+      temporal interpolation: linear
+      vertical injection: surface
+      category: 0
+      hierarchy: 1
+      scaling factor: 1.0
+      sector: anthropogenic
+      __notes: test source

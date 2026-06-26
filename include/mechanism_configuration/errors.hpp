@@ -54,7 +54,6 @@ namespace mechanism_configuration
     UnexpectedError,
     EmptyObject,
     // Emissions-specific error codes
-    NotAnEmissionsConfig,
     DuplicateInventoryDetected,
     DuplicateSpeciesMapDetected,
     DuplicateSourceDetected,
@@ -62,7 +61,6 @@ namespace mechanism_configuration
     SourceRequiresUnknownInventory,
     SourceRequiresUnknownSpeciesMap,
     SpeciesMapScalingExceedsOne,
-    UndefinedEnvironmentVariable,
     OnlineSourcesNotSupported,
     UnsupportedRegriddingType,
     UnsupportedVerticalInjection,

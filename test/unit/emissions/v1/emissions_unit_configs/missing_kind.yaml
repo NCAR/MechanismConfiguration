@@ -1,8 +1,0 @@
-version: 1.0.0
-name: No kind field
-
-inventories:
-  cams bc:
-    directory: cams
-    file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
-    convention: uptempo

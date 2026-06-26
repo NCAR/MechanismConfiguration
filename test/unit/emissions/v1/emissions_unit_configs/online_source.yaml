@@ -1,23 +1,25 @@
-kind: emissions
 version: 1.0.0
+species: []
+phases: []
+reactions: []
+emissions:
+  inventories:
+    cams bc:
+      directory: cams
+      file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
+      convention: uptempo
 
-inventories:
-  cams bc:
-    directory: cams
-    file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
-    convention: uptempo
+  species maps:
+    bc map:
+      mappings:
+        - inventory species: bc_anth_sum
+          mechanism species: BC
 
-species maps:
-  bc map:
-    mappings:
-      - inventory species: bc_anth_sum
-        mechanism species: BC
-
-sources:
-  - name: online lightning
-    mode: online
-    type: lightning
-    inventory: cams bc
-    species map: bc map
-    category: 0
-    hierarchy: 1
+  sources:
+    - name: online lightning
+      mode: online
+      type: lightning
+      inventory: cams bc
+      species map: bc map
+      category: 0
+      hierarchy: 1
