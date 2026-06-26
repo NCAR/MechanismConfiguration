@@ -561,6 +561,9 @@ namespace mechanism_configuration::v1
     resolve_section(keys::phases);
     resolve_section(keys::reactions);
 
+    if (object[std::string(keys::emissions)])
+      combined[std::string(keys::emissions)] = object[std::string(keys::emissions)];
+
     if (!errors.empty())
     {
       AppendFilePath(config_path_, errors);

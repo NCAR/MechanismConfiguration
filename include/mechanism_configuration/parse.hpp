@@ -13,12 +13,8 @@
 namespace mechanism_configuration
 {
   /// @brief Parse a mechanism configuration file, dispatching on its version.
-  /// @param config_path Path to a configuration file, or a directory of version-0 CAMP files.
+  /// @param config_path Path to a configuration file (a std::string converts implicitly),
+  ///        or a directory of version-0 CAMP files.
   /// @return The parsed Mechanism, or all structural and semantic errors encountered.
   std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
-
-  /// @brief Parse a mechanism configuration from an in-memory YAML or JSON string.
-  /// @param content The document contents (not a file path).
-  /// @return The parsed Mechanism, or all structural and semantic errors encountered.
-  std::expected<Mechanism, Errors> Parse(const std::string& content);
 }  // namespace mechanism_configuration

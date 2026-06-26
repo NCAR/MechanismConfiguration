@@ -2,6 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "detail/v1/parser.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/parse.hpp>
 
@@ -14,6 +16,11 @@ using namespace mechanism_configuration;
 static auto ParseFile(const char* p)
 {
   return Parse(std::filesystem::path(p));
+}
+
+static auto ParseString(const std::string& content)
+{
+  return v1::Parser{}.Parse(content);
 }
 
 TEST(EmissionsV1Parser, ParsesValidConfig)
@@ -85,7 +92,7 @@ emissions:
       hierarchy: 1
 )";
 
-  auto result = Parse(content);
+  auto result = ParseString(content);
   ASSERT_TRUE(result);
   ASSERT_TRUE(result->emissions.has_value());
   ASSERT_EQ(result->emissions->sources.size(), 1u);
@@ -100,7 +107,7 @@ species: []
 phases: []
 reactions: []
 )";
-  auto result = Parse(content);
+  auto result = ParseString(content);
   ASSERT_TRUE(result);
   EXPECT_FALSE(result->emissions.has_value());
 }
@@ -203,7 +210,7 @@ reactions: []
 emissions:
   sources: []
 )";
-  auto result = Parse(content);
+  auto result = ParseString(content);
   ASSERT_TRUE(result);
   ASSERT_TRUE(result->emissions.has_value());
   EXPECT_TRUE(result->emissions->sources.empty());
@@ -218,7 +225,7 @@ phases: []
 reactions: []
 emissions: {}
 )";
-  auto result = Parse(content);
+  auto result = ParseString(content);
   ASSERT_TRUE(result);
   ASSERT_TRUE(result->emissions.has_value());
   EXPECT_TRUE(result->emissions->sources.empty());
