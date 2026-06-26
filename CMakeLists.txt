@@ -54,7 +54,10 @@ if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
     setup_target_for_coverage_lcov(
         NAME coverage
         EXECUTABLE "ctest" -j 4
-        EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
+        EXCLUDE
+            "${PROJECT_SOURCE_DIR}/test/*"
+            "${CMAKE_BINARY_DIR}/_deps/*"
+            "/usr/*"
         BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
         LCOV_ARGS --ignore-errors mismatch)
   endif()
