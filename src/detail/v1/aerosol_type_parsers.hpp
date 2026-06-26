@@ -46,7 +46,11 @@ namespace mechanism_configuration::v1
   // Process parsers
   // ----------------------------------------
 
-  types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(const YAML::Node& object);
+  /// @brief Parses a Henry's-law phase transfer. The diffusion coefficient is sourced from the
+  ///        gas-phase species' definition in `phases`.
+  types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(
+      const YAML::Node& object,
+      const std::vector<types::Phase>& phases);
   types::DissolvedReaction ParseDissolvedReaction(const YAML::Node& object);
   types::DissolvedReversibleReaction ParseDissolvedReversibleReaction(const YAML::Node& object);
 
@@ -65,6 +69,11 @@ namespace mechanism_configuration::v1
   std::vector<types::Representation> ParseAerosolRepresentations(const YAML::Node& objects);
 
   /// @brief Parses the aerosol processes sequence into the processes or constraints
-  void ParseAerosolProcesses(const YAML::Node& objects, types::Aerosol& aerosol);
+  /// @param phases Parsed phases, used to source per-species values such as a phase-transfer's
+  ///        gas-phase diffusion coefficient
+  void ParseAerosolProcesses(
+      const YAML::Node& objects,
+      const std::vector<types::Phase>& phases,
+      types::Aerosol& aerosol);
 
 }  // namespace mechanism_configuration::v1

@@ -54,7 +54,7 @@ namespace mechanism_configuration::v1::keys
   // also: gas_phase, gas_phase_species, condensed_phase, condensed_phase_species, solvent,
   //       henry_law_constant, diffusion_coefficient
   inline constexpr std::string_view HenryLawPhaseTransfer_key = "HENRY_LAW_PHASE_TRANSFER";
-  inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient [-]";
+  inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient";
 
   // DissolvedReaction
   // also: condensed_phase, solvent, reactants, products, rate_constants

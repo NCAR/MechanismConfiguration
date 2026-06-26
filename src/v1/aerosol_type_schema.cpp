@@ -25,14 +25,14 @@ namespace mechanism_configuration
       Errors CheckArrheniusReferenceTemperatureSchema(const YAML::Node& object)
       {
         const std::vector<std::string_view> required_keys = { keys::A, keys::henry_law_C };
-        const std::vector<std::string_view> optional_keys = { keys::reference_temperature };
+        const std::vector<std::string_view> optional_keys = { keys::type, keys::reference_temperature };
         return CheckSchema(object, required_keys, optional_keys);
       }
 
       Errors CheckArrheniusSchema(const YAML::Node& object)
       {
         const std::vector<std::string_view> required_keys = { keys::A, keys::C };
-        const std::vector<std::string_view> optional_keys = { keys::B, keys::D, keys::E };
+        const std::vector<std::string_view> optional_keys = { keys::type };
         return CheckSchema(object, required_keys, optional_keys);
       }
 
@@ -223,7 +223,7 @@ namespace mechanism_configuration
                             keys::condensed_phase_species,
                             keys::solvent,
                             keys::henry_law_constant };
-          optional_keys = { keys::solvent_molecular_weight, keys::solvent_density };
+          optional_keys = { keys::solvent_molecular_weight, keys::solvent_density }; // TODO
           if (object[keys::henry_law_constant])
             nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
         }
@@ -251,7 +251,7 @@ namespace mechanism_configuration
         else if (type == keys::LinearConstraint_key)
         {
           required_keys = { keys::type, keys::algebraic_phase, keys::algebraic_species, keys::terms };
-          optional_keys = { keys::name, keys::constant, keys::diagnose_from_state };
+          optional_keys = { keys::constant, keys::diagnose_from_state };
           if (object[keys::terms])
           {
             auto e = CheckLinearConstraintTermsSchema(object[keys::terms]);
