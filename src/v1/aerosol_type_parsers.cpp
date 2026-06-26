@@ -195,7 +195,10 @@ namespace mechanism_configuration
     // Constraint parsers
     // ----------------------------------------
 
-    types::HenryLawEquilibrium ParseHenryLawEquilibrium(const YAML::Node& object)
+    types::HenryLawEquilibrium ParseHenryLawEquilibrium(
+        const YAML::Node& object,
+        const std::vector<types::Species>& species,
+        const std::vector<types::Phase>& phases)
     {
       types::HenryLawEquilibrium equilibrium;
 
@@ -206,11 +209,11 @@ namespace mechanism_configuration
       equilibrium.solvent = object[keys::solvent].as<std::string>();
       equilibrium.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
 
-      // Solvent properties are optional here; when omitted they are sourced from the solvent
-      // species definition downstream.
-      equilibrium.solvent_molecular_weight =
-          object[keys::solvent_molecular_weight] ? object[keys::solvent_molecular_weight].as<double>() : 0.0;
-      equilibrium.solvent_density = object[keys::solvent_density] ? object[keys::solvent_density].as<double>() : 0.0;
+      // Sourced from the solvent species' definition: molecular weight from the species section,
+      // density from the condensed phase. Schema validation guarantees both are present.
+      equilibrium.solvent_molecular_weight = FindSpeciesMolecularWeight(species, equilibrium.solvent).value();
+      equilibrium.solvent_density =
+          FindPhaseSpeciesDensity(phases, equilibrium.condensed_phase, equilibrium.solvent).value();
 
       return equilibrium;
     }
@@ -279,6 +282,7 @@ namespace mechanism_configuration
 
     void ParseAerosolProcesses(
         const YAML::Node& objects,
+        const std::vector<types::Species>& species,
         const std::vector<types::Phase>& phases,
         types::Aerosol& aerosol)
     {
@@ -295,7 +299,7 @@ namespace mechanism_configuration
           aerosol.processes.emplace_back(ParseDissolvedReversibleReaction(object));
         // Constraints
         else if (type == keys::HenryLawEquilibrium_key)
-          aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(object));
+          aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(object, species, phases));
         else if (type == keys::DissolvedEquilibrium_key)
           aerosol.constraints.emplace_back(ParseDissolvedEquilibrium(object));
         else if (type == keys::LinearConstraint_key)

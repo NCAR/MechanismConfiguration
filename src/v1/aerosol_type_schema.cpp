@@ -129,7 +129,10 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list, const std::vector<types::Phase>& phases)
+    Errors CheckAerosolProcessesSchema(
+        const YAML::Node& processes_list,
+        const std::vector<types::Species>& species,
+        const std::vector<types::Phase>& phases)
     {
       Errors errors;
 
@@ -237,6 +240,9 @@ namespace mechanism_configuration
         }
         else if (type == keys::HenryLawEquilibrium_key)
         {
+          // The solvent's molecular weight and density are not given here; they are sourced from
+          // the solvent species' definition (molecular weight from the species section, density
+          // from the condensed phase).
           required_keys = { keys::type,
                             keys::gas_phase,
                             keys::gas_phase_species,
@@ -244,9 +250,36 @@ namespace mechanism_configuration
                             keys::condensed_phase_species,
                             keys::solvent,
                             keys::henry_law_constant };
-          optional_keys = { keys::solvent_molecular_weight, keys::solvent_density }; // TODO
           if (object[keys::henry_law_constant])
             nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
+          if (object[keys::solvent] && object[keys::condensed_phase])
+          {
+            const auto solvent = object[keys::solvent].as<std::string>();
+            const auto condensed_phase = object[keys::condensed_phase].as<std::string>();
+            ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+            if (!FindSpeciesMolecularWeight(species, solvent).has_value())
+            {
+              nested_errors.push_back(
+                  { ErrorCode::RequiredKeyNotFound,
+                    mc_fmt::format(
+                        "{} error: '{}' solvent species '{}' has no molecular weight defined in the "
+                        "species section.",
+                        error_location,
+                        keys::HenryLawEquilibrium_key,
+                        solvent) });
+            }
+            if (!FindPhaseSpeciesDensity(phases, condensed_phase, solvent).has_value())
+            {
+              nested_errors.push_back(
+                  { ErrorCode::RequiredKeyNotFound,
+                    mc_fmt::format(
+                        "{} error: '{}' solvent species '{}' has no density defined in phase '{}'.",
+                        error_location,
+                        keys::HenryLawEquilibrium_key,
+                        solvent,
+                        condensed_phase) });
+            }
+          }
         }
         else if (type == keys::DissolvedEquilibrium_key)
         {

@@ -37,6 +37,7 @@ namespace mechanism_configuration::types
   {
     std::string name;
     std::optional<double> diffusion_coefficient;
+    std::optional<double> density;
     /// @brief Unknown properties, prefixed with two underscores (__)
     std::unordered_map<std::string, std::string> unknown_properties;
   };

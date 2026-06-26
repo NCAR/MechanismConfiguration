@@ -51,7 +51,7 @@ namespace mechanism_configuration
       const std::vector<std::string_view> optional_keys = {};
       // PhaseSpecies
       const std::vector<std::string_view> species_required_keys = { keys::name };
-      const std::vector<std::string_view> species_optional_keys = { keys::diffusion_coefficient };
+      const std::vector<std::string_view> species_optional_keys = { keys::diffusion_coefficient, keys::density };
 
       // Structural validation only. Duplicate detection, phase-species existence, and
       // phase-membership (semantic checks) are performed by the version-neutral

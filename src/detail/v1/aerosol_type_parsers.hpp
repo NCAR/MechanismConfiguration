@@ -58,7 +58,12 @@ namespace mechanism_configuration::v1
   // Constraint parsers
   // ----------------------------------------
 
-  types::HenryLawEquilibrium ParseHenryLawEquilibrium(const YAML::Node& object);
+  /// @brief Parses a Henry's-law equilibrium. The solvent's molecular weight is sourced from the
+  ///        species section and its density from the condensed phase.
+  types::HenryLawEquilibrium ParseHenryLawEquilibrium(
+      const YAML::Node& object,
+      const std::vector<types::Species>& species,
+      const std::vector<types::Phase>& phases);
   types::DissolvedEquilibrium ParseDissolvedEquilibrium(const YAML::Node& object);
   types::LinearConstraint ParseLinearConstraint(const YAML::Node& object);
 
@@ -73,6 +78,7 @@ namespace mechanism_configuration::v1
   ///        gas-phase diffusion coefficient
   void ParseAerosolProcesses(
       const YAML::Node& objects,
+      const std::vector<types::Species>& species,
       const std::vector<types::Phase>& phases,
       types::Aerosol& aerosol);
 

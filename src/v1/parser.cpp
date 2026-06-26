@@ -322,7 +322,7 @@ namespace mechanism_configuration::v1
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes], parsed_phases);
+      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes], parsed_species, parsed_phases);
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);
@@ -416,7 +416,7 @@ namespace mechanism_configuration::v1
     }
     if (object[keys::aerosol_processes])
     {
-      ParseAerosolProcesses(object[keys::aerosol_processes], mechanism.phases, mechanism.aerosol);
+      ParseAerosolProcesses(object[keys::aerosol_processes], mechanism.species, mechanism.phases, mechanism.aerosol);
     }
     if (object[keys::name])
     {

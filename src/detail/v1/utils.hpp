@@ -45,4 +45,18 @@ namespace mechanism_configuration::v1
       const std::string& phase_name,
       const std::string& species_name);
 
+  /// @brief Looks up the density defined for a species within a phase.
+  /// @return The density, or nullopt if the phase/species is not found or the species has no
+  ///         density defined.
+  std::optional<double> FindPhaseSpeciesDensity(
+      const std::vector<types::Phase>& phases,
+      const std::string& phase_name,
+      const std::string& species_name);
+
+  /// @brief Looks up the molecular weight defined for a top-level species.
+  /// @return The molecular weight, or nullopt if the species is not found or has none defined.
+  std::optional<double> FindSpeciesMolecularWeight(
+      const std::vector<types::Species>& species,
+      const std::string& species_name);
+
 }  // namespace mechanism_configuration::v1
