@@ -24,9 +24,23 @@ namespace mechanism_configuration
     {
       Errors CheckArrheniusReferenceTemperatureSchema(const YAML::Node& object)
       {
-        const std::vector<std::string_view> required_keys = { keys::A, keys::C };
+        const std::vector<std::string_view> required_keys = { keys::A, keys::henry_law_C };
         const std::vector<std::string_view> optional_keys = { keys::reference_temperature };
         return CheckSchema(object, required_keys, optional_keys);
+      }
+
+      Errors CheckArrheniusSchema(const YAML::Node& object)
+      {
+        const std::vector<std::string_view> required_keys = { keys::A, keys::C };
+        const std::vector<std::string_view> optional_keys = { keys::B, keys::D, keys::E };
+        return CheckSchema(object, required_keys, optional_keys);
+      }
+
+      Errors CheckRateConstantSchema(const YAML::Node& object)
+      {
+        if (object[keys::type] && object[keys::type].as<std::string>() == keys::ArrheniusReferenceTemperature_key)
+          return CheckArrheniusReferenceTemperatureSchema(object);
+        return CheckArrheniusSchema(object);
       }
 
       Errors CheckHenryLawConstantSchema(const YAML::Node& object)
@@ -36,13 +50,13 @@ namespace mechanism_configuration
         return CheckSchema(object, required_keys, optional_keys);
       }
 
-      // A per-representation rate-constant map; each value is a reference-temperature block.
+      // A per-representation rate-constant map. Each value is a typed rate-constant block.
       Errors CheckRateConstantMapSchema(const YAML::Node& object)
       {
         Errors errors;
         for (const auto& entry : object)
         {
-          auto entry_errors = CheckArrheniusReferenceTemperatureSchema(entry.second); // TODO
+          auto entry_errors = CheckRateConstantSchema(entry.second);
           errors.insert(errors.end(), entry_errors.begin(), entry_errors.end());
         }
         return errors;
@@ -52,7 +66,7 @@ namespace mechanism_configuration
       Errors CheckLinearConstraintTermsSchema(const YAML::Node& object)
       {
         Errors errors;
-        const std::vector<std::string_view> required_keys = { keys::phase, keys::species, keys::coefficient };
+        const std::vector<std::string_view> required_keys = { keys::phase, keys::name, keys::coefficient };
         const std::vector<std::string_view> optional_keys = {};
         for (const auto& term : object)
         {

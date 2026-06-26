@@ -116,11 +116,11 @@
       "condensed phase": "AQUEOUS",
       "solvent": "H2O",
       "reactants": [
-        { "species name": "SO2OOHm", "coefficient": 1 },
-        { "species name": "Hp",      "coefficient": 1 }
+        { "name": "SO2OOHm", "coefficient": 1 },
+        { "name": "Hp",      "coefficient": 1 }
       ],
       "products": [
-        { "species name": "SO4mm", "coefficient": 1 }
+        { "name": "SO4mm", "coefficient": 1 }
       ],
       "rate constants": {
         "CLOUD": { "type": "ARRHENIUS", "A": 1.333e8, "C": 4430.0}
@@ -220,12 +220,12 @@
       "algebraic species": "Hp",
       "constant [mol m-3]": 0.0,
       "terms": [
-        { "phase": "AQUEOUS", "name": "Hp",       "coefficient":  1.0 },
-        { "phase": "AQUEOUS", "name": "OHm",      "coefficient": -1.0 },
-        { "phase": "AQUEOUS", "name": "HSO3m",    "coefficient": -1.0 },
-        { "phase": "AQUEOUS", "name": "SO3mm",    "coefficient": -2.0 },
-        { "phase": "AQUEOUS", "name": "SO4mm",    "coefficient": -2.0 },
-        { "phase": "AQUEOUS", "name": "SO2OOHm",  "coefficient": -1.0 }
+        { "phase": "AQUEOUS", "name": "Hp",      "coefficient":  1.0 },
+        { "phase": "AQUEOUS", "name": "OHm",     "coefficient": -1.0 },
+        { "phase": "AQUEOUS", "name": "HSO3m",   "coefficient": -1.0 },
+        { "phase": "AQUEOUS", "name": "SO3mm",   "coefficient": -2.0 },
+        { "phase": "AQUEOUS", "name": "SO4mm",   "coefficient": -2.0 },
+        { "phase": "AQUEOUS", "name": "SO2OOHm", "coefficient": -1.0 }
       ]
     }
   ]

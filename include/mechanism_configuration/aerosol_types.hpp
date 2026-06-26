@@ -39,8 +39,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief A reaction rate constant parsed from config.
-  // using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>; // TODO
-  using RateConstant = std::variant<ArrheniusReferenceTemperature, std::function<double(double)>>;
+  using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>;
 
   // ----------------------------------------
   // Representations
@@ -142,7 +141,7 @@ namespace mechanism_configuration::types
   struct LinearConstraintTerm
   {
     std::string phase;
-    std::string species;
+    std::string name;
     double coefficient;
   };
 

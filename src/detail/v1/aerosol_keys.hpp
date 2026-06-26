@@ -81,7 +81,7 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view algebraic_species = "algebraic species";
 
   // LinearConstraint
-  // also: name; terms carry coefficient and species
+  // also: name; terms carry coefficient and name
   inline constexpr std::string_view LinearConstraint_key = "LINEAR_CONSTRAINT";
   inline constexpr std::string_view algebraic_phase = "algebraic phase";
   inline constexpr std::string_view terms = "terms";

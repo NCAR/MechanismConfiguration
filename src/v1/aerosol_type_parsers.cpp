@@ -21,12 +21,38 @@ namespace mechanism_configuration
       types::ArrheniusReferenceTemperature rate_constant;
 
       rate_constant.A = object[keys::A].as<double>();
-      if (object[keys::C])
-        rate_constant.C = object[keys::C].as<double>();
+      if (object[keys::henry_law_C])
+        rate_constant.C = object[keys::henry_law_C].as<double>();
       if (object[keys::reference_temperature])
         rate_constant.T0 = object[keys::reference_temperature].as<double>();
 
       return rate_constant;
+    }
+
+    types::Arrhenius ParseArrhenius(const YAML::Node& object)
+    {
+      types::Arrhenius rate_constant;
+
+      rate_constant.A = object[keys::A].as<double>();
+      if (object[keys::B])
+        rate_constant.B = object[keys::B].as<double>();
+      if (object[keys::C])
+        rate_constant.C = object[keys::C].as<double>();
+      if (object[keys::D])
+        rate_constant.D = object[keys::D].as<double>();
+      if (object[keys::E])
+        rate_constant.E = object[keys::E].as<double>();
+
+      return rate_constant;
+    }
+
+    types::RateConstant ParseRateConstant(const YAML::Node& object)
+    {
+      if (object[keys::type] && object[keys::type].as<std::string>() == keys::ArrheniusReferenceTemperature_key)
+        return ParseArrheniusReferenceTemperature(object);
+
+      // ARRHENIUS is the default when no (recognized) type is given.
+      return ParseArrhenius(object);
     }
 
     types::HenryLawConstant ParseHenryLawConstant(const YAML::Node& object)
@@ -46,11 +72,11 @@ namespace mechanism_configuration
     {
       std::map<std::string, types::RateConstant> rate_constants;
 
-      // Each key is an aerosol representation name (e.g. "CLOUD"); each value is a
-      // reference-temperature Arrhenius block.
+      // Each key is an aerosol representation name (e.g. "CLOUD"); each value is a rate-constant
+      // block whose own `type` selects the RateConstant variant alternative.
       for (const auto& entry : object)
       {
-        rate_constants.emplace(entry.first.as<std::string>(), ParseArrheniusReferenceTemperature(entry.second));
+        rate_constants.emplace(entry.first.as<std::string>(), ParseRateConstant(entry.second));
       }
 
       return rate_constants;
@@ -209,7 +235,7 @@ namespace mechanism_configuration
       {
         types::LinearConstraintTerm term;
         term.phase = term_node[keys::phase].as<std::string>();
-        term.species = term_node[keys::species].as<std::string>();
+        term.name = term_node[keys::name].as<std::string>();
         term.coefficient = term_node[keys::coefficient].as<double>();
         constraint.terms.push_back(term);
       }
