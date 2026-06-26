@@ -200,6 +200,8 @@ namespace mechanism_configuration::v1
     resolve_section(keys::species);
     resolve_section(keys::phases);
     resolve_section(keys::reactions);
+    resolve_section(keys::aerosol_representations);
+    resolve_section(keys::aerosol_processes);
 
     if (!errors.empty())
     {
