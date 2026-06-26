@@ -10,6 +10,7 @@
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
+#include <variant>
 #include <vector>
 
 namespace mechanism_configuration
@@ -109,6 +110,44 @@ namespace mechanism_configuration
       }
     }
 
+    // ---- Aerosol Representations --------------------------------------------------------------------------
+    for (const auto& representation : input.aerosol_representations)
+    {
+      for (const auto& phase : representation.phases)
+      {
+        if (!phase_species.contains(phase.name))
+          errors.push_back(
+              { ErrorCode::UnknownPhase,
+                Message(
+                    phase.location,
+                    mc_fmt::format(
+                        "Unknown phase '{}' in '{}' aerosol representation.", phase.name, representation.name)) });
+      }
+    }
+
+    // ---- Aerosol Processes --------------------------------------------------------------------------
+    for (const auto& process : input.aerosol_processes)
+    {
+      for (const auto& species : process.species)
+      {
+        if (!species_names.contains(species.name))
+          errors.push_back(
+              { ErrorCode::UnknownSpecies,
+                Message(
+                    species.location,
+                    mc_fmt::format("Unknown species '{}' in '{}' aerosol process.", species.name, process.type)) });
+      }
+      for (const auto& phase : process.phases)
+      {
+        if (!phase_species.contains(phase.name))
+          errors.push_back(
+              { ErrorCode::UnknownPhase,
+                Message(
+                    phase.location,
+                    mc_fmt::format("Unknown phase '{}' in '{}' aerosol process.", phase.name, process.type)) });
+      }
+    }
+
     return errors;
   }
 
@@ -149,6 +188,7 @@ namespace mechanism_configuration
       input.phases.push_back(std::move(pr));
     }
 
+    // ---- Reactions --------------------------------------------------------------------------
     const auto& r = mechanism.reactions;
     auto add = [&](std::string_view type,
                    const std::string& phase,
@@ -185,6 +225,134 @@ namespace mechanism_configuration
       add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
     }
 
-    return ValidateSemantics(input);
+    // ---- Aerosol Representations --------------------------------------------------------------------------
+    const auto& a = mechanism.aerosol;
+    for (const auto& x : a.representations)
+    {
+      std::visit(
+          [&](const auto& rep)
+          {
+            using T = std::decay_t<decltype(rep)>;
+            std::string_view type;
+            if constexpr (std::is_same_v<T, types::UniformSection>)
+              type = "UNIFORM_SECTION";
+            else if constexpr (std::is_same_v<T, types::SingleMomentMode>)
+              type = "SINGLE_MOMENT_MODE";
+            else if constexpr (std::is_same_v<T, types::TwoMomentMode>)
+              type = "TWO_MOMENT_MODE";
+
+            semantics::AerosolRepresentationRef ref{ std::string(type), rep.name, {}, std::nullopt };
+            for (const auto& phase : rep.phases)
+              ref.phases.push_back({ phase, std::nullopt });
+            input.aerosol_representations.push_back(std::move(ref));
+          },
+          x);
+    }
+
+    // ---- Aerosol Processes --------------------------------------------------------------------------
+    for (const auto& x : a.processes)
+    {
+      std::visit(
+          [&](const auto& proc)
+          {
+            using T = std::decay_t<decltype(proc)>;
+            semantics::AerosolProcessRef ref;
+
+            if constexpr (std::is_same_v<T, types::DissolvedReaction>)
+            {
+              ref.type = "DISSOLVED_REACTION";
+              ref.phases.push_back({ proc.phase, std::nullopt });
+              ref.species.push_back({ proc.solvent, std::nullopt });
+              for (const auto& r : proc.reactants)
+                ref.species.push_back({ r.name, std::nullopt });
+              for (const auto& p : proc.products)
+                ref.species.push_back({ p.name, std::nullopt });
+              std::vector<semantics::NamedRef> rep_refs;
+              for (const auto& [rep_name, _] : proc.rate_constants)
+                rep_refs.push_back({ rep_name, std::nullopt });
+              ref.aerosol_representations = std::move(rep_refs);
+            }
+            else if constexpr (std::is_same_v<T, types::DissolvedReversibleReaction>)
+            {
+              ref.type = "DISSOLVED_REVERSIBLE_REACTION";
+              ref.phases.push_back({ proc.phase, std::nullopt });
+              ref.species.push_back({ proc.solvent, std::nullopt });
+              for (const auto& r : proc.reactants)
+                ref.species.push_back({ r.name, std::nullopt });
+              for (const auto& p : proc.products)
+                ref.species.push_back({ p.name, std::nullopt });
+              std::vector<semantics::NamedRef> rep_refs;
+              for (const auto& [rep_name, _] : proc.forward_rate_constants)
+                rep_refs.push_back({ rep_name, std::nullopt });
+              for (const auto& [rep_name, _] : proc.reverse_rate_constants)
+                rep_refs.push_back({ rep_name, std::nullopt });
+              ref.aerosol_representations = std::move(rep_refs);
+            }
+            else if constexpr (std::is_same_v<T, types::HenryLawPhaseTransfer>)
+            {
+              ref.type = "HENRY_LAW_PHASE_TRANSFER";
+              ref.phases.push_back({ proc.gas_phase, std::nullopt });
+              ref.phases.push_back({ proc.condensed_phase, std::nullopt });
+              ref.species.push_back({ proc.gas_species, std::nullopt });
+              ref.species.push_back({ proc.condensed_species, std::nullopt });
+              ref.species.push_back({ proc.solvent, std::nullopt });
+            }
+
+            input.aerosol_processes.push_back(std::move(ref));
+          },
+          x);
+    }
+
+    // ---- Aerosol Constraints --------------------------------------------------------------------------
+    for (const auto& x : a.constraints)
+    {
+      std::visit(
+          [&](const auto& con)
+          {
+            using T = std::decay_t<decltype(con)>;
+            semantics::AerosolProcessRef ref;
+
+            if constexpr (std::is_same_v<T, types::HenryLawEquilibrium>)
+            {
+              ref.type = "HENRY_LAW_EQUILIBRIUM";
+              ref.phases.push_back({ con.gas_phase, std::nullopt });
+              ref.phases.push_back({ con.condensed_phase, std::nullopt });
+              ref.species.push_back({ con.gas_species, std::nullopt });
+              ref.species.push_back({ con.condensed_species, std::nullopt });
+              ref.species.push_back({ con.solvent, std::nullopt });
+            }
+            else if constexpr (std::is_same_v<T, types::DissolvedEquilibrium>)
+            {
+              ref.type = "DISSOLVED_EQUILIBRIUM";
+              ref.phases.push_back({ con.phase, std::nullopt });
+              ref.species.push_back({ con.algebraic_species, std::nullopt });
+              ref.species.push_back({ con.solvent, std::nullopt });
+              for (const auto& r : con.reactants)
+                ref.species.push_back({ r.name, std::nullopt });
+              for (const auto& p : con.products)
+                ref.species.push_back({ p.name, std::nullopt });
+            }
+            else if constexpr (std::is_same_v<T, types::LinearConstraint>)
+            {
+              ref.type = "LINEAR_CONSTRAINT";
+              ref.phases.push_back({ con.algebraic_phase, std::nullopt });
+              ref.species.push_back({ con.algebraic_species, std::nullopt });
+              for (const auto& term : con.terms)
+              {
+                ref.phases.push_back({ term.phase, std::nullopt });
+                ref.species.push_back({ term.name, std::nullopt });
+              }
+            }
+
+            input.aerosol_processes.push_back(std::move(ref));
+          },
+          x);
+    }
+
+    Errors errors = ValidateSemantics(input);
+    // Errors aerosol_errors = ValidateAerosol(mechanism);
+    // errors.insert(errors.end(), aerosol_errors.begin(), aerosol_errors.end());
+    return errors;
   }
+
 }  // namespace mechanism_configuration
