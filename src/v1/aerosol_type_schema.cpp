@@ -129,7 +129,7 @@ namespace mechanism_configuration
       return errors;
     }
 
-    Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list)
+    Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list, const std::vector<types::Phase>& phases)
     {
       Errors errors;
 
@@ -152,6 +152,8 @@ namespace mechanism_configuration
         const std::string type = object[keys::type].as<std::string>();
         if (type == keys::HenryLawPhaseTransfer_key)
         {
+          // The diffusion coefficient is not given here; it is sourced from the gas-phase
+          // species' definition in the phases section.
           required_keys = { keys::type,
                             keys::gas_phase,
                             keys::gas_phase_species,
@@ -159,10 +161,29 @@ namespace mechanism_configuration
                             keys::condensed_phase_species,
                             keys::solvent,
                             keys::henry_law_constant,
-                            keys::diffusion_coefficient,
-                            keys::accommodation_coefficient }; // TODO
+                            keys::accommodation_coefficient };
           if (object[keys::henry_law_constant])
             nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
+          // The gas-phase species must carry a diffusion coefficient, since this process reads it
+          // from the phases section rather than from the process block itself.
+          if (object[keys::gas_phase] && object[keys::gas_phase_species])
+          {
+            const auto gas_phase = object[keys::gas_phase].as<std::string>();
+            const auto gas_species = object[keys::gas_phase_species].as<std::string>();
+            if (!FindPhaseSpeciesDiffusionCoefficient(phases, gas_phase, gas_species).has_value())
+            {
+              ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+              nested_errors.push_back(
+                  { ErrorCode::RequiredKeyNotFound,
+                    mc_fmt::format(
+                        "{} error: '{}' references gas-phase species '{}' in phase '{}', which has no "
+                        "diffusion coefficient defined in the phases section.",
+                        error_location,
+                        keys::HenryLawPhaseTransfer_key,
+                        gas_species,
+                        gas_phase) });
+            }
+          }
         }
         else if (type == keys::DissolvedReaction_key)
         {

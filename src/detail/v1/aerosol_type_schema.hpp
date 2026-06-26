@@ -5,8 +5,11 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/types.hpp>
 
 #include <yaml-cpp/yaml.h>
+
+#include <vector>
 
 namespace mechanism_configuration::v1
 {
@@ -18,7 +21,9 @@ namespace mechanism_configuration::v1
   /// @brief Schema-validates each entry of the aerosol processes section which mixes
   ///        process and constraint types.
   /// @param processes_list YAML node containing the process/constraint entries
+  /// @param phases Parsed phases, used to validate cross-references such as a phase-transfer's
+  ///        gas-phase species carrying a diffusion coefficient
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list);
+  Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list, const std::vector<types::Phase>& phases);
 
 }  // namespace mechanism_configuration::v1

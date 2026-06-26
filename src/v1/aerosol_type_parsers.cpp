@@ -7,6 +7,7 @@
 #include "detail/v1/aerosol_keys.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
+#include "detail/v1/utils.hpp"
 
 namespace mechanism_configuration
 {
@@ -136,7 +137,9 @@ namespace mechanism_configuration
     // Process parsers
     // ----------------------------------------
 
-    types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(const YAML::Node& object)
+    types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(
+        const YAML::Node& object,
+        const std::vector<types::Phase>& phases)
     {
       types::HenryLawPhaseTransfer transfer;
 
@@ -146,7 +149,9 @@ namespace mechanism_configuration
       transfer.condensed_species = object[keys::condensed_phase_species].as<std::string>();
       transfer.solvent = object[keys::solvent].as<std::string>();
       transfer.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
-      transfer.diffusion_coefficient = object[keys::diffusion_coefficient].as<double>();
+      // Sourced from the gas-phase species' definition. Schema validation guarantees it is present.
+      transfer.diffusion_coefficient =
+          FindPhaseSpeciesDiffusionCoefficient(phases, transfer.gas_phase, transfer.gas_species).value();
       transfer.accommodation_coefficient = object[keys::accommodation_coefficient].as<double>();
 
       return transfer;
@@ -272,7 +277,10 @@ namespace mechanism_configuration
       return representations;
     }
 
-    void ParseAerosolProcesses(const YAML::Node& objects, types::Aerosol& aerosol)
+    void ParseAerosolProcesses(
+        const YAML::Node& objects,
+        const std::vector<types::Phase>& phases,
+        types::Aerosol& aerosol)
     {
       for (const auto& object : objects)
       {
@@ -280,7 +288,7 @@ namespace mechanism_configuration
 
         // Processes
         if (type == keys::HenryLawPhaseTransfer_key)
-          aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(object));
+          aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(object, phases));
         else if (type == keys::DissolvedReaction_key)
           aerosol.processes.emplace_back(ParseDissolvedReaction(object));
         else if (type == keys::DissolvedReversibleReaction_key)

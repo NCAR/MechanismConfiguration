@@ -78,5 +78,23 @@ namespace mechanism_configuration
       return unknown_properties;
     }
 
+    std::optional<double> FindPhaseSpeciesDiffusionCoefficient(
+        const std::vector<types::Phase>& phases,
+        const std::string& phase_name,
+        const std::string& species_name)
+    {
+      for (const auto& phase : phases)
+      {
+        if (phase.name != phase_name)
+          continue;
+        for (const auto& species : phase.species)
+        {
+          if (species.name == species_name)
+            return species.diffusion_coefficient;
+        }
+      }
+      return std::nullopt;
+    }
+
   }  // namespace v1
 }  // namespace mechanism_configuration

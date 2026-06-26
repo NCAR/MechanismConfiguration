@@ -12,6 +12,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -32,5 +33,16 @@ namespace mechanism_configuration::v1
   ///        canonical `name` key or the legacy `species name` alias (v1 files).
   /// @note Assumes the component has already been validated to contain exactly one of them.
   std::string GetReactionComponentName(const YAML::Node& component);
+
+  /// @brief Looks up the diffusion coefficient defined for a species within a phase.
+  /// @param phases Parsed phases to search
+  /// @param phase_name Name of the phase that should contain the species
+  /// @param species_name Name of the species whose diffusion coefficient is requested
+  /// @return The diffusion coefficient, or nullopt if the phase/species is not found or the
+  ///         species has no diffusion coefficient defined.
+  std::optional<double> FindPhaseSpeciesDiffusionCoefficient(
+      const std::vector<types::Phase>& phases,
+      const std::string& phase_name,
+      const std::string& species_name);
 
 }  // namespace mechanism_configuration::v1
