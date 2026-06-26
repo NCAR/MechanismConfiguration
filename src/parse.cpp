@@ -63,6 +63,29 @@ namespace mechanism_configuration
                             ErrorLocation{ version_node.Mark().line, version_node.Mark().column } };
   }
 
+  std::expected<Mechanism, Errors> Parse(const std::string& content)
+  {
+    YAML::Node object;
+    try
+    {
+      object = YAML::Load(content);
+    }
+    catch (const YAML::Exception& e)
+    {
+      return std::unexpected(
+          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse document: {}", e.what()) } });
+    }
+
+    const unsigned int major = object["version"] ? Version(object["version"].as<std::string>()).major : 0;
+    switch (major)
+    {
+      case 1: return v1::Parser{}.Parse(content);
+      default:
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion,
+                                         mc_fmt::format("Unsupported version number '{}'.", major) } });
+    }
+  }
+
   std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path)
   {
     auto version = GetVersion(config_path);
