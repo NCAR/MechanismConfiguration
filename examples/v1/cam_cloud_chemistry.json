@@ -12,7 +12,7 @@
     { "name": "SO3mm",   "molecular weight [kg mol-1]": 0.08007 },
     { "name": "SO4mm",   "molecular weight [kg mol-1]": 0.09607 },
     { "name": "SO2OOHm", "molecular weight [kg mol-1]": 0.11307 },
-    { "name": "H2O",     "molecular weight [kg mol-1]": 0.01801, "density [kg m-3]": 997.0 }
+    { "name": "H2O",     "molecular weight [kg mol-1]": 0.01801 }
   ],
 
   "phases": [
@@ -27,15 +27,8 @@
     {
       "name": "AQUEOUS",
       "species": [
-        { "name": "SO2" },
-        { "name": "H2O2" },
-        { "name": "O3" },
-        { "name": "Hp" },
-        { "name": "OHm" },
-        { "name": "HSO3m" },
-        { "name": "SO3mm" },
-        { "name": "SO4mm" },
-        { "name": "SO2OOHm" }
+        "SO2", "H2O2", "O3", "Hp", "OHm", "HSO3m", "SO3mm", "SO4mm", "SO2OOHm",
+        { "name": "H2O", "density [kg m-3]": 997.0 }
       ]
     }
   ],

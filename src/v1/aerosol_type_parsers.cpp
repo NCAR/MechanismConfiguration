@@ -149,9 +149,10 @@ namespace mechanism_configuration
       transfer.condensed_species = object[keys::condensed_phase_species].as<std::string>();
       transfer.solvent = object[keys::solvent].as<std::string>();
       transfer.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
-      // Sourced from the gas-phase species' definition. Schema validation guarantees it is present.
+      // Sourced from the gas-phase species' definition; presence is enforced by ValidateAerosol,
+      // which runs before this result is returned, so a missing value defaults harmlessly here.
       transfer.diffusion_coefficient =
-          FindPhaseSpeciesDiffusionCoefficient(phases, transfer.gas_phase, transfer.gas_species).value();
+          FindPhaseSpeciesDiffusionCoefficient(phases, transfer.gas_phase, transfer.gas_species).value_or(0.0);
       transfer.accommodation_coefficient = object[keys::accommodation_coefficient].as<double>();
 
       return transfer;
@@ -210,10 +211,11 @@ namespace mechanism_configuration
       equilibrium.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
 
       // Sourced from the solvent species' definition: molecular weight from the species section,
-      // density from the condensed phase. Schema validation guarantees both are present.
-      equilibrium.solvent_molecular_weight = FindSpeciesMolecularWeight(species, equilibrium.solvent).value();
+      // density from the condensed phase. Presence is enforced by ValidateAerosol, which runs
+      // before this result is returned, so a missing value defaults harmlessly here.
+      equilibrium.solvent_molecular_weight = FindSpeciesMolecularWeight(species, equilibrium.solvent).value_or(0.0);
       equilibrium.solvent_density =
-          FindPhaseSpeciesDensity(phases, equilibrium.condensed_phase, equilibrium.solvent).value();
+          FindPhaseSpeciesDensity(phases, equilibrium.condensed_phase, equilibrium.solvent).value_or(0.0);
 
       return equilibrium;
     }
