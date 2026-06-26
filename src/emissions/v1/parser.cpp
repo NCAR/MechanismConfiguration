@@ -6,7 +6,7 @@
 
 #include "emissions/v1/keys.hpp"
 
-#include <mechanism_configuration/emissions/v1/parse.hpp>
+#include <mechanism_configuration/emissions/parse.hpp>
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>

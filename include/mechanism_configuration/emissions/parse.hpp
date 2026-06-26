@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/emissions/v1/types.hpp>
+#include <mechanism_configuration/emissions/types.hpp>
 #include <mechanism_configuration/errors.hpp>
 
 #include <expected>

@@ -2,7 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/emissions/v1/parse.hpp>
+#include <mechanism_configuration/emissions/parse.hpp>
 #include <mechanism_configuration/errors.hpp>
 
 #include <gtest/gtest.h>
