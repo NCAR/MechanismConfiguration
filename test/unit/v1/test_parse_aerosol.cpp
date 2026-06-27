@@ -13,7 +13,6 @@ using namespace mechanism_configuration;
 
 namespace
 {
-  // True if any reported error carries the given code.
   bool HasError(const Errors& errors, ErrorCode code)
   {
     for (const auto& [error_code, message] : errors)

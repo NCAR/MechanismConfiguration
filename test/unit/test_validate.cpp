@@ -249,7 +249,7 @@ TEST(ValidateAerosol, DetectsRateConstantKeyedByUnknownRepresentation)
 TEST(ValidateAerosol, DetectsMissingGasDiffusionCoefficient)
 {
   Mechanism m = AerosolBaseMechanism();
-  m.phases[0].species[0].diffusion_coefficient = std::nullopt;  // gas-phase A loses its diffusion coefficient
+  m.phases[0].species[0].diffusion_coefficient = std::nullopt;  // Remove gas-phase A diffusion coefficient
   m.aerosol.processes = { ValidPhaseTransfer() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
@@ -258,7 +258,7 @@ TEST(ValidateAerosol, DetectsMissingGasDiffusionCoefficient)
 TEST(ValidateAerosol, DetectsMissingSolventDensity)
 {
   Mechanism m = AerosolBaseMechanism();
-  m.phases[1].species[1].density = std::nullopt;  // aqueous H2O loses its density
+  m.phases[1].species[1].density = std::nullopt;  // Remove aqueous H2O density
   m.aerosol.constraints = { ValidEquilibrium() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
@@ -267,7 +267,7 @@ TEST(ValidateAerosol, DetectsMissingSolventDensity)
 TEST(ValidateAerosol, DetectsMissingSolventMolecularWeight)
 {
   Mechanism m = AerosolBaseMechanism();
-  m.species[1].molecular_weight = std::nullopt;  // H2O loses its molecular weight
+  m.species[1].molecular_weight = std::nullopt;  // Remove H2O molecular weight
   m.aerosol.constraints = { ValidEquilibrium() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
