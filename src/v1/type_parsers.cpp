@@ -80,6 +80,10 @@ namespace mechanism_configuration
             {
               phase_species.diffusion_coefficient = spec[keys::diffusion_coefficient].as<double>();
             }
+            if (spec[keys::density])
+            {
+              phase_species.density = spec[keys::density].as<double>();
+            }
             phase_species.unknown_properties = GetComments(spec);
           }
 

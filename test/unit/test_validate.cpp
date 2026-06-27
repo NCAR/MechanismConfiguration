@@ -6,6 +6,8 @@
 
 #include <gtest/gtest.h>
 
+#include <optional>
+
 using namespace mechanism_configuration;
 
 namespace
@@ -120,4 +122,153 @@ TEST(Validate, DetectsUnknownPhase)
   m.reactions.arrhenius = { rxn };
 
   EXPECT_TRUE(HasCode(Validate(m), ErrorCode::UnknownPhase));
+}
+
+namespace
+{
+  // species A (mw), H2O (mw); gas {A: diffusion}, aqueous {A, H2O: density};
+  // one UNIFORM_SECTION representation "cloud" over the aqueous phase.
+  Mechanism AerosolBaseMechanism()
+  {
+    Mechanism m;
+    types::Species a = species("A");
+    a.molecular_weight = 0.05;
+    types::Species h2o = species("H2O");
+    h2o.molecular_weight = 0.018;
+    m.species = { a, h2o };
+
+    types::Phase gas;
+    gas.name = "gas";
+    types::PhaseSpecies gas_a = phase_species("A");
+    gas_a.diffusion_coefficient = 1.5e-5;
+    gas.species = { gas_a };
+
+    types::Phase aqueous;
+    aqueous.name = "aqueous";
+    types::PhaseSpecies aqueous_h2o = phase_species("H2O");
+    aqueous_h2o.density = 1000.0;
+    aqueous.species = { phase_species("A"), aqueous_h2o };
+
+    m.phases = { gas, aqueous };
+
+    types::UniformSection section;
+    section.name = "cloud";
+    section.phases = { "aqueous" };
+    section.min_radius = 1.0e-6;
+    section.max_radius = 1.0e-5;
+    m.aerosol.representations = { section };
+
+    return m;
+  }
+
+  types::HenryLawPhaseTransfer ValidPhaseTransfer()
+  {
+    types::HenryLawPhaseTransfer t;
+    t.gas_phase = "gas";
+    t.gas_species = "A";
+    t.condensed_phase = "aqueous";
+    t.condensed_species = "A";
+    t.solvent = "H2O";
+    return t;
+  }
+
+  types::HenryLawEquilibrium ValidEquilibrium()
+  {
+    types::HenryLawEquilibrium e;
+    e.gas_phase = "gas";
+    e.gas_species = "A";
+    e.condensed_phase = "aqueous";
+    e.condensed_species = "A";
+    e.solvent = "H2O";
+    return e;
+  }
+}  // namespace
+
+TEST(ValidateAerosol, IgnoresMechanismWithoutAerosolSection)
+{
+  EXPECT_TRUE(ValidateAerosolModel(BaseMechanism()).empty());
+}
+
+TEST(ValidateAerosol, AcceptsValidProcessesAndConstraints)
+{
+  Mechanism m = AerosolBaseMechanism();
+  m.aerosol.processes = { ValidPhaseTransfer() };
+
+  types::DissolvedReaction reaction;
+  reaction.phase = "aqueous";
+  reaction.solvent = "H2O";
+  reaction.reactants = { component("A") };
+  reaction.products = { component("A") };
+  reaction.rate_constants = { { "cloud", types::ArrheniusReferenceTemperature{} } };  // keyed by a declared representation
+  m.aerosol.processes.push_back(reaction);
+
+  m.aerosol.constraints = { ValidEquilibrium() };
+
+  EXPECT_TRUE(ValidateAerosolModel(m).empty());
+}
+
+TEST(ValidateAerosol, DetectsRepresentationReferencingUnknownPhase)
+{
+  Mechanism m = AerosolBaseMechanism();
+  types::SingleMomentMode mode;
+  mode.name = "mode";
+  mode.phases = { "nonexistent" };  // no such phase
+  mode.geometric_mean_radius = 1.0e-6;
+  mode.geometric_standard_deviation = 1.6;
+  m.aerosol.representations.push_back(mode);
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::UnknownPhase));
+}
+
+TEST(ValidateAerosol, DetectsSpeciesNotRegisteredInCondensedPhase)
+{
+  Mechanism m = AerosolBaseMechanism();
+  types::DissolvedReaction reaction;
+  reaction.phase = "aqueous";
+  reaction.solvent = "H2O";
+  reaction.reactants = { component("Q") };  // Q is not registered in the aqueous phase
+  m.aerosol.processes = { reaction };
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequestedSpeciesNotRegisteredInPhase));
+}
+
+TEST(ValidateAerosol, DetectsRateConstantKeyedByUnknownRepresentation)
+{
+  Mechanism m = AerosolBaseMechanism();
+  types::DissolvedReaction reaction;
+  reaction.phase = "aqueous";
+  reaction.solvent = "H2O";
+  reaction.reactants = { component("A") };
+  reaction.products = { component("A") };
+  reaction.rate_constants = { { "not_a_representation", types::ArrheniusReferenceTemperature{} } };
+  m.aerosol.processes = { reaction };
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::UnknownAerosolRepresentation));
+}
+
+TEST(ValidateAerosol, DetectsMissingGasDiffusionCoefficient)
+{
+  Mechanism m = AerosolBaseMechanism();
+  m.phases[0].species[0].diffusion_coefficient = std::nullopt;  // Remove gas-phase A diffusion coefficient
+  m.aerosol.processes = { ValidPhaseTransfer() };
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
+}
+
+TEST(ValidateAerosol, DetectsMissingSolventDensity)
+{
+  Mechanism m = AerosolBaseMechanism();
+  m.phases[1].species[1].density = std::nullopt;  // Remove aqueous H2O density
+  m.aerosol.constraints = { ValidEquilibrium() };
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
+}
+
+TEST(ValidateAerosol, DetectsMissingSolventMolecularWeight)
+{
+  Mechanism m = AerosolBaseMechanism();
+  m.species[1].molecular_weight = std::nullopt;  // Remove H2O molecular weight
+  m.aerosol.constraints = { ValidEquilibrium() };
+
+  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
 }
