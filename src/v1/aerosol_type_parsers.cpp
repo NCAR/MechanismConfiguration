@@ -282,31 +282,41 @@ namespace mechanism_configuration
       return representations;
     }
 
-    void ParseAerosolProcesses(
-        const YAML::Node& objects,
+    types::Aerosol ParseAerosol(
+        const YAML::Node& object,
         const std::vector<types::Species>& species,
-        const std::vector<types::Phase>& phases,
-        types::Aerosol& aerosol)
+        const std::vector<types::Phase>& phases)
     {
-      for (const auto& object : objects)
-      {
-        const auto type = object[keys::type].as<std::string>();
+      types::Aerosol aerosol;
 
-        // Processes
-        if (type == keys::HenryLawPhaseTransfer_key)
-          aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(object, phases));
-        else if (type == keys::DissolvedReaction_key)
-          aerosol.processes.emplace_back(ParseDissolvedReaction(object));
-        else if (type == keys::DissolvedReversibleReaction_key)
-          aerosol.processes.emplace_back(ParseDissolvedReversibleReaction(object));
-        // Constraints
-        else if (type == keys::HenryLawEquilibrium_key)
-          aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(object, species, phases));
-        else if (type == keys::DissolvedEquilibrium_key)
-          aerosol.constraints.emplace_back(ParseDissolvedEquilibrium(object));
-        else if (type == keys::LinearConstraint_key)
-          aerosol.constraints.emplace_back(ParseLinearConstraint(object));
+      if (object[keys::aerosol_representations])
+        aerosol.representations = ParseAerosolRepresentations(object[keys::aerosol_representations]);
+
+      if (object[keys::aerosol_processes])
+      {
+        // Aerosol processes section mixes process and constraint entries.
+        for (const auto& entry : object[keys::aerosol_processes])
+        {
+          const auto type = entry[keys::type].as<std::string>();
+
+          // Processes
+          if (type == keys::HenryLawPhaseTransfer_key)
+            aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(entry, phases));
+          else if (type == keys::DissolvedReaction_key)
+            aerosol.processes.emplace_back(ParseDissolvedReaction(entry));
+          else if (type == keys::DissolvedReversibleReaction_key)
+            aerosol.processes.emplace_back(ParseDissolvedReversibleReaction(entry));
+          // Constraints
+          else if (type == keys::HenryLawEquilibrium_key)
+            aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(entry, species, phases));
+          else if (type == keys::DissolvedEquilibrium_key)
+            aerosol.constraints.emplace_back(ParseDissolvedEquilibrium(entry));
+          else if (type == keys::LinearConstraint_key)
+            aerosol.constraints.emplace_back(ParseLinearConstraint(entry));
+        }
       }
+
+      return aerosol;
     }
 
   }  // namespace v1

@@ -73,13 +73,15 @@ namespace mechanism_configuration::v1
 
   std::vector<types::Representation> ParseAerosolRepresentations(const YAML::Node& objects);
 
-  /// @brief Parses the aerosol processes sequence into the processes or constraints
+  /// @brief Parses the full aerosol section (representations plus the mixed processes/constraints
+  ///        list) into a single Aerosol container.
+  /// @param species Parsed top-level species, used to source per-species values such as a Henry's-law
+  ///        equilibrium solvent's molecular weight
   /// @param phases Parsed phases, used to source per-species values such as a phase-transfer's
-  ///        gas-phase diffusion coefficient
-  void ParseAerosolProcesses(
-      const YAML::Node& objects,
+  ///        gas-phase diffusion coefficient or a solvent's density
+  types::Aerosol ParseAerosol(
+      const YAML::Node& object,
       const std::vector<types::Species>& species,
-      const std::vector<types::Phase>& phases,
-      types::Aerosol& aerosol);
+      const std::vector<types::Phase>& phases);
 
 }  // namespace mechanism_configuration::v1

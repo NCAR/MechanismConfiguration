@@ -424,13 +424,9 @@ namespace mechanism_configuration::v1
     {
       mechanism.reactions = ParseReactions(object[keys::reactions]);
     }
-    if (object[keys::aerosol_representations])
+    if (object[keys::aerosol_representations] && object[keys::aerosol_processes]) 
     {
-      mechanism.aerosol.representations = ParseAerosolRepresentations(object[keys::aerosol_representations]);
-    }
-    if (object[keys::aerosol_processes])
-    {
-      ParseAerosolProcesses(object[keys::aerosol_processes], mechanism.species, mechanism.phases, mechanism.aerosol);
+      mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
     }
     if (object[keys::name])
     {
