@@ -380,6 +380,8 @@ namespace mechanism_configuration::v1
       //    the structure is clean. Located via BuildSemanticInput so errors carry line:col.
       if (errors.empty())
       {
+        // Uses the same ValidateSemantics engine as ValidateGasModel, but with
+        // YAML-derived input so errors include source locations.
         auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
         AppendFilePath(config_path_, semantic_errors);
         errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
