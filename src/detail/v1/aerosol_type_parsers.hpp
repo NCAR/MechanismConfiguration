@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 
-// Each Parse function assumes its input has already been validated by the matching CheckAerosol*Schema.
 namespace mechanism_configuration::v1
 {
   // ----------------------------------------
