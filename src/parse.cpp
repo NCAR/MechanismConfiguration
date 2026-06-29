@@ -90,4 +90,28 @@ namespace mechanism_configuration
     }
   }
 
+  std::expected<Mechanism, Errors> ParseFromString(const std::string& config)
+  {
+    // only v1 supports parsing from a string, so we must first detect the version from the string
+    YAML::Node object;
+    try
+    {
+      object = YAML::Load(config);
+      if (!object["version"])
+      {
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'." } });
+      }
+      const Version version(object["version"].as<std::string>());
+      if (version.major != 1)
+      {
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("error: Unsupported version number '{}'.", version.to_string()) } });
+      }
+      return v1::Parser{}.Parse(config);
+    }
+    catch (const YAML::Exception& e)
+    {
+      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse configuration string: {}", e.what()) } });
+    }
+  }
+
 }  // namespace mechanism_configuration

@@ -71,3 +71,91 @@ TEST(Parse, ParsesV0DirectoryConfiguration)
   if (parsed)
     EXPECT_EQ(parsed->version.major, 0);
 }
+
+TEST(Parse, ParsesV1String)
+{
+  std::string config = R"(
+  {
+    "version": "1.0.0",
+    "species": [
+      {
+        "name": "H2O",
+      }
+    ],
+    "phases": [
+      {
+        "name": "gas",
+        "species": [ 
+          {
+            "name": "H2O"
+          }
+        ]
+      }
+    ],
+    "reactions": [
+      {
+        type: "ARRHENIUS",
+        "reactants": [ { "species name": "H2O" } ],
+        "products": [ { "species name": "H2O" } ],
+        "gas phase": "gas",
+      }
+    ]
+  }
+  )";
+  auto parsed = ParseFromString(config);
+  EXPECT_TRUE(parsed);
+  if (parsed){
+    EXPECT_EQ(parsed->version.major, 1);
+    EXPECT_EQ(parsed->species.size(), 1);
+    EXPECT_EQ(parsed->phases.size(), 1);
+    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+  }
+  else {
+    for (const auto& [code, message] : parsed.error())
+      std::cout << message << " " << ErrorCodeToString(code) << std::endl;
+  }
+}
+
+TEST(Parse, ParsesV11String)
+{
+  std::string config = R"(
+  {
+    "version": "1.1.0",
+    "species": [
+      {
+        "name": "H2O",
+      }
+    ],
+    "phases": [
+      {
+        "name": "gas",
+        "species": [ 
+          {
+            "name": "H2O"
+          }
+        ]
+      }
+    ],
+    "reactions": [
+      {
+        type: "ARRHENIUS",
+        "reactants": [ { "species name": "H2O" } ],
+        "products": [ { "species name": "H2O" } ],
+        "gas phase": "gas",
+      }
+    ]
+  }
+  )";
+  auto parsed = ParseFromString(config);
+  EXPECT_TRUE(parsed);
+  if (parsed){
+    EXPECT_EQ(parsed->version.major, 1);
+    EXPECT_EQ(parsed->species.size(), 1);
+    EXPECT_EQ(parsed->phases.size(), 1);
+    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+  }
+  else {
+    for (const auto& [code, message] : parsed.error())
+      std::cout << message << " " << ErrorCodeToString(code) << std::endl;
+  }
+}
