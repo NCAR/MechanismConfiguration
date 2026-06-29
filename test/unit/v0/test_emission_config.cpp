@@ -49,7 +49,7 @@ TEST(EmissionConfig, ParseConfig)
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
-    auto& process_vector = mechanism.reactions.user_defined;
+    auto& process_vector = mechanism.reactions.emission;
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction

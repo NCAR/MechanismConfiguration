@@ -23,16 +23,15 @@ namespace mechanism_configuration::v0
     {
       std::string species = object[keys::SPECIES].as<std::string>();
       YAML::Node products_object{};
-      std::vector<types::ReactionComponent> reactants;
       std::vector<types::ReactionComponent> products;
       products.push_back({ .name = species, .coefficient = 1.0 });
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
-      std::string name = "EMIS." + object[keys::MUSICA_NAME].as<std::string>();
-      types::UserDefined user_defined = {
-        .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
+      std::string name = object[keys::MUSICA_NAME].as<std::string>();
+      types::Emission user_defined = {
+        .scaling_factor = scaling_factor, .products = products, .name = name
       };
-      mechanism.reactions.user_defined.push_back(user_defined);
+      mechanism.reactions.emission.push_back(user_defined);
     }
 
     return errors;
