@@ -25,7 +25,7 @@ namespace mechanism_configuration::v1::keys
 
   inline constexpr std::string_view SingleMomentMode_key = "SINGLE_MOMENT_MODE";
   inline constexpr std::string_view geometric_mean_radius = "geometric mean radius [m]";
-  inline constexpr std::string_view geometric_standard_deviation = "geometric standard deviation [-]";
+  inline constexpr std::string_view geometric_standard_deviation = "geometric standard deviation";
 
   inline constexpr std::string_view TwoMomentMode_key = "TWO_MOMENT_MODE";
   // also: geometric_standard_deviation
@@ -38,6 +38,8 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view reverse_rate_constants = "reverse rate constants";
   inline constexpr std::string_view equilibrium_constant = "equilibrium constant";
   inline constexpr std::string_view reference_temperature = "T0 [K]";
+
+  inline constexpr std::string_view ArrheniusReferenceTemperature_key = "ARRHENIUS_REFERENCE_TEMPERATURE";
 
   inline constexpr std::string_view henry_law_constant = "Henry's law constant";
   inline constexpr std::string_view HLC_ref = "HLC_ref [mol m-3 Pa-1]";
@@ -52,7 +54,7 @@ namespace mechanism_configuration::v1::keys
   // also: gas_phase, gas_phase_species, condensed_phase, condensed_phase_species, solvent,
   //       henry_law_constant, diffusion_coefficient
   inline constexpr std::string_view HenryLawPhaseTransfer_key = "HENRY_LAW_PHASE_TRANSFER";
-  inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient [-]";
+  inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient";
 
   // DissolvedReaction
   // also: condensed_phase, solvent, reactants, products, rate_constants
@@ -79,7 +81,7 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view algebraic_species = "algebraic species";
 
   // LinearConstraint
-  // also: name; terms carry coefficient and species
+  // also: name; terms carry coefficient and name
   inline constexpr std::string_view LinearConstraint_key = "LINEAR_CONSTRAINT";
   inline constexpr std::string_view algebraic_phase = "algebraic phase";
   inline constexpr std::string_view terms = "terms";

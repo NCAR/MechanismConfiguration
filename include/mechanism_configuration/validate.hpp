@@ -13,10 +13,15 @@
 
 namespace mechanism_configuration
 {
-  // Intermediate over which all semantic validation runs. Both a parsed document and an
-  // in-code Mechanism produce one of these and hand it to ValidateSemantics, so the rules
-  // live in exactly one place. A parsed document fills in source locations (so errors carry
-  // line:col); an in-code Mechanism leaves them empty. The domain types stay location-free.
+
+  // Intermediate over which the core semantic validation (species, phases, gas-phase reactions)
+  // runs. Both a parsed document and an in-code Mechanism lower into one of these and hand it to
+  // ValidateSemantics, so those rules live in exactly one place. A parsed document fills in source
+  // locations (so errors carry line:col); an in-code Mechanism leaves them empty.
+  //
+  // Aerosol cross-references are validated separately by ValidateAerosolModel, which works on the
+  // domain structs directly because it needs phase membership and optional-property values that
+  // this name-only view cannot carry.
   namespace semantics
   {
     struct NamedRef
@@ -47,17 +52,31 @@ namespace mechanism_configuration
       std::vector<PhaseRef> phases;
       std::vector<ReactionRef> reactions;
     };
+
   }  // namespace semantics
 
-  /// @brief The single home for the mechanism's semantic rules. Errors include `line:col`
-  ///        for any element whose source location was supplied.
+  /// @brief The single home for the core (species / phase / gas-phase reaction) semantic rules.
+  ///        Errors include `line:col` for any element whose source location was supplied.
   Errors ValidateSemantics(const semantics::Input& input);
 
-  /// @brief Validates the semantic invariants of a canonical Mechanism, independent of how it
-  ///        was produced (parsed from any version, or constructed in code). Convenience wrapper
-  ///        that builds a location-free semantics::Input and calls ValidateSemantics.
-  ///
-  /// Structural/deserialization concerns (YAML keys, types, formatting) are the responsibility
-  /// of the version-specific parsers and are not repeated here.
+/// @brief Validates a Mechanism's species, phases, and gas-phase reactions by
+///        converting them to a location-free semantics::Input and running
+///        ValidateSemantics.
+  Errors ValidateGasModel(const Mechanism& mechanism);
+
+/// @brief Validates aerosol cross-references against the mechanism's species and phases.
+///
+///        Checks phase/species references, representation-keyed rate-constant maps, and
+///        required definition-derived properties. These validations require full domain
+///        information unavailable to ValidateSemantics. Returns no errors if the mechanism
+///        has no aerosol section.
+  Errors ValidateAerosolModel(const Mechanism& mechanism);
+
+/// @brief Validates the semantic invariants of a canonical Mechanism, regardless of whether it
+///        was parsed or constructed in code. Combines ValidateGasModel and
+///        ValidateAerosolModel, returning all validation errors.
+///
+///        Excludes structural/deserialization validation, which is handled by version-specific parsers.
   Errors Validate(const Mechanism& mechanism);
+
 }  // namespace mechanism_configuration

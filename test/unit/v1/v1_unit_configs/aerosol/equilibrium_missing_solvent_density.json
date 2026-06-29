@@ -1,0 +1,35 @@
+{
+  "version": "1.2.0",
+  "name": "equilibrium missing solvent density",
+  "species": [
+    { "name": "A" },
+    { "name": "H2O", "molecular weight [kg mol-1]": 0.018 }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [ { "name": "A", "diffusion coefficient [m2 s-1]": 1.5e-5 } ]
+    },
+    { "name": "aqueous", "species": [ "A", "H2O" ] }
+  ],
+  "aerosol representations": [
+    {
+      "type": "UNIFORM_SECTION",
+      "name": "cloud",
+      "phases": ["aqueous"],
+      "minimum radius [m]": 1.0e-6,
+      "maximum radius [m]": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "HENRY_LAW_EQUILIBRIUM",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "A",
+      "solvent": "H2O",
+      "Henry's law constant": { "HLC_ref [mol m-3 Pa-1]": 1.0e-2, "C [K]": 3000.0 }
+    }
+  ]
+}

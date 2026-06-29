@@ -95,12 +95,12 @@
       "condensed phase": "AQUEOUS",
       "solvent": "H2O",
       "reactants": [
-        { "species": "HSO3m", "coefficient": 1 },
-        { "species": "H2O2",  "coefficient": 1 }
+        { "name": "HSO3m", "coefficient": 1 },
+        { "name": "H2O2",  "coefficient": 1 }
       ],
       "products": [
-        { "species": "SO2OOHm", "coefficient": 1 },
-        { "species": "H2O",     "coefficient": 1 }
+        { "name": "SO2OOHm", "coefficient": 1 },
+        { "name": "H2O",     "coefficient": 1 }
       ],
       "forward rate constants": {
         "CLOUD": { "type": "ARRHENIUS", "A": 3.184e8,  "C": 4430.0 }
@@ -116,11 +116,11 @@
       "condensed phase": "AQUEOUS",
       "solvent": "H2O",
       "reactants": [
-        { "species name": "SO2OOHm", "coefficient": 1 },
-        { "species name": "Hp",      "coefficient": 1 }
+        { "name": "SO2OOHm", "coefficient": 1 },
+        { "name": "Hp",      "coefficient": 1 }
       ],
       "products": [
-        { "species name": "SO4mm", "coefficient": 1 }
+        { "name": "SO4mm", "coefficient": 1 }
       ],
       "rate constants": {
         "CLOUD": { "type": "ARRHENIUS", "A": 1.333e8, "C": 4430.0}
@@ -132,11 +132,11 @@
       "condensed phase": "AQUEOUS",
       "solvent": "H2O",
       "reactants": [
-        { "species": "H2O", "coefficient": 2 }
+        { "name": "H2O", "coefficient": 2 }
       ],
       "products": [
-        { "species": "Hp",  "coefficient": 1 },
-        { "species": "OHm", "coefficient": 1 }
+        { "name": "Hp",  "coefficient": 1 },
+        { "name": "OHm", "coefficient": 1 }
       ],
       "algebraic species": "OHm",
       "equilibrium constant": {
@@ -149,11 +149,11 @@
       "condensed phase": "AQUEOUS",
       "solvent": "H2O",
       "reactants": [
-        { "species": "SO2", "coefficient": 1 }
+        { "name": "SO2", "coefficient": 1 }
       ],
       "products": [
-        { "species": "Hp",    "coefficient": 1 },
-        { "species": "HSO3m", "coefficient": 1 }
+        { "name": "Hp",    "coefficient": 1 },
+        { "name": "HSO3m", "coefficient": 1 }
       ],
       "algebraic species": "HSO3m",
       "equilibrium constant": {
@@ -167,11 +167,11 @@
       "algebraic species": "SO3mm",
       "solvent": "H2O",
       "reactants": [
-        { "species": "HSO3m", "coefficient": 1 }
+        { "name": "HSO3m", "coefficient": 1 }
       ],
       "products": [
-        { "species": "Hp",    "coefficient": 1 },
-        { "species": "SO3mm", "coefficient": 1 }
+        { "name": "Hp",    "coefficient": 1 },
+        { "name": "SO3mm", "coefficient": 1 }
       ],
       "equilibrium constant": {
         "type": "ARRHENIUS_REFERENCE_TEMPERATURE", "A": 1.08e-9, "C [K]": 1120.0, "T0 [K]": 298.15
@@ -184,11 +184,11 @@
       "algebraic species": "SO2",
       "diagnose from state": true,
       "terms": [
-        { "phase": "gas",     "species": "SO2",      "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "SO2",      "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "HSO3m",    "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "SO3mm",    "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "SO2OOHm",  "coefficient": 1.0 }
+        { "phase": "gas",     "name": "SO2",      "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "SO2",      "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "HSO3m",    "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "SO3mm",    "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "SO2OOHm",  "coefficient": 1.0 }
       ]
     },
     {
@@ -198,8 +198,8 @@
       "algebraic species": "H2O2",
       "diagnose from state": true,
       "terms": [
-        { "phase": "gas",     "species": "H2O2", "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "H2O2", "coefficient": 1.0 }
+        { "phase": "gas",     "name": "H2O2", "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "H2O2", "coefficient": 1.0 }
       ]
     },
     {
@@ -209,8 +209,8 @@
       "algebraic species": "O3",
       "diagnose from state": true,
       "terms": [
-        { "phase": "gas",     "species": "O3", "coefficient": 1.0 },
-        { "phase": "AQUEOUS", "species": "O3", "coefficient": 1.0 }
+        { "phase": "gas",     "name": "O3", "coefficient": 1.0 },
+        { "phase": "AQUEOUS", "name": "O3", "coefficient": 1.0 }
       ]
     },
     {
@@ -220,12 +220,12 @@
       "algebraic species": "Hp",
       "constant [mol m-3]": 0.0,
       "terms": [
-        { "phase": "AQUEOUS", "species": "Hp",       "coefficient":  1.0 },
-        { "phase": "AQUEOUS", "species": "OHm",      "coefficient": -1.0 },
-        { "phase": "AQUEOUS", "species": "HSO3m",    "coefficient": -1.0 },
-        { "phase": "AQUEOUS", "species": "SO3mm",    "coefficient": -2.0 },
-        { "phase": "AQUEOUS", "species": "SO4mm",    "coefficient": -2.0 },
-        { "phase": "AQUEOUS", "species": "SO2OOHm",  "coefficient": -1.0 }
+        { "phase": "AQUEOUS", "name": "Hp",      "coefficient":  1.0 },
+        { "phase": "AQUEOUS", "name": "OHm",     "coefficient": -1.0 },
+        { "phase": "AQUEOUS", "name": "HSO3m",   "coefficient": -1.0 },
+        { "phase": "AQUEOUS", "name": "SO3mm",   "coefficient": -2.0 },
+        { "phase": "AQUEOUS", "name": "SO4mm",   "coefficient": -2.0 },
+        { "phase": "AQUEOUS", "name": "SO2OOHm", "coefficient": -1.0 }
       ]
     }
   ]

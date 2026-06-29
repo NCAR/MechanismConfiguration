@@ -1,0 +1,79 @@
+{
+  "version": "1.2.0",
+  "name": "aerosol unit test",
+  "species": [
+    { "name": "A", "molecular weight [kg mol-1]": 0.05 },
+    { "name": "B" },
+    { "name": "H2O", "molecular weight [kg mol-1]": 0.018 }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        { "name": "A", "diffusion coefficient [m2 s-1]": 1.5e-5 }
+      ]
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        "A",
+        "B",
+        { "name": "H2O", "density [kg m-3]": 1000.0 }
+      ]
+    }
+  ],
+  "aerosol representations": [
+    {
+      "type": "SINGLE_MOMENT_MODE",
+      "name": "aitken",
+      "phases": ["aqueous"],
+      "geometric mean radius [m]": 1.0e-6,
+      "geometric standard deviation": 1.0e-5
+    },
+    {
+      "type": "SINGLE_MOMENT_MODE",
+      "name": "accumulation",
+      "phases": ["aqueous"],
+      "geometric mean radius [m]": 2.0e-5,
+      "geometric standard deviation": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "HENRY_LAW_PHASE_TRANSFER",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "A",
+      "solvent": "H2O",
+      "Henry's law constant": { "HLC_ref [mol m-3 Pa-1]": 1.0e-2, "C [K]": 3000.0 },
+      "accommodation coefficient": 0.1
+    },
+    {
+      "type": "DISSOLVED_REACTION",
+      "condensed phase": "aqueous",
+      "solvent": "H2O",
+      "reactants": [ { "name": "A", "coefficient": 1 } ],
+      "products": [ { "name": "B", "coefficient": 1 } ],
+      "rate constants": { 
+        "aitken": { "type": "ARRHENIUS", "A": 1.0e3, "C": 100.0 },
+        "accumulation": { "type": "ARRHENIUS", "A": 1.5e3, "C": 120.0 } }
+    },
+    {
+      "type": "HENRY_LAW_EQUILIBRIUM",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "A",
+      "solvent": "H2O",
+      "Henry's law constant": { "HLC_ref [mol m-3 Pa-1]": 1.0e-2, "C [K]": 3000.0 }
+    },
+    {
+      "type": "LINEAR_CONSTRAINT",
+      "algebraic phase": "gas",
+      "algebraic species": "A",
+      "diagnose from state": true,
+      "terms": [ { "phase": "gas", "name": "A", "coefficient": 1.0 } ]
+    }
+  ]
+}

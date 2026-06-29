@@ -5,6 +5,9 @@
 #include "detail/v1/parser.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/v1/aerosol_keys.hpp"
+#include "detail/v1/aerosol_type_parsers.hpp"
+#include "detail/v1/aerosol_type_schema.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/type_schema.hpp"
@@ -13,6 +16,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -197,6 +201,8 @@ namespace mechanism_configuration::v1
     resolve_section(keys::species);
     resolve_section(keys::phases);
     resolve_section(keys::reactions);
+    resolve_section(keys::aerosol_representations);
+    resolve_section(keys::aerosol_processes);
 
     if (!errors.empty())
     {
@@ -211,8 +217,14 @@ namespace mechanism_configuration::v1
   {
     Errors errors;
 
-    std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases, keys::reactions };
-    std::vector<std::string_view> optional_keys = { keys::name };
+    // A single configuration can contain both gas-phase reactions and aerosol processes.
+    // Since aerosol chemistry does not always require gas-phase reactions, either section
+    // may be omitted, making both configurations optional.
+    std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases };
+    std::vector<std::string_view> optional_keys = { keys::name,
+                                                    keys::reactions,
+                                                    keys::aerosol_representations,
+                                                    keys::aerosol_processes };
 
     // Return early if the required keys are not found
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -220,6 +232,36 @@ namespace mechanism_configuration::v1
     {
       AppendFilePath(config_path_, schema_errors);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      return errors;
+    }
+
+    // A config must define at least one mechanism mode: gas-phase reactions, or the aerosol
+    // pair 'aerosol representations' + 'aerosol processes'. The two modes may also coexist.
+    const bool has_reactions = static_cast<bool>(object[keys::reactions]);
+    const bool has_aerosol_representations = static_cast<bool>(object[keys::aerosol_representations]);
+    const bool has_aerosol_processes = static_cast<bool>(object[keys::aerosol_processes]);
+    if (has_aerosol_representations != has_aerosol_processes)
+    {
+      ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         mc_fmt::format("{} error: '{}' and '{}' must be provided together.",
+                                        error_location,
+                                        keys::aerosol_representations,
+                                        keys::aerosol_processes) });
+    }
+    if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
+    {
+      ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         mc_fmt::format("{} error: A configuration must contain either '{}' or both '{}' and '{}'.",
+                                        error_location,
+                                        keys::reactions,
+                                        keys::aerosol_representations,
+                                        keys::aerosol_processes) });
+    }
+    if (!errors.empty())
+    {
+      AppendFilePath(config_path_, errors);
       return errors;
     }
 
@@ -237,6 +279,8 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
+    // Species and phases are foundational. If either is invalid, fail fast since all downstream
+    // validation depends on them.
     schema_errors = CheckSpeciesSchema(object[keys::species]);
     if (!schema_errors.empty())
     {
@@ -257,12 +301,36 @@ namespace mechanism_configuration::v1
 
     auto parsed_phases = ParsePhases(object[keys::phases]);
 
-    schema_errors = CheckReactionsSchema(object[keys::reactions], parsed_species, parsed_phases);
-    if (!schema_errors.empty())
+    // Reactions and aerosol sections are independent, so we accumulate errors from both and report
+    // them together.
+
+    // Gas-phase reactions are optional (an aerosol-only config may omit them).
+    if (has_reactions)
     {
-      AppendFilePath(config_path_, schema_errors);
-      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
-      return errors;
+      schema_errors = CheckReactionsSchema(object[keys::reactions], parsed_species, parsed_phases);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+    }
+
+    // Aerosol sections are optional.
+    if (has_aerosol_representations && has_aerosol_processes)
+    {
+      schema_errors = CheckAerosolRepresentationsSchema(object[keys::aerosol_representations]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+
+      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
     }
 
     return errors;
@@ -312,6 +380,8 @@ namespace mechanism_configuration::v1
       //    the structure is clean. Located via BuildSemanticInput so errors carry line:col.
       if (errors.empty())
       {
+        // Uses the same ValidateSemantics engine as ValidateGasModel, but with
+        // YAML-derived input so errors include source locations.
         auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
         AppendFilePath(config_path_, semantic_errors);
         errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
@@ -322,8 +392,19 @@ namespace mechanism_configuration::v1
         return std::unexpected(std::move(errors));
       }
 
-      // 3) Build the Mechanism (only reached when fully valid).
-      return Build(object);
+      // 3) Build the Mechanism (structurally valid; aerosol parsers source values defensively).
+      Mechanism mechanism = Build(object);
+
+      // 4) Aerosol cross-reference validation runs against the built structs (species/phase
+      //    membership and sourced properties such as diffusion coefficient, solvent density).
+      Errors aerosol_errors = ValidateAerosolModel(mechanism);
+      if (!aerosol_errors.empty())
+      {
+        AppendFilePath(config_path_, aerosol_errors);
+        return std::unexpected(std::move(aerosol_errors));
+      }
+
+      return mechanism;
     }
     catch (const std::exception& e)
     {
@@ -340,8 +421,15 @@ namespace mechanism_configuration::v1
     mechanism.version = Version(object[keys::version].as<std::string>());
     mechanism.species = ParseSpecies(object[keys::species]);
     mechanism.phases = ParsePhases(object[keys::phases]);
-    mechanism.reactions = ParseReactions(object[keys::reactions]);
-
+    
+    if (object[keys::reactions])
+    {
+      mechanism.reactions = ParseReactions(object[keys::reactions]);
+    }
+    if (object[keys::aerosol_representations] && object[keys::aerosol_processes]) 
+    {
+      mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
+    }
     if (object[keys::name])
     {
       mechanism.name = object[keys::name].as<std::string>();
