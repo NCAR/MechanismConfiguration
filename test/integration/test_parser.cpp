@@ -104,13 +104,15 @@ TEST(Parse, ParsesV1JsonString)
   )";
   auto parsed = ParseFromString(config);
   EXPECT_TRUE(parsed);
-  if (parsed){
+  if (parsed)
+  {
     EXPECT_EQ(parsed->version.major, 1);
     EXPECT_EQ(parsed->species.size(), 1);
     EXPECT_EQ(parsed->phases.size(), 1);
     EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
   }
-  else {
+  else
+  {
     for (const auto& [code, message] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
@@ -148,13 +150,15 @@ TEST(Parse, ParsesV11JsonString)
   )";
   auto parsed = ParseFromString(config);
   EXPECT_TRUE(parsed);
-  if (parsed){
+  if (parsed)
+  {
     EXPECT_EQ(parsed->version.major, 1);
     EXPECT_EQ(parsed->species.size(), 1);
     EXPECT_EQ(parsed->phases.size(), 1);
     EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
   }
-  else {
+  else
+  {
     for (const auto& [code, message] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
@@ -180,13 +184,15 @@ reactions:
   )";
   auto parsed = ParseFromString(config);
   EXPECT_TRUE(parsed);
-  if (parsed){
+  if (parsed)
+  {
     EXPECT_EQ(parsed->version.major, 1);
     EXPECT_EQ(parsed->species.size(), 1);
     EXPECT_EQ(parsed->phases.size(), 1);
     EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
   }
-  else {
+  else
+  {
     for (const auto& [code, message] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
@@ -212,13 +218,15 @@ reactions:
   )";
   auto parsed = ParseFromString(config);
   EXPECT_TRUE(parsed);
-  if (parsed){
+  if (parsed)
+  {
     EXPECT_EQ(parsed->version.major, 1);
     EXPECT_EQ(parsed->species.size(), 1);
     EXPECT_EQ(parsed->phases.size(), 1);
     EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
   }
-  else {
+  else
+  {
     for (const auto& [code, message] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
