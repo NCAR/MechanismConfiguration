@@ -28,9 +28,7 @@ namespace mechanism_configuration::v0
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
       std::string name = object[keys::MUSICA_NAME].as<std::string>();
-      types::Emission user_defined = {
-        .scaling_factor = scaling_factor, .products = products, .name = name
-      };
+      types::Emission user_defined = { .scaling_factor = scaling_factor, .products = products, .name = name };
       mechanism.reactions.emission.push_back(user_defined);
     }
 
