@@ -10,7 +10,12 @@ endif()
 
 add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
-target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
+target_compile_features(mechanism_configuration PUBLIC cxx_std_23)
+
+if(MECH_CONFIG_USE_FMT)
+  target_compile_definitions(mechanism_configuration PRIVATE MECH_CONFIG_USE_FMT)
+  target_link_libraries(mechanism_configuration PRIVATE fmt::fmt)
+endif()
 
 set_target_properties(mechanism_configuration PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
@@ -22,25 +27,35 @@ set_target_properties(mechanism_configuration PROPERTIES
 
 target_sources(mechanism_configuration
   PRIVATE
-    parse_status.cpp
-    parser.cpp
-    validate_schema.cpp
+    errors.cpp
+    parse.cpp
+    validate.cpp
+    check_schema.cpp
 )
 
 target_include_directories(mechanism_configuration
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_subdirectory(v0)
 add_subdirectory(v1)
-add_subdirectory(development)
 
-target_link_libraries(mechanism_configuration 
-  PUBLIC 
+target_link_libraries(mechanism_configuration
+  PUBLIC
     yaml-cpp::yaml-cpp
 )
+
+if(MECH_CONFIG_COMPILE_WARNING_AS_ERROR)
+  if(MSVC)
+    target_compile_options(mechanism_configuration PRIVATE /WX)
+  else()
+    target_compile_options(mechanism_configuration PRIVATE -Werror)
+  endif()
+endif()
 
 if (APPLE)
   # set the rpath for the shared library

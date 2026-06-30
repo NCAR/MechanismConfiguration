@@ -2,8 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/parse_status.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
+#include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -21,8 +21,7 @@ const std::string configBase = "test/unit/v1/file_configs/configs/";
 
 TEST(ParseFromFileConfigs, TwoSpeciesSets)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "two_species_sets/main.json");
+  auto parsed = Parse(configBase + "two_species_sets/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -49,8 +48,7 @@ TEST(ParseFromFileConfigs, TwoSpeciesSets)
 
 TEST(ParseFromFileConfigs, TwoPhasesSets)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "two_phases_sets/main.json");
+  auto parsed = Parse(configBase + "two_phases_sets/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -70,14 +68,13 @@ TEST(ParseFromFileConfigs, TwoPhasesSets)
 
 TEST(ParseFromFileConfigs, MissingPhaseSet)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "missing_phase_set/main.json");
+  auto parsed = Parse(configBase + "missing_phase_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── missing_reaction_set ──────────────────────────────────────────────────────
@@ -85,8 +82,7 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
 
 TEST(ParseFromFileConfigs, MissingReactionSet)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "missing_reaction_set/main.json");
+  auto parsed = Parse(configBase + "missing_reaction_set/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -95,33 +91,31 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
 }
 
 // ── missing_species_set ───────────────────────────────────────────────────────
-// "species" key absent from main.json : RequiredKeyNotFound from ValidateSchema
+// "species" key absent from main.json : RequiredKeyNotFound from CheckSchema
 
 TEST(ParseFromFileConfigs, MissingSpeciesSet)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "missing_species_set/main.json");
+  auto parsed = Parse(configBase + "missing_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
-// version "1.3.0" : minor != 1 for file-list format : InvalidVersion
+// version "1.0.0" : file-list layout requires minor >= 1 (v1.1+) : InvalidVersion
 
 TEST(ParseFromFileConfigs, VersionMismatch)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "version_mismatch/main.json");
+  auto parsed = Parse(configBase + "version_mismatch/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 1);
-  EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::InvalidVersion);
-  for (const auto& error : parsed.errors)
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+  ASSERT_EQ(parsed.error().size(), 1);
+  EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidVersion);
+  for (const auto& error : parsed.error())
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }
 
 // ── mixed_inline_species ──────────────────────────────────────────────────────
@@ -129,8 +123,7 @@ TEST(ParseFromFileConfigs, VersionMismatch)
 
 TEST(ParseFromFileConfigs, MixedInlineSpecies)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "mixed_inline_species/main.json");
+  auto parsed = Parse(configBase + "mixed_inline_species/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -152,8 +145,7 @@ TEST(ParseFromFileConfigs, MixedInlineSpecies)
 
 TEST(ParseFromFileConfigs, MixedInlineReactions)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "mixed_inline_reactions/main.json");
+  auto parsed = Parse(configBase + "mixed_inline_reactions/main.json");
   ASSERT_TRUE(parsed);
 
   auto& mechanism = *parsed;
@@ -173,14 +165,13 @@ TEST(ParseFromFileConfigs, MixedInlineReactions)
 
 TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
 {
-  v1::Parser parser;
-  auto parsed = parser.Parse(configBase + "duplicate_species_set/main.json");
+  auto parsed = Parse(configBase + "duplicate_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.errors.size(), 6);
-  for (const auto& error : parsed.errors)
+  ASSERT_EQ(parsed.error().size(), 6);
+  for (const auto& error : parsed.error())
   {
-    EXPECT_EQ(error.first, ConfigParseStatus::DuplicateSpeciesDetected);
-    std::cout << error.second << " " << configParseStatusToString(error.first) << "\n";
+    EXPECT_EQ(error.first, ErrorCode::DuplicateSpeciesDetected);
+    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
   }
 }

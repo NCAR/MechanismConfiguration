@@ -1,0 +1,21 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+
+# Backstop in addition to the lcov --remove excludes in CMakeLists.txt.
+# Keeps third-party and test code out of the coverage totals.
+ignore:
+  - "test/**/*"
+  - "build/_deps/**/*"
+  - "**/_deps/**/*"
+  - "examples/**/*"
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default

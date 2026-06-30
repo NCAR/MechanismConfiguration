@@ -1,12 +1,12 @@
 name: Ubuntu
 
-on: 
+on:
   push:
     branches:
       - main
   pull_request:
   workflow_dispatch:
-  
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -18,10 +18,15 @@ jobs:
     strategy:
       matrix:
         compiler:
+          - { cpp: g++-12, c: gcc-12 }
           - { cpp: g++-13, c: gcc-13 }
           - { cpp: g++-14, c: gcc-14 }
           - { cpp: clang++, c: clang }
         build_type: [Release]
+        use_fmt: [OFF, ON]
+        exclude:
+          - compiler: { cpp: g++-12, c: gcc-12 }
+            use_fmt: OFF
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
@@ -29,25 +34,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install GCC 13 if needed
-        if: matrix.compiler.cpp  == 'clang++'
-        run: |
-          sudo apt update
-          sudo apt install -y gcc-13 g++-13
+      # Clang on Ubuntu defaults to libstdc++, whose std::expected is not visible to
+      # clang-18 (no template named 'expected'). Build the clang job against libc++,
+      # which provides std::expected and std::format.
+      - name: Install libc++ (clang)
+        if: matrix.compiler.cpp == 'clang++'
+        run: sudo apt-get update && sudo apt-get install -y libc++-dev libc++abi-dev
 
       - name: Configure CMake
         run: |
-          if [[ "${{ matrix.compiler.cpp }}" == "clang++" ]]; then
-            cmake -S . -B build \
-              -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D CMAKE_CXX_STANDARD=20 \
-              -D CMAKE_CXX_COMPILER=${CXX} \
-              -D CMAKE_EXE_LINKER_FLAGS="-stdlib=libstdc++" \
-              -D CMAKE_CXX_FLAGS="--gcc-toolchain=/usr"
-          else
-            cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -D CMAKE_CXX_STANDARD=20
+          EXTRA_FLAGS=""
+          if [ "${{ matrix.compiler.cpp }}" = "clang++" ]; then
+            EXTRA_FLAGS="-D CMAKE_CXX_FLAGS=-stdlib=libc++"
           fi
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON $EXTRA_FLAGS
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10

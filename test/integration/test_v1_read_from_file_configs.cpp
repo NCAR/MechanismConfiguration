@@ -1,44 +1,41 @@
-#include <mechanism_configuration/parse_status.hpp>
-#include <mechanism_configuration/v1/parser.hpp>
-#include <mechanism_configuration/v1/types.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
-#include <yaml-cpp/yaml.h>
 
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace mechanism_configuration;
 
-TEST(ParserBase, ParsesFullV1Configuration)
+// A v1.1+ configuration may be split across multiple files via `{ files: [...] }`;
+// Parse() resolves and merges them into one mechanism.
+TEST(V1FileConfigs, ParsesMultiFileConfiguration)
 {
-  v1::Parser parser;
-  std::vector<std::string> extensions = { "/json/main.json", "/yaml/main.yaml" };
-  for (auto& extension : extensions)
+  for (const auto& main :
+       { std::string("examples/v1/config/json/main.json"), std::string("examples/v1/config/yaml/main.yaml") })
   {
-    std::string path = "examples/v1/config" + extension;
-    auto parsed = parser.Parse(path);
-    for (const auto& error : parsed.errors)
-      std::cout << "[" << configParseStatusToString(error.first) << "] " << error.second << "\n";
+    auto parsed = Parse(main);
+    if (!parsed)
+      for (const auto& [code, message] : parsed.error())
+        std::cout << "[" << ErrorCodeToString(code) << "] " << message << "\n";
     ASSERT_TRUE(parsed);
 
-    auto& mechanism = *parsed;
-
+    const Mechanism& mechanism = *parsed;
     EXPECT_EQ(mechanism.name, "troposphere and stratosphere configs");
 
-    // species: A, B, C
     ASSERT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.species[0].name, "A");
     EXPECT_EQ(mechanism.species[1].name, "B");
     EXPECT_EQ(mechanism.species[2].name, "C");
 
-    // phases: one gas phase with 3 species
     ASSERT_EQ(mechanism.phases.size(), 1);
     EXPECT_EQ(mechanism.phases[0].name, "gas");
     ASSERT_EQ(mechanism.phases[0].species.size(), 3);
 
-    // reactions: 3 from troposphere + 3 from stratosphere = 6 arrhenius
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 6);
   }
 }

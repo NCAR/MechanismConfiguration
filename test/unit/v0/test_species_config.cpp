@@ -1,5 +1,9 @@
-#include <mechanism_configuration/constants.hpp>
-#include <mechanism_configuration/v0/parser.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include "detail/constants.hpp"
+#include "detail/v0/parser.hpp"
 
 #include <gtest/gtest.h>
 
@@ -17,12 +21,12 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     EXPECT_TRUE(parsed);
     if (!parsed)
     {
-      for (auto& error : parsed.errors)
+      for (auto& error : parsed.error())
       {
         std::cerr << error.second << std::endl;
       }
     }
-    v0::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
 
     auto& species_vector = mechanism.species;
     EXPECT_EQ(species_vector.size(), 4);

@@ -1,4 +1,8 @@
-#include <mechanism_configuration/v1/parser.hpp>
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
 
@@ -6,13 +10,12 @@ using namespace mechanism_configuration;
 
 TEST(ParserBase, CanParseValidArrheniusReaction)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
-    auto parsed = parser.Parse(std::string("v1_unit_configs/reactions/arrhenius/valid") + extension);
+    auto parsed = Parse(std::string("v1_unit_configs/reactions/arrhenius/valid") + extension);
     EXPECT_TRUE(parsed);
-    v1::types::Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed;
 
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 3);
 
@@ -24,12 +27,12 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.arrhenius[0].D, 63.4);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].E, -1.3);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].products.size(), 2);
-    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].species_name, "B");
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].name, "B");
     EXPECT_EQ(mechanism.reactions.arrhenius[0].products[0].coefficient, 1.2);
-    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].name, "C");
     EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].coefficient, 0.3);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.arrhenius[0].unknown_properties["__solver_param"], "0.1");
@@ -42,12 +45,12 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.arrhenius[1].D, 6.4);
     EXPECT_EQ(mechanism.reactions.arrhenius[1].E, -0.3);
     EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants.size(), 2);
-    EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[0].coefficient, 2);
-    EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[1].species_name, "B");
+    EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[1].name, "B");
     EXPECT_EQ(mechanism.reactions.arrhenius[1].reactants[1].coefficient, 0.1);
     EXPECT_EQ(mechanism.reactions.arrhenius[1].products.size(), 1);
-    EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].coefficient, 0.5);
     EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].unknown_properties.size(), 1);
     EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].unknown_properties["__optional thing"], "hello");
@@ -60,83 +63,79 @@ TEST(ParserBase, CanParseValidArrheniusReaction)
     EXPECT_EQ(mechanism.reactions.arrhenius[2].D, 300);
     EXPECT_EQ(mechanism.reactions.arrhenius[2].E, 0);
     EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants.size(), 1);
-    EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[0].species_name, "A");
+    EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[0].name, "A");
     EXPECT_EQ(mechanism.reactions.arrhenius[2].reactants[0].coefficient, 1);
     EXPECT_EQ(mechanism.reactions.arrhenius[2].products.size(), 1);
-    EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].species_name, "C");
+    EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].name, "C");
     EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].coefficient, 1);
   }
 }
 
 TEST(ParserBase, ArrheniusDetectsUnknownSpecies)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/arrhenius/unknown_species") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 2);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
 
 TEST(ParserBase, ArrheniusDetectsMutuallyExclusiveOptions)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/arrhenius/mutually_exclusive") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::MutuallyExclusiveOption);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::MutuallyExclusiveOption);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
 
 TEST(ParserBase, ArrheniusDetectsBadReactionComponent)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/arrhenius/bad_reaction_component") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 2);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.errors[1].first, ConfigParseStatus::InvalidKey);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 2);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
 
 TEST(ParserBase, ArrheniusDetectsUnknownPhase)
 {
-  v1::Parser parser;
   std::vector<std::string> extensions = { ".json", ".yaml" };
   for (auto& extension : extensions)
   {
     std::string file = std::string("v1_unit_configs/reactions/arrhenius/missing_phase") + extension;
-    auto parsed = parser.Parse(file);
+    auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.errors.size(), 1);
-    EXPECT_EQ(parsed.errors[0].first, ConfigParseStatus::UnknownPhase);
-    for (auto& error : parsed.errors)
+    EXPECT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownPhase);
+    for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << configParseStatusToString(error.first) << std::endl;
+      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
     }
   }
 }
