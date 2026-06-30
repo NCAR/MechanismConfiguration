@@ -13,8 +13,8 @@ add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 target_compile_features(mechanism_configuration PUBLIC cxx_std_23)
 
 if(MECH_CONFIG_USE_FMT)
-  target_compile_definitions(mechanism_configuration PUBLIC MECH_CONFIG_USE_FMT)
-  target_link_libraries(mechanism_configuration PUBLIC fmt::fmt)
+  target_compile_definitions(mechanism_configuration PRIVATE MECH_CONFIG_USE_FMT)
+  target_link_libraries(mechanism_configuration PRIVATE fmt::fmt)
 endif()
 
 set_target_properties(mechanism_configuration PROPERTIES

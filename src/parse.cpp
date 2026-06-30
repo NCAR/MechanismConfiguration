@@ -2,11 +2,11 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "detail/error_format.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v1/parser.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parse.hpp>
 
@@ -87,6 +87,30 @@ namespace mechanism_configuration
                 : mc_fmt::format("error: Unsupported version number '{}'.", version->version.to_string());
         return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body } });
       }
+    }
+  }
+
+  std::expected<Mechanism, Errors> ParseFromString(const std::string& config)
+  {
+    // only v1 supports parsing from a string, so we must first detect the version from the string
+    YAML::Node object;
+    try
+    {
+      object = YAML::Load(config);
+      if (!object["version"])
+      {
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'." } });
+      }
+      const Version version(object["version"].as<std::string>());
+      if (version.major != 1)
+      {
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("error: Unsupported version number '{}'.", version.to_string()) } });
+      }
+      return v1::Parser{}.Parse(config);
+    }
+    catch (const YAML::Exception& e)
+    {
+      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse configuration string: {}", e.what()) } });
     }
   }
 
