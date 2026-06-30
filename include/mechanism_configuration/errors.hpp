@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <mechanism_configuration/format_compat.hpp>
-
 #include <ostream>
 #include <string>
 #include <utility>
@@ -65,33 +63,3 @@ namespace mechanism_configuration
 
   using Errors = std::vector<std::pair<ErrorCode, std::string>>;
 }  // namespace mechanism_configuration
-
-#ifdef MECH_CONFIG_USE_FMT
-template<>
-struct fmt::formatter<mechanism_configuration::ErrorLocation>
-{
-  constexpr auto parse(fmt::format_parse_context& ctx) const
-  {
-    return ctx.begin();
-  }
-  template<class FormatContext>
-  auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
-  {
-    return fmt::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
-  }
-};
-#else
-template<>
-struct std::formatter<mechanism_configuration::ErrorLocation>
-{
-  constexpr auto parse(std::format_parse_context& ctx) const
-  {
-    return ctx.begin();
-  }
-  template<class FormatContext>
-  auto format(const mechanism_configuration::ErrorLocation& loc, FormatContext& ctx) const
-  {
-    return std::format_to(ctx.out(), "{}:{}", loc.line, loc.column);
-  }
-};
-#endif

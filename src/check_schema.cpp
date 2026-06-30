@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "detail/check_schema.hpp"
-
-#include <mechanism_configuration/format_compat.hpp>
+#include "detail/error_format.hpp"
 
 #include <iostream>
 
