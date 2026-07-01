@@ -1,0 +1,22 @@
+version: 1.0.0
+species: []
+phases: []
+reactions: []
+emissions:
+  inventories:
+    cams bc:
+      directory: cams
+      file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
+      convention: uptempo
+
+  species maps:
+    bc map:
+      mappings:
+        - inventory species: bc_anth_sum
+          mechanism species: BC
+
+  regridding:
+    type: scrip
+    weights file: /path/to/weights.nc
+
+  sources: []

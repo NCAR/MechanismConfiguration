@@ -34,6 +34,16 @@ namespace mechanism_configuration
       case ErrorCode::FileNotFound: return "FileNotFound";
       case ErrorCode::UnexpectedError: return "UnexpectedError";
       case ErrorCode::EmptyObject: return "EmptyObject";
+      case ErrorCode::DuplicateInventoryDetected: return "DuplicateInventoryDetected";
+      case ErrorCode::DuplicateSpeciesMapDetected: return "DuplicateSpeciesMapDetected";
+      case ErrorCode::DuplicateSourceDetected: return "DuplicateSourceDetected";
+      case ErrorCode::DuplicateCategoryHierarchy: return "DuplicateCategoryHierarchy";
+      case ErrorCode::SourceRequiresUnknownInventory: return "SourceRequiresUnknownInventory";
+      case ErrorCode::SourceRequiresUnknownSpeciesMap: return "SourceRequiresUnknownSpeciesMap";
+      case ErrorCode::SpeciesMapScalingExceedsOne: return "SpeciesMapScalingExceedsOne";
+      case ErrorCode::OnlineSourcesNotSupported: return "OnlineSourcesNotSupported";
+      case ErrorCode::UnsupportedRegriddingType: return "UnsupportedRegriddingType";
+      case ErrorCode::UnsupportedVerticalInjection: return "UnsupportedVerticalInjection";
       default: return "Unknown";
     }
   }
