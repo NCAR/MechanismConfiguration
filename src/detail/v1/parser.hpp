@@ -11,7 +11,6 @@
 
 #include <expected>
 #include <filesystem>
-#include <optional>
 #include <string>
 
 namespace mechanism_configuration::v1
@@ -58,8 +57,9 @@ namespace mechanism_configuration::v1
     ///        invariants are checked separately by ValidateSemantics.
     Errors CheckSchema(const YAML::Node& object);
 
-    /// @brief Constructs a Mechanism from an already-validated node.
-    Mechanism Build(const YAML::Node& object, std::optional<types::EmissionsConfig> emissions);
+    /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if
+    ///        present, is parsed separately and assigned by the caller (ValidateAndBuild).
+    Mechanism Build(const YAML::Node& object);
 
     inline void SetConfigPath(const std::string& config_path)
     {

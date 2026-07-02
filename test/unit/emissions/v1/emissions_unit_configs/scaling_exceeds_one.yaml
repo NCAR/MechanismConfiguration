@@ -4,13 +4,13 @@ phases: []
 reactions: []
 emissions:
   inventories:
-    cams bc:
+    - name: cams bc
       directory: cams
       file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
       convention: uptempo
 
   species maps:
-    bad map:
+    - name: bad map
       mappings:
         - inventory species: NOx
           mechanism species: NO

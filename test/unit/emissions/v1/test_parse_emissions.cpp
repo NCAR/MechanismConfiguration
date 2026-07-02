@@ -32,14 +32,14 @@ TEST(EmissionsV1Parser, ParsesValidConfig)
   const auto& em = *result->emissions;
 
   ASSERT_EQ(em.inventories.size(), 1u);
-  ASSERT_TRUE(em.inventories.count("cams bc"));
-  EXPECT_EQ(em.inventories.at("cams bc").directory, "cams");
-  EXPECT_EQ(em.inventories.at("cams bc").file_pattern, "CAMS-GLOB-ANT_{YYYY}-{MM}.nc");
-  EXPECT_EQ(em.inventories.at("cams bc").convention, "uptempo");
+  EXPECT_EQ(em.inventories[0].name, "cams bc");
+  EXPECT_EQ(em.inventories[0].directory, "cams");
+  EXPECT_EQ(em.inventories[0].file_pattern, "CAMS-GLOB-ANT_{YYYY}-{MM}.nc");
+  EXPECT_EQ(em.inventories[0].convention, "uptempo");
 
   ASSERT_EQ(em.species_maps.size(), 1u);
-  ASSERT_TRUE(em.species_maps.count("bc map"));
-  const auto& smap = em.species_maps.at("bc map");
+  const auto& smap = em.species_maps[0];
+  EXPECT_EQ(smap.name, "bc map");
   ASSERT_EQ(smap.mappings.size(), 1u);
   EXPECT_EQ(smap.mappings[0].inventory_species, "bc_anth_sum");
   EXPECT_EQ(smap.mappings[0].mechanism_species, "BC");
@@ -73,12 +73,12 @@ phases: []
 reactions: []
 emissions:
   inventories:
-    my inv:
+    - name: my inv
       directory: data
       file pattern: file_{YYYY}.nc
       convention: uptempo
   species maps:
-    my map:
+    - name: my map
       mappings:
         - inventory species: SO2
           mechanism species: SO2

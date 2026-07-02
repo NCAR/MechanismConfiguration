@@ -337,11 +337,13 @@ namespace mechanism_configuration::types
 
   struct SpeciesMap
   {
+    std::string name;
     std::vector<SpeciesMapping> mappings;
   };
 
   struct Inventory
   {
+    std::string name;
     std::string directory;
     std::string file_pattern;
     std::string convention;
@@ -402,8 +404,8 @@ namespace mechanism_configuration::types
 
   struct EmissionsConfig
   {
-    std::unordered_map<std::string, Inventory> inventories;
-    std::unordered_map<std::string, SpeciesMap> species_maps;
+    std::vector<Inventory> inventories;
+    std::vector<SpeciesMap> species_maps;
     Regridding regridding;
     std::vector<SourceDescriptor> sources;
   };

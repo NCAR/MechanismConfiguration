@@ -29,6 +29,11 @@ namespace mechanism_configuration
       return sequence;
     }
 
+    ErrorLocation LocationOf(const YAML::Node& node)
+    {
+      return ErrorLocation{ node.Mark().line, node.Mark().column };
+    }
+
     std::string GetReactionComponentName(const YAML::Node& component)
     {
       // A component may be given as a bare string (shorthand for its name),

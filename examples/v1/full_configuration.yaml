@@ -201,12 +201,12 @@ reactions:
         coefficient: 1
 emissions:
   inventories:
-    cams global anthro:
+    - name: cams global anthro
       directory: cams/v6.2
       file pattern: CAMS-GLOB-ANT_v6.2_{YYYY}-{MM}.nc
       convention: uptempo
   species maps:
-    MOZART-T1 from CAMS:
+    - name: MOZART-T1 from CAMS
       mappings:
         - inventory species: NOx
           mechanism species: NO

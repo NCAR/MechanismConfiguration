@@ -5,6 +5,7 @@
 #include "detail/v1/parser.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/v1/emissions_parser.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/type_schema.hpp"
@@ -17,8 +18,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
-#include <optional>
-#include <set>
 #include <string_view>
 
 namespace mechanism_configuration::v1
@@ -40,372 +39,6 @@ namespace mechanism_configuration::v1
       if (node.IsSequence())
         return EntityFormat::Inline;
       return EntityFormat::Invalid;
-    }
-
-    ErrorLocation LocationOf(const YAML::Node& node)
-    {
-      return ErrorLocation{ node.Mark().line, node.Mark().column };
-    }
-
-    std::unordered_map<std::string, std::string> GetUnknownProperties(const YAML::Node& node)
-    {
-      std::unordered_map<std::string, std::string> props;
-      for (const auto& kv : node)
-      {
-        std::string k = kv.first.as<std::string>();
-        if (k.size() >= 2 && k[0] == '_' && k[1] == '_')
-          props[k] = kv.second.as<std::string>();
-      }
-      return props;
-    }
-
-    types::SourceType ParseSourceType(const std::string& s)
-    {
-      if (s == std::string(keys::type_fire))      return types::SourceType::Fire;
-      if (s == std::string(keys::type_biogenic))  return types::SourceType::Biogenic;
-      if (s == std::string(keys::type_dust))      return types::SourceType::Dust;
-      if (s == std::string(keys::type_sea_salt))  return types::SourceType::SeaSalt;
-      if (s == std::string(keys::type_lightning)) return types::SourceType::Lightning;
-      return types::SourceType::Anthropogenic;
-    }
-
-    types::TemporalInterpolation ParseTemporalInterpolation(const std::string& s)
-    {
-      if (s == std::string(keys::interp_nearest)) return types::TemporalInterpolation::Nearest;
-      if (s == std::string(keys::interp_none))    return types::TemporalInterpolation::None;
-      return types::TemporalInterpolation::Linear;
-    }
-
-    std::expected<types::EmissionsConfig, Errors> ParseEmissionsSection(const YAML::Node& node)
-    {
-      Errors errors;
-      types::EmissionsConfig config;
-
-      // inventories (optional)
-      if (node[std::string(keys::inventories)])
-      {
-        const YAML::Node& inv_node = node[std::string(keys::inventories)];
-        if (!inv_node.IsMap())
-        {
-          errors.push_back({ ErrorCode::InvalidType, "'inventories' must be a mapping" });
-        }
-        else
-        {
-          for (const auto& kv : inv_node)
-          {
-            const std::string inv_name = kv.first.as<std::string>();
-            if (config.inventories.count(inv_name))
-            {
-              errors.push_back(
-                  { ErrorCode::DuplicateInventoryDetected,
-                    mc_fmt::format("Duplicate inventory name '{}'", inv_name) });
-              continue;
-            }
-            const YAML::Node& entry = kv.second;
-            types::Inventory inv;
-            if (!entry[std::string(keys::directory)])
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Inventory '{}' is missing required key 'directory'", inv_name) });
-            else
-              inv.directory = entry[std::string(keys::directory)].as<std::string>();
-
-            if (!entry[std::string(keys::file_pattern)])
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Inventory '{}' is missing required key 'file pattern'", inv_name) });
-            else
-              inv.file_pattern = entry[std::string(keys::file_pattern)].as<std::string>();
-
-            if (!entry[std::string(keys::convention)])
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Inventory '{}' is missing required key 'convention'", inv_name) });
-            else
-              inv.convention = entry[std::string(keys::convention)].as<std::string>();
-
-            config.inventories.emplace(inv_name, std::move(inv));
-          }
-        }
-      }
-
-      // species maps (optional)
-      if (node[std::string(keys::species_maps)])
-      {
-        const YAML::Node& sm_node = node[std::string(keys::species_maps)];
-        if (!sm_node.IsMap())
-        {
-          errors.push_back({ ErrorCode::InvalidType, "'species maps' must be a mapping" });
-        }
-        else
-        {
-          for (const auto& kv : sm_node)
-          {
-            const std::string map_name = kv.first.as<std::string>();
-            if (config.species_maps.count(map_name))
-            {
-              errors.push_back(
-                  { ErrorCode::DuplicateSpeciesMapDetected,
-                    mc_fmt::format("Duplicate species map name '{}'", map_name) });
-              continue;
-            }
-            const YAML::Node& entry = kv.second;
-            types::SpeciesMap smap;
-
-            if (!entry[std::string(keys::mappings)])
-            {
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Species map '{}' is missing required key 'mappings'", map_name) });
-              config.species_maps.emplace(map_name, std::move(smap));
-              continue;
-            }
-
-            std::unordered_map<std::string, double> inv_species_scale_sum;
-            for (const auto& mapping_node : entry[std::string(keys::mappings)])
-            {
-              types::SpeciesMapping m;
-              if (!mapping_node[std::string(keys::inventory_species)])
-              {
-                errors.push_back(
-                    { ErrorCode::RequiredKeyNotFound,
-                      mc_fmt::format("A mapping in species map '{}' is missing 'inventory species'", map_name) });
-                continue;
-              }
-              if (!mapping_node[std::string(keys::mechanism_species)])
-              {
-                errors.push_back(
-                    { ErrorCode::RequiredKeyNotFound,
-                      mc_fmt::format("A mapping in species map '{}' is missing 'mechanism species'", map_name) });
-                continue;
-              }
-              m.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
-              m.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
-              if (mapping_node[std::string(keys::scaling_factor)])
-                m.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
-              inv_species_scale_sum[m.inventory_species] += m.scaling_factor;
-              smap.mappings.push_back(std::move(m));
-            }
-
-            for (const auto& [inv_sp, total] : inv_species_scale_sum)
-            {
-              if (total > 1.0 + 1e-9)
-                errors.push_back(
-                    { ErrorCode::SpeciesMapScalingExceedsOne,
-                      mc_fmt::format(
-                          "Species map '{}': scaling factors for inventory species '{}' sum to {:.4f}, which exceeds 1.0",
-                          map_name,
-                          inv_sp,
-                          total) });
-            }
-            config.species_maps.emplace(map_name, std::move(smap));
-          }
-        }
-      }
-
-      // regridding (optional)
-      if (node[std::string(keys::regridding)])
-      {
-        const YAML::Node& rg_node = node[std::string(keys::regridding)];
-        if (rg_node[std::string(keys::type)])
-        {
-          const std::string rg_type = rg_node[std::string(keys::type)].as<std::string>();
-          if (rg_type == std::string(keys::regridding_none))
-          {
-            config.regridding.type = types::RegriddingType::None;
-          }
-          else
-          {
-            const ErrorLocation loc = LocationOf(rg_node[std::string(keys::type)]);
-            errors.push_back(
-                { ErrorCode::UnsupportedRegriddingType,
-                  mc_fmt::format(
-                      "{} error: Unsupported regridding type '{}'; only 'none' is supported in v1", loc, rg_type) });
-          }
-        }
-      }
-
-      // sources (optional)
-      if (node[std::string(keys::sources)])
-      {
-        const YAML::Node& src_node = node[std::string(keys::sources)];
-        if (!src_node.IsSequence())
-        {
-          errors.push_back({ ErrorCode::InvalidType, "'sources' must be a sequence" });
-        }
-        else
-        {
-          std::set<std::string> seen_names;
-          std::set<std::pair<int, int>> seen_cat_hier;
-
-          for (const auto& s : src_node)
-          {
-            types::SourceDescriptor src;
-
-            if (!s[std::string(keys::name)])
-            {
-              errors.push_back({ ErrorCode::RequiredKeyNotFound, "A source entry is missing required key 'name'" });
-              continue;
-            }
-            src.name = s[std::string(keys::name)].as<std::string>();
-
-            if (seen_names.count(src.name))
-            {
-              errors.push_back(
-                  { ErrorCode::DuplicateSourceDetected,
-                    mc_fmt::format("Duplicate source name '{}'", src.name) });
-              continue;
-            }
-            seen_names.insert(src.name);
-
-            if (!s[std::string(keys::mode)])
-            {
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Source '{}' is missing required key 'mode'", src.name) });
-            }
-            else
-            {
-              const std::string mode_val = s[std::string(keys::mode)].as<std::string>();
-              if (mode_val == std::string(keys::mode_online))
-              {
-                const ErrorLocation loc = LocationOf(s[std::string(keys::mode)]);
-                errors.push_back(
-                    { ErrorCode::OnlineSourcesNotSupported,
-                      mc_fmt::format(
-                          "{} error: Source '{}' uses 'mode: online', which is not supported in v1",
-                          loc,
-                          src.name) });
-              }
-              else if (mode_val != std::string(keys::mode_offline))
-              {
-                errors.push_back(
-                    { ErrorCode::UnknownType,
-                      mc_fmt::format("Source '{}' has unknown mode '{}'; expected 'offline'", src.name, mode_val) });
-              }
-            }
-
-            if (!s[std::string(keys::type)])
-            {
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Source '{}' is missing required key 'type'", src.name) });
-            }
-            else
-            {
-              const std::string type_val = s[std::string(keys::type)].as<std::string>();
-              static const std::vector<std::string_view> valid_types = {
-                keys::type_anthropogenic, keys::type_fire, keys::type_biogenic,
-                keys::type_dust,          keys::type_sea_salt, keys::type_lightning
-              };
-              bool found = false;
-              for (const auto& vt : valid_types)
-                if (type_val == std::string(vt))
-                  found = true;
-              if (!found)
-                errors.push_back(
-                    { ErrorCode::UnknownType,
-                      mc_fmt::format("Source '{}' has unknown type '{}'", src.name, type_val) });
-              else
-                src.type = ParseSourceType(type_val);
-            }
-
-            if (!s[std::string(keys::inventory)])
-            {
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Source '{}' is missing required key 'inventory'", src.name) });
-            }
-            else
-            {
-              src.inventory = s[std::string(keys::inventory)].as<std::string>();
-              if (!config.inventories.empty() && !config.inventories.count(src.inventory))
-                errors.push_back(
-                    { ErrorCode::SourceRequiresUnknownInventory,
-                      mc_fmt::format(
-                          "Source '{}' references inventory '{}' which is not declared in 'inventories'",
-                          src.name,
-                          src.inventory) });
-            }
-
-            if (!s[std::string(keys::species_map)])
-            {
-              errors.push_back(
-                  { ErrorCode::RequiredKeyNotFound,
-                    mc_fmt::format("Source '{}' is missing required key 'species map'", src.name) });
-            }
-            else
-            {
-              src.species_map = s[std::string(keys::species_map)].as<std::string>();
-              if (!config.species_maps.empty() && !config.species_maps.count(src.species_map))
-                errors.push_back(
-                    { ErrorCode::SourceRequiresUnknownSpeciesMap,
-                      mc_fmt::format(
-                          "Source '{}' references species map '{}' which is not declared in 'species maps'",
-                          src.name,
-                          src.species_map) });
-            }
-
-            if (s[std::string(keys::temporal_interpolation)])
-              src.temporal_interpolation =
-                  ParseTemporalInterpolation(s[std::string(keys::temporal_interpolation)].as<std::string>());
-
-            if (s[std::string(keys::vertical_injection)])
-            {
-              const std::string vi_val = s[std::string(keys::vertical_injection)].as<std::string>();
-              if (vi_val == std::string(keys::inject_plume))
-              {
-                const ErrorLocation loc = LocationOf(s[std::string(keys::vertical_injection)]);
-                errors.push_back(
-                    { ErrorCode::UnsupportedVerticalInjection,
-                      mc_fmt::format(
-                          "{} error: Source '{}' uses 'vertical injection: plume', which is not supported in v1",
-                          loc,
-                          src.name) });
-              }
-              else if (vi_val != std::string(keys::inject_surface))
-              {
-                errors.push_back(
-                    { ErrorCode::UnknownType,
-                      mc_fmt::format(
-                          "Source '{}' has unknown vertical injection '{}'; expected 'surface'", src.name, vi_val) });
-              }
-            }
-
-            if (s[std::string(keys::category)])
-              src.category = s[std::string(keys::category)].as<int>();
-            if (s[std::string(keys::hierarchy)])
-              src.hierarchy = s[std::string(keys::hierarchy)].as<int>();
-            if (s[std::string(keys::scaling_factor)])
-              src.scaling_factor = s[std::string(keys::scaling_factor)].as<double>();
-            if (s[std::string(keys::sector)])
-              src.sector = s[std::string(keys::sector)].as<std::string>();
-
-            const auto cat_hier = std::make_pair(src.category, src.hierarchy);
-            if (seen_cat_hier.count(cat_hier))
-            {
-              errors.push_back(
-                  { ErrorCode::DuplicateCategoryHierarchy,
-                    mc_fmt::format(
-                        "Source '{}' has duplicate (category: {}, hierarchy: {}) — each (category, hierarchy) pair must be unique",
-                        src.name,
-                        src.category,
-                        src.hierarchy) });
-            }
-            else
-            {
-              seen_cat_hier.insert(cat_hier);
-            }
-
-            src.unknown_properties = GetUnknownProperties(s);
-            config.sources.push_back(std::move(src));
-          }
-        }
-      }
-
-      if (!errors.empty())
-        return std::unexpected(std::move(errors));
-      return config;
     }
 
     // Appends each component under `key` (reactant- or product-like) as a located reference.
@@ -460,6 +93,55 @@ namespace mechanism_configuration::v1
         CollectComponents(reaction, keys::gas_phase_products, rr.products);
         input.reactions.push_back(std::move(rr));
       }
+
+    if (object[std::string(keys::emissions)])
+    {
+      const YAML::Node& emissions_node = object[std::string(keys::emissions)];
+      semantics::EmissionsRef emissions_ref;
+
+      if (emissions_node[std::string(keys::inventories)])
+        for (const auto& item : emissions_node[std::string(keys::inventories)])
+          emissions_ref.inventories.push_back(
+              { item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+
+      if (emissions_node[std::string(keys::species_maps)])
+        for (const auto& item : emissions_node[std::string(keys::species_maps)])
+        {
+          semantics::SpeciesMapRef smap_ref;
+          smap_ref.name = item[std::string(keys::name)].as<std::string>();
+          smap_ref.location = LocationOf(item);
+          if (item[std::string(keys::mappings)])
+            for (const auto& mapping_node : item[std::string(keys::mappings)])
+            {
+              semantics::SpeciesMappingRef mapping_ref;
+              mapping_ref.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
+              mapping_ref.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
+              if (mapping_node[std::string(keys::scaling_factor)])
+                mapping_ref.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
+              smap_ref.mappings.push_back(std::move(mapping_ref));
+            }
+          emissions_ref.species_maps.push_back(std::move(smap_ref));
+        }
+
+      if (emissions_node[std::string(keys::sources)])
+        for (const auto& item : emissions_node[std::string(keys::sources)])
+        {
+          semantics::SourceRef source_ref;
+          source_ref.name = item[std::string(keys::name)].as<std::string>();
+          source_ref.location = LocationOf(item);
+          source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
+                                    LocationOf(item[std::string(keys::inventory)]) };
+          source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
+                                      LocationOf(item[std::string(keys::species_map)]) };
+          if (item[std::string(keys::category)])
+            source_ref.category = item[std::string(keys::category)].as<int>();
+          if (item[std::string(keys::hierarchy)])
+            source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
+          emissions_ref.sources.push_back(std::move(source_ref));
+        }
+
+      input.emissions = std::move(emissions_ref);
+    }
 
     return input;
   }
@@ -631,6 +313,17 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
+    if (object[std::string(keys::emissions)])
+    {
+      schema_errors = CheckEmissionsSchema(object[std::string(keys::emissions)]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+        return errors;
+      }
+    }
+
     return errors;
   }
 
@@ -683,29 +376,18 @@ namespace mechanism_configuration::v1
         errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
       }
 
-      // 3) Parse optional emissions section.
-      std::optional<types::EmissionsConfig> emissions;
-      if (errors.empty() && object[std::string(keys::emissions)])
-      {
-        auto em = ParseEmissionsSection(object[std::string(keys::emissions)]);
-        if (!em)
-        {
-          AppendFilePath(config_path_, em.error());
-          errors.insert(errors.end(), em.error().begin(), em.error().end());
-        }
-        else
-        {
-          emissions = std::move(*em);
-        }
-      }
-
       if (!errors.empty())
       {
         return std::unexpected(std::move(errors));
       }
 
-      // 4) Build the Mechanism (only reached when fully valid).
-      return Build(object, std::move(emissions));
+      // 3) Build the Mechanism (only reached when fully valid).
+      Mechanism mechanism = Build(object);
+      if (object[std::string(keys::emissions)])
+      {
+        mechanism.emissions = ParseEmissionsSection(object[std::string(keys::emissions)]);
+      }
+      return mechanism;
     }
     catch (const std::exception& e)
     {
@@ -715,7 +397,7 @@ namespace mechanism_configuration::v1
     }
   }
 
-  Mechanism Parser::Build(const YAML::Node& object, std::optional<types::EmissionsConfig> emissions)
+  Mechanism Parser::Build(const YAML::Node& object)
   {
     Mechanism mechanism;
 
@@ -723,7 +405,6 @@ namespace mechanism_configuration::v1
     mechanism.species = ParseSpecies(object[keys::species]);
     mechanism.phases = ParsePhases(object[keys::phases]);
     mechanism.reactions = ParseReactions(object[keys::reactions]);
-    mechanism.emissions = std::move(emissions);
 
     if (object[keys::name])
     {
