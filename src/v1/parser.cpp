@@ -101,8 +101,7 @@ namespace mechanism_configuration::v1
 
       if (emissions_node[std::string(keys::inventories)])
         for (const auto& item : emissions_node[std::string(keys::inventories)])
-          emissions_ref.inventories.push_back(
-              { item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+          emissions_ref.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
 
       if (emissions_node[std::string(keys::species_maps)])
         for (const auto& item : emissions_node[std::string(keys::species_maps)])
@@ -130,9 +129,9 @@ namespace mechanism_configuration::v1
           source_ref.name = item[std::string(keys::name)].as<std::string>();
           source_ref.location = LocationOf(item);
           source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
-                                    LocationOf(item[std::string(keys::inventory)]) };
+                                   LocationOf(item[std::string(keys::inventory)]) };
           source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
-                                      LocationOf(item[std::string(keys::species_map)]) };
+                                     LocationOf(item[std::string(keys::species_map)]) };
           if (item[std::string(keys::category)])
             source_ref.category = item[std::string(keys::category)].as<int>();
           if (item[std::string(keys::hierarchy)])

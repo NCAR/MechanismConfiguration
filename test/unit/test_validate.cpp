@@ -39,7 +39,8 @@ namespace
     return inv;
   }
 
-  types::SpeciesMapping mapping(const std::string& inventory_species, const std::string& mechanism_species, double scaling_factor = 1.0)
+  types::SpeciesMapping
+  mapping(const std::string& inventory_species, const std::string& mechanism_species, double scaling_factor = 1.0)
   {
     types::SpeciesMapping m;
     m.inventory_species = inventory_species;
@@ -57,7 +58,11 @@ namespace
   }
 
   types::SourceDescriptor source(
-      const std::string& name, const std::string& inventory_name, const std::string& species_map_name, int category = 0, int hierarchy = 1)
+      const std::string& name,
+      const std::string& inventory_name,
+      const std::string& species_map_name,
+      int category = 0,
+      int hierarchy = 1)
   {
     types::SourceDescriptor src;
     src.name = name;
@@ -208,7 +213,8 @@ TEST(Validate, EmissionsDetectsDuplicateSource)
   types::EmissionsConfig em;
   em.inventories = { inventory("cams bc") };
   em.species_maps = { species_map("bc map", {}) };
-  em.sources = { source("CAMS black carbon", "cams bc", "bc map", 0, 1), source("CAMS black carbon", "cams bc", "bc map", 1, 1) };
+  em.sources = { source("CAMS black carbon", "cams bc", "bc map", 0, 1),
+                 source("CAMS black carbon", "cams bc", "bc map", 1, 1) };
   m.emissions = em;
 
   EXPECT_TRUE(HasCode(Validate(m), ErrorCode::DuplicateSourceDetected));

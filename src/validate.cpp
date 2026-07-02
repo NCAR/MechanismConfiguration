@@ -144,24 +144,22 @@ namespace mechanism_configuration
       for (const auto& source : emissions.sources)
       {
         if (!inventory_names.contains(source.inventory.name))
-          errors.push_back(
-              { ErrorCode::SourceRequiresUnknownInventory,
-                Message(
-                    source.inventory.location,
-                    mc_fmt::format(
-                        "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
-                        source.name,
-                        source.inventory.name)) });
+          errors.push_back({ ErrorCode::SourceRequiresUnknownInventory,
+                             Message(
+                                 source.inventory.location,
+                                 mc_fmt::format(
+                                     "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
+                                     source.name,
+                                     source.inventory.name)) });
 
         if (!species_map_name_set.contains(source.species_map.name))
-          errors.push_back(
-              { ErrorCode::SourceRequiresUnknownSpeciesMap,
-                Message(
-                    source.species_map.location,
-                    mc_fmt::format(
-                        "Source '{}' references species map '{}' which is not declared in 'species maps'.",
-                        source.name,
-                        source.species_map.name)) });
+          errors.push_back({ ErrorCode::SourceRequiresUnknownSpeciesMap,
+                             Message(
+                                 source.species_map.location,
+                                 mc_fmt::format(
+                                     "Source '{}' references species map '{}' which is not declared in 'species maps'.",
+                                     source.name,
+                                     source.species_map.name)) });
 
         if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
           errors.push_back(
