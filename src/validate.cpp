@@ -6,11 +6,13 @@
 
 #include <mechanism_configuration/validate.hpp>
 
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 namespace mechanism_configuration
@@ -110,6 +112,93 @@ namespace mechanism_configuration
       }
     }
 
+    // ---- Emissions ----------------------------------------------------------------------------
+    if (input.emissions)
+    {
+      const auto& emissions = *input.emissions;
+
+      ReportDuplicates(emissions.inventories, ErrorCode::DuplicateInventoryDetected, "inventory", errors);
+
+      std::vector<semantics::NamedRef> species_map_names;
+      for (const auto& smap : emissions.species_maps)
+        species_map_names.push_back({ smap.name, smap.location });
+      ReportDuplicates(species_map_names, ErrorCode::DuplicateSpeciesMapDetected, "species map", errors);
+
+      std::vector<semantics::NamedRef> source_names;
+      for (const auto& source : emissions.sources)
+        source_names.push_back({ source.name, source.location });
+      ReportDuplicates(source_names, ErrorCode::DuplicateSourceDetected, "source", errors);
+
+      std::unordered_set<std::string> inventory_names;
+      for (const auto& inv : emissions.inventories)
+        inventory_names.insert(inv.name);
+
+      std::unordered_set<std::string> species_map_name_set;
+      for (const auto& smap : emissions.species_maps)
+        species_map_name_set.insert(smap.name);
+
+      std::map<std::pair<int, int>, int> cat_hier_counts;
+      for (const auto& source : emissions.sources)
+        ++cat_hier_counts[{ source.category, source.hierarchy }];
+
+      for (const auto& source : emissions.sources)
+      {
+        if (!inventory_names.contains(source.inventory.name))
+          errors.push_back(
+              { ErrorCode::SourceRequiresUnknownInventory,
+                Message(
+                    source.inventory.location,
+                    mc_fmt::format(
+                        "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
+                        source.name,
+                        source.inventory.name)) });
+
+        if (!species_map_name_set.contains(source.species_map.name))
+          errors.push_back(
+              { ErrorCode::SourceRequiresUnknownSpeciesMap,
+                Message(
+                    source.species_map.location,
+                    mc_fmt::format(
+                        "Source '{}' references species map '{}' which is not declared in 'species maps'.",
+                        source.name,
+                        source.species_map.name)) });
+
+        if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
+          errors.push_back(
+              { ErrorCode::DuplicateCategoryHierarchy,
+                Message(
+                    source.location,
+                    mc_fmt::format(
+                        "Source '{}' has duplicate (category: {}, hierarchy: {}) — each (category, hierarchy) pair "
+                        "must be unique.",
+                        source.name,
+                        source.category,
+                        source.hierarchy)) });
+      }
+
+      for (const auto& smap : emissions.species_maps)
+      {
+        std::unordered_map<std::string, double> scale_sum;
+        for (const auto& mapping : smap.mappings)
+          scale_sum[mapping.inventory_species] += mapping.scaling_factor;
+
+        for (const auto& [inventory_species, total] : scale_sum)
+        {
+          if (total > 1.0 + 1e-9)
+            errors.push_back(
+                { ErrorCode::SpeciesMapScalingExceedsOne,
+                  Message(
+                      smap.location,
+                      mc_fmt::format(
+                          "Species map '{}': scaling factors for inventory species '{}' sum to {:.4f}, which exceeds "
+                          "1.0.",
+                          smap.name,
+                          inventory_species,
+                          total)) });
+        }
+      }
+    }
+
     return errors;
   }
 
@@ -184,6 +273,36 @@ namespace mechanism_configuration
       std::vector<types::ReactionComponent> products = x.alkoxy_products;
       products.insert(products.end(), x.nitrate_products.begin(), x.nitrate_products.end());
       add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
+    }
+
+    if (mechanism.emissions)
+    {
+      semantics::EmissionsRef emissions_ref;
+
+      for (const auto& inv : mechanism.emissions->inventories)
+        emissions_ref.inventories.push_back({ inv.name, std::nullopt });
+
+      for (const auto& smap : mechanism.emissions->species_maps)
+      {
+        semantics::SpeciesMapRef smap_ref;
+        smap_ref.name = smap.name;
+        for (const auto& mapping : smap.mappings)
+          smap_ref.mappings.push_back({ mapping.inventory_species, mapping.mechanism_species, mapping.scaling_factor });
+        emissions_ref.species_maps.push_back(std::move(smap_ref));
+      }
+
+      for (const auto& source : mechanism.emissions->sources)
+      {
+        semantics::SourceRef source_ref;
+        source_ref.name = source.name;
+        source_ref.inventory = { source.inventory, std::nullopt };
+        source_ref.species_map = { source.species_map, std::nullopt };
+        source_ref.category = source.category;
+        source_ref.hierarchy = source.hierarchy;
+        emissions_ref.sources.push_back(std::move(source_ref));
+      }
+
+      input.emissions = std::move(emissions_ref);
     }
 
     return ValidateSemantics(input);
