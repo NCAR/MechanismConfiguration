@@ -5,6 +5,7 @@
 #include "detail/v1/emissions_parser.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/error_format.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/utils.hpp"
 

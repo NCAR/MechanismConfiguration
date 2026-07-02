@@ -39,6 +39,19 @@ set(MECH_CONFIG_LIB_DIR ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 include(cmake/dependencies.cmake)
 
 ################################################################################
+# Code coverage instrumentation
+#
+# These flags must be applied BEFORE add_subdirectory(src) so the library
+# targets are compiled with coverage instrumentation. append_coverage_compiler_flags()
+# only affects targets defined after it runs, so calling it later would leave the
+# library uninstrumented and the report would cover almost nothing.
+
+if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS AND MECH_CONFIG_ENABLE_COVERAGE)
+  include(cmake/CodeCoverage.cmake)
+  append_coverage_compiler_flags()
+endif()
+
+################################################################################
 # project source code
 
 add_subdirectory(src)
@@ -49,12 +62,13 @@ add_subdirectory(src)
 if(PROJECT_IS_TOP_LEVEL AND MECH_CONFIG_ENABLE_TESTS)
   # Test code coverage
   if(MECH_CONFIG_ENABLE_COVERAGE)
-    include(cmake/CodeCoverage.cmake)
-    append_coverage_compiler_flags()
     setup_target_for_coverage_lcov(
         NAME coverage
         EXECUTABLE "ctest" -j 4
-        EXCLUDE "${PROJECT_SOURCE_DIR}/test/*"
+        EXCLUDE
+            "${PROJECT_SOURCE_DIR}/test/*"
+            "${CMAKE_BINARY_DIR}/_deps/*"
+            "/usr/*"
         BASE_DIRECTORY "${PROJECT_SOURCE_DIR}/src"
         LCOV_ARGS --ignore-errors mismatch)
   endif()

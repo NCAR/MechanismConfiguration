@@ -2,7 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include <mechanism_configuration/format_compat.hpp>
+#include "detail/error_format.hpp"
+
 #include <mechanism_configuration/validate.hpp>
 
 #include <map>

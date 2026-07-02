@@ -5,12 +5,12 @@
 #include "detail/v1/type_schema.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/error_format.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/reaction_parsers.hpp"
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 
 #include <string>
 #include <vector>

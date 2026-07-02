@@ -20,7 +20,10 @@ TEST(V0Parser, ParsesFullV0Configuration)
     ASSERT_TRUE(parsed);
 
     Mechanism mechanism = *parsed;
-    EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
+    EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
+    EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
+    EXPECT_EQ(mechanism.reactions.emission.size(), 1);
+    EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
     EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
     EXPECT_EQ(mechanism.reactions.troe.size(), 1);
     EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);
@@ -40,7 +43,10 @@ TEST(V0Parser, ConfigPathIsDirectory)
 
   Mechanism mechanism = *parsed;
   EXPECT_EQ(mechanism.version.major, 0);
-  EXPECT_EQ(mechanism.reactions.user_defined.size(), 4);
+  EXPECT_EQ(mechanism.reactions.user_defined.size(), 1);
+  EXPECT_EQ(mechanism.reactions.first_order_loss.size(), 1);
+  EXPECT_EQ(mechanism.reactions.emission.size(), 1);
+  EXPECT_EQ(mechanism.reactions.photolysis.size(), 1);
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 1);
   EXPECT_EQ(mechanism.reactions.troe.size(), 1);
   EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 1);

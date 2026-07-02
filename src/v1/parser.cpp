@@ -5,6 +5,7 @@
 #include "detail/v1/parser.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/error_format.hpp"
 #include "detail/v1/emissions_parser.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
@@ -12,7 +13,6 @@
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 
 #include <yaml-cpp/yaml.h>

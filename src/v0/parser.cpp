@@ -171,7 +171,7 @@ namespace mechanism_configuration::v0
 
       // all species in version 0 are in the gas phase
       types::Phase gas_phase;
-      gas_phase.name = "GAS";
+      gas_phase.name = "gas";
       for (auto& species : mechanism.species)
       {
         types::PhaseSpecies phase_species;
