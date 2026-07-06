@@ -88,9 +88,8 @@ namespace mechanism_configuration
         if (!object[keys::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-          errors.push_back(
-              { ErrorCode::RequiredKeyNotFound,
-                mc_fmt::format("{} error: Missing 'type' object in aerosol representation.", error_location) });
+          errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                             mc_fmt::format("{} error: Missing 'type' object in aerosol representation.", error_location) });
           continue;
         }
 
@@ -140,9 +139,8 @@ namespace mechanism_configuration
         if (!object[keys::type])
         {
           ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-          errors.push_back(
-              { ErrorCode::RequiredKeyNotFound,
-                mc_fmt::format("{} error: Missing 'type' object in aerosol process.", error_location) });
+          errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                             mc_fmt::format("{} error: Missing 'type' object in aerosol process.", error_location) });
           continue;
         }
 
@@ -168,7 +166,7 @@ namespace mechanism_configuration
         }
         else if (type == keys::DissolvedReaction_key)
         {
-          required_keys = { keys::type,    keys::condensed_phase, keys::solvent,
+          required_keys = { keys::type,      keys::condensed_phase, keys::solvent,
                             keys::reactants, keys::products,        keys::rate_constants };
           if (object[keys::reactants])
           {
@@ -232,8 +230,12 @@ namespace mechanism_configuration
         }
         else if (type == keys::DissolvedEquilibrium_key)
         {
-          required_keys = { keys::type,      keys::condensed_phase,   keys::solvent,
-                            keys::reactants,  keys::products,          keys::algebraic_species,
+          required_keys = { keys::type,
+                            keys::condensed_phase,
+                            keys::solvent,
+                            keys::reactants,
+                            keys::products,
+                            keys::algebraic_species,
                             keys::equilibrium_constant };
           if (object[keys::reactants])
           {
@@ -265,23 +267,21 @@ namespace mechanism_configuration
           {
             const auto& node = object[keys::diagnose_from_state];
             ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-            nested_errors.push_back(
-                { ErrorCode::MutuallyExclusiveOption,
-                  mc_fmt::format(
-                      "{} error: Mutually exclusive option of '{}' and '{}' found in '{}'.",
-                      error_location,
-                      keys::constant,
-                      keys::diagnose_from_state,
-                      type) });
+            nested_errors.push_back({ ErrorCode::MutuallyExclusiveOption,
+                                      mc_fmt::format(
+                                          "{} error: Mutually exclusive option of '{}' and '{}' found in '{}'.",
+                                          error_location,
+                                          keys::constant,
+                                          keys::diagnose_from_state,
+                                          type) });
           }
         }
         else
         {
           const auto& node = object[keys::type];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-          errors.push_back(
-              { ErrorCode::UnknownType,
-                mc_fmt::format("{} error: Unknown aerosol process type '{}' found.", error_location, type) });
+          errors.push_back({ ErrorCode::UnknownType,
+                             mc_fmt::format("{} error: Unknown aerosol process type '{}' found.", error_location, type) });
           continue;
         }
 

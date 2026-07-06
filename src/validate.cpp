@@ -12,8 +12,8 @@
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
-#include <variant>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace mechanism_configuration
@@ -145,24 +145,22 @@ namespace mechanism_configuration
       for (const auto& source : emissions.sources)
       {
         if (!inventory_names.contains(source.inventory.name))
-          errors.push_back(
-              { ErrorCode::SourceRequiresUnknownInventory,
-                Message(
-                    source.inventory.location,
-                    mc_fmt::format(
-                        "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
-                        source.name,
-                        source.inventory.name)) });
+          errors.push_back({ ErrorCode::SourceRequiresUnknownInventory,
+                             Message(
+                                 source.inventory.location,
+                                 mc_fmt::format(
+                                     "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
+                                     source.name,
+                                     source.inventory.name)) });
 
         if (!species_map_name_set.contains(source.species_map.name))
-          errors.push_back(
-              { ErrorCode::SourceRequiresUnknownSpeciesMap,
-                Message(
-                    source.species_map.location,
-                    mc_fmt::format(
-                        "Source '{}' references species map '{}' which is not declared in 'species maps'.",
-                        source.name,
-                        source.species_map.name)) });
+          errors.push_back({ ErrorCode::SourceRequiresUnknownSpeciesMap,
+                             Message(
+                                 source.species_map.location,
+                                 mc_fmt::format(
+                                     "Source '{}' references species map '{}' which is not declared in 'species maps'.",
+                                     source.name,
+                                     source.species_map.name)) });
 
         if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
           errors.push_back(
@@ -350,10 +348,11 @@ namespace mechanism_configuration
       const auto species_it = phase_it->second.find(species);
       if (species_it == phase_it->second.end())
       {
-        errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                           Message(std::nullopt,
-                                   mc_fmt::format(
-                                       "Species '{}' ({}) is not defined in the '{}' phase.", species, context, phase)) });
+        errors.push_back(
+            { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+              Message(
+                  std::nullopt,
+                  mc_fmt::format("Species '{}' ({}) is not defined in the '{}' phase.", species, context, phase)) });
         return nullptr;
       }
       return species_it->second;
@@ -364,32 +363,39 @@ namespace mechanism_configuration
       const auto* entry = require_registered_species(phase, species, context);
       if (entry && !entry->diffusion_coefficient)
         errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: species '{}' has no diffusion coefficient defined in "
-                                                  "the '{}' phase.",
-                                                  context, species, phase)) });
+                           Message(
+                               std::nullopt,
+                               mc_fmt::format(
+                                   "{}: species '{}' has no diffusion coefficient defined in "
+                                   "the '{}' phase.",
+                                   context,
+                                   species,
+                                   phase)) });
     };
 
     auto require_density = [&](const std::string& phase, const std::string& species, const std::string& context)
     {
       const auto* entry = require_registered_species(phase, species, context);
       if (entry && !entry->density)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: species '{}' has no density defined in the '{}' phase.",
-                                                  context, species, phase)) });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              Message(
+                  std::nullopt,
+                  mc_fmt::format("{}: species '{}' has no density defined in the '{}' phase.", context, species, phase)) });
     };
 
     auto require_molecular_weight = [&](const std::string& species, const std::string& context)
     {
       const auto species_it = species_index.find(species);
       if (species_it == species_index.end())
-        errors.push_back({ ErrorCode::UnknownSpecies,
-                           Message(std::nullopt, mc_fmt::format("Unknown species '{}' referenced by {}.", species, context)) });
+        errors.push_back(
+            { ErrorCode::UnknownSpecies,
+              Message(std::nullopt, mc_fmt::format("Unknown species '{}' referenced by {}.", species, context)) });
       else if (!species_it->second->molecular_weight)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(std::nullopt,
-                                   mc_fmt::format("{}: species '{}' has no molecular weight defined.", context, species)) });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              Message(
+                  std::nullopt, mc_fmt::format("{}: species '{}' has no molecular weight defined.", context, species)) });
     };
 
     // Verifies that phase exists.
@@ -404,10 +410,11 @@ namespace mechanism_configuration
     auto require_representation = [&](const std::string& representation, const std::string& context)
     {
       if (!representation_names.contains(representation))
-        errors.push_back({ ErrorCode::UnknownAerosolRepresentation,
-                           Message(std::nullopt,
-                                   mc_fmt::format(
-                                       "Unknown aerosol representation '{}' referenced by {}.", representation, context)) });
+        errors.push_back(
+            { ErrorCode::UnknownAerosolRepresentation,
+              Message(
+                  std::nullopt,
+                  mc_fmt::format("Unknown aerosol representation '{}' referenced by {}.", representation, context)) });
     };
 
     for (const auto& representation : aerosol.representations)

@@ -5,10 +5,10 @@
 #include "detail/v1/parser.hpp"
 
 #include "detail/check_schema.hpp"
+#include "detail/error_format.hpp"
 #include "detail/v1/aerosol_keys.hpp"
 #include "detail/v1/aerosol_type_parsers.hpp"
 #include "detail/v1/aerosol_type_schema.hpp"
-#include "detail/error_format.hpp"
 #include "detail/v1/emissions_parser.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
@@ -105,8 +105,7 @@ namespace mechanism_configuration::v1
 
       if (emissions_node[std::string(keys::inventories)])
         for (const auto& item : emissions_node[std::string(keys::inventories)])
-          emissions_ref.inventories.push_back(
-              { item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+          emissions_ref.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
 
       if (emissions_node[std::string(keys::species_maps)])
         for (const auto& item : emissions_node[std::string(keys::species_maps)])
@@ -134,9 +133,9 @@ namespace mechanism_configuration::v1
           source_ref.name = item[std::string(keys::name)].as<std::string>();
           source_ref.location = LocationOf(item);
           source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
-                                    LocationOf(item[std::string(keys::inventory)]) };
+                                   LocationOf(item[std::string(keys::inventory)]) };
           source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
-                                      LocationOf(item[std::string(keys::species_map)]) };
+                                     LocationOf(item[std::string(keys::species_map)]) };
           if (item[std::string(keys::category)])
             source_ref.category = item[std::string(keys::category)].as<int>();
           if (item[std::string(keys::hierarchy)])
@@ -269,11 +268,9 @@ namespace mechanism_configuration::v1
     // Since aerosol chemistry does not always require gas-phase reactions, either section
     // may be omitted, making both configurations optional.
     std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases };
-    std::vector<std::string_view> optional_keys = { keys::name,
-                                                    keys::reactions,
-                                                    keys::aerosol_representations,
-                                                    keys::aerosol_processes,
-                                                    keys::emissions };
+    std::vector<std::string_view> optional_keys = {
+      keys::name, keys::reactions, keys::aerosol_representations, keys::aerosol_processes, keys::emissions
+    };
 
     // Return early if the required keys are not found
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -293,20 +290,22 @@ namespace mechanism_configuration::v1
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
       errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         mc_fmt::format("{} error: '{}' and '{}' must be provided together.",
-                                        error_location,
-                                        keys::aerosol_representations,
-                                        keys::aerosol_processes) });
+                         mc_fmt::format(
+                             "{} error: '{}' and '{}' must be provided together.",
+                             error_location,
+                             keys::aerosol_representations,
+                             keys::aerosol_processes) });
     }
     if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
       errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         mc_fmt::format("{} error: A configuration must contain either '{}' or both '{}' and '{}'.",
-                                        error_location,
-                                        keys::reactions,
-                                        keys::aerosol_representations,
-                                        keys::aerosol_processes) });
+                         mc_fmt::format(
+                             "{} error: A configuration must contain either '{}' or both '{}' and '{}'.",
+                             error_location,
+                             keys::reactions,
+                             keys::aerosol_representations,
+                             keys::aerosol_processes) });
     }
     if (!errors.empty())
     {
@@ -485,12 +484,12 @@ namespace mechanism_configuration::v1
     mechanism.version = Version(object[keys::version].as<std::string>());
     mechanism.species = ParseSpecies(object[keys::species]);
     mechanism.phases = ParsePhases(object[keys::phases]);
-    
+
     if (object[keys::reactions])
     {
       mechanism.reactions = ParseReactions(object[keys::reactions]);
     }
-    if (object[keys::aerosol_representations] && object[keys::aerosol_processes]) 
+    if (object[keys::aerosol_representations] && object[keys::aerosol_processes])
     {
       mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
     }
