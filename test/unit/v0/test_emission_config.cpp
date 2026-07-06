@@ -49,26 +49,24 @@ TEST(EmissionConfig, ParseConfig)
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
-    auto& process_vector = mechanism.reactions.user_defined;
+    auto& process_vector = mechanism.reactions.emission;
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction
     {
-      EXPECT_EQ(process_vector[0].reactants.size(), 0);
       EXPECT_EQ(process_vector[0].products.size(), 1);
       EXPECT_EQ(process_vector[0].products[0].name, "foo");
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
-      EXPECT_EQ(process_vector[0].name, "EMIS.foo");
+      EXPECT_EQ(process_vector[0].name, "foo");
       EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
     }
 
     // second reaction
     {
-      EXPECT_EQ(process_vector[1].reactants.size(), 0);
       EXPECT_EQ(process_vector[1].products.size(), 1);
       EXPECT_EQ(process_vector[1].products[0].name, "bar");
       EXPECT_EQ(process_vector[1].products[0].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].name, "EMIS.bar");
+      EXPECT_EQ(process_vector[1].name, "bar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
   }

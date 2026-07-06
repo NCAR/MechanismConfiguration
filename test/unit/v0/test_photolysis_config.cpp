@@ -59,32 +59,30 @@ TEST(PhotolysisConfig, ParseConfig)
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
-    auto& process_vector = mechanism.reactions.user_defined;
+    auto& process_vector = mechanism.reactions.photolysis;
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction
     {
-      EXPECT_EQ(process_vector[0].reactants.size(), 1);
-      EXPECT_EQ(process_vector[0].reactants[0].name, "foo");
+      EXPECT_EQ(process_vector[0].reactants.name, "foo");
       EXPECT_EQ(process_vector[0].products.size(), 2);
       EXPECT_EQ(process_vector[0].products[0].name, "bar");
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
       EXPECT_EQ(process_vector[0].products[1].name, "baz");
       EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
-      EXPECT_EQ(process_vector[0].name, "PHOTO.jfoo");
+      EXPECT_EQ(process_vector[0].name, "jfoo");
       EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
     }
 
     // second reaction
     {
-      EXPECT_EQ(process_vector[1].reactants.size(), 1);
-      EXPECT_EQ(process_vector[1].reactants[0].name, "bar");
+      EXPECT_EQ(process_vector[1].reactants.name, "bar");
       EXPECT_EQ(process_vector[1].products.size(), 2);
       EXPECT_EQ(process_vector[1].products[0].name, "bar");
       EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
       EXPECT_EQ(process_vector[1].products[1].name, "foo");
       EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].name, "PHOTO.jbar");
+      EXPECT_EQ(process_vector[1].name, "jbar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
   }

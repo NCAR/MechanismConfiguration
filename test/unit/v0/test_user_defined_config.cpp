@@ -76,7 +76,7 @@ TEST(UserDefinedConfig, ParseConfig)
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.4);
       EXPECT_EQ(process_vector[0].products[1].name, "foo");
       EXPECT_EQ(process_vector[0].products[1].coefficient, 1.0);
-      EXPECT_EQ(process_vector[0].name, "USER.foo");
+      EXPECT_EQ(process_vector[0].name, "foo");
       EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
     }
 
@@ -88,7 +88,7 @@ TEST(UserDefinedConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].products.size(), 1);
       EXPECT_EQ(process_vector[1].products[0].name, "bar");
       EXPECT_EQ(process_vector[1].products[0].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].name, "USER.bar");
+      EXPECT_EQ(process_vector[1].name, "bar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
   }

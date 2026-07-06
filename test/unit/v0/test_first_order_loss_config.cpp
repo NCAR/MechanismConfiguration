@@ -49,24 +49,22 @@ TEST(FirstOrderLossConfig, ParseConfig)
     EXPECT_TRUE(parsed);
     Mechanism mechanism = *parsed;
 
-    auto& process_vector = mechanism.reactions.user_defined;
+    auto& process_vector = mechanism.reactions.first_order_loss;
     EXPECT_EQ(process_vector.size(), 2);
 
     // first reaction
     {
-      EXPECT_EQ(process_vector[0].reactants.size(), 1);
       EXPECT_EQ(process_vector[0].products.size(), 0);
-      EXPECT_EQ(process_vector[0].reactants[0].name, "foo");
-      EXPECT_EQ(process_vector[0].name, "LOSS.foo");
+      EXPECT_EQ(process_vector[0].reactants.name, "foo");
+      EXPECT_EQ(process_vector[0].name, "foo");
       EXPECT_EQ(process_vector[0].scaling_factor, 1.0);
     }
 
     // second reaction
     {
-      EXPECT_EQ(process_vector[1].reactants.size(), 1);
       EXPECT_EQ(process_vector[1].products.size(), 0);
-      EXPECT_EQ(process_vector[1].reactants[0].name, "bar");
-      EXPECT_EQ(process_vector[1].name, "LOSS.bar");
+      EXPECT_EQ(process_vector[1].reactants.name, "bar");
+      EXPECT_EQ(process_vector[1].name, "bar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
   }

@@ -46,11 +46,43 @@ namespace mechanism_configuration
       std::optional<ErrorLocation> location;
     };
 
+    struct SpeciesMappingRef
+    {
+      std::string inventory_species;
+      std::string mechanism_species;
+      double scaling_factor{ 1.0 };
+    };
+
+    struct SpeciesMapRef
+    {
+      std::string name;
+      std::vector<SpeciesMappingRef> mappings;
+      std::optional<ErrorLocation> location;
+    };
+
+    struct SourceRef
+    {
+      std::string name;
+      NamedRef inventory;    // .name = referenced inventory name, .location = reference site
+      NamedRef species_map;  // .name = referenced species-map name, .location = reference site
+      int category{ 0 };
+      int hierarchy{ 1 };
+      std::optional<ErrorLocation> location;  // location of the source entry itself
+    };
+
+    struct EmissionsRef
+    {
+      std::vector<NamedRef> inventories;
+      std::vector<SpeciesMapRef> species_maps;
+      std::vector<SourceRef> sources;
+    };
+
     struct Input
     {
       std::vector<NamedRef> species;
       std::vector<PhaseRef> phases;
       std::vector<ReactionRef> reactions;
+      std::optional<EmissionsRef> emissions;  // nullopt only when there's no emissions at all
     };
 
   }  // namespace semantics

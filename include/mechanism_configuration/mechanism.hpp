@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <variant>
 
@@ -92,5 +93,7 @@ namespace mechanism_configuration
     Version version;
     /// @brief Relative tolerance for solver (optional, default: 1e-6)
     double relative_tolerance{ 1e-6 };
+    /// @brief Emissions configuration (optional)
+    std::optional<types::EmissionsConfig> emissions;
   };
 }  // namespace mechanism_configuration

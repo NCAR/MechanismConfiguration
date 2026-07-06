@@ -8,13 +8,14 @@
 #include "detail/v1/aerosol_keys.hpp"
 #include "detail/v1/aerosol_type_parsers.hpp"
 #include "detail/v1/aerosol_type_schema.hpp"
+#include "detail/error_format.hpp"
+#include "detail/v1/emissions_parser.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/type_parsers.hpp"
 #include "detail/v1/type_schema.hpp"
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/validate.hpp>
 
@@ -42,11 +43,6 @@ namespace mechanism_configuration::v1
       if (node.IsSequence())
         return EntityFormat::Inline;
       return EntityFormat::Invalid;
-    }
-
-    ErrorLocation LocationOf(const YAML::Node& node)
-    {
-      return ErrorLocation{ node.Mark().line, node.Mark().column };
     }
 
     // Appends each component under `key` (reactant- or product-like) as a located reference.
@@ -101,6 +97,55 @@ namespace mechanism_configuration::v1
         CollectComponents(reaction, keys::gas_phase_products, rr.products);
         input.reactions.push_back(std::move(rr));
       }
+
+    if (object[std::string(keys::emissions)])
+    {
+      const YAML::Node& emissions_node = object[std::string(keys::emissions)];
+      semantics::EmissionsRef emissions_ref;
+
+      if (emissions_node[std::string(keys::inventories)])
+        for (const auto& item : emissions_node[std::string(keys::inventories)])
+          emissions_ref.inventories.push_back(
+              { item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+
+      if (emissions_node[std::string(keys::species_maps)])
+        for (const auto& item : emissions_node[std::string(keys::species_maps)])
+        {
+          semantics::SpeciesMapRef smap_ref;
+          smap_ref.name = item[std::string(keys::name)].as<std::string>();
+          smap_ref.location = LocationOf(item);
+          if (item[std::string(keys::mappings)])
+            for (const auto& mapping_node : item[std::string(keys::mappings)])
+            {
+              semantics::SpeciesMappingRef mapping_ref;
+              mapping_ref.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
+              mapping_ref.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
+              if (mapping_node[std::string(keys::scaling_factor)])
+                mapping_ref.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
+              smap_ref.mappings.push_back(std::move(mapping_ref));
+            }
+          emissions_ref.species_maps.push_back(std::move(smap_ref));
+        }
+
+      if (emissions_node[std::string(keys::sources)])
+        for (const auto& item : emissions_node[std::string(keys::sources)])
+        {
+          semantics::SourceRef source_ref;
+          source_ref.name = item[std::string(keys::name)].as<std::string>();
+          source_ref.location = LocationOf(item);
+          source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
+                                    LocationOf(item[std::string(keys::inventory)]) };
+          source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
+                                      LocationOf(item[std::string(keys::species_map)]) };
+          if (item[std::string(keys::category)])
+            source_ref.category = item[std::string(keys::category)].as<int>();
+          if (item[std::string(keys::hierarchy)])
+            source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
+          emissions_ref.sources.push_back(std::move(source_ref));
+        }
+
+      input.emissions = std::move(emissions_ref);
+    }
 
     return input;
   }
@@ -204,6 +249,9 @@ namespace mechanism_configuration::v1
     resolve_section(keys::aerosol_representations);
     resolve_section(keys::aerosol_processes);
 
+    if (object[std::string(keys::emissions)])
+      combined[std::string(keys::emissions)] = object[std::string(keys::emissions)];
+
     if (!errors.empty())
     {
       AppendFilePath(config_path_, errors);
@@ -224,7 +272,8 @@ namespace mechanism_configuration::v1
     std::vector<std::string_view> optional_keys = { keys::name,
                                                     keys::reactions,
                                                     keys::aerosol_representations,
-                                                    keys::aerosol_processes };
+                                                    keys::aerosol_processes,
+                                                    keys::emissions };
 
     // Return early if the required keys are not found
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -333,6 +382,17 @@ namespace mechanism_configuration::v1
       }
     }
 
+    if (object[std::string(keys::emissions)])
+    {
+      schema_errors = CheckEmissionsSchema(object[std::string(keys::emissions)]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+        return errors;
+      }
+    }
+
     return errors;
   }
 
@@ -404,6 +464,10 @@ namespace mechanism_configuration::v1
         return std::unexpected(std::move(aerosol_errors));
       }
 
+      if (object[std::string(keys::emissions)])
+      {
+        mechanism.emissions = ParseEmissionsSection(object[std::string(keys::emissions)]);
+      }
       return mechanism;
     }
     catch (const std::exception& e)

@@ -6,7 +6,6 @@
 
 #include <mechanism_configuration/aerosol_types.hpp>
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parse.hpp>
 #include <mechanism_configuration/types.hpp>

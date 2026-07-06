@@ -32,7 +32,7 @@ namespace mechanism_configuration::v0
 
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
-      std::string name = "USER." + object[keys::MUSICA_NAME].as<std::string>();
+      std::string name = object[keys::MUSICA_NAME].as<std::string>();
 
       types::UserDefined user_defined = {
         .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
