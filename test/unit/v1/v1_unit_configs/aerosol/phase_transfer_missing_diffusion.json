@@ -1,0 +1,36 @@
+{
+  "version": "1.2.0",
+  "name": "phase transfer missing diffusion",
+  "species": [
+    { "name": "A" },
+    { "name": "H2O", "molecular weight [kg mol-1]": 0.018 }
+  ],
+  "phases": [
+    { "name": "gas", "species": ["A"] },
+    {
+      "name": "aqueous",
+      "species": [ "A", { "name": "H2O", "density [kg m-3]": 1000.0 } ]
+    }
+  ],
+  "aerosol representations": [
+    {
+      "type": "UNIFORM_SECTION",
+      "name": "cloud",
+      "phases": ["aqueous"],
+      "minimum radius [m]": 1.0e-6,
+      "maximum radius [m]": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "HENRY_LAW_PHASE_TRANSFER",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "A",
+      "solvent": "H2O",
+      "Henry's law constant": { "HLC_ref [mol m-3 Pa-1]": 1.0e-2, "C [K]": 3000.0 },
+      "accommodation coefficient": 0.1
+    }
+  ]
+}
