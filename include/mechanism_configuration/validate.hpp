@@ -91,24 +91,24 @@ namespace mechanism_configuration
   ///        Errors include `line:col` for any element whose source location was supplied.
   Errors ValidateSemantics(const semantics::Input& input);
 
-/// @brief Validates a Mechanism's species, phases, and gas-phase reactions by
-///        converting them to a location-free semantics::Input and running
-///        ValidateSemantics.
+  /// @brief Validates a Mechanism's species, phases, and gas-phase reactions by
+  ///        converting them to a location-free semantics::Input and running
+  ///        ValidateSemantics.
   Errors ValidateGasModel(const Mechanism& mechanism);
 
-/// @brief Validates aerosol cross-references against the mechanism's species and phases.
-///
-///        Checks phase/species references, representation-keyed rate-constant maps, and
-///        required definition-derived properties. These validations require full domain
-///        information unavailable to ValidateSemantics. Returns no errors if the mechanism
-///        has no aerosol section.
+  /// @brief Validates aerosol cross-references against the mechanism's species and phases.
+  ///
+  ///        Checks phase/species references, representation-keyed rate-constant maps, and
+  ///        required definition-derived properties. These validations require full domain
+  ///        information unavailable to ValidateSemantics. Returns no errors if the mechanism
+  ///        has no aerosol section.
   Errors ValidateAerosolModel(const Mechanism& mechanism);
 
-/// @brief Validates the semantic invariants of a canonical Mechanism, regardless of whether it
-///        was parsed or constructed in code. Combines ValidateGasModel and
-///        ValidateAerosolModel, returning all validation errors.
-///
-///        Excludes structural/deserialization validation, which is handled by version-specific parsers.
+  /// @brief Validates the semantic invariants of a canonical Mechanism, regardless of whether it
+  ///        was parsed or constructed in code. Combines ValidateGasModel and
+  ///        ValidateAerosolModel, returning all validation errors.
+  ///
+  ///        Excludes structural/deserialization validation, which is handled by version-specific parsers.
   Errors Validate(const Mechanism& mechanism);
 
 }  // namespace mechanism_configuration

@@ -22,18 +22,25 @@ namespace mechanism_configuration::v1
   {
     types::SourceType ParseSourceType(const std::string& s)
     {
-      if (s == std::string(keys::type_fire))      return types::SourceType::Fire;
-      if (s == std::string(keys::type_biogenic))  return types::SourceType::Biogenic;
-      if (s == std::string(keys::type_dust))      return types::SourceType::Dust;
-      if (s == std::string(keys::type_sea_salt))  return types::SourceType::SeaSalt;
-      if (s == std::string(keys::type_lightning)) return types::SourceType::Lightning;
+      if (s == std::string(keys::type_fire))
+        return types::SourceType::Fire;
+      if (s == std::string(keys::type_biogenic))
+        return types::SourceType::Biogenic;
+      if (s == std::string(keys::type_dust))
+        return types::SourceType::Dust;
+      if (s == std::string(keys::type_sea_salt))
+        return types::SourceType::SeaSalt;
+      if (s == std::string(keys::type_lightning))
+        return types::SourceType::Lightning;
       return types::SourceType::Anthropogenic;
     }
 
     types::TemporalInterpolation ParseTemporalInterpolation(const std::string& s)
     {
-      if (s == std::string(keys::interp_nearest)) return types::TemporalInterpolation::Nearest;
-      if (s == std::string(keys::interp_none))    return types::TemporalInterpolation::None;
+      if (s == std::string(keys::interp_nearest))
+        return types::TemporalInterpolation::Nearest;
+      if (s == std::string(keys::interp_none))
+        return types::TemporalInterpolation::None;
       return types::TemporalInterpolation::Linear;
     }
 
@@ -46,7 +53,9 @@ namespace mechanism_configuration::v1
         return errors;
       }
 
-      const std::vector<std::string_view> required_keys = { keys::name, keys::directory, keys::file_pattern, keys::convention };
+      const std::vector<std::string_view> required_keys = {
+        keys::name, keys::directory, keys::file_pattern, keys::convention
+      };
       const std::vector<std::string_view> optional_keys = {};
       for (const auto& item : inventories_node)
       {
@@ -109,15 +118,15 @@ namespace mechanism_configuration::v1
         return errors;
       }
 
-      const std::vector<std::string_view> required_keys = { keys::name,      keys::mode,
-                                                              keys::type,     keys::inventory,
-                                                              keys::species_map };
+      const std::vector<std::string_view> required_keys = {
+        keys::name, keys::mode, keys::type, keys::inventory, keys::species_map
+      };
       const std::vector<std::string_view> optional_keys = { keys::temporal_interpolation,
-                                                              keys::vertical_injection,
-                                                              keys::category,
-                                                              keys::hierarchy,
-                                                              keys::scaling_factor,
-                                                              keys::sector };
+                                                            keys::vertical_injection,
+                                                            keys::category,
+                                                            keys::hierarchy,
+                                                            keys::scaling_factor,
+                                                            keys::sector };
 
       for (const auto& item : sources_node)
       {
@@ -132,14 +141,12 @@ namespace mechanism_configuration::v1
           if (mode_val == std::string(keys::mode_online))
           {
             const ErrorLocation loc = LocationOf(item[std::string(keys::mode)]);
-            errors.push_back(
-                { ErrorCode::OnlineSourcesNotSupported,
-                  mc_fmt::format("{} error: 'mode: online' is not supported in v1", loc) });
+            errors.push_back({ ErrorCode::OnlineSourcesNotSupported,
+                               mc_fmt::format("{} error: 'mode: online' is not supported in v1", loc) });
           }
           else if (mode_val != std::string(keys::mode_offline))
           {
-            errors.push_back(
-                { ErrorCode::UnknownType, mc_fmt::format("Unknown mode '{}'; expected 'offline'", mode_val) });
+            errors.push_back({ ErrorCode::UnknownType, mc_fmt::format("Unknown mode '{}'; expected 'offline'", mode_val) });
           }
         }
 
@@ -147,8 +154,8 @@ namespace mechanism_configuration::v1
         {
           const std::string type_val = item[std::string(keys::type)].as<std::string>();
           static const std::vector<std::string_view> valid_types = { keys::type_anthropogenic, keys::type_fire,
-                                                                       keys::type_biogenic,      keys::type_dust,
-                                                                       keys::type_sea_salt,      keys::type_lightning };
+                                                                     keys::type_biogenic,      keys::type_dust,
+                                                                     keys::type_sea_salt,      keys::type_lightning };
           bool found = false;
           for (const auto& vt : valid_types)
             if (type_val == std::string(vt))
@@ -163,15 +170,13 @@ namespace mechanism_configuration::v1
           if (vi_val == std::string(keys::inject_plume))
           {
             const ErrorLocation loc = LocationOf(item[std::string(keys::vertical_injection)]);
-            errors.push_back(
-                { ErrorCode::UnsupportedVerticalInjection,
-                  mc_fmt::format("{} error: 'vertical injection: plume' is not supported in v1", loc) });
+            errors.push_back({ ErrorCode::UnsupportedVerticalInjection,
+                               mc_fmt::format("{} error: 'vertical injection: plume' is not supported in v1", loc) });
           }
           else if (vi_val != std::string(keys::inject_surface))
           {
             errors.push_back(
-                { ErrorCode::UnknownType,
-                  mc_fmt::format("Unknown vertical injection '{}'; expected 'surface'", vi_val) });
+                { ErrorCode::UnknownType, mc_fmt::format("Unknown vertical injection '{}'; expected 'surface'", vi_val) });
           }
         }
       }
