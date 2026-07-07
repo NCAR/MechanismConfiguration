@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include <mechanism_configuration/aerosol_types.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/aerosol.hpp>
+#include <mechanism_configuration/types/emissions.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
+#include <mechanism_configuration/types/species.hpp>
 
 #include <filesystem>
 #include <iostream>

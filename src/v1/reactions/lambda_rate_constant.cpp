@@ -4,7 +4,8 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
+#include <mechanism_configuration/types/species.hpp>
 
 #include <detail/check_schema.hpp>
 #include <detail/v1/reaction_parsers.hpp>

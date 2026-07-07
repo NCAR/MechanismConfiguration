@@ -6,7 +6,7 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
 
 #include <yaml-cpp/yaml.h>
 

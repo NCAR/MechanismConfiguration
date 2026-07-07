@@ -5,7 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/species.hpp>
 
 #include <detail/v1/keys.hpp>
 #include <yaml-cpp/yaml.h>

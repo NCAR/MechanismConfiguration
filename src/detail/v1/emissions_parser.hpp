@@ -5,7 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/emissions.hpp>
 
 #include <yaml-cpp/yaml.h>
 
