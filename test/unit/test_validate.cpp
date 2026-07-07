@@ -2,6 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "utils/print.hpp"
+
 #include <mechanism_configuration/validate.hpp>
 
 #include <gtest/gtest.h>

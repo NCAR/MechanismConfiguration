@@ -12,5 +12,8 @@ authors:
     given-names: Jiwon
   - family-names: Thind
     given-names: Montek
+  - family-names: Meech
+    given-names: Scott
+
 license: Apache-2.0
 url: "https://github.com/NCAR/MechanismConfiguration"

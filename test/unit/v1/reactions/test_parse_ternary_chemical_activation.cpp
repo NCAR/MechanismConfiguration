@@ -4,6 +4,7 @@
 
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
+#include "utils/print.hpp"
 
 #include <mechanism_configuration/parse.hpp>
 

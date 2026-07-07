@@ -4,6 +4,7 @@
 
 #include "detail/constants.hpp"
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 
