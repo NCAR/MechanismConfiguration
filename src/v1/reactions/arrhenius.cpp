@@ -109,7 +109,7 @@ namespace mechanism_configuration
       }
       if (object[keys::Ea])
       {
-        arrhenius.C = -1 * object[keys::Ea].as<double>() / constants::boltzmann;
+        arrhenius.C = -1 * object[keys::Ea].as<double>() / constants::BOLTZMANN;
       }
       if (object[keys::name])
       {

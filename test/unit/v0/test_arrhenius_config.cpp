@@ -72,7 +72,7 @@ TEST(ArrheniusConfig, ParseConfig)
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].name, "baz");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].products[1].coefficient, 3.2);
       EXPECT_EQ(
-          mechanism.reactions.arrhenius[0].A, 1.0 * conversions::MolesM3ToMoleculesCm3 * conversions::MolesM3ToMoleculesCm3);
+          mechanism.reactions.arrhenius[0].A, 1.0 * conversions::MOLES_M3_TO_MOLECULES_CM3 * conversions::MOLES_M3_TO_MOLECULES_CM3);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].B, 0.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].C, 0.0);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].D, 300);
@@ -89,7 +89,7 @@ TEST(ArrheniusConfig, ParseConfig)
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products[0].coefficient, 0.5);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products[1].name, "foo");
       EXPECT_EQ(mechanism.reactions.arrhenius[1].products[1].coefficient, 1.0);
-      EXPECT_EQ(mechanism.reactions.arrhenius[1].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
+      EXPECT_EQ(mechanism.reactions.arrhenius[1].A, 32.1 * conversions::MOLES_M3_TO_MOLECULES_CM3);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].B, -2.3);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].C, 102.3);
       EXPECT_EQ(mechanism.reactions.arrhenius[1].D, 63.4);
@@ -106,9 +106,9 @@ TEST(ArrheniusConfig, ParseConfig)
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products[0].coefficient, 0.5);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products[1].name, "foo");
       EXPECT_EQ(mechanism.reactions.arrhenius[2].products[1].coefficient, 1.0);
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].A, 32.1 * conversions::MOLES_M3_TO_MOLECULES_CM3);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].B, -2.3);
-      EXPECT_EQ(mechanism.reactions.arrhenius[2].C, -1 * 2e23 / constants::boltzmann);
+      EXPECT_EQ(mechanism.reactions.arrhenius[2].C, -1 * 2e23 / constants::BOLTZMANN);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].D, 63.4);
       EXPECT_EQ(mechanism.reactions.arrhenius[2].E, -1.3);
     }

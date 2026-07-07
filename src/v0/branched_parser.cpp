@@ -44,7 +44,7 @@ namespace mechanism_configuration::v0
       {
         total_moles += reactant.coefficient;
       }
-      parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
+      parameters.X *= std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, total_moles - 1);
       parameters.Y = object[keys::Y].as<double>();
       parameters.a0 = object[keys::A0].as<double>();
       parameters.n = object[keys::n].as<int>();

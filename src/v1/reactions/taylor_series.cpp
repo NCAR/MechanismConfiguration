@@ -110,7 +110,7 @@ namespace mechanism_configuration
       }
       if (object[keys::Ea])
       {
-        taylor_series.C = -1 * object[keys::Ea].as<double>() / constants::boltzmann;
+        taylor_series.C = -1 * object[keys::Ea].as<double>() / constants::BOLTZMANN;
       }
       if (object[keys::taylor_coefficients])
       {

@@ -66,7 +66,7 @@ TEST(TunnelingConfig, ParseConfig)
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
       EXPECT_EQ(process_vector[0].products[1].name, "baz");
       EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
-      EXPECT_EQ(process_vector[0].A, 1.0 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+      EXPECT_EQ(process_vector[0].A, 1.0 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 2));
       EXPECT_EQ(process_vector[0].B, 0.0);
       EXPECT_EQ(process_vector[0].C, 0.0);
     }
@@ -81,7 +81,7 @@ TEST(TunnelingConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
       EXPECT_EQ(process_vector[1].products[1].name, "foo");
       EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].A, 32.1 * conversions::MolesM3ToMoleculesCm3);
+      EXPECT_EQ(process_vector[1].A, 32.1 * conversions::MOLES_M3_TO_MOLECULES_CM3);
       EXPECT_EQ(process_vector[1].B, -2.3);
       EXPECT_EQ(process_vector[1].C, 102.3);
     }
