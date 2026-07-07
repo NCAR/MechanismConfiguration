@@ -311,7 +311,10 @@ namespace mechanism_configuration
   {
     Errors errors;
 
-    const auto& aerosol = mechanism.aerosol;
+    if (!mechanism.aerosol)
+      return errors;
+
+    const auto& aerosol = *mechanism.aerosol;
     if (aerosol.representations.empty() && aerosol.processes.empty() && aerosol.constraints.empty())
       return errors;
 

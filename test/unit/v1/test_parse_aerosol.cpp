@@ -36,7 +36,8 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
   ASSERT_TRUE(parsed);
 
   const Mechanism& mechanism = *parsed;
-  const auto& aerosol = mechanism.aerosol;
+  ASSERT_TRUE(mechanism.aerosol.has_value());
+  const auto& aerosol = *mechanism.aerosol;
 
   // Two SINGLE_MOMENT_MODE representations.
   ASSERT_EQ(aerosol.representations.size(), 2u);
