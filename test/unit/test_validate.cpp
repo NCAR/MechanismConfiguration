@@ -2,6 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "utils/print.hpp"
+
 #include <mechanism_configuration/validate.hpp>
 
 #include <gtest/gtest.h>
@@ -200,7 +202,8 @@ namespace
     section.phases = { "aqueous" };
     section.min_radius = 1.0e-6;
     section.max_radius = 1.0e-5;
-    m.aerosol.representations = { section };
+    m.aerosol = types::Aerosol{};
+    m.aerosol->representations = { section };
 
     return m;
   }
@@ -236,7 +239,7 @@ TEST(ValidateAerosol, IgnoresMechanismWithoutAerosolSection)
 TEST(ValidateAerosol, AcceptsValidProcessesAndConstraints)
 {
   Mechanism m = AerosolBaseMechanism();
-  m.aerosol.processes = { ValidPhaseTransfer() };
+  m.aerosol->processes = { ValidPhaseTransfer() };
 
   types::DissolvedReaction reaction;
   reaction.phase = "aqueous";
@@ -244,9 +247,9 @@ TEST(ValidateAerosol, AcceptsValidProcessesAndConstraints)
   reaction.reactants = { component("A") };
   reaction.products = { component("A") };
   reaction.rate_constants = { { "cloud", types::ArrheniusReferenceTemperature{} } };  // keyed by a declared representation
-  m.aerosol.processes.push_back(reaction);
+  m.aerosol->processes.push_back(reaction);
 
-  m.aerosol.constraints = { ValidEquilibrium() };
+  m.aerosol->constraints = { ValidEquilibrium() };
 
   EXPECT_TRUE(ValidateAerosolModel(m).empty());
 }
@@ -259,7 +262,7 @@ TEST(ValidateAerosol, DetectsRepresentationReferencingUnknownPhase)
   mode.phases = { "nonexistent" };  // no such phase
   mode.geometric_mean_radius = 1.0e-6;
   mode.geometric_standard_deviation = 1.6;
-  m.aerosol.representations.push_back(mode);
+  m.aerosol->representations.push_back(mode);
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::UnknownPhase));
 }
@@ -271,7 +274,7 @@ TEST(ValidateAerosol, DetectsSpeciesNotRegisteredInCondensedPhase)
   reaction.phase = "aqueous";
   reaction.solvent = "H2O";
   reaction.reactants = { component("Q") };  // Q is not registered in the aqueous phase
-  m.aerosol.processes = { reaction };
+  m.aerosol->processes = { reaction };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequestedSpeciesNotRegisteredInPhase));
 }
@@ -285,7 +288,7 @@ TEST(ValidateAerosol, DetectsRateConstantKeyedByUnknownRepresentation)
   reaction.reactants = { component("A") };
   reaction.products = { component("A") };
   reaction.rate_constants = { { "not_a_representation", types::ArrheniusReferenceTemperature{} } };
-  m.aerosol.processes = { reaction };
+  m.aerosol->processes = { reaction };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::UnknownAerosolRepresentation));
 }
@@ -294,7 +297,7 @@ TEST(ValidateAerosol, DetectsMissingGasDiffusionCoefficient)
 {
   Mechanism m = AerosolBaseMechanism();
   m.phases[0].species[0].diffusion_coefficient = std::nullopt;  // Remove gas-phase A diffusion coefficient
-  m.aerosol.processes = { ValidPhaseTransfer() };
+  m.aerosol->processes = { ValidPhaseTransfer() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
 }
@@ -303,7 +306,7 @@ TEST(ValidateAerosol, DetectsMissingSolventDensity)
 {
   Mechanism m = AerosolBaseMechanism();
   m.phases[1].species[1].density = std::nullopt;  // Remove aqueous H2O density
-  m.aerosol.constraints = { ValidEquilibrium() };
+  m.aerosol->constraints = { ValidEquilibrium() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
 }
@@ -312,7 +315,7 @@ TEST(ValidateAerosol, DetectsMissingSolventMolecularWeight)
 {
   Mechanism m = AerosolBaseMechanism();
   m.species[1].molecular_weight = std::nullopt;  // Remove H2O molecular weight
-  m.aerosol.constraints = { ValidEquilibrium() };
+  m.aerosol->constraints = { ValidEquilibrium() };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequiredKeyNotFound));
 }

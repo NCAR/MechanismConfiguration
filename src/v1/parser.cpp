@@ -4,15 +4,19 @@
 
 #include "detail/v1/parser.hpp"
 
-#include "detail/check_schema.hpp"
 #include "detail/error_format.hpp"
-#include "detail/v1/aerosol_keys.hpp"
-#include "detail/v1/aerosol_type_parsers.hpp"
-#include "detail/v1/aerosol_type_schema.hpp"
-#include "detail/v1/emissions_parser.hpp"
+#include "detail/schema.hpp"
+#include "detail/v1/aerosol/keys.hpp"
+#include "detail/v1/aerosol/parsers.hpp"
+#include "detail/v1/aerosol/schema.hpp"
+#include "detail/v1/emissions/keys.hpp"
+#include "detail/v1/emissions/parsers.hpp"
+#include "detail/v1/emissions/schema.hpp"
 #include "detail/v1/keys.hpp"
-#include "detail/v1/type_parsers.hpp"
-#include "detail/v1/type_schema.hpp"
+#include "detail/v1/reactions/parsers.hpp"
+#include "detail/v1/reactions/schema.hpp"
+#include "detail/v1/species/parsers.hpp"
+#include "detail/v1/species/schema.hpp"
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
@@ -52,7 +56,7 @@ namespace mechanism_configuration::v1
       if (!reaction[k])
         return;
       for (const auto& item : AsSequence(reaction[k]))
-        out.push_back({ GetReactionComponentName(item), LocationOf(item) });
+        out.push_back({ GetComponentName(item), LocationOf(item) });
     }
   }  // namespace
 
@@ -62,7 +66,7 @@ namespace mechanism_configuration::v1
 
     if (object[std::string(keys::species)])
       for (const auto& s : object[std::string(keys::species)])
-        input.species.push_back({ GetReactionComponentName(s), LocationOf(s) });
+        input.species.push_back({ GetComponentName(s), LocationOf(s) });
 
     if (object[std::string(keys::phases)])
       for (const auto& phase : object[std::string(keys::phases)])
@@ -72,7 +76,7 @@ namespace mechanism_configuration::v1
         pr.location = LocationOf(phase);
         if (phase[std::string(keys::species)])
           for (const auto& ps : phase[std::string(keys::species)])
-            pr.species.push_back({ GetReactionComponentName(ps), LocationOf(ps) });
+            pr.species.push_back({ GetComponentName(ps), LocationOf(ps) });
         input.phases.push_back(std::move(pr));
       }
 
@@ -463,10 +467,6 @@ namespace mechanism_configuration::v1
         return std::unexpected(std::move(aerosol_errors));
       }
 
-      if (object[std::string(keys::emissions)])
-      {
-        mechanism.emissions = ParseEmissionsSection(object[std::string(keys::emissions)]);
-      }
       return mechanism;
     }
     catch (const std::exception& e)
@@ -485,6 +485,10 @@ namespace mechanism_configuration::v1
     mechanism.species = ParseSpecies(object[keys::species]);
     mechanism.phases = ParsePhases(object[keys::phases]);
 
+    if (object[keys::name])
+    {
+      mechanism.name = object[keys::name].as<std::string>();
+    }
     if (object[keys::reactions])
     {
       mechanism.reactions = ParseReactions(object[keys::reactions]);
@@ -493,9 +497,9 @@ namespace mechanism_configuration::v1
     {
       mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
     }
-    if (object[keys::name])
+    if (object[std::string(keys::emissions)])
     {
-      mechanism.name = object[keys::name].as<std::string>();
+      mechanism.emissions = ParseEmissions(object[std::string(keys::emissions)]);
     }
 
     return mechanism;

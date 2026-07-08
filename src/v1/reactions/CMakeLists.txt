@@ -4,7 +4,9 @@ target_sources(mechanism_configuration
     branched.cpp
     emission.cpp
     first_order_loss.cpp
+    parsers.cpp
     photolysis.cpp
+    schema.cpp
     surface.cpp
     taylor_series.cpp
     ternary_chemical_activation.cpp

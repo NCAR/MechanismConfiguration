@@ -5,6 +5,7 @@
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 
@@ -81,7 +82,7 @@ TEST(BranchedConfig, ParseConfig)
     EXPECT_EQ(process_vector[0].reactants[0].coefficient, 1.0);
     EXPECT_EQ(process_vector[0].reactants[1].name, "quz");
     EXPECT_EQ(process_vector[0].reactants[1].coefficient, 2.0);
-    EXPECT_EQ(process_vector[0].X, 12.3 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+    EXPECT_EQ(process_vector[0].X, 12.3 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 2));
     EXPECT_EQ(process_vector[0].Y, 42.3);
     EXPECT_EQ(process_vector[0].a0, 1.0e-5);
     EXPECT_EQ(process_vector[0].n, 3);
@@ -95,7 +96,7 @@ TEST(BranchedConfig, ParseConfig)
     EXPECT_EQ(process_vector[0].nitrate_products[0].coefficient, 1.0);
 
     // second reaction
-    EXPECT_EQ(process_vector[1].X, 0.32 * conversions::MolesM3ToMoleculesCm3);
+    EXPECT_EQ(process_vector[1].X, 0.32 * conversions::MOLES_M3_TO_MOLECULES_CM3);
     EXPECT_EQ(process_vector[1].Y, 2.3e8);
     EXPECT_EQ(process_vector[1].a0, 0.423);
     EXPECT_EQ(process_vector[1].alkoxy_products.size(), 1);

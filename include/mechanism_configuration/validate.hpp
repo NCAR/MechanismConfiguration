@@ -104,9 +104,14 @@ namespace mechanism_configuration
   ///        has no aerosol section.
   Errors ValidateAerosolModel(const Mechanism& mechanism);
 
+  /// @brief Validates a Mechanism's emissions section by converting it to a location-free
+  ///        semantics::Input and running ValidateSemantics. Returns no errors if the mechanism
+  ///        has no emissions section.
+  Errors ValidateEmissionsModel(const Mechanism& mechanism);
+
   /// @brief Validates the semantic invariants of a canonical Mechanism, regardless of whether it
-  ///        was parsed or constructed in code. Combines ValidateGasModel and
-  ///        ValidateAerosolModel, returning all validation errors.
+  ///        was parsed or constructed in code. Combines ValidateGasModel, ValidateAerosolModel,
+  ///        and ValidateEmissionsModel, returning all validation errors.
   ///
   ///        Excludes structural/deserialization validation, which is handled by version-specific parsers.
   Errors Validate(const Mechanism& mechanism);

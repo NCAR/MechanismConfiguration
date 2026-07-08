@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
 
 #include <functional>
 #include <map>

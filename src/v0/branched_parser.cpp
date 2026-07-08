@@ -2,7 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include "detail/check_schema.hpp"
+#include "detail/schema.hpp"
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
 #include "detail/v0/keys.hpp"
@@ -44,7 +44,7 @@ namespace mechanism_configuration::v0
       {
         total_moles += reactant.coefficient;
       }
-      parameters.X *= std::pow(conversions::MolesM3ToMoleculesCm3, total_moles - 1);
+      parameters.X *= std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, total_moles - 1);
       parameters.Y = object[keys::Y].as<double>();
       parameters.a0 = object[keys::A0].as<double>();
       parameters.n = object[keys::n].as<int>();

@@ -49,6 +49,7 @@ namespace mechanism_configuration::v1::keys
   // Processes
   // ----------------------------------------
   inline constexpr std::string_view solvent = "solvent";
+  inline constexpr std::string_view condensed_phase_species = "condensed-phase species";
 
   // HenryLawPhaseTransfer
   // also: gas_phase, gas_phase_species, condensed_phase, condensed_phase_species, solvent,

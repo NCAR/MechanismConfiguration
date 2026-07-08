@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -66,12 +65,6 @@ namespace mechanism_configuration
   };
 
   std::string ErrorCodeToString(const ErrorCode& status);
-
-  // For Google Test printing
-  inline void PrintTo(const ErrorCode& status, std::ostream* os)
-  {
-    *os << ErrorCodeToString(status);
-  }
 
   using Errors = std::vector<std::pair<ErrorCode, std::string>>;
 }  // namespace mechanism_configuration

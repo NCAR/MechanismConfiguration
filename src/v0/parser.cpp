@@ -4,7 +4,7 @@
 
 #include "detail/v0/parser.hpp"
 
-#include "detail/check_schema.hpp"
+#include "detail/schema.hpp"
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
 #include "detail/v0/keys.hpp"

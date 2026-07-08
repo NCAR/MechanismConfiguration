@@ -5,6 +5,7 @@
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 
@@ -65,10 +66,10 @@ TEST(TernaryChemicalActivationConfig, ParseConfig)
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
       EXPECT_EQ(process_vector[0].products[1].name, "baz");
       EXPECT_EQ(process_vector[0].products[1].coefficient, 3.2);
-      EXPECT_EQ(process_vector[0].k0_A, 1.0 * std::pow(conversions::MolesM3ToMoleculesCm3, 3));
+      EXPECT_EQ(process_vector[0].k0_A, 1.0 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 3));
       EXPECT_EQ(process_vector[0].k0_B, 0.0);
       EXPECT_EQ(process_vector[0].k0_C, 0.0);
-      EXPECT_EQ(process_vector[0].kinf_A, 1.0 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+      EXPECT_EQ(process_vector[0].kinf_A, 1.0 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 2));
       EXPECT_EQ(process_vector[0].kinf_B, 0.0);
       EXPECT_EQ(process_vector[0].kinf_C, 0.0);
       EXPECT_EQ(process_vector[0].Fc, 0.6);
@@ -85,10 +86,10 @@ TEST(TernaryChemicalActivationConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
       EXPECT_EQ(process_vector[1].products[1].name, "foo");
       EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].k0_A, 32.1 * std::pow(conversions::MolesM3ToMoleculesCm3, 2));
+      EXPECT_EQ(process_vector[1].k0_A, 32.1 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 2));
       EXPECT_EQ(process_vector[1].k0_B, -2.3);
       EXPECT_EQ(process_vector[1].k0_C, 102.3);
-      EXPECT_EQ(process_vector[1].kinf_A, 63.4 * std::pow(conversions::MolesM3ToMoleculesCm3, 1));
+      EXPECT_EQ(process_vector[1].kinf_A, 63.4 * std::pow(conversions::MOLES_M3_TO_MOLECULES_CM3, 1));
       EXPECT_EQ(process_vector[1].kinf_B, -1.3);
       EXPECT_EQ(process_vector[1].kinf_C, 908.5);
       EXPECT_EQ(process_vector[1].Fc, 1.3);

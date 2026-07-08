@@ -2,6 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "utils/print.hpp"
+
 #include <mechanism_configuration/parse.hpp>
 
 #include <gtest/gtest.h>
@@ -34,7 +36,8 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
   ASSERT_TRUE(parsed);
 
   const Mechanism& mechanism = *parsed;
-  const auto& aerosol = mechanism.aerosol;
+  ASSERT_TRUE(mechanism.aerosol.has_value());
+  const auto& aerosol = *mechanism.aerosol;
 
   // Two SINGLE_MOMENT_MODE representations.
   ASSERT_EQ(aerosol.representations.size(), 2u);
