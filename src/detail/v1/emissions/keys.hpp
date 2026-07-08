@@ -8,7 +8,6 @@
 
 namespace mechanism_configuration::v1::keys
 {
-  // ── Emissions section ──────────────────────────────────────────────────────
   inline constexpr std::string_view emissions = "emissions";
 
   // Emissions top-level sections

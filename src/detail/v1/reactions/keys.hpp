@@ -8,10 +8,6 @@
 
 namespace mechanism_configuration::v1::keys
 {
-  // ----------------------------------------
-  // Reaction types
-  // ----------------------------------------
-
   // Arrhenius
   inline constexpr std::string_view Arrhenius_key = "ARRHENIUS";
   // also A, B, C, D, E, Ea (shared, see detail/v1/keys.hpp)
