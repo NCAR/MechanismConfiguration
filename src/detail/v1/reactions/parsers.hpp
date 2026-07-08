@@ -8,13 +8,36 @@
 #include <mechanism_configuration/types/reactions.hpp>
 #include <mechanism_configuration/types/species.hpp>
 
-#include <detail/v1/keys.hpp>
+#include <detail/v1/reactions/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
+#include <map>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace mechanism_configuration::v1
 {
+  /// @brief Parses a YAML node into reaction components
+  /// @param object YAML node representing ReactionComponents
+  /// @param key Key of the sequence to parse
+  /// @return Vector of `types::ReactionComponent` with names, optional coefficients, and comments
+  std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, std::string_view key);
+
+  /// @brief Parses a single reaction component from a YAML node.
+  ///        The parser performs no validation or error checking.
+  /// @param object YAML node representing ReactionComponents
+  /// @param key Key identifying the reaction component
+  /// @return The parsed `types::ReactionComponent`, or a default-constructed one if none found
+  types::ReactionComponent ParseReactionComponent(const YAML::Node& object, std::string_view key);
+
+  /// @brief Parses a collection of YAML nodes into reaction objects
+  ///        Iterates over the given YAML nodes, identifies the parser for each reaction type,
+  ///        and populates a `types::Reactions` container with the parsed reactions.
+  /// @param objects YAML node containing multiple reaction definitions
+  /// @return A `types::Reactions` object with all successfully parsed reactions
+  types::Reactions ParseReactions(const YAML::Node& objects);
+
   /// @brief Abstract interface for reaction parsers
   class IReactionParser
   {

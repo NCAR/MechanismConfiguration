@@ -274,36 +274,6 @@ namespace mechanism_configuration
       add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
     }
 
-    if (mechanism.emissions)
-    {
-      semantics::EmissionsRef emissions_ref;
-
-      for (const auto& inv : mechanism.emissions->inventories)
-        emissions_ref.inventories.push_back({ inv.name, std::nullopt });
-
-      for (const auto& smap : mechanism.emissions->species_maps)
-      {
-        semantics::SpeciesMapRef smap_ref;
-        smap_ref.name = smap.name;
-        for (const auto& mapping : smap.mappings)
-          smap_ref.mappings.push_back({ mapping.inventory_species, mapping.mechanism_species, mapping.scaling_factor });
-        emissions_ref.species_maps.push_back(std::move(smap_ref));
-      }
-
-      for (const auto& source : mechanism.emissions->sources)
-      {
-        semantics::SourceRef source_ref;
-        source_ref.name = source.name;
-        source_ref.inventory = { source.inventory, std::nullopt };
-        source_ref.species_map = { source.species_map, std::nullopt };
-        source_ref.category = source.category;
-        source_ref.hierarchy = source.hierarchy;
-        emissions_ref.sources.push_back(std::move(source_ref));
-      }
-
-      input.emissions = std::move(emissions_ref);
-    }
-
     return ValidateSemantics(input);
   }
 
@@ -492,11 +462,52 @@ namespace mechanism_configuration
     return errors;
   }
 
+  Errors ValidateEmissionsModel(const Mechanism& mechanism)
+  {
+    if (!mechanism.emissions)
+      return {};
+
+    semantics::Input input;
+    semantics::EmissionsRef emissions_ref;
+
+    for (const auto& inv : mechanism.emissions->inventories)
+      emissions_ref.inventories.push_back({ inv.name, std::nullopt });
+
+    for (const auto& smap : mechanism.emissions->species_maps)
+    {
+      semantics::SpeciesMapRef smap_ref;
+      smap_ref.name = smap.name;
+      for (const auto& mapping : smap.mappings)
+        smap_ref.mappings.push_back({ mapping.inventory_species, mapping.mechanism_species, mapping.scaling_factor });
+      emissions_ref.species_maps.push_back(std::move(smap_ref));
+    }
+
+    for (const auto& source : mechanism.emissions->sources)
+    {
+      semantics::SourceRef source_ref;
+      source_ref.name = source.name;
+      source_ref.inventory = { source.inventory, std::nullopt };
+      source_ref.species_map = { source.species_map, std::nullopt };
+      source_ref.category = source.category;
+      source_ref.hierarchy = source.hierarchy;
+      emissions_ref.sources.push_back(std::move(source_ref));
+    }
+
+    input.emissions = std::move(emissions_ref);
+
+    return ValidateSemantics(input);
+  }
+
   Errors Validate(const Mechanism& mechanism)
   {
     Errors errors = ValidateGasModel(mechanism);
+
     Errors aerosol_errors = ValidateAerosolModel(mechanism);
     errors.insert(errors.end(), aerosol_errors.begin(), aerosol_errors.end());
+    
+    Errors emissions_errors = ValidateEmissionsModel(mechanism);
+    errors.insert(errors.end(), emissions_errors.begin(), emissions_errors.end());
+    
     return errors;
   }
 
