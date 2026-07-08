@@ -4,9 +4,9 @@
 
 #include "detail/v0/parser.hpp"
 
-#include "detail/schema.hpp"
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
+#include "detail/schema.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
 

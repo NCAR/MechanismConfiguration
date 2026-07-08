@@ -504,10 +504,10 @@ namespace mechanism_configuration
 
     Errors aerosol_errors = ValidateAerosolModel(mechanism);
     errors.insert(errors.end(), aerosol_errors.begin(), aerosol_errors.end());
-    
+
     Errors emissions_errors = ValidateEmissionsModel(mechanism);
     errors.insert(errors.end(), emissions_errors.begin(), emissions_errors.end());
-    
+
     return errors;
   }
 
