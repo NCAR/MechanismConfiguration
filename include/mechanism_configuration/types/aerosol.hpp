@@ -82,6 +82,8 @@ namespace mechanism_configuration::types
     std::vector<ReactionComponent> products;
     /// @brief Rate constant per aerosol representation; keys are representation names.
     std::map<std::string, RateConstant> rate_constants;
+    std::optional<double> solvent_floor_;
+    std::optional<double> min_halflife_;
   };
 
   struct DissolvedReversibleReaction
@@ -96,6 +98,7 @@ namespace mechanism_configuration::types
     std::map<std::string, RateConstant> reverse_rate_constants;
     /// @brief Shared, intrinsic equilibrium constant (NOT per representation).
     std::optional<ArrheniusReferenceTemperature> equilibrium_constant;
+    std::optional<double> solvent_floor_;
   };
 
   struct HenryLawPhaseTransfer
@@ -136,6 +139,7 @@ namespace mechanism_configuration::types
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
     ArrheniusReferenceTemperature equilibrium_constant;
+    std::optional<double> solvent_floor_;
   };
 
   struct LinearConstraintTerm
