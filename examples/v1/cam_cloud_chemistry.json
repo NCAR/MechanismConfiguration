@@ -48,6 +48,7 @@
   "aerosol processes": [
     {
       "__comment": "Henry's Law Equilibrium: SO2(g) <-> SO2(aq)",
+      "__note": "HLC = HLC_ref * exp(C*(1/T - 1/T0))",
       "type": "HENRY_LAW_EQUILIBRIUM",
       "gas phase": "gas",
       "gas-phase species": "SO2",
@@ -62,6 +63,7 @@
     },
     {
       "__comment": "Henry's Law Equilibrium: H2O2(g) <-> H2O2(aq)",
+      "__note": "HLC = HLC_ref * exp(C*(1/T - 1/T0))",
       "type": "HENRY_LAW_EQUILIBRIUM",
       "gas phase": "gas",
       "gas-phase species": "H2O2",
@@ -76,6 +78,7 @@
     },
     {
       "__comment": "Henry's Law Equilibrium: O3(g) <-> O3(aq)",
+      "__note": "HLC = HLC_ref * exp(C*(1/T - 1/T0))",
       "type": "HENRY_LAW_EQUILIBRIUM",
       "gas phase": "gas",
       "gas-phase species": "O3",
