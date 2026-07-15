@@ -109,7 +109,7 @@
         "CLOUD": { "type": "ARRHENIUS", "A": 3.184e8,  "C": 4430.0 }
       },
       "equilibrium constant": {
-        "type": "ARRHENIUS_REFERENCE_TEMPERATURE", "A": 1725.0, "C [K]": 0.0, "T0 [K]": 298.15
+        "type": "EQUILIBRIUM", "A": 1725.0, "C [K]": 0.0, "T0 [K]": 298.15
       }
     },
     {
@@ -143,7 +143,7 @@
       ],
       "algebraic species": "OHm",
       "equilibrium constant": {
-        "type": "ARRHENIUS_REFERENCE_TEMPERATURE", "A": 3.24e-18, "C [K]": 0.0, "T0 [K]": 298.15
+        "type": "EQUILIBRIUM", "A": 3.24e-18, "C [K]": 0.0, "T0 [K]": 298.15
       }
     },
     {
@@ -160,7 +160,7 @@
       ],
       "algebraic species": "HSO3m",
       "equilibrium constant": {
-        "type": "ARRHENIUS_REFERENCE_TEMPERATURE", "A": 3.06e-4, "C [K]": 2090.0, "T0 [K]": 298.15
+        "type": "EQUILIBRIUM", "A": 3.06e-4, "C [K]": 2090.0, "T0 [K]": 298.15
       }
     },
     {
@@ -177,7 +177,7 @@
         { "name": "SO3mm", "coefficient": 1 }
       ],
       "equilibrium constant": {
-        "type": "ARRHENIUS_REFERENCE_TEMPERATURE", "A": 1.08e-9, "C [K]": 1120.0, "T0 [K]": 298.15
+        "type": "EQUILIBRIUM", "A": 1.08e-9, "C [K]": 1120.0, "T0 [K]": 298.15
       }
     },
     {

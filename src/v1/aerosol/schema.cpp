@@ -21,7 +21,7 @@ namespace mechanism_configuration::v1
 {
   namespace
   {
-    Errors CheckArrheniusReferenceTemperatureSchema(const YAML::Node& object)
+    Errors CheckEquilibriumSchema(const YAML::Node& object)
     {
       const std::vector<std::string_view> required_keys = { keys::A, keys::henry_law_C };
       const std::vector<std::string_view> optional_keys = { keys::type, keys::reference_temperature };
@@ -37,8 +37,8 @@ namespace mechanism_configuration::v1
 
     Errors CheckRateConstantSchema(const YAML::Node& object)
     {
-      if (object[keys::type] && object[keys::type].as<std::string>() == keys::ArrheniusReferenceTemperature_key)
-        return CheckArrheniusReferenceTemperatureSchema(object);
+      if (object[keys::type] && object[keys::type].as<std::string>() == keys::Equilibrium_key)
+        return CheckEquilibriumSchema(object);
       return CheckArrheniusSchema(object);
     }
 
@@ -208,7 +208,7 @@ namespace mechanism_configuration::v1
         }
         if (object[keys::equilibrium_constant])
         {
-          auto e = CheckArrheniusReferenceTemperatureSchema(object[keys::equilibrium_constant]);
+          auto e = CheckEquilibriumSchema(object[keys::equilibrium_constant]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
       }
@@ -247,7 +247,7 @@ namespace mechanism_configuration::v1
         }
         if (object[keys::equilibrium_constant])
         {
-          auto e = CheckArrheniusReferenceTemperatureSchema(object[keys::equilibrium_constant]);
+          auto e = CheckEquilibriumSchema(object[keys::equilibrium_constant]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
       }

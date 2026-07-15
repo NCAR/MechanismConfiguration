@@ -21,7 +21,7 @@ namespace mechanism_configuration::types
 
   /// @brief Reference-temperature Arrhenius
   ///        f(T) = A * exp( C * (1/T0 - 1/T) )      (C = +Ea/R, positive)
-  struct ArrheniusReferenceTemperature
+  struct Equilibrium
   {
     double A;            ///< Value at the reference temperature T0 [units vary by use]
     double C = 0.0;      ///< Temperature-dependence parameter [K] (C = +Ea/R)
@@ -29,7 +29,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
-  ///        Same as ArrheniusReferenceTemperature but with the
+  ///        Same as Equilibrium but with the
   ///        opposite temperature trend (solubility rises as T falls)
   struct HenryLawConstant
   {
@@ -39,7 +39,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief A reaction rate constant parsed from config.
-  using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>;
+  using RateConstant = std::variant<Arrhenius, Equilibrium, std::function<double(double)>>;
 
   // ----------------------------------------
   // Representations
@@ -97,7 +97,7 @@ namespace mechanism_configuration::types
     std::map<std::string, RateConstant> forward_rate_constants;
     std::map<std::string, RateConstant> reverse_rate_constants;
     /// @brief Shared, intrinsic equilibrium constant (NOT per representation).
-    std::optional<ArrheniusReferenceTemperature> equilibrium_constant;
+    std::optional<Equilibrium> equilibrium_constant;
     std::optional<double> solvent_floor_;
   };
 
@@ -138,7 +138,7 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    ArrheniusReferenceTemperature equilibrium_constant;
+    Equilibrium equilibrium_constant;
     std::optional<double> solvent_floor_;
   };
 

@@ -39,7 +39,7 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view equilibrium_constant = "equilibrium constant";
   inline constexpr std::string_view reference_temperature = "T0 [K]";
 
-  inline constexpr std::string_view ArrheniusReferenceTemperature_key = "ARRHENIUS_REFERENCE_TEMPERATURE";
+  inline constexpr std::string_view Equilibrium_key = "EQUILIBRIUM";
 
   inline constexpr std::string_view henry_law_constant = "Henry's law constant";
   inline constexpr std::string_view HLC_ref = "HLC_ref [mol m-3 Pa-1]";

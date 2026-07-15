@@ -15,9 +15,9 @@ namespace mechanism_configuration::v1
   // Rate constants parser
   // ----------------------------------------
 
-  types::ArrheniusReferenceTemperature ParseArrheniusReferenceTemperature(const YAML::Node& object)
+  types::Equilibrium ParseEquilibrium(const YAML::Node& object)
   {
-    types::ArrheniusReferenceTemperature rate_constant;
+    types::Equilibrium rate_constant;
 
     rate_constant.A = object[keys::A].as<double>();
     if (object[keys::henry_law_C])
@@ -47,8 +47,8 @@ namespace mechanism_configuration::v1
 
   types::RateConstant ParseRateConstant(const YAML::Node& object)
   {
-    if (object[keys::type] && object[keys::type].as<std::string>() == keys::ArrheniusReferenceTemperature_key)
-      return ParseArrheniusReferenceTemperature(object);
+    if (object[keys::type] && object[keys::type].as<std::string>() == keys::Equilibrium_key)
+      return ParseEquilibrium(object);
 
     // ARRHENIUS is the default when no (recognized) type is given.
     return ParseArrhenius(object);
@@ -183,7 +183,7 @@ namespace mechanism_configuration::v1
     if (object[keys::reverse_rate_constants])
       reaction.reverse_rate_constants = ParseRateConstantMap(object[keys::reverse_rate_constants]);
     if (object[keys::equilibrium_constant])
-      reaction.equilibrium_constant = ParseArrheniusReferenceTemperature(object[keys::equilibrium_constant]);
+      reaction.equilibrium_constant = ParseEquilibrium(object[keys::equilibrium_constant]);
 
     return reaction;
   }
@@ -225,7 +225,7 @@ namespace mechanism_configuration::v1
     equilibrium.solvent = object[keys::solvent].as<std::string>();
     equilibrium.reactants = ParseReactionComponents(object, keys::reactants);
     equilibrium.products = ParseReactionComponents(object, keys::products);
-    equilibrium.equilibrium_constant = ParseArrheniusReferenceTemperature(object[keys::equilibrium_constant]);
+    equilibrium.equilibrium_constant = ParseEquilibrium(object[keys::equilibrium_constant]);
 
     return equilibrium;
   }
