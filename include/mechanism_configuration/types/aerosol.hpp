@@ -19,7 +19,7 @@ namespace mechanism_configuration::types
   // Rate constants
   // ----------------------------------------
 
-  /// @brief Reference-temperature Arrhenius
+  /// @brief Equilibrium constant with reference-temperature Arrhenius form
   ///        f(T) = A * exp( C * (1/T0 - 1/T) )      (C = +Ea/R, positive)
   struct Equilibrium
   {
@@ -29,8 +29,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
-  ///        Same as Equilibrium but with the
-  ///        opposite temperature trend (solubility rises as T falls)
+  ///        Same as Equilibrium but with the opposite temperature trend
   struct HenryLawConstant
   {
     double HLC_ref;      ///< Reference HLC at T0 [mol m-3 Pa-1]
