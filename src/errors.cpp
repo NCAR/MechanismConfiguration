@@ -25,7 +25,6 @@ namespace mechanism_configuration
       case ErrorCode::ReactionRequiresUnknownSpecies: return "ReactionRequiresUnknownSpecies";
       case ErrorCode::UnknownSpecies: return "UnknownSpecies";
       case ErrorCode::UnknownPhase: return "UnknownPhase";
-      case ErrorCode::UnknownAerosolRepresentation: return "UnknownAerosolRepresentation";
       case ErrorCode::RequestedSpeciesNotRegisteredInPhase: return "RequestedSpeciesNotRegisteredInPhase";
       case ErrorCode::TooManyReactionComponents: return "TooManyReactionComponents";
       case ErrorCode::InvalidVersion: return "InvalidVersion";

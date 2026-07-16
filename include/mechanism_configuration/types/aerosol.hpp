@@ -7,7 +7,6 @@
 #include <mechanism_configuration/types/reactions.hpp>
 
 #include <functional>
-#include <map>
 #include <optional>
 #include <string>
 #include <variant>
@@ -19,9 +18,9 @@ namespace mechanism_configuration::types
   // Rate constants
   // ----------------------------------------
 
-  /// @brief Reference-temperature Arrhenius
+  /// @brief Equilibrium constant with reference-temperature Arrhenius form
   ///        f(T) = A * exp( C * (1/T0 - 1/T) )      (C = +Ea/R, positive)
-  struct ArrheniusReferenceTemperature
+  struct Equilibrium
   {
     double A;            ///< Value at the reference temperature T0 [units vary by use]
     double C = 0.0;      ///< Temperature-dependence parameter [K] (C = +Ea/R)
@@ -29,8 +28,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
-  ///        Same as ArrheniusReferenceTemperature but with the
-  ///        opposite temperature trend (solubility rises as T falls)
+  ///        Same as Equilibrium but with the opposite temperature trend
   struct HenryLawConstant
   {
     double HLC_ref;      ///< Reference HLC at T0 [mol m-3 Pa-1]
@@ -39,7 +37,7 @@ namespace mechanism_configuration::types
   };
 
   /// @brief A reaction rate constant parsed from config.
-  using RateConstant = std::variant<Arrhenius, ArrheniusReferenceTemperature, std::function<double(double)>>;
+  using RateConstant = std::variant<Arrhenius, Equilibrium, std::function<double(double)>>;
 
   // ----------------------------------------
   // Representations
@@ -80,8 +78,7 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    /// @brief Rate constant per aerosol representation; keys are representation names.
-    std::map<std::string, RateConstant> rate_constants;
+    RateConstant rate_constants;
     std::optional<double> solvent_floor_;
     std::optional<double> min_halflife_;
   };
@@ -92,12 +89,11 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    /// @brief Per-representation forward / reverse rate constants; keys are representation names.
-    ///        Supply exactly two of {forward, reverse, equilibrium} per representation; the third is derived.
-    std::map<std::string, RateConstant> forward_rate_constants;
-    std::map<std::string, RateConstant> reverse_rate_constants;
+    /// @brief Supply exactly two of {forward, reverse, equilibrium}; the third is derived.
+    std::optional<RateConstant> forward_rate_constants;
+    std::optional<RateConstant> reverse_rate_constants;
     /// @brief Shared, intrinsic equilibrium constant (NOT per representation).
-    std::optional<ArrheniusReferenceTemperature> equilibrium_constant;
+    std::optional<Equilibrium> equilibrium_constant;
     std::optional<double> solvent_floor_;
   };
 
@@ -138,7 +134,7 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    ArrheniusReferenceTemperature equilibrium_constant;
+    Equilibrium equilibrium_constant;
     std::optional<double> solvent_floor_;
   };
 

@@ -302,11 +302,6 @@ namespace mechanism_configuration
         registered.emplace(ps.name, &ps);
     }
 
-    // Rate-constants are keyed by its aerosol representation
-    std::unordered_set<std::string> representation_names;
-    for (const auto& representation : aerosol.representations)
-      std::visit([&](const auto& rep) { representation_names.insert(rep.name); }, representation);
-
     // Verifies that species is registered in phase. Returns the entry (or nullptr) and reports.
     auto require_registered_species =
         [&](const std::string& phase, const std::string& species, const std::string& context) -> const types::PhaseSpecies*
@@ -379,17 +374,6 @@ namespace mechanism_configuration
                            Message(std::nullopt, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase, context)) });
     };
 
-    // Validates that each rate-constant map entry is keyed by a declared aerosol representation.
-    auto require_representation = [&](const std::string& representation, const std::string& context)
-    {
-      if (!representation_names.contains(representation))
-        errors.push_back(
-            { ErrorCode::UnknownAerosolRepresentation,
-              Message(
-                  std::nullopt,
-                  mc_fmt::format("Unknown aerosol representation '{}' referenced by {}.", representation, context)) });
-    };
-
     for (const auto& representation : aerosol.representations)
     {
       std::visit(
@@ -410,8 +394,6 @@ namespace mechanism_configuration
         for (const auto& c : p->products)
           require_registered_species(p->phase, c.name, "DISSOLVED_REACTION product");
         require_registered_species(p->phase, p->solvent, "DISSOLVED_REACTION solvent");
-        for (const auto& entry : p->rate_constants)
-          require_representation(entry.first, "DISSOLVED_REACTION rate constant");
       }
       else if (const auto* p = std::get_if<types::DissolvedReversibleReaction>(&process))
       {
@@ -420,10 +402,6 @@ namespace mechanism_configuration
         for (const auto& c : p->products)
           require_registered_species(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION product");
         require_registered_species(p->phase, p->solvent, "DISSOLVED_REVERSIBLE_REACTION solvent");
-        for (const auto& entry : p->forward_rate_constants)
-          require_representation(entry.first, "DISSOLVED_REVERSIBLE_REACTION forward rate constant");
-        for (const auto& entry : p->reverse_rate_constants)
-          require_representation(entry.first, "DISSOLVED_REVERSIBLE_REACTION reverse rate constant");
       }
       else if (const auto* p = std::get_if<types::HenryLawPhaseTransfer>(&process))
       {
