@@ -95,13 +95,25 @@ TEST(Parse, ParsesCamCloudChemistryAerosolConfiguration)
   const auto& cloud = std::get<types::UniformSection>(mechanism.aerosol->representations[0]);
   EXPECT_EQ(cloud.name, "CLOUD");
 
-  // Processes: one reversible reaction followed by one dissolved reaction.
-  ASSERT_EQ(mechanism.aerosol->processes.size(), 2u);
+  // Processes: one reversible reaction followed by three dissolved reactions.
+  ASSERT_EQ(mechanism.aerosol->processes.size(), 4u);
   const auto& reversible = std::get<types::DissolvedReversibleReaction>(mechanism.aerosol->processes[0]);
   ASSERT_EQ(reversible.reactants.size(), 2u);
   EXPECT_EQ(reversible.reactants[0].name, "HSO3m");  // components keyed on "name"
   ASSERT_TRUE(reversible.equilibrium_constant.has_value());
   EXPECT_DOUBLE_EQ(reversible.equilibrium_constant->A, 1725.0);
+
+  // The ozone pathway: HSO3- + O3 and SO3-- + O3 both produce SO4--.
+  const auto& ozone_hso3 = std::get<types::DissolvedReaction>(mechanism.aerosol->processes[2]);
+  ASSERT_EQ(ozone_hso3.reactants.size(), 2u);
+  EXPECT_EQ(ozone_hso3.reactants[0].name, "HSO3m");
+  EXPECT_EQ(ozone_hso3.reactants[1].name, "O3");
+  const auto& ozone_so3 = std::get<types::DissolvedReaction>(mechanism.aerosol->processes[3]);
+  ASSERT_EQ(ozone_so3.reactants.size(), 2u);
+  EXPECT_EQ(ozone_so3.reactants[0].name, "SO3mm");
+  EXPECT_EQ(ozone_so3.reactants[1].name, "O3");
+  ASSERT_EQ(ozone_so3.products.size(), 1u);
+  EXPECT_EQ(ozone_so3.products[0].name, "SO4mm");
 
   // Constraints: 3 Henry's-law equilibria + 3 dissolved equilibria + 4 linear constraints.
   ASSERT_EQ(mechanism.aerosol->constraints.size(), 10u);
