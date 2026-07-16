@@ -10,7 +10,6 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <map>
 #include <string>
 #include <vector>
 
@@ -29,10 +28,6 @@ namespace mechanism_configuration::v1
   /// @brief Parses one rate-constant block into the RateConstant variant, dispatching on its
   ///        inner `type` (ARRHENIUS -> Arrhenius, EQUILIBRIUM -> Equilibrium constant).
   types::RateConstant ParseRateConstant(const YAML::Node& object);
-
-  /// @brief Parses a per-representation rate-constant map, e.g. { "CLOUD": { ... } }.
-  /// @return Map keyed by representation name to its rate constant.
-  std::map<std::string, types::RateConstant> ParseRateConstantMap(const YAML::Node& object);
 
   // ----------------------------------------
   // Representation parsers

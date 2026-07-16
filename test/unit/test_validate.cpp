@@ -246,7 +246,7 @@ TEST(ValidateAerosol, AcceptsValidProcessesAndConstraints)
   reaction.solvent = "H2O";
   reaction.reactants = { component("A") };
   reaction.products = { component("A") };
-  reaction.rate_constants = { { "cloud", types::Equilibrium{} } };  // keyed by a declared representation
+  reaction.rate_constants = types::Equilibrium{};
   m.aerosol->processes.push_back(reaction);
 
   m.aerosol->constraints = { ValidEquilibrium() };
@@ -277,20 +277,6 @@ TEST(ValidateAerosol, DetectsSpeciesNotRegisteredInCondensedPhase)
   m.aerosol->processes = { reaction };
 
   EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::RequestedSpeciesNotRegisteredInPhase));
-}
-
-TEST(ValidateAerosol, DetectsRateConstantKeyedByUnknownRepresentation)
-{
-  Mechanism m = AerosolBaseMechanism();
-  types::DissolvedReaction reaction;
-  reaction.phase = "aqueous";
-  reaction.solvent = "H2O";
-  reaction.reactants = { component("A") };
-  reaction.products = { component("A") };
-  reaction.rate_constants = { { "not_a_representation", types::Equilibrium{} } };
-  m.aerosol->processes = { reaction };
-
-  EXPECT_TRUE(HasCode(ValidateAerosolModel(m), ErrorCode::UnknownAerosolRepresentation));
 }
 
 TEST(ValidateAerosol, DetectsMissingGasDiffusionCoefficient)

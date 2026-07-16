@@ -67,20 +67,6 @@ namespace mechanism_configuration::v1
     return henry_law_constant;
   }
 
-  std::map<std::string, types::RateConstant> ParseRateConstantMap(const YAML::Node& object)
-  {
-    std::map<std::string, types::RateConstant> rate_constants;
-
-    // Each key is an aerosol representation name (e.g. "CLOUD"); each value is a rate-constant
-    // block whose own `type` selects the RateConstant variant alternative.
-    for (const auto& entry : object)
-    {
-      rate_constants.emplace(entry.first.as<std::string>(), ParseRateConstant(entry.second));
-    }
-
-    return rate_constants;
-  }
-
   // ----------------------------------------
   // Representation parsers
   // ----------------------------------------
@@ -162,7 +148,7 @@ namespace mechanism_configuration::v1
     reaction.solvent = object[keys::solvent].as<std::string>();
     reaction.reactants = ParseReactionComponents(object, keys::reactants);
     reaction.products = ParseReactionComponents(object, keys::products);
-    reaction.rate_constants = ParseRateConstantMap(object[keys::rate_constants]);
+    reaction.rate_constants = ParseRateConstant(object[keys::rate_constants]);
 
     return reaction;
   }
@@ -179,9 +165,9 @@ namespace mechanism_configuration::v1
     // Any two of {forward, reverse, equilibrium} may be supplied; the third is derived
     // downstream, so each is parsed only when present.
     if (object[keys::forward_rate_constants])
-      reaction.forward_rate_constants = ParseRateConstantMap(object[keys::forward_rate_constants]);
+      reaction.forward_rate_constants = ParseRateConstant(object[keys::forward_rate_constants]);
     if (object[keys::reverse_rate_constants])
-      reaction.reverse_rate_constants = ParseRateConstantMap(object[keys::reverse_rate_constants]);
+      reaction.reverse_rate_constants = ParseRateConstant(object[keys::reverse_rate_constants]);
     if (object[keys::equilibrium_constant])
       reaction.equilibrium_constant = ParseEquilibrium(object[keys::equilibrium_constant]);
 

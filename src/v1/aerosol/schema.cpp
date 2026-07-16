@@ -49,18 +49,6 @@ namespace mechanism_configuration::v1
       return CheckSchema(object, required_keys, optional_keys);
     }
 
-    // A per-representation rate-constant map. Each value is a typed rate-constant block.
-    Errors CheckRateConstantMapSchema(const YAML::Node& object)
-    {
-      Errors errors;
-      for (const auto& entry : object)
-      {
-        auto entry_errors = CheckRateConstantSchema(entry.second);
-        errors.insert(errors.end(), entry_errors.begin(), entry_errors.end());
-      }
-      return errors;
-    }
-
     // Each linear-constraint term references a species in a phase with a coefficient.
     Errors CheckLinearConstraintTermsSchema(const YAML::Node& object)
     {
@@ -178,7 +166,7 @@ namespace mechanism_configuration::v1
         }
         if (object[keys::rate_constants])
         {
-          auto e = CheckRateConstantMapSchema(object[keys::rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::rate_constants]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
       }
@@ -198,12 +186,12 @@ namespace mechanism_configuration::v1
         }
         if (object[keys::forward_rate_constants])
         {
-          auto e = CheckRateConstantMapSchema(object[keys::forward_rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::forward_rate_constants]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
         if (object[keys::reverse_rate_constants])
         {
-          auto e = CheckRateConstantMapSchema(object[keys::reverse_rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::reverse_rate_constants]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
         if (object[keys::equilibrium_constant])
