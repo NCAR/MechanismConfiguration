@@ -246,7 +246,7 @@ TEST(ValidateAerosol, AcceptsValidProcessesAndConstraints)
   reaction.solvent = "H2O";
   reaction.reactants = { component("A") };
   reaction.products = { component("A") };
-  reaction.rate_constants = types::Equilibrium{};
+  reaction.rate_constant = types::Equilibrium{};
   m.aerosol->processes.push_back(reaction);
 
   m.aerosol->constraints = { ValidEquilibrium() };

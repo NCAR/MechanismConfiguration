@@ -55,7 +55,7 @@
       "solvent": "H2O",
       "reactants": [ { "name": "A", "coefficient": 1 } ],
       "products": [ { "name": "B", "coefficient": 1 } ],
-      "rate constants": { "type": "ARRHENIUS", "A": 1.0e3, "C": 100.0 }
+      "rate constant": { "type": "ARRHENIUS", "A": 1.0e3, "C": 100.0 }
     },
     {
       "type": "HENRY_LAW_EQUILIBRIUM",

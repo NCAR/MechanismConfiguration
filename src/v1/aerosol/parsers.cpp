@@ -148,7 +148,7 @@ namespace mechanism_configuration::v1
     reaction.solvent = object[keys::solvent].as<std::string>();
     reaction.reactants = ParseReactionComponents(object, keys::reactants);
     reaction.products = ParseReactionComponents(object, keys::products);
-    reaction.rate_constants = ParseRateConstant(object[keys::rate_constants]);
+    reaction.rate_constant = ParseRateConstant(object[keys::rate_constant]);
 
     return reaction;
   }
@@ -164,10 +164,10 @@ namespace mechanism_configuration::v1
 
     // Any two of {forward, reverse, equilibrium} may be supplied; the third is derived
     // downstream, so each is parsed only when present.
-    if (object[keys::forward_rate_constants])
-      reaction.forward_rate_constants = ParseRateConstant(object[keys::forward_rate_constants]);
-    if (object[keys::reverse_rate_constants])
-      reaction.reverse_rate_constants = ParseRateConstant(object[keys::reverse_rate_constants]);
+    if (object[keys::forward_rate_constant])
+      reaction.forward_rate_constant = ParseRateConstant(object[keys::forward_rate_constant]);
+    if (object[keys::reverse_rate_constant])
+      reaction.reverse_rate_constant = ParseRateConstant(object[keys::reverse_rate_constant]);
     if (object[keys::equilibrium_constant])
       reaction.equilibrium_constant = ParseEquilibrium(object[keys::equilibrium_constant]);
 

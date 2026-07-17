@@ -33,9 +33,9 @@ namespace mechanism_configuration::v1::keys
   // ----------------------------------------
   // Rate constants
   // ----------------------------------------
-  inline constexpr std::string_view rate_constants = "rate constants";
-  inline constexpr std::string_view forward_rate_constants = "forward rate constants";
-  inline constexpr std::string_view reverse_rate_constants = "reverse rate constants";
+  inline constexpr std::string_view rate_constant = "rate constant";
+  inline constexpr std::string_view forward_rate_constant = "forward rate constant";
+  inline constexpr std::string_view reverse_rate_constant = "reverse rate constant";
   inline constexpr std::string_view equilibrium_constant = "equilibrium constant";
   inline constexpr std::string_view reference_temperature = "T0 [K]";
 
@@ -58,12 +58,12 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient";
 
   // DissolvedReaction
-  // also: condensed_phase, solvent, reactants, products, rate_constants
+  // also: condensed_phase, solvent, reactants, products, rate_constant
   inline constexpr std::string_view DissolvedReaction_key = "DISSOLVED_REACTION";
 
   // DissolvedReversibleReaction
   // also: condensed_phase, solvent, reactants, products,
-  //       forward_rate_constants, reverse_rate_constants, equilibrium_constant
+  //       forward_rate_constant, reverse_rate_constant, equilibrium_constant
   inline constexpr std::string_view DissolvedReversibleReaction_key = "DISSOLVED_REVERSIBLE_REACTION";
 
   // ----------------------------------------

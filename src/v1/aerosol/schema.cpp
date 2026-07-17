@@ -153,7 +153,7 @@ namespace mechanism_configuration::v1
       else if (type == keys::DissolvedReaction_key)
       {
         required_keys = { keys::type,      keys::condensed_phase, keys::solvent,
-                          keys::reactants, keys::products,        keys::rate_constants };
+                          keys::reactants, keys::products,        keys::rate_constant };
         if (object[keys::reactants])
         {
           auto e = CheckReactantsOrProductsSchema(object[keys::reactants]);
@@ -164,16 +164,16 @@ namespace mechanism_configuration::v1
           auto e = CheckReactantsOrProductsSchema(object[keys::products]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
-        if (object[keys::rate_constants])
+        if (object[keys::rate_constant])
         {
-          auto e = CheckRateConstantSchema(object[keys::rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::rate_constant]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
       }
       else if (type == keys::DissolvedReversibleReaction_key)
       {
         required_keys = { keys::type, keys::condensed_phase, keys::solvent, keys::reactants, keys::products };
-        optional_keys = { keys::forward_rate_constants, keys::reverse_rate_constants, keys::equilibrium_constant };
+        optional_keys = { keys::forward_rate_constant, keys::reverse_rate_constant, keys::equilibrium_constant };
         if (object[keys::reactants])
         {
           auto e = CheckReactantsOrProductsSchema(object[keys::reactants]);
@@ -184,14 +184,14 @@ namespace mechanism_configuration::v1
           auto e = CheckReactantsOrProductsSchema(object[keys::products]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
-        if (object[keys::forward_rate_constants])
+        if (object[keys::forward_rate_constant])
         {
-          auto e = CheckRateConstantSchema(object[keys::forward_rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::forward_rate_constant]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
-        if (object[keys::reverse_rate_constants])
+        if (object[keys::reverse_rate_constant])
         {
-          auto e = CheckRateConstantSchema(object[keys::reverse_rate_constants]);
+          auto e = CheckRateConstantSchema(object[keys::reverse_rate_constant]);
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
         if (object[keys::equilibrium_constant])
