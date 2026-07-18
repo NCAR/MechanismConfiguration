@@ -78,7 +78,7 @@ namespace mechanism_configuration::types
     std::string solvent;
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
-    RateConstant rate_constants;
+    RateConstant rate_constant;
     std::optional<double> solvent_floor_;
     std::optional<double> min_halflife_;
   };
@@ -90,8 +90,8 @@ namespace mechanism_configuration::types
     std::vector<ReactionComponent> reactants;
     std::vector<ReactionComponent> products;
     /// @brief Supply exactly two of {forward, reverse, equilibrium}; the third is derived.
-    std::optional<RateConstant> forward_rate_constants;
-    std::optional<RateConstant> reverse_rate_constants;
+    std::optional<RateConstant> forward_rate_constant;
+    std::optional<RateConstant> reverse_rate_constant;
     /// @brief Shared, intrinsic equilibrium constant (NOT per representation).
     std::optional<Equilibrium> equilibrium_constant;
     std::optional<double> solvent_floor_;
