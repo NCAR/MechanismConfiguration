@@ -41,9 +41,9 @@ namespace mechanism_configuration::v1::keys
 
   inline constexpr std::string_view Equilibrium_key = "EQUILIBRIUM";
 
-  inline constexpr std::string_view henry_law_constant = "Henry's law constant";
+  inline constexpr std::string_view henrys_law_constant = "Henry's law constant";
   inline constexpr std::string_view HLC_ref = "HLC_ref [mol m-3 Pa-1]";
-  inline constexpr std::string_view henry_law_C = "C [K]";
+  inline constexpr std::string_view henrys_law_C = "C [K]";
 
   // ----------------------------------------
   // Processes
@@ -51,10 +51,10 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view solvent = "solvent";
   inline constexpr std::string_view condensed_phase_species = "condensed-phase species";
 
-  // HenryLawPhaseTransfer
+  // HenrysLawPhaseTransfer
   // also: gas_phase, gas_phase_species, condensed_phase, condensed_phase_species, solvent,
-  //       henry_law_constant, diffusion_coefficient
-  inline constexpr std::string_view HenryLawPhaseTransfer_key = "HENRY_LAW_PHASE_TRANSFER";
+  //       henrys_law_constant, diffusion_coefficient
+  inline constexpr std::string_view HenrysLawPhaseTransfer_key = "HENRYS_LAW_PHASE_TRANSFER";
   inline constexpr std::string_view accommodation_coefficient = "accommodation coefficient";
 
   // DissolvedReaction
@@ -69,10 +69,10 @@ namespace mechanism_configuration::v1::keys
   // ----------------------------------------
   // Constraints
   // ----------------------------------------
-  // HenryLawEquilibrium
+  // HenrysLawEquilibrium
   // also: gas_phase, gas_phase_species, condensed_phase, condensed_phase_species, solvent,
-  //       henry_law_constant
-  inline constexpr std::string_view HenryLawEquilibrium_key = "HENRY_LAW_EQUILIBRIUM";
+  //       henrys_law_constant
+  inline constexpr std::string_view HenrysLawEquilibrium_key = "HENRYS_LAW_EQUILIBRIUM";
   inline constexpr std::string_view solvent_molecular_weight = "solvent molecular weight [kg mol-1]";
   inline constexpr std::string_view solvent_density = "solvent density [kg m-3]";
 

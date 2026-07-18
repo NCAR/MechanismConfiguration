@@ -403,22 +403,22 @@ namespace mechanism_configuration
           require_registered_species(p->phase, c.name, "DISSOLVED_REVERSIBLE_REACTION product");
         require_registered_species(p->phase, p->solvent, "DISSOLVED_REVERSIBLE_REACTION solvent");
       }
-      else if (const auto* p = std::get_if<types::HenryLawPhaseTransfer>(&process))
+      else if (const auto* p = std::get_if<types::HenrysLawPhaseTransfer>(&process))
       {
-        require_registered_species(p->condensed_phase, p->condensed_species, "HENRY_LAW_PHASE_TRANSFER condensed species");
-        require_registered_species(p->condensed_phase, p->solvent, "HENRY_LAW_PHASE_TRANSFER solvent");
-        require_diffusion(p->gas_phase, p->gas_species, "HENRY_LAW_PHASE_TRANSFER");
+        require_registered_species(p->condensed_phase, p->condensed_species, "HENRYS_LAW_PHASE_TRANSFER condensed species");
+        require_registered_species(p->condensed_phase, p->solvent, "HENRYS_LAW_PHASE_TRANSFER solvent");
+        require_diffusion(p->gas_phase, p->gas_species, "HENRYS_LAW_PHASE_TRANSFER");
       }
     }
 
     for (const auto& constraint : aerosol.constraints)
     {
-      if (const auto* c = std::get_if<types::HenryLawEquilibrium>(&constraint))
+      if (const auto* c = std::get_if<types::HenrysLawEquilibrium>(&constraint))
       {
-        require_registered_species(c->gas_phase, c->gas_species, "HENRY_LAW_EQUILIBRIUM gas species");
-        require_registered_species(c->condensed_phase, c->condensed_species, "HENRY_LAW_EQUILIBRIUM condensed species");
-        require_density(c->condensed_phase, c->solvent, "HENRY_LAW_EQUILIBRIUM solvent");
-        require_molecular_weight(c->solvent, "HENRY_LAW_EQUILIBRIUM solvent");
+        require_registered_species(c->gas_phase, c->gas_species, "HENRYS_LAW_EQUILIBRIUM gas species");
+        require_registered_species(c->condensed_phase, c->condensed_species, "HENRYS_LAW_EQUILIBRIUM condensed species");
+        require_density(c->condensed_phase, c->solvent, "HENRYS_LAW_EQUILIBRIUM solvent");
+        require_molecular_weight(c->solvent, "HENRYS_LAW_EQUILIBRIUM solvent");
       }
       else if (const auto* c = std::get_if<types::DissolvedEquilibrium>(&constraint))
       {

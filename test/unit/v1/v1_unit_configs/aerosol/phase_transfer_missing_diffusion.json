@@ -23,7 +23,7 @@
   ],
   "aerosol processes": [
     {
-      "type": "HENRY_LAW_PHASE_TRANSFER",
+      "type": "HENRYS_LAW_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
       "condensed phase": "aqueous",

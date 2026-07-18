@@ -120,7 +120,7 @@ TEST(Parse, ParsesCamCloudChemistryAerosolConfiguration)
 
   // The first constraint is the SO2 Henry's-law equilibrium; its solvent properties are sourced
   // from the species/phase definitions rather than the process block.
-  const auto& so2_equilibrium = std::get<types::HenryLawEquilibrium>(mechanism.aerosol->constraints[0]);
+  const auto& so2_equilibrium = std::get<types::HenrysLawEquilibrium>(mechanism.aerosol->constraints[0]);
   EXPECT_EQ(so2_equilibrium.solvent, "H2O");
   EXPECT_DOUBLE_EQ(so2_equilibrium.solvent_molecular_weight, 0.01801);  // from the species section
   EXPECT_DOUBLE_EQ(so2_equilibrium.solvent_density, 997.0);             // from the AQUEOUS phase
