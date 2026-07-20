@@ -121,7 +121,9 @@ namespace mechanism_configuration::v1
   // Process parsers
   // ----------------------------------------
 
-  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases)
+  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(
+      const YAML::Node& object,
+      const std::vector<types::Phase>& phases)
   {
     types::HenrysLawPhaseTransfer transfer;
 

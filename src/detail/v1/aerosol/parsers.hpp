@@ -43,7 +43,9 @@ namespace mechanism_configuration::v1
 
   /// @brief Parses a Henry's-law phase transfer. The diffusion coefficient is sourced from the
   ///        gas-phase species' definition in `phases`.
-  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases);
+  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(
+      const YAML::Node& object,
+      const std::vector<types::Phase>& phases);
   types::DissolvedReaction ParseDissolvedReaction(const YAML::Node& object);
   types::DissolvedReversibleReaction ParseDissolvedReversibleReaction(const YAML::Node& object);
 
