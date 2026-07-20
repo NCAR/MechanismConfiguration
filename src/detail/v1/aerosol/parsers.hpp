@@ -19,7 +19,7 @@ namespace mechanism_configuration::v1
   // Rate constant parsers
   // ----------------------------------------
 
-  types::HenryLawConstant ParseHenryLawConstant(const YAML::Node& object);
+  types::HenrysLawConstant ParseHenrysLawConstant(const YAML::Node& object);
   types::Equilibrium ParseEquilibrium(const YAML::Node& object);
 
   /// @brief Parses a bare Arrhenius rate-constant block (A, B, C, D, E).
@@ -43,7 +43,7 @@ namespace mechanism_configuration::v1
 
   /// @brief Parses a Henry's-law phase transfer. The diffusion coefficient is sourced from the
   ///        gas-phase species' definition in `phases`.
-  types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases);
+  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases);
   types::DissolvedReaction ParseDissolvedReaction(const YAML::Node& object);
   types::DissolvedReversibleReaction ParseDissolvedReversibleReaction(const YAML::Node& object);
 
@@ -53,7 +53,7 @@ namespace mechanism_configuration::v1
 
   /// @brief Parses a Henry's-law equilibrium. The solvent's molecular weight is sourced from the
   ///        species section and its density from the condensed phase.
-  types::HenryLawEquilibrium ParseHenryLawEquilibrium(
+  types::HenrysLawEquilibrium ParseHenrysLawEquilibrium(
       const YAML::Node& object,
       const std::vector<types::Species>& species,
       const std::vector<types::Phase>& phases);

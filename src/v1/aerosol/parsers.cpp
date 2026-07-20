@@ -20,8 +20,8 @@ namespace mechanism_configuration::v1
     types::Equilibrium rate_constant;
 
     rate_constant.A = object[keys::A].as<double>();
-    if (object[keys::henry_law_C])
-      rate_constant.C = object[keys::henry_law_C].as<double>();
+    if (object[keys::henrys_law_C])
+      rate_constant.C = object[keys::henrys_law_C].as<double>();
     if (object[keys::reference_temperature])
       rate_constant.T0 = object[keys::reference_temperature].as<double>();
 
@@ -54,17 +54,17 @@ namespace mechanism_configuration::v1
     return ParseArrhenius(object);
   }
 
-  types::HenryLawConstant ParseHenryLawConstant(const YAML::Node& object)
+  types::HenrysLawConstant ParseHenrysLawConstant(const YAML::Node& object)
   {
-    types::HenryLawConstant henry_law_constant;
+    types::HenrysLawConstant henrys_law_constant;
 
-    henry_law_constant.HLC_ref = object[keys::HLC_ref].as<double>();
-    if (object[keys::henry_law_C])
-      henry_law_constant.C = object[keys::henry_law_C].as<double>();
+    henrys_law_constant.HLC_ref = object[keys::HLC_ref].as<double>();
+    if (object[keys::henrys_law_C])
+      henrys_law_constant.C = object[keys::henrys_law_C].as<double>();
     if (object[keys::reference_temperature])
-      henry_law_constant.T0 = object[keys::reference_temperature].as<double>();
+      henrys_law_constant.T0 = object[keys::reference_temperature].as<double>();
 
-    return henry_law_constant;
+    return henrys_law_constant;
   }
 
   // ----------------------------------------
@@ -121,16 +121,16 @@ namespace mechanism_configuration::v1
   // Process parsers
   // ----------------------------------------
 
-  types::HenryLawPhaseTransfer ParseHenryLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases)
+  types::HenrysLawPhaseTransfer ParseHenrysLawPhaseTransfer(const YAML::Node& object, const std::vector<types::Phase>& phases)
   {
-    types::HenryLawPhaseTransfer transfer;
+    types::HenrysLawPhaseTransfer transfer;
 
     transfer.gas_phase = object[keys::gas_phase].as<std::string>();
     transfer.gas_species = object[keys::gas_phase_species].as<std::string>();
     transfer.condensed_phase = object[keys::condensed_phase].as<std::string>();
     transfer.condensed_species = object[keys::condensed_phase_species].as<std::string>();
     transfer.solvent = object[keys::solvent].as<std::string>();
-    transfer.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
+    transfer.henrys_law_constant = ParseHenrysLawConstant(object[keys::henrys_law_constant]);
     // Sourced from the gas-phase species' definition; presence is enforced by ValidateAerosolModel,
     // which runs before this result is returned, so a missing value defaults harmlessly here.
     transfer.diffusion_coefficient =
@@ -178,19 +178,19 @@ namespace mechanism_configuration::v1
   // Constraint parsers
   // ----------------------------------------
 
-  types::HenryLawEquilibrium ParseHenryLawEquilibrium(
+  types::HenrysLawEquilibrium ParseHenrysLawEquilibrium(
       const YAML::Node& object,
       const std::vector<types::Species>& species,
       const std::vector<types::Phase>& phases)
   {
-    types::HenryLawEquilibrium equilibrium;
+    types::HenrysLawEquilibrium equilibrium;
 
     equilibrium.gas_phase = object[keys::gas_phase].as<std::string>();
     equilibrium.gas_species = object[keys::gas_phase_species].as<std::string>();
     equilibrium.condensed_phase = object[keys::condensed_phase].as<std::string>();
     equilibrium.condensed_species = object[keys::condensed_phase_species].as<std::string>();
     equilibrium.solvent = object[keys::solvent].as<std::string>();
-    equilibrium.henry_law_constant = ParseHenryLawConstant(object[keys::henry_law_constant]);
+    equilibrium.henrys_law_constant = ParseHenrysLawConstant(object[keys::henrys_law_constant]);
 
     // Sourced from the solvent species' definition: molecular weight from the species section,
     // density from the condensed phase. Presence is enforced by ValidateAerosolModel, which runs
@@ -280,15 +280,15 @@ namespace mechanism_configuration::v1
         const auto type = entry[keys::type].as<std::string>();
 
         // Processes
-        if (type == keys::HenryLawPhaseTransfer_key)
-          aerosol.processes.emplace_back(ParseHenryLawPhaseTransfer(entry, phases));
+        if (type == keys::HenrysLawPhaseTransfer_key)
+          aerosol.processes.emplace_back(ParseHenrysLawPhaseTransfer(entry, phases));
         else if (type == keys::DissolvedReaction_key)
           aerosol.processes.emplace_back(ParseDissolvedReaction(entry));
         else if (type == keys::DissolvedReversibleReaction_key)
           aerosol.processes.emplace_back(ParseDissolvedReversibleReaction(entry));
         // Constraints
-        else if (type == keys::HenryLawEquilibrium_key)
-          aerosol.constraints.emplace_back(ParseHenryLawEquilibrium(entry, species, phases));
+        else if (type == keys::HenrysLawEquilibrium_key)
+          aerosol.constraints.emplace_back(ParseHenrysLawEquilibrium(entry, species, phases));
         else if (type == keys::DissolvedEquilibrium_key)
           aerosol.constraints.emplace_back(ParseDissolvedEquilibrium(entry));
         else if (type == keys::LinearConstraint_key)

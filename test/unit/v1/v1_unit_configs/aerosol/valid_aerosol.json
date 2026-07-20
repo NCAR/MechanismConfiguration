@@ -40,7 +40,7 @@
   ],
   "aerosol processes": [
     {
-      "type": "HENRY_LAW_PHASE_TRANSFER",
+      "type": "HENRYS_LAW_PHASE_TRANSFER",
       "gas phase": "gas",
       "gas-phase species": "A",
       "condensed phase": "aqueous",
@@ -58,7 +58,7 @@
       "rate constant": { "type": "ARRHENIUS", "A": 1.0e3, "C": 100.0 }
     },
     {
-      "type": "HENRY_LAW_EQUILIBRIUM",
+      "type": "HENRYS_LAW_EQUILIBRIUM",
       "gas phase": "gas",
       "gas-phase species": "A",
       "condensed phase": "aqueous",

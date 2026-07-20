@@ -29,7 +29,7 @@ namespace mechanism_configuration::types
 
   /// @brief Henry's law constant: HLC(T) = HLC_ref * exp( C * (1/T - 1/T0) )
   ///        Same as Equilibrium but with the opposite temperature trend
-  struct HenryLawConstant
+  struct HenrysLawConstant
   {
     double HLC_ref;      ///< Reference HLC at T0 [mol m-3 Pa-1]
     double C = 0.0;      ///< Temperature-dependence parameter [K]
@@ -97,32 +97,32 @@ namespace mechanism_configuration::types
     std::optional<double> solvent_floor_;
   };
 
-  struct HenryLawPhaseTransfer
+  struct HenrysLawPhaseTransfer
   {
     std::string gas_phase;
     std::string gas_species;
     std::string condensed_phase;
     std::string condensed_species;
     std::string solvent;
-    HenryLawConstant henry_law_constant;
+    HenrysLawConstant henrys_law_constant;
     double diffusion_coefficient;      ///< Gas-phase diffusion coefficient [m2 s-1]
     double accommodation_coefficient;  ///< Mass accommodation coefficient, dimensionless
   };
 
-  using Process = std::variant<DissolvedReaction, DissolvedReversibleReaction, HenryLawPhaseTransfer>;
+  using Process = std::variant<DissolvedReaction, DissolvedReversibleReaction, HenrysLawPhaseTransfer>;
 
   // ----------------------------------------
   // Constraints
   // ----------------------------------------
 
-  struct HenryLawEquilibrium
+  struct HenrysLawEquilibrium
   {
     std::string gas_phase;
     std::string gas_species;
     std::string condensed_phase;
     std::string condensed_species;
     std::string solvent;
-    HenryLawConstant henry_law_constant;
+    HenrysLawConstant henrys_law_constant;
     double solvent_molecular_weight;  ///< [kg mol-1]
     double solvent_density;           ///< [kg m-3]
   };
@@ -163,7 +163,7 @@ namespace mechanism_configuration::types
     std::variant<FixedConstant, DiagnoseFromState> constant = FixedConstant{ 0.0 };
   };
 
-  using Constraint = std::variant<HenryLawEquilibrium, DissolvedEquilibrium, LinearConstraint>;
+  using Constraint = std::variant<HenrysLawEquilibrium, DissolvedEquilibrium, LinearConstraint>;
 
   // ----------------------------------------
   // Container

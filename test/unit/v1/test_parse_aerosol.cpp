@@ -54,7 +54,7 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
   ASSERT_EQ(aerosol.processes.size(), 2u);
 
   // The phase transfer's diffusion coefficient is sourced from the gas-phase species definition.
-  const auto& transfer = std::get<types::HenryLawPhaseTransfer>(aerosol.processes[0]);
+  const auto& transfer = std::get<types::HenrysLawPhaseTransfer>(aerosol.processes[0]);
   EXPECT_DOUBLE_EQ(transfer.diffusion_coefficient, 1.5e-5);
   EXPECT_DOUBLE_EQ(transfer.accommodation_coefficient, 0.1);
 
@@ -69,7 +69,7 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
   ASSERT_EQ(aerosol.constraints.size(), 2u);
 
   // The solvent properties are sourced from the species/phase definitions.
-  const auto& equilibrium = std::get<types::HenryLawEquilibrium>(aerosol.constraints[0]);
+  const auto& equilibrium = std::get<types::HenrysLawEquilibrium>(aerosol.constraints[0]);
   EXPECT_EQ(equilibrium.solvent, "H2O");
   EXPECT_DOUBLE_EQ(equilibrium.solvent_molecular_weight, 0.018);  // from the species section
   EXPECT_DOUBLE_EQ(equilibrium.solvent_density, 1000.0);          // from the aqueous phase
@@ -89,7 +89,7 @@ TEST(ParseAerosol, RejectsPhaseTransferWhenGasSpeciesHasNoDiffusionCoefficient)
   EXPECT_TRUE(HasError(parsed.error(), ErrorCode::RequiredKeyNotFound));
 }
 
-TEST(ParseAerosol, RejectsHenryLawEquilibriumWhenSolventHasNoDensity)
+TEST(ParseAerosol, RejectsHenrysLawEquilibriumWhenSolventHasNoDensity)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/equilibrium_missing_solvent_density.json");
   EXPECT_FALSE(parsed);

@@ -23,7 +23,7 @@ namespace mechanism_configuration::v1
   {
     Errors CheckEquilibriumSchema(const YAML::Node& object)
     {
-      const std::vector<std::string_view> required_keys = { keys::A, keys::henry_law_C };
+      const std::vector<std::string_view> required_keys = { keys::A, keys::henrys_law_C };
       const std::vector<std::string_view> optional_keys = { keys::type, keys::reference_temperature };
       return CheckSchema(object, required_keys, optional_keys);
     }
@@ -42,9 +42,9 @@ namespace mechanism_configuration::v1
       return CheckArrheniusSchema(object);
     }
 
-    Errors CheckHenryLawConstantSchema(const YAML::Node& object)
+    Errors CheckHenrysLawConstantSchema(const YAML::Node& object)
     {
-      const std::vector<std::string_view> required_keys = { keys::HLC_ref, keys::henry_law_C };
+      const std::vector<std::string_view> required_keys = { keys::HLC_ref, keys::henrys_law_C };
       const std::vector<std::string_view> optional_keys = { keys::reference_temperature };
       return CheckSchema(object, required_keys, optional_keys);
     }
@@ -135,7 +135,7 @@ namespace mechanism_configuration::v1
       Errors nested_errors;
 
       const std::string type = object[keys::type].as<std::string>();
-      if (type == keys::HenryLawPhaseTransfer_key)
+      if (type == keys::HenrysLawPhaseTransfer_key)
       {
         // The diffusion coefficient is not given here. It is sourced from the gas-phase
         // species' definition in the phases section (see ValidateAerosolModel).
@@ -145,10 +145,10 @@ namespace mechanism_configuration::v1
                           keys::condensed_phase,
                           keys::condensed_phase_species,
                           keys::solvent,
-                          keys::henry_law_constant,
+                          keys::henrys_law_constant,
                           keys::accommodation_coefficient };
-        if (object[keys::henry_law_constant])
-          nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
+        if (object[keys::henrys_law_constant])
+          nested_errors = CheckHenrysLawConstantSchema(object[keys::henrys_law_constant]);
       }
       else if (type == keys::DissolvedReaction_key)
       {
@@ -200,7 +200,7 @@ namespace mechanism_configuration::v1
           nested_errors.insert(nested_errors.end(), e.begin(), e.end());
         }
       }
-      else if (type == keys::HenryLawEquilibrium_key)
+      else if (type == keys::HenrysLawEquilibrium_key)
       {
         // The solvent's molecular weight and density are not given here; they are sourced from
         // the solvent species' definition (see ValidateAerosolModel).
@@ -210,9 +210,9 @@ namespace mechanism_configuration::v1
                           keys::condensed_phase,
                           keys::condensed_phase_species,
                           keys::solvent,
-                          keys::henry_law_constant };
-        if (object[keys::henry_law_constant])
-          nested_errors = CheckHenryLawConstantSchema(object[keys::henry_law_constant]);
+                          keys::henrys_law_constant };
+        if (object[keys::henrys_law_constant])
+          nested_errors = CheckHenrysLawConstantSchema(object[keys::henrys_law_constant]);
       }
       else if (type == keys::DissolvedEquilibrium_key)
       {

@@ -208,9 +208,9 @@ namespace
     return m;
   }
 
-  types::HenryLawPhaseTransfer ValidPhaseTransfer()
+  types::HenrysLawPhaseTransfer ValidPhaseTransfer()
   {
-    types::HenryLawPhaseTransfer t;
+    types::HenrysLawPhaseTransfer t;
     t.gas_phase = "gas";
     t.gas_species = "A";
     t.condensed_phase = "aqueous";
@@ -219,9 +219,9 @@ namespace
     return t;
   }
 
-  types::HenryLawEquilibrium ValidEquilibrium()
+  types::HenrysLawEquilibrium ValidEquilibrium()
   {
-    types::HenryLawEquilibrium e;
+    types::HenrysLawEquilibrium e;
     e.gas_phase = "gas";
     e.gas_species = "A";
     e.condensed_phase = "aqueous";
