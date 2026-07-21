@@ -32,7 +32,7 @@ namespace mechanism_configuration::v1
                                                           keys::constant_mixing_ratio,
                                                           keys::is_third_body };
     // Structural validation only. Duplicate-species detection (a semantic check) is performed
-    // by the version-neutral ValidateSemantics.
+    // by the version-neutral ValidateReactionsSemantics.
     Errors errors;
     for (const auto& object : species_list)
     {
@@ -53,7 +53,7 @@ namespace mechanism_configuration::v1
 
     // Structural validation only. Duplicate detection, phase-species existence, and
     // phase-membership (semantic checks) are performed by the version-neutral
-    // ValidateSemantics. existing_species is intentionally unused here.
+    // ValidateReactionsSemantics. existing_species is intentionally unused here.
     (void)existing_species;
     Errors errors;
     for (const auto& object : AsSequence(phases_list))

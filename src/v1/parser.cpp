@@ -60,9 +60,9 @@ namespace mechanism_configuration::v1
     }
   }  // namespace
 
-  semantics::Input BuildSemanticInput(const YAML::Node& object)
+  semantics::ReactionsInput BuildSemanticInput(const YAML::Node& object)
   {
-    semantics::Input input;
+    semantics::ReactionsInput input;
 
     if (object[std::string(keys::species)])
       for (const auto& s : object[std::string(keys::species)])
@@ -102,53 +102,57 @@ namespace mechanism_configuration::v1
         input.reactions.push_back(std::move(rr));
       }
 
-    if (object[std::string(keys::emissions)])
-    {
-      const YAML::Node& emissions_node = object[std::string(keys::emissions)];
-      semantics::EmissionsRef emissions_ref;
+    return input;
+  }
 
-      if (emissions_node[std::string(keys::inventories)])
-        for (const auto& item : emissions_node[std::string(keys::inventories)])
-          emissions_ref.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object)
+  {
+    semantics::EmissionsInput input;
 
-      if (emissions_node[std::string(keys::species_maps)])
-        for (const auto& item : emissions_node[std::string(keys::species_maps)])
-        {
-          semantics::SpeciesMapRef smap_ref;
-          smap_ref.name = item[std::string(keys::name)].as<std::string>();
-          smap_ref.location = LocationOf(item);
-          if (item[std::string(keys::mappings)])
-            for (const auto& mapping_node : item[std::string(keys::mappings)])
-            {
-              semantics::SpeciesMappingRef mapping_ref;
-              mapping_ref.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
-              mapping_ref.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
-              if (mapping_node[std::string(keys::scaling_factor)])
-                mapping_ref.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
-              smap_ref.mappings.push_back(std::move(mapping_ref));
-            }
-          emissions_ref.species_maps.push_back(std::move(smap_ref));
-        }
+    if (!object[std::string(keys::emissions)])
+      return input;
 
-      if (emissions_node[std::string(keys::sources)])
-        for (const auto& item : emissions_node[std::string(keys::sources)])
-        {
-          semantics::SourceRef source_ref;
-          source_ref.name = item[std::string(keys::name)].as<std::string>();
-          source_ref.location = LocationOf(item);
-          source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
-                                   LocationOf(item[std::string(keys::inventory)]) };
-          source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
-                                     LocationOf(item[std::string(keys::species_map)]) };
-          if (item[std::string(keys::category)])
-            source_ref.category = item[std::string(keys::category)].as<int>();
-          if (item[std::string(keys::hierarchy)])
-            source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
-          emissions_ref.sources.push_back(std::move(source_ref));
-        }
+    const YAML::Node& emissions_node = object[std::string(keys::emissions)];
 
-      input.emissions = std::move(emissions_ref);
-    }
+    if (emissions_node[std::string(keys::inventories)])
+      for (const auto& item : emissions_node[std::string(keys::inventories)])
+        input.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+
+    if (emissions_node[std::string(keys::species_maps)])
+      for (const auto& item : emissions_node[std::string(keys::species_maps)])
+      {
+        semantics::SpeciesMapRef smap_ref;
+        smap_ref.name = item[std::string(keys::name)].as<std::string>();
+        smap_ref.location = LocationOf(item);
+        if (item[std::string(keys::mappings)])
+          for (const auto& mapping_node : item[std::string(keys::mappings)])
+          {
+            semantics::SpeciesMappingRef mapping_ref;
+            mapping_ref.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
+            mapping_ref.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
+            if (mapping_node[std::string(keys::scaling_factor)])
+              mapping_ref.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
+            smap_ref.mappings.push_back(std::move(mapping_ref));
+          }
+        input.species_maps.push_back(std::move(smap_ref));
+      }
+
+    if (emissions_node[std::string(keys::sources)])
+      for (const auto& item : emissions_node[std::string(keys::sources)])
+      {
+        semantics::SourceRef source_ref;
+        source_ref.name = item[std::string(keys::name)].as<std::string>();
+        source_ref.location = LocationOf(item);
+        source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
+                                 LocationOf(item[std::string(keys::inventory)]) };
+        source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
+                                   LocationOf(item[std::string(keys::species_map)]) };
+        if (item[std::string(keys::category)])
+          source_ref.category = item[std::string(keys::category)].as<int>();
+        if (item[std::string(keys::hierarchy)])
+          source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
+        input.sources.push_back(std::move(source_ref));
+      }
 
     return input;
   }
@@ -440,12 +444,16 @@ namespace mechanism_configuration::v1
       Errors errors = CheckSchema(object);
 
       // 2) Semantic validation — needs a structurally-valid document, so only run it when
-      //    the structure is clean. Located via BuildSemanticInput so errors carry line:col.
+      //    the structure is clean. Located via BuildSemanticInput/BuildEmissionsSemanticInput so
+      //    errors carry line:col.
       if (errors.empty())
       {
-        // Uses the same ValidateSemantics engine as ValidateGasModel, but with
-        // YAML-derived input so errors include source locations.
-        auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
+        // Uses the same ValidateReactionsSemantics/ValidateEmissionsSemantics engines as
+        // ValidateGasModel/ValidateEmissionsModel, but with YAML-derived input so errors include
+        // source locations.
+        auto semantic_errors = ValidateReactionsSemantics(BuildSemanticInput(object));
+        auto emissions_errors = ValidateEmissionsSemantics(BuildEmissionsSemanticInput(object));
+        semantic_errors.insert(semantic_errors.end(), emissions_errors.begin(), emissions_errors.end());
         AppendFilePath(config_path_, semantic_errors);
         errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
       }

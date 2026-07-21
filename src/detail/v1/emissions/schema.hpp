@@ -13,7 +13,7 @@ namespace mechanism_configuration::v1
   // Structural (schema) validation of the emissions section. Checks required/optional keys,
   // value shape, and fixed-enum-membership only; semantic invariants (duplicate names, unknown
   // inventory/species-map references, scaling-factor sums) are checked separately by the
-  // version-neutral ValidateSemantics on the built Mechanism.
+  // version-neutral ValidateEmissionsSemantics on the built Mechanism.
 
   /// @brief Schema-validates the emissions section: inventories, species maps (and their
   ///        mappings), regridding, and sources.

@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "detail/semantics/reactions.hpp"
+#include "detail/semantics/emissions.hpp"
+
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/validate.hpp>
 
@@ -15,9 +18,15 @@
 
 namespace mechanism_configuration::v1
 {
-  /// @brief Extracts a located semantics::Input from a fully-resolved (inline) v1 YAML node, so
-  ///        the version-neutral ValidateSemantics can run the semantic checks with line:col.
-  semantics::Input BuildSemanticInput(const YAML::Node& object);
+  /// @brief Extracts a located semantics::ReactionsInput from a fully-resolved (inline) v1 YAML
+  ///        node, so the version-neutral ValidateReactionsSemantics can run the semantic checks
+  ///        with line:col.
+  semantics::ReactionsInput BuildSemanticInput(const YAML::Node& object);
+
+  /// @brief Extracts a located semantics::EmissionsInput from a fully-resolved (inline) v1 YAML
+  ///        node, so ValidateEmissionsSemantics can run with line:col. Returns a default-empty
+  ///        EmissionsInput (validates with no errors) when the document has no `emissions` key.
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object);
 
   class Parser
   {
@@ -54,7 +63,7 @@ namespace mechanism_configuration::v1
     std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
 
     /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only). Semantic
-    ///        invariants are checked separately by ValidateSemantics.
+    ///        invariants are checked separately by ValidateReactionsSemantics/ValidateEmissionsSemantics.
     Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if

@@ -20,8 +20,8 @@ namespace mechanism_configuration::v1
   ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
   ///        and collects any structural errors found.
   /// @param object The YAML node representing the reaction
-  /// @param existing_species Unused; semantic checks live in ValidateSemantics
-  /// @param existing_phases Unused; semantic checks live in ValidateSemantics
+  /// @param existing_species Unused; semantic checks live in ValidateReactionsSemantics
+  /// @param existing_phases Unused; semantic checks live in ValidateReactionsSemantics
   /// @return A list of validation errors, if any
   Errors ArrheniusParser::CheckSchema(
       const YAML::Node& object,
@@ -67,7 +67,7 @@ namespace mechanism_configuration::v1
     }
 
     // Semantic checks (species existence, phase membership) are performed by the
-    // version-neutral ValidateSemantics over the canonical Mechanism.
+    // version-neutral ValidateReactionsSemantics over the canonical Mechanism.
     return errors;
   }
 

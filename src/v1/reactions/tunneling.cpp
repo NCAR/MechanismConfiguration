@@ -18,8 +18,8 @@ namespace mechanism_configuration::v1
   ///        Performs structural (schema) validation only;
   ///        and collects any errors found.
   /// @param object The YAML node representing the reaction
-  /// @param existing_species Unused; semantic checks live in ValidateSemantics
-  /// @param existing_phases Unused; semantic checks live in ValidateSemantics
+  /// @param existing_species Unused; semantic checks live in ValidateReactionsSemantics
+  /// @param existing_phases Unused; semantic checks live in ValidateReactionsSemantics
   /// @return A list of validation errors, if any
   Errors TunnelingParser::CheckSchema(
       const YAML::Node& object,
@@ -52,7 +52,7 @@ namespace mechanism_configuration::v1
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
     }
 
-    // Semantic checks are performed by the version-neutral ValidateSemantics.
+    // Semantic checks are performed by the version-neutral ValidateReactionsSemantics.
 
     return errors;
   }

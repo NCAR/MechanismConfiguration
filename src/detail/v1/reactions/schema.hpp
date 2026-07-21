@@ -15,7 +15,7 @@ namespace mechanism_configuration::v1
 {
   // Structural (schema) validation of v1 reactions. These check required/optional keys and value
   // shape only; semantic invariants (duplicate names, unknown species, phase membership) are
-  // checked separately by the version-neutral ValidateSemantics on the built Mechanism.
+  // checked separately by the version-neutral ValidateReactionsSemantics on the built Mechanism.
 
   /// @brief Schema-validates a sequence of reaction components (reactants or products),
   ///        requiring exactly one of `name` / `species name` plus an optional coefficient.
