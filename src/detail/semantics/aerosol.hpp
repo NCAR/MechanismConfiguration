@@ -4,18 +4,15 @@
 
 #pragma once
 
-#include "detail/semantics/reactions.hpp"
+#include "detail/semantics/core.hpp"
 
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace mechanism_configuration::semantics
 {
-  // Not yet wired into ValidateAerosolModel (which still reads mechanism.aerosol directly).
-  // Definitions carry presence flags instead of values: aerosol errors always report at the
-  // reference site (e.g. "solvent 'foo' has no density"), never at the definition site, so
-  // the definition's own location is never needed.
-
+  // Definitions carry presence flags.
   struct SpeciesDef
   {
     std::string name;
@@ -39,6 +36,7 @@ namespace mechanism_configuration::semantics
   {
     std::string name;
     std::vector<NamedRef> phases;
+    std::optional<ErrorLocation> location;
   };
 
   struct DissolvedReactionRef
@@ -47,6 +45,7 @@ namespace mechanism_configuration::semantics
     NamedRef solvent;
     std::vector<NamedRef> reactants;
     std::vector<NamedRef> products;
+    std::optional<ErrorLocation> location;
   };
 
   struct DissolvedReversibleReactionRef
@@ -55,6 +54,7 @@ namespace mechanism_configuration::semantics
     NamedRef solvent;
     std::vector<NamedRef> reactants;
     std::vector<NamedRef> products;
+    std::optional<ErrorLocation> location;
   };
 
   struct HenrysLawPhaseTransferRef
@@ -64,6 +64,7 @@ namespace mechanism_configuration::semantics
     NamedRef condensed_phase;
     NamedRef condensed_species;
     NamedRef solvent;
+    std::optional<ErrorLocation> location;
   };
 
   struct HenrysLawEquilibriumRef
@@ -73,6 +74,7 @@ namespace mechanism_configuration::semantics
     NamedRef condensed_phase;
     NamedRef condensed_species;
     NamedRef solvent;
+    std::optional<ErrorLocation> location;
   };
 
   struct DissolvedEquilibriumRef
@@ -82,6 +84,7 @@ namespace mechanism_configuration::semantics
     NamedRef solvent;
     std::vector<NamedRef> reactants;
     std::vector<NamedRef> products;
+    std::optional<ErrorLocation> location;
   };
 
   struct LinearConstraintTermRef
@@ -95,6 +98,7 @@ namespace mechanism_configuration::semantics
     NamedRef algebraic_phase;
     NamedRef algebraic_species;
     std::vector<LinearConstraintTermRef> terms;
+    std::optional<ErrorLocation> location;
   };
 
   struct AerosolInput
@@ -111,3 +115,12 @@ namespace mechanism_configuration::semantics
   };
 
 }  // namespace mechanism_configuration::semantics
+
+namespace mechanism_configuration
+{
+  /// @brief Validates aerosol cross-references: phase/species membership (representations,
+  ///        dissolved reactions/equilibria, Henry's-law transfers/equilibria, linear constraint
+  ///        terms) and required definition-derived properties (molecular weight, diffusion
+  ///        coefficient, density).
+  Errors ValidateAerosolSemantics(const semantics::AerosolInput& input);
+}  // namespace mechanism_configuration

@@ -17,7 +17,7 @@ namespace mechanism_configuration::v1
 
   /// @brief Schema-validates each entry of the aerosol processes section which mixes
   ///        process and constraint types. Structural only; cross-references against species and
-  ///        phases (membership, sourced properties) are checked separately by ValidateAerosolModel.
+  ///        phases (membership, sourced properties) are checked separately by ValidateAerosolSemantics.
   /// @param processes_list YAML node containing the process/constraint entries
   /// @return List of structural errors, or empty if all entries conform
   Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list);

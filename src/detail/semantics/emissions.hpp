@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "detail/semantics/reactions.hpp"
+#include "detail/semantics/core.hpp"
 
 #include <optional>
 #include <string>

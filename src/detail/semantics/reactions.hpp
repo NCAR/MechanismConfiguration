@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "detail/semantics/core.hpp"
+
 #include <mechanism_configuration/errors.hpp>
 
 #include <optional>
@@ -25,12 +27,6 @@ namespace mechanism_configuration::semantics
   //
   // This is an implementation detail of ValidateGasModel
   // (declared publicly in <mechanism_configuration/validate.hpp>) and is not part of the public API.
-  struct NamedRef
-  {
-    std::string name;
-    std::optional<ErrorLocation> location;
-  };
-
   struct PhaseRef
   {
     std::string name;

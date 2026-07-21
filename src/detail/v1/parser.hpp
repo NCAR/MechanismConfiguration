@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "detail/semantics/reactions.hpp"
+#include "detail/semantics/aerosol.hpp"
 #include "detail/semantics/emissions.hpp"
+#include "detail/semantics/reactions.hpp"
 
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/validate.hpp>
@@ -21,7 +22,14 @@ namespace mechanism_configuration::v1
   /// @brief Extracts a located semantics::ReactionsInput from a fully-resolved (inline) v1 YAML
   ///        node, so the version-neutral ValidateReactionsSemantics can run the semantic checks
   ///        with line:col.
-  semantics::ReactionsInput BuildSemanticInput(const YAML::Node& object);
+  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object);
+
+  /// @brief Extracts a located semantics::AerosolInput from a fully-resolved (inline) v1 YAML
+  ///        node, so ValidateAerosolSemantics can run with line:col. Species/phase definitions
+  ///        are always populated; representations/processes/constraints are only populated when
+  ///        both `aerosol representations` and `aerosol processes` are present, matching the
+  ///        gating Build() uses to decide whether mechanism.aerosol gets set at all.
+  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object);
 
   /// @brief Extracts a located semantics::EmissionsInput from a fully-resolved (inline) v1 YAML
   ///        node, so ValidateEmissionsSemantics can run with line:col. Returns a default-empty
@@ -63,7 +71,8 @@ namespace mechanism_configuration::v1
     std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
 
     /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only). Semantic
-    ///        invariants are checked separately by ValidateReactionsSemantics/ValidateEmissionsSemantics.
+    ///        invariants are checked separately by ValidateReactionsSemantics/
+    ///        ValidateEmissionsSemantics/ValidateAerosolSemantics.
     Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if
