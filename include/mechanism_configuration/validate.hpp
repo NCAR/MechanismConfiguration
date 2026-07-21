@@ -16,11 +16,8 @@ namespace mechanism_configuration
   Errors ValidateGasModel(const Mechanism& mechanism);
 
   /// @brief Validates aerosol cross-references against the mechanism's species and phases.
-  ///
   ///        Checks phase/species references, representation-keyed rate-constant maps, and
-  ///        required definition-derived properties. These validations require full domain
-  ///        information unavailable to ValidateReactionsSemantics. Returns no errors if the
-  ///        mechanism has no aerosol section.
+  ///        required definition-derived properties.
   Errors ValidateAerosolModel(const Mechanism& mechanism);
 
   /// @brief Validates a Mechanism's emissions section by converting it to a location-free
@@ -31,8 +28,6 @@ namespace mechanism_configuration
   /// @brief Validates the semantic invariants of a canonical Mechanism, regardless of whether it
   ///        was parsed or constructed in code. Combines ValidateGasModel, ValidateAerosolModel,
   ///        and ValidateEmissionsModel, returning all validation errors.
-  ///
-  ///        Excludes structural/deserialization validation, which is handled by version-specific parsers.
   Errors Validate(const Mechanism& mechanism);
 
 }  // namespace mechanism_configuration

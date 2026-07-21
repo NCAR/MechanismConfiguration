@@ -14,19 +14,6 @@
 
 namespace mechanism_configuration::semantics
 {
-
-  // Intermediate over which the core semantic validation (species, phases, gas-phase reactions)
-  // runs. Both a parsed document and an in-code Mechanism lower into one of these and hand it to
-  // ValidateReactionsSemantics, so those rules live in exactly one place. A parsed document fills
-  // in source locations (so errors carry line:col); an in-code Mechanism leaves them empty.
-  //
-  // Emissions and aerosol cross-references each have their own separate engine (see
-  // detail/semantics/emissions.hpp and detail/semantics/aerosol.hpp) — neither one ever
-  // cross-references species/phases collected here, so bundling them into this Input would be
-  // shared plumbing, not a shared rule set.
-  //
-  // This is an implementation detail of ValidateGasModel
-  // (declared publicly in <mechanism_configuration/validate.hpp>) and is not part of the public API.
   struct PhaseRef
   {
     std::string name;
@@ -53,8 +40,8 @@ namespace mechanism_configuration::semantics
 
 namespace mechanism_configuration
 {
-  /// @brief The single home for the core (species / phase / gas-phase reaction) semantic rules.
-  ///        Errors include `line:col` for any element whose source location was supplied.
+  /// @brief Validates species, phase, gas-phase reaction semantic rules.
+  ///        Errors include `line:col` when the source location is available.
   Errors ValidateReactionsSemantics(const semantics::ReactionsInput& input);
 
 }  // namespace mechanism_configuration

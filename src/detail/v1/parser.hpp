@@ -27,8 +27,7 @@ namespace mechanism_configuration::v1
   /// @brief Extracts a located semantics::AerosolInput from a fully-resolved (inline) v1 YAML
   ///        node, so ValidateAerosolSemantics can run with line:col. Species/phase definitions
   ///        are always populated; representations/processes/constraints are only populated when
-  ///        both `aerosol representations` and `aerosol processes` are present, matching the
-  ///        gating Build() uses to decide whether mechanism.aerosol gets set at all.
+  ///        both `aerosol representations` and `aerosol processes` are present.
   semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object);
 
   /// @brief Extracts a located semantics::EmissionsInput from a fully-resolved (inline) v1 YAML
@@ -70,9 +69,7 @@ namespace mechanism_configuration::v1
     ///        mapping any thrown exception to an error. Uses config_path_ for message prefixes.
     std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
 
-    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only). Semantic
-    ///        invariants are checked separately by ValidateReactionsSemantics/
-    ///        ValidateEmissionsSemantics/ValidateAerosolSemantics.
+    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only).
     Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if

@@ -108,7 +108,7 @@ TEST(ParseAerosol, RejectsHenrysLawEquilibriumWhenSolventHasNoDensity)
   EXPECT_FALSE(parsed);
   ASSERT_FALSE(parsed) << "Expected validation to fail for a missing solvent density.";
   EXPECT_TRUE(HasError(parsed.error(), ErrorCode::RequiredKeyNotFound));
-  // The location should point at the solvent reference (line 31), not just anywhere.
+  // Location points at the solvent (line 31).
   EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequiredKeyNotFound, "31:18"));
 }
 
@@ -116,7 +116,7 @@ TEST(ParseAerosol, RejectsRepresentationReferencingUnknownPhase)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/representation_unknown_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a representation referencing an unknown phase.";
-  // Location points at the offending phase name inside the representation's "phases" list (line 14).
+  // Location points at the phase name inside the representation's "phases" list (line 14).
   EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownPhase, "14:18"));
 }
 
@@ -124,7 +124,7 @@ TEST(ParseAerosol, RejectsDissolvedReactionReferencingUnknownPhase)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/dissolved_reaction_unknown_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a dissolved reaction referencing an unknown phase.";
-  // Location points at the "condensed phase" value (line 22), reused for reactant/product/solvent checks.
+  // Location points at the "condensed phase" value (line 22).
   EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownPhase, "22:26"));
 }
 
@@ -132,7 +132,7 @@ TEST(ParseAerosol, RejectsDissolvedReactionReactantNotRegisteredInPhase)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/dissolved_reaction_reactant_not_in_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a reactant not registered in the reaction's phase.";
-  // Location points at the reactant entry itself (line 25), not the phase or the reaction as a whole.
+  // Location points at the reactant entry itself (line 25).
   EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequestedSpeciesNotRegisteredInPhase, "25:22"));
 }
 
