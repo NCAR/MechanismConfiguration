@@ -15,7 +15,7 @@ namespace mechanism_configuration::v1
 {
   // Structural (schema) validation of v1 species and phases. These check required/optional keys
   // and value shape only; semantic invariants (duplicate names, unknown species, phase membership)
-  // are checked separately by the version-neutral ValidateSemantics on the built Mechanism.
+  // are checked separately by the version-neutral ValidateReactionsSemantics on the built Mechanism.
 
   /// @brief Schema-validates each species entry's keys.
   /// @param species_list YAML node containing species entries

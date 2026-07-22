@@ -20,8 +20,8 @@ namespace mechanism_configuration::v1
   ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
   ///        and collects any structural errors found.
   /// @param object The YAML node representing the reaction
-  /// @param existing_species Unused; semantic checks live in ValidateSemantics
-  /// @param existing_phases Unused; semantic checks live in ValidateSemantics
+  /// @param existing_species Unused; semantic checks live in ValidateReactionsSemantics
+  /// @param existing_phases Unused; semantic checks live in ValidateReactionsSemantics
   /// @return A list of validation errors, if any
   Errors TaylorSeriesParser::CheckSchema(
       const YAML::Node& object,
@@ -67,7 +67,7 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
     }
 
-    // Semantic checks are performed by the version-neutral ValidateSemantics.
+    // Semantic checks are performed by the version-neutral ValidateReactionsSemantics.
 
     return errors;
   }

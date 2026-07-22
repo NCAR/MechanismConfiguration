@@ -138,7 +138,7 @@ namespace mechanism_configuration::v1
       if (type == keys::HenrysLawPhaseTransfer_key)
       {
         // The diffusion coefficient is not given here. It is sourced from the gas-phase
-        // species' definition in the phases section (see ValidateAerosolModel).
+        // species' definition in the phases section (see ValidateAerosolSemantics).
         required_keys = { keys::type,
                           keys::gas_phase,
                           keys::gas_phase_species,
@@ -203,7 +203,7 @@ namespace mechanism_configuration::v1
       else if (type == keys::HenrysLawEquilibrium_key)
       {
         // The solvent's molecular weight and density are not given here; they are sourced from
-        // the solvent species' definition (see ValidateAerosolModel).
+        // the solvent species' definition (see ValidateAerosolSemantics).
         required_keys = { keys::type,
                           keys::gas_phase,
                           keys::gas_phase_species,

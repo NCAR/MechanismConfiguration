@@ -4,6 +4,10 @@
 
 #pragma once
 
+#include "detail/semantics/aerosol.hpp"
+#include "detail/semantics/emissions.hpp"
+#include "detail/semantics/reactions.hpp"
+
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/validate.hpp>
 
@@ -15,9 +19,21 @@
 
 namespace mechanism_configuration::v1
 {
-  /// @brief Extracts a located semantics::Input from a fully-resolved (inline) v1 YAML node, so
-  ///        the version-neutral ValidateSemantics can run the semantic checks with line:col.
-  semantics::Input BuildSemanticInput(const YAML::Node& object);
+  /// @brief Extracts a located semantics::ReactionsInput from a fully-resolved (inline) v1 YAML
+  ///        node, so the version-neutral ValidateReactionsSemantics can run the semantic checks
+  ///        with line:col.
+  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object);
+
+  /// @brief Extracts a located semantics::AerosolInput from a fully-resolved (inline) v1 YAML
+  ///        node, so ValidateAerosolSemantics can run with line:col. Species/phase definitions
+  ///        are always populated; representations/processes/constraints are only populated when
+  ///        both `aerosol representations` and `aerosol processes` are present.
+  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object);
+
+  /// @brief Extracts a located semantics::EmissionsInput from a fully-resolved (inline) v1 YAML
+  ///        node, so ValidateEmissionsSemantics can run with line:col. Returns a default-empty
+  ///        EmissionsInput (validates with no errors) when the document has no `emissions` key.
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object);
 
   class Parser
   {
@@ -53,8 +69,7 @@ namespace mechanism_configuration::v1
     ///        mapping any thrown exception to an error. Uses config_path_ for message prefixes.
     std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
 
-    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only). Semantic
-    ///        invariants are checked separately by ValidateSemantics.
+    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only).
     Errors CheckSchema(const YAML::Node& object);
 
     /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if

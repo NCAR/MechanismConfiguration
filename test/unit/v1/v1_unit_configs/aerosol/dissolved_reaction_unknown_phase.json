@@ -1,0 +1,29 @@
+{
+  "version": "1.2.0",
+  "name": "dissolved reaction references unknown phase",
+  "species": [
+    { "name": "A" }
+  ],
+  "phases": [
+    { "name": "aqueous", "species": ["A"] }
+  ],
+  "aerosol representations": [
+    {
+      "type": "UNIFORM_SECTION",
+      "name": "cloud",
+      "phases": ["aqueous"],
+      "minimum radius [m]": 1.0e-6,
+      "maximum radius [m]": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "DISSOLVED_REACTION",
+      "condensed phase": "not_a_real_phase",
+      "solvent": "A",
+      "reactants": [ { "name": "A", "coefficient": 1 } ],
+      "products": [ { "name": "A", "coefficient": 1 } ],
+      "rate constant": { "type": "ARRHENIUS", "A": 1.0e3, "C": 100.0 }
+    }
+  ]
+}

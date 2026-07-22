@@ -1,0 +1,28 @@
+{
+  "version": "1.2.0",
+  "name": "linear constraint term references unknown phase",
+  "species": [
+    { "name": "A" }
+  ],
+  "phases": [
+    { "name": "aqueous", "species": ["A"] }
+  ],
+  "aerosol representations": [
+    {
+      "type": "UNIFORM_SECTION",
+      "name": "cloud",
+      "phases": ["aqueous"],
+      "minimum radius [m]": 1.0e-6,
+      "maximum radius [m]": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "LINEAR_CONSTRAINT",
+      "algebraic phase": "aqueous",
+      "algebraic species": "A",
+      "diagnose from state": true,
+      "terms": [ { "phase": "not_a_real_phase", "name": "A", "coefficient": 1.0 } ]
+    }
+  ]
+}
