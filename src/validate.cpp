@@ -123,10 +123,9 @@ namespace mechanism_configuration
   {
     Errors errors;
 
-    if (input.representations.empty() && input.dissolved_reactions.empty() &&
-        input.dissolved_reversible_reactions.empty() && input.henrys_law_phase_transfers.empty() &&
-        input.henrys_law_equilibria.empty() && input.dissolved_equilibria.empty() &&
-        input.linear_constraints.empty())
+    if (input.representations.empty() && input.dissolved_reactions.empty() && input.dissolved_reversible_reactions.empty() &&
+        input.henrys_law_phase_transfers.empty() && input.henrys_law_equilibria.empty() &&
+        input.dissolved_equilibria.empty() && input.linear_constraints.empty())
       return errors;
 
     // Index species for molecular weight.
@@ -145,8 +144,8 @@ namespace mechanism_configuration
 
     // Verifies that species is registered in phase. Returns the entry (or nullptr) and reports.
     auto require_registered_species = [&](const semantics::NamedRef& phase,
-                                           const semantics::NamedRef& species,
-                                           const std::string& context) -> const semantics::PhaseSpeciesDef*
+                                          const semantics::NamedRef& species,
+                                          const std::string& context) -> const semantics::PhaseSpeciesDef*
     {
       const auto phase_it = phase_index.find(phase.name);
       if (phase_it == phase_index.end())
@@ -163,7 +162,8 @@ namespace mechanism_configuration
             { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
               Message(
                   species.location,
-                  mc_fmt::format("Species '{}' ({}) is not defined in the '{}' phase.", species.name, context, phase.name)) });
+                  mc_fmt::format(
+                      "Species '{}' ({}) is not defined in the '{}' phase.", species.name, context, phase.name)) });
         return nullptr;
       }
       return species_it->second;
@@ -194,7 +194,8 @@ namespace mechanism_configuration
             { ErrorCode::RequiredKeyNotFound,
               Message(
                   species.location,
-                  mc_fmt::format("{}: species '{}' has no density defined in the '{}' phase.", context, species.name, phase.name)) });
+                  mc_fmt::format(
+                      "{}: species '{}' has no density defined in the '{}' phase.", context, species.name, phase.name)) });
     };
 
     auto require_molecular_weight = [&](const semantics::NamedRef& species, const std::string& context)
