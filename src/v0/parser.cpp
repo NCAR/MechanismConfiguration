@@ -176,6 +176,10 @@ namespace mechanism_configuration::v0
       {
         types::PhaseSpecies phase_species;
         phase_species.name = species.name;
+        // Carry the species-level diffusion coefficient onto the phase species so it survives
+        // into MICM, which reads the coefficient from the phase species (e.g. for surface
+        // reactions) rather than from the species definition.
+        phase_species.diffusion_coefficient = species.diffusion_coefficient;
         gas_phase.species.push_back(phase_species);
       }
       mechanism.phases.push_back(gas_phase);
