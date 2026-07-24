@@ -41,8 +41,10 @@ namespace mechanism_configuration::v0
         parameters.reaction_probability = object[keys::PROBABILITY].as<double>();
       }
 
-      std::string name = "SURF." + object[keys::MUSICA_NAME].as<std::string>();
-      parameters.name = name;
+      // Store the bare MUSICA name, like every other v0 reaction parser. The "SURF."
+      // label prefix is added downstream when the reaction is handed to MICM; prefixing
+      // here too produced a doubled "SURF.SURF." label.
+      parameters.name = object[keys::MUSICA_NAME].as<std::string>();
 
       mechanism.reactions.surface.push_back(parameters);
     }
