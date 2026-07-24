@@ -62,5 +62,25 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
       EXPECT_FALSE(species_vector[3].diffusion_coefficient.has_value());
       EXPECT_FALSE(species_vector[3].absolute_tolerance.has_value());
     }
+
+    // In v0 all species are placed in the gas phase. The species-level diffusion
+    // coefficient must be carried onto the phase species, since MICM reads the
+    // coefficient from the phase species (e.g. for surface reactions).
+    ASSERT_EQ(mechanism.phases.size(), 1);
+    auto& gas_phase = mechanism.phases[0];
+    EXPECT_EQ(gas_phase.name, "gas");
+    ASSERT_EQ(gas_phase.species.size(), 4);
+
+    EXPECT_EQ(gas_phase.species[0].name, "foo");
+    EXPECT_EQ(gas_phase.species[0].diffusion_coefficient, 2.3e-4);
+
+    EXPECT_EQ(gas_phase.species[1].name, "bar");
+    EXPECT_EQ(gas_phase.species[1].diffusion_coefficient, 0.4e-5);
+
+    EXPECT_EQ(gas_phase.species[2].name, "baz");
+    EXPECT_FALSE(gas_phase.species[2].diffusion_coefficient.has_value());
+
+    EXPECT_EQ(gas_phase.species[3].name, "quz");
+    EXPECT_FALSE(gas_phase.species[3].diffusion_coefficient.has_value());
   }
 }
