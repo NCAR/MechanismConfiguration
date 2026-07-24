@@ -63,6 +63,8 @@ TEST(ArrheniusConfig, ParseConfig)
 
     // first reaction
     {
+      // v0 reactions are all placed in the gas phase so the mechanism round-trips to v1.
+      EXPECT_EQ(mechanism.reactions.arrhenius[0].gas_phase, "gas");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants.size(), 2);
       EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[0].name, "foo");
       EXPECT_EQ(mechanism.reactions.arrhenius[0].reactants[1].name, "quz");

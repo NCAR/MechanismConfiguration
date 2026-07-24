@@ -29,7 +29,7 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     Mechanism mechanism = *parsed;
 
     auto& species_vector = mechanism.species;
-    EXPECT_EQ(species_vector.size(), 4);
+    EXPECT_EQ(species_vector.size(), 5);
 
     // first species
     {
@@ -61,6 +61,16 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
       EXPECT_FALSE(species_vector[3].molecular_weight.has_value());
       EXPECT_FALSE(species_vector[3].diffusion_coefficient.has_value());
       EXPECT_FALSE(species_vector[3].absolute_tolerance.has_value());
+      EXPECT_FALSE(species_vector[3].is_third_body.has_value());
+    }
+
+    // fifth species: a THIRD_BODY tracer must set is_third_body so the designation
+    // survives serialization to v1 (which represents third bodies via "is third body").
+    {
+      EXPECT_EQ(species_vector[4].name, "M");
+      EXPECT_EQ(species_vector[4].tracer_type, "THIRD_BODY");
+      ASSERT_TRUE(species_vector[4].is_third_body.has_value());
+      EXPECT_TRUE(species_vector[4].is_third_body.value());
     }
 
     // In v0 all species are placed in the gas phase. The species-level diffusion
@@ -69,7 +79,7 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     ASSERT_EQ(mechanism.phases.size(), 1);
     auto& gas_phase = mechanism.phases[0];
     EXPECT_EQ(gas_phase.name, "gas");
-    ASSERT_EQ(gas_phase.species.size(), 4);
+    ASSERT_EQ(gas_phase.species.size(), 5);
 
     EXPECT_EQ(gas_phase.species[0].name, "foo");
     EXPECT_EQ(gas_phase.species[0].diffusion_coefficient, 2.3e-4);
@@ -82,5 +92,8 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
 
     EXPECT_EQ(gas_phase.species[3].name, "quz");
     EXPECT_FALSE(gas_phase.species[3].diffusion_coefficient.has_value());
+
+    EXPECT_EQ(gas_phase.species[4].name, "M");
+    EXPECT_FALSE(gas_phase.species[4].diffusion_coefficient.has_value());
   }
 }
