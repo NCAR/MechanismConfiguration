@@ -184,6 +184,27 @@ namespace mechanism_configuration::v0
       }
       mechanism.phases.push_back(gas_phase);
 
+      // Every v0 reaction operates in the single gas phase. Name it explicitly so the
+      // mechanism round-trips to v1, whose parser requires each reaction to declare a
+      // (non-empty) gas phase.
+      auto set_gas_phase = [](auto& reaction_vector)
+      {
+        for (auto& reaction : reaction_vector)
+          reaction.gas_phase = "gas";
+      };
+      set_gas_phase(mechanism.reactions.arrhenius);
+      set_gas_phase(mechanism.reactions.branched);
+      set_gas_phase(mechanism.reactions.emission);
+      set_gas_phase(mechanism.reactions.first_order_loss);
+      set_gas_phase(mechanism.reactions.photolysis);
+      set_gas_phase(mechanism.reactions.surface);
+      set_gas_phase(mechanism.reactions.taylor_series);
+      set_gas_phase(mechanism.reactions.troe);
+      set_gas_phase(mechanism.reactions.ternary_chemical_activation);
+      set_gas_phase(mechanism.reactions.tunneling);
+      set_gas_phase(mechanism.reactions.user_defined);
+      set_gas_phase(mechanism.reactions.lambda_rate_constant);
+
       mechanism.version = Version(0, 0, 0);
     }
 

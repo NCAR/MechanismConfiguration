@@ -33,7 +33,15 @@ namespace mechanism_configuration::v0
       if (object[keys::ABS_TOLERANCE])
         species.absolute_tolerance = object[keys::ABS_TOLERANCE].as<double>();
       if (object[keys::TRACER_TYPE])
-        species.tracer_type = object[keys::TRACER_TYPE].as<std::string>();
+      {
+        auto tracer_type = object[keys::TRACER_TYPE].as<std::string>();
+        species.tracer_type = tracer_type;
+        // A THIRD_BODY tracer must also be flagged as a third body so the designation
+        // survives serialization to v1 (which represents it via "is third body"); the
+        // v1 "tracer type" string is not otherwise carried through the unified type.
+        if (tracer_type == keys::THIRD_BODY)
+          species.is_third_body = true;
+      }
 
       // Load remaining keys as unknown properties
       for (auto it = object.begin(); it != object.end(); ++it)
