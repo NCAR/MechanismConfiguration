@@ -92,7 +92,7 @@ namespace mechanism_configuration::v1
     types::Photolysis photolysis;
 
     photolysis.gas_phase = object[keys::gas_phase].as<std::string>();
-    photolysis.reactants = ParseReactionComponent(object, keys::reactants);
+    photolysis.reactants = ParseReactionComponents(object, keys::reactants);
     photolysis.products = ParseReactionComponents(object, keys::products);
     photolysis.unknown_properties = GetComments(object);
 

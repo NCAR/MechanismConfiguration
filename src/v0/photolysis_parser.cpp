@@ -31,15 +31,15 @@ namespace mechanism_configuration::v0
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
+      std::string name = object[keys::MUSICA_NAME].as<std::string>();
 
-      if (!reactants.empty())
-      {
-        std::string name = object[keys::MUSICA_NAME].as<std::string>();
-        types::Photolysis user_defined = {
-          .scaling_factor = scaling_factor, .reactants = reactants[0], .products = products, .name = name
-        };
-        mechanism.reactions.photolysis.push_back(user_defined);
-      }
+      // Reactants may be empty: Music Box Interactive encodes emissions as a
+      // reactant-less photolysis (so they can carry an irr product). Keep the
+      // reaction rather than dropping it.
+      types::Photolysis user_defined = {
+        .scaling_factor = scaling_factor, .reactants = reactants, .products = products, .name = name
+      };
+      mechanism.reactions.photolysis.push_back(user_defined);
     }
 
     return errors;
