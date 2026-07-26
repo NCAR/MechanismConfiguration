@@ -31,10 +31,19 @@ namespace mechanism_configuration::v0
       errors.insert(errors.end(), parse_error.begin(), parse_error.end());
 
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
+      std::string name = object[keys::MUSICA_NAME].as<std::string>();
 
-      if (!reactants.empty())
+      if (reactants.empty())
       {
-        std::string name = object[keys::MUSICA_NAME].as<std::string>();
+        // A photolysis reaction with no reactants is a pure production term --
+        // Music Box Interactive encodes emissions this way (as a photolysis so
+        // they can carry an irr product). Represent it as an emission, which has
+        // no reactant, so it is not silently dropped.
+        types::Emission emission = { .scaling_factor = scaling_factor, .products = products, .name = name };
+        mechanism.reactions.emission.push_back(emission);
+      }
+      else
+      {
         types::Photolysis user_defined = {
           .scaling_factor = scaling_factor, .reactants = reactants[0], .products = products, .name = name
         };

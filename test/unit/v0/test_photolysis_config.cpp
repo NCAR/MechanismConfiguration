@@ -86,6 +86,15 @@ TEST(PhotolysisConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].name, "jbar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
     }
+
+    // A photolysis reaction with no reactants (an emission encoded as photolysis)
+    // is kept as an emission rather than dropped.
+    auto& emissions = mechanism.reactions.emission;
+    ASSERT_EQ(emissions.size(), 1);
+    EXPECT_EQ(emissions[0].name, "jemis");
+    ASSERT_EQ(emissions[0].products.size(), 1);
+    EXPECT_EQ(emissions[0].products[0].name, "foo");
+    EXPECT_EQ(emissions[0].products[0].coefficient, 1.0);
   }
 }
 
