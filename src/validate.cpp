@@ -428,7 +428,7 @@ namespace mechanism_configuration
     for (const auto& x : r.first_order_loss)
       add("FIRST_ORDER_LOSS", x.gas_phase, Refs({ x.reactants }), Refs(x.products));
     for (const auto& x : r.photolysis)
-      add("PHOTOLYSIS", x.gas_phase, Refs({ x.reactants }), Refs(x.products));
+      add("PHOTOLYSIS", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.surface)
       add("SURFACE", x.gas_phase, Refs({ x.gas_phase_species }), Refs(x.gas_phase_products));
     for (const auto& x : r.branched)

@@ -19,4 +19,10 @@ camp-data:
       bar: {}
     scaling factor: 2.5
     type: PHOTOLYSIS
+  - MUSICA name: jemis
+    products:
+      foo:
+        yield: 1.0
+    reactants: {}
+    type: PHOTOLYSIS
   type: MECHANISM
