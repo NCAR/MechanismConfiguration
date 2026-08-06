@@ -61,6 +61,7 @@ namespace mechanism_configuration
     OnlineSourcesNotSupported,
     UnsupportedRegriddingType,
     UnsupportedVerticalInjection,
+    InvalidVerticalProfile,
   };
 
   std::string ErrorCodeToString(const ErrorCode& status);

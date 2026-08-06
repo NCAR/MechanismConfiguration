@@ -11,6 +11,7 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
+#include <vector>
 
 using namespace mechanism_configuration;
 
@@ -57,6 +58,7 @@ TEST(EmissionsV1Parser, ParsesValidConfig)
   EXPECT_EQ(src.species_map, "bc map");
   EXPECT_EQ(src.temporal_interpolation, types::TemporalInterpolation::Linear);
   EXPECT_EQ(src.vertical_injection, types::VerticalInjection::Surface);
+  EXPECT_TRUE(src.vertical_profile.empty());
   EXPECT_EQ(src.category, 0);
   EXPECT_EQ(src.hierarchy, 1);
   EXPECT_DOUBLE_EQ(src.scaling_factor, 1.0);
@@ -199,6 +201,90 @@ TEST(EmissionsV1Parser, RejectsUnsupportedVerticalInjection)
     if (e.first == ErrorCode::UnsupportedVerticalInjection)
       found = true;
   EXPECT_TRUE(found);
+}
+
+TEST(EmissionsV1Parser, ParsesNormalizedVerticalProfile)
+{
+  const std::string content = R"(
+version: 1.0.0
+species: []
+phases: []
+reactions: []
+emissions:
+  inventories:
+    - name: inventory
+      directory: data
+      file pattern: emissions.nc
+      convention: uptempo
+  species maps:
+    - name: map
+      mappings:
+        - inventory species: NOx
+          mechanism species: NO
+  sources:
+    - name: elevated source
+      mode: offline
+      type: anthropogenic
+      inventory: inventory
+      species map: map
+      vertical injection: profile
+      vertical profile: [0.0, 0.25, 0.75]
+)";
+
+  auto result = ParseString(content);
+  ASSERT_TRUE(result) << (result ? "" : result.error()[0].second);
+  ASSERT_TRUE(result->emissions.has_value());
+  ASSERT_EQ(result->emissions->sources.size(), 1u);
+  const auto& source = result->emissions->sources[0];
+  EXPECT_EQ(source.vertical_injection, types::VerticalInjection::Profile);
+  EXPECT_EQ(source.vertical_profile, (std::vector<double>{ 0.0, 0.25, 0.75 }));
+}
+
+TEST(EmissionsV1Parser, RejectsInvalidVerticalProfiles)
+{
+  const std::vector<std::string> invalid_fragments = {
+    "vertical injection: profile\n",
+    "vertical injection: profile\n      vertical profile: []\n",
+    "vertical injection: profile\n      vertical profile: [0.5, -0.5, 1.0]\n",
+    "vertical injection: profile\n      vertical profile: [0.2, 0.2]\n",
+    "vertical injection: surface\n      vertical profile: [1.0]\n",
+  };
+
+  for (const auto& fragment : invalid_fragments)
+  {
+    const std::string content =
+        "version: 1.0.0\n"
+        "species: []\n"
+        "phases: []\n"
+        "reactions: []\n"
+        "emissions:\n"
+        "  inventories:\n"
+        "    - name: inventory\n"
+        "      directory: data\n"
+        "      file pattern: emissions.nc\n"
+        "      convention: uptempo\n"
+        "  species maps:\n"
+        "    - name: map\n"
+        "      mappings:\n"
+        "        - inventory species: NOx\n"
+        "          mechanism species: NO\n"
+        "  sources:\n"
+        "    - name: source\n"
+        "      mode: offline\n"
+        "      type: anthropogenic\n"
+        "      inventory: inventory\n"
+        "      species map: map\n"
+        "      " +
+        fragment;
+
+    auto result = ParseString(content);
+    ASSERT_FALSE(result) << fragment;
+    bool found = false;
+    for (const auto& error : result.error())
+      if (error.first == ErrorCode::InvalidVerticalProfile)
+        found = true;
+    EXPECT_TRUE(found) << fragment;
+  }
 }
 
 TEST(EmissionsV1Parser, AcceptsEmptySourcesList)

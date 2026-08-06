@@ -13,6 +13,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 
+#include <cmath>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -100,6 +101,7 @@ namespace mechanism_configuration::v1
       };
       const std::vector<std::string_view> optional_keys = { keys::temporal_interpolation,
                                                             keys::vertical_injection,
+                                                            keys::vertical_profile,
                                                             keys::category,
                                                             keys::hierarchy,
                                                             keys::scaling_factor,
@@ -141,19 +143,72 @@ namespace mechanism_configuration::v1
             errors.push_back({ ErrorCode::UnknownType, mc_fmt::format("Unknown source type '{}'", type_val) });
         }
 
-        if (item[std::string(keys::vertical_injection)])
+        const YAML::Node vertical_injection_node = item[std::string(keys::vertical_injection)];
+        const YAML::Node vertical_profile_node = item[std::string(keys::vertical_profile)];
+        const std::string vi_val = vertical_injection_node
+                                       ? vertical_injection_node.as<std::string>()
+                                       : std::string(keys::inject_surface);
+        if (vertical_injection_node)
         {
-          const std::string vi_val = item[std::string(keys::vertical_injection)].as<std::string>();
           if (vi_val == std::string(keys::inject_plume))
           {
-            const ErrorLocation loc = LocationOf(item[std::string(keys::vertical_injection)]);
+            const ErrorLocation loc = LocationOf(vertical_injection_node);
             errors.push_back({ ErrorCode::UnsupportedVerticalInjection,
                                mc_fmt::format("{} error: 'vertical injection: plume' is not supported in v1", loc) });
           }
-          else if (vi_val != std::string(keys::inject_surface))
+          else if (vi_val != std::string(keys::inject_surface) && vi_val != std::string(keys::inject_profile))
           {
-            errors.push_back(
-                { ErrorCode::UnknownType, mc_fmt::format("Unknown vertical injection '{}'; expected 'surface'", vi_val) });
+            errors.push_back({ ErrorCode::UnknownType,
+                               mc_fmt::format(
+                                   "Unknown vertical injection '{}'; expected 'surface' or 'profile'", vi_val) });
+          }
+        }
+
+        if (vi_val == std::string(keys::inject_profile) && !vertical_profile_node)
+        {
+          errors.push_back({ ErrorCode::InvalidVerticalProfile,
+                             "'vertical injection: profile' requires a 'vertical profile' sequence" });
+        }
+        else if (vi_val != std::string(keys::inject_profile) && vertical_profile_node)
+        {
+          errors.push_back({ ErrorCode::InvalidVerticalProfile,
+                             "'vertical profile' is only valid with 'vertical injection: profile'" });
+        }
+        else if (vertical_profile_node)
+        {
+          if (!vertical_profile_node.IsSequence() || vertical_profile_node.size() == 0)
+          {
+            errors.push_back({ ErrorCode::InvalidVerticalProfile,
+                               "'vertical profile' must be a nonempty sequence" });
+          }
+          else
+          {
+            double sum = 0.0;
+            bool values_valid = true;
+            for (const auto& fraction : vertical_profile_node)
+            {
+              try
+              {
+                const double value = fraction.as<double>();
+                if (!std::isfinite(value) || value < 0.0)
+                  values_valid = false;
+                sum += value;
+              }
+              catch (const YAML::Exception&)
+              {
+                values_valid = false;
+              }
+            }
+            if (!values_valid)
+            {
+              errors.push_back({ ErrorCode::InvalidVerticalProfile,
+                                 "'vertical profile' values must be finite and nonnegative" });
+            }
+            else if (std::abs(sum - 1.0) > 1.0e-12)
+            {
+              errors.push_back({ ErrorCode::InvalidVerticalProfile,
+                                 mc_fmt::format("'vertical profile' fractions must sum to 1; got {}", sum) });
+            }
           }
         }
       }

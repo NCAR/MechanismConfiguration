@@ -37,6 +37,7 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view species_map = "species map";
   inline constexpr std::string_view temporal_interpolation = "temporal interpolation";
   inline constexpr std::string_view vertical_injection = "vertical injection";
+  inline constexpr std::string_view vertical_profile = "vertical profile";
   inline constexpr std::string_view category = "category";
   inline constexpr std::string_view hierarchy = "hierarchy";
   inline constexpr std::string_view sector = "sector";
@@ -60,6 +61,7 @@ namespace mechanism_configuration::v1::keys
 
   // Vertical injection values
   inline constexpr std::string_view inject_surface = "surface";
+  inline constexpr std::string_view inject_profile = "profile";
   inline constexpr std::string_view inject_plume = "plume";
 
 }  // namespace mechanism_configuration::v1::keys

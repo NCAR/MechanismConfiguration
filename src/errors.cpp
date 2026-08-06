@@ -44,6 +44,7 @@ namespace mechanism_configuration
       case ErrorCode::OnlineSourcesNotSupported: return "OnlineSourcesNotSupported";
       case ErrorCode::UnsupportedRegriddingType: return "UnsupportedRegriddingType";
       case ErrorCode::UnsupportedVerticalInjection: return "UnsupportedVerticalInjection";
+      case ErrorCode::InvalidVerticalProfile: return "InvalidVerticalProfile";
       default: return "Unknown";
     }
   }

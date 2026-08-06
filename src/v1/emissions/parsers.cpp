@@ -37,6 +37,13 @@ namespace mechanism_configuration::v1
         return types::TemporalInterpolation::None;
       return types::TemporalInterpolation::Linear;
     }
+
+    types::VerticalInjection ParseVerticalInjection(const std::string& s)
+    {
+      if (s == std::string(keys::inject_profile))
+        return types::VerticalInjection::Profile;
+      return types::VerticalInjection::Surface;
+    }
   }  // namespace
 
   types::EmissionsConfig ParseEmissions(const YAML::Node& node)
@@ -93,6 +100,14 @@ namespace mechanism_configuration::v1
         if (s[std::string(keys::temporal_interpolation)])
           src.temporal_interpolation =
               ParseTemporalInterpolation(s[std::string(keys::temporal_interpolation)].as<std::string>());
+
+        if (s[std::string(keys::vertical_injection)])
+          src.vertical_injection = ParseVerticalInjection(s[std::string(keys::vertical_injection)].as<std::string>());
+        if (s[std::string(keys::vertical_profile)])
+        {
+          for (const auto& fraction : s[std::string(keys::vertical_profile)])
+            src.vertical_profile.push_back(fraction.as<double>());
+        }
 
         if (s[std::string(keys::category)])
           src.category = s[std::string(keys::category)].as<int>();

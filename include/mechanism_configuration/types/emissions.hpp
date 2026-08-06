@@ -57,6 +57,7 @@ namespace mechanism_configuration::types
   enum class VerticalInjection
   {
     Surface,
+    Profile,
   };
 
   struct SourceDescriptor
@@ -68,6 +69,9 @@ namespace mechanism_configuration::types
     std::string species_map;
     TemporalInterpolation temporal_interpolation{ TemporalInterpolation::Linear };
     VerticalInjection vertical_injection{ VerticalInjection::Surface };
+    /// Fixed bottom-up layer fractions for VerticalInjection::Profile.
+    /// The emissions parser requires finite, nonnegative values summing to 1.
+    std::vector<double> vertical_profile;
     int category{ 0 };
     int hierarchy{ 1 };
     double scaling_factor{ 1.0 };
