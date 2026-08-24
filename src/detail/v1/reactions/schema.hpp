@@ -5,11 +5,8 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types/species.hpp>
 
 #include <yaml-cpp/yaml.h>
-
-#include <vector>
 
 namespace mechanism_configuration::v1
 {
@@ -26,12 +23,7 @@ namespace mechanism_configuration::v1
   /// @brief Schema-validates a YAML list of reactions: each has a defined, recognized type,
   ///        and then each reaction's keys are validated by its parser.
   /// @param reactions_list YAML node containing the list of reactions
-  /// @param existing_species Unused; retained for call-site compatibility
-  /// @param existing_phases Unused; retained for call-site compatibility
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckReactionsSchema(
-      const YAML::Node& reactions_list,
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases);
+  Errors CheckReactionsSchema(const YAML::Node& reactions_list);
 
 }  // namespace mechanism_configuration::v1

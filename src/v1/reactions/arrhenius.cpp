@@ -4,7 +4,6 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types/reactions.hpp>
-#include <mechanism_configuration/types/species.hpp>
 
 #include <detail/constants.hpp>
 #include <detail/error_format.hpp>
@@ -20,13 +19,8 @@ namespace mechanism_configuration::v1
   ///        Performs schema validation, checks for mutually exclusive parameters (`Ea` vs `C`),
   ///        and collects any structural errors found.
   /// @param object The YAML node representing the reaction
-  /// @param existing_species Unused; semantic checks live in ValidateReactionsSemantics
-  /// @param existing_phases Unused; semantic checks live in ValidateReactionsSemantics
   /// @return A list of validation errors, if any
-  Errors ArrheniusParser::CheckSchema(
-      const YAML::Node& object,
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases)
+  Errors ArrheniusParser::CheckSchema(const YAML::Node& object)
   {
     std::vector<std::string_view> required_keys = { keys::reactants, keys::products, keys::type, keys::gas_phase };
     std::vector<std::string_view> optional_keys = { keys::A, keys::B, keys::C, keys::D, keys::E, keys::Ea, keys::name };

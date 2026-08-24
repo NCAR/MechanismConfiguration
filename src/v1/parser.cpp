@@ -470,8 +470,8 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
-    // Species and phases are foundational. If either is invalid, fail fast since all downstream
-    // validation depends on them.
+    // Species and phases are foundational. If either is invalid, fail fast rather than
+    // reporting noisy downstream errors caused by the malformed section.
     schema_errors = CheckSpeciesSchema(object[keys::species]);
     if (!schema_errors.empty())
     {
@@ -480,9 +480,7 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_species = ParseSpecies(object[keys::species]);
-
-    schema_errors = CheckPhasesSchema(object[keys::phases], parsed_species);
+    schema_errors = CheckPhasesSchema(object[keys::phases]);
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -490,12 +488,10 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_phases = ParsePhases(object[keys::phases]);
-
     // Gas-phase reactions are optional (an aerosol-only config may omit them).
     if (has_reactions)
     {
-      schema_errors = CheckReactionsSchema(object[keys::reactions], parsed_species, parsed_phases);
+      schema_errors = CheckReactionsSchema(object[keys::reactions]);
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);

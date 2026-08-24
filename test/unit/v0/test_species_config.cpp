@@ -7,6 +7,8 @@
 
 #include <gtest/gtest.h>
 
+#include <regex>
+
 using namespace mechanism_configuration;
 
 TEST(SpeciesConfig, ValidSpeciesConfig)
@@ -95,5 +97,22 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
 
     EXPECT_EQ(gas_phase.species[4].name, "M");
     EXPECT_FALSE(gas_phase.species[4].diffusion_coefficient.has_value());
+  }
+}
+
+TEST(SpeciesConfig, DetectsUnknownSpeciesInReaction)
+{
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
+  for (auto& extension : extensions)
+  {
+    std::string file = "./v0_unit_configs/species/unknown_species_in_reaction/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    ASSERT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
+    EXPECT_NE(parsed.error()[0].second.find("quz"), std::string::npos);
+    EXPECT_TRUE(std::regex_search(parsed.error()[0].second, std::regex("^\\d+:\\d+ error:")));
   }
 }

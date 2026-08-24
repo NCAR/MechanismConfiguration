@@ -42,7 +42,7 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species)
+  Errors CheckPhasesSchema(const YAML::Node& phases_list)
   {
     // Phase
     const std::vector<std::string_view> required_keys = { keys::name, keys::species };
@@ -53,8 +53,7 @@ namespace mechanism_configuration::v1
 
     // Structural validation only. Duplicate detection, phase-species existence, and
     // phase-membership (semantic checks) are performed by the version-neutral
-    // ValidateReactionsSemantics. existing_species is intentionally unused here.
-    (void)existing_species;
+    // ValidateReactionsSemantics.
     Errors errors;
     for (const auto& object : AsSequence(phases_list))
     {

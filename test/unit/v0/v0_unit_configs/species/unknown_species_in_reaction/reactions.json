@@ -1,0 +1,19 @@
+{
+  "camp-data": [
+    {
+      "name": "unknown species in reaction",
+      "type": "MECHANISM",
+      "reactions": [
+        {
+          "type": "ARRHENIUS",
+          "reactants": {
+            "foo": {}
+          },
+          "products": {
+            "quz": {}
+          }
+        }
+      ]
+    }
+  ]
+}
