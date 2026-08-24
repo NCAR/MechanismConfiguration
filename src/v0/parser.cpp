@@ -10,6 +10,8 @@
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
 
+#include <mechanism_configuration/validate.hpp>
+
 #include <yaml-cpp/yaml.h>
 
 #include <functional>
@@ -206,6 +208,12 @@ namespace mechanism_configuration::v0
       set_gas_phase(mechanism.reactions.lambda_rate_constant);
 
       mechanism.version = Version(0, 0, 0);
+
+      // Structural (per-key) checks above do not catch cross-references such as an
+      // unknown species in a reaction. Run the shared, version-neutral semantic checks
+      // so a v0 mechanism gets the same guarantee of validity as a v1 mechanism.
+      auto semantic_errors = Validate(mechanism);
+      errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
     }
 
     std::expected<Mechanism, Errors> result;

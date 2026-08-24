@@ -5,7 +5,6 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/types/reactions.hpp>
-#include <mechanism_configuration/types/species.hpp>
 
 #include <detail/schema.hpp>
 #include <detail/v1/keys.hpp>
@@ -19,13 +18,8 @@ namespace mechanism_configuration::v1
   ///        Performs structural (schema) validation only;
   ///        and collects any errors found.
   /// @param object The YAML node representing the reaction
-  /// @param existing_species Unused; semantic checks live in ValidateReactionsSemantics
-  /// @param existing_phases Unused; semantic checks live in ValidateReactionsSemantics
   /// @return A list of validation errors, if any
-  Errors UserDefinedParser::CheckSchema(
-      const YAML::Node& object,
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases)
+  Errors UserDefinedParser::CheckSchema(const YAML::Node& object)
   {
     std::vector<std::string_view> required_keys = { keys::reactants, keys::products, keys::type, keys::gas_phase };
     std::vector<std::string_view> optional_keys = { keys::name, keys::scaling_factor };

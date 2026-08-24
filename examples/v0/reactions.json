@@ -106,14 +106,14 @@
           "type": "BRANCHED",
           "reactants": {
             "foo" : { },
-            "quz" : { "qty" :2 }
+            "quuz" : { "qty" :2 }
           },
           "alkoxy products": {
             "bar": { "yield": 1.0 },
             "baz": { "yield": 3.2 }
           },
           "nitrate products": {
-            "quz": { "yield": 1.0 }
+            "quuz": { "yield": 1.0 }
           },
           "Y" : 42.3,
           "X" : 12.3,

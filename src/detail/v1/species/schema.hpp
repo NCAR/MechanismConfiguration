@@ -5,11 +5,8 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types/species.hpp>
 
 #include <yaml-cpp/yaml.h>
-
-#include <vector>
 
 namespace mechanism_configuration::v1
 {
@@ -24,8 +21,7 @@ namespace mechanism_configuration::v1
 
   /// @brief Schema-validates each phase and its phase-species entries.
   /// @param phases_list YAML node containing the list of phase entries
-  /// @param existing_species Unused; retained for call-site compatibility
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::vector<types::Species>& existing_species);
+  Errors CheckPhasesSchema(const YAML::Node& phases_list);
 
 }  // namespace mechanism_configuration::v1

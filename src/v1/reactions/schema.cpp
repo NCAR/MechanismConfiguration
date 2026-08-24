@@ -39,10 +39,7 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  Errors CheckReactionsSchema(
-      const YAML::Node& reactions_list,
-      const std::vector<types::Species>& existing_species,
-      const std::vector<types::Phase>& existing_phases)
+  Errors CheckReactionsSchema(const YAML::Node& reactions_list)
   {
     Errors errors;
 
@@ -82,7 +79,7 @@ namespace mechanism_configuration::v1
 
     for (const auto& [reaction_node, parser] : valid_reactions)
     {
-      auto schema_errors = parser->CheckSchema(reaction_node, existing_species, existing_phases);
+      auto schema_errors = parser->CheckSchema(reaction_node);
       if (!schema_errors.empty())
       {
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());

@@ -80,11 +80,11 @@ camp-data:
         yield: 3.2
     n: 3
     nitrate products:
-      quz:
+      quuz:
         yield: 1.0
     reactants:
       foo: {}
-      quz:
+      quuz:
         qty: 2
     type: BRANCHED
   - X: 0.32
