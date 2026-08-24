@@ -8,6 +8,7 @@
 #include "detail/conversions.hpp"
 #include "detail/location.hpp"
 #include "detail/schema.hpp"
+#include "detail/semantics/collect.hpp"
 #include "detail/semantics/reactions.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
@@ -22,21 +23,6 @@ namespace mechanism_configuration::v0
 
   namespace
   {
-    void CollectMapComponents(const YAML::Node& node, std::vector<semantics::NamedRef>& out)
-    {
-      if (!node)
-        return;
-      for (auto it = node.begin(); it != node.end(); ++it)
-        out.push_back({ it->first.as<std::string>(), LocationOf(it->first) });
-    }
-
-    void CollectBareComponent(const YAML::Node& node, std::vector<semantics::NamedRef>& out)
-    {
-      if (!node)
-        return;
-      out.push_back({ node.as<std::string>(), LocationOf(node) });
-    }
-
     void CollectSemanticInput(const std::string& type, const YAML::Node& element, semantics::ReactionsInput& input)
     {
       if (type == "CHEM_SPEC")
