@@ -1,0 +1,9 @@
+camp-data:
+- name: unknown species in reaction
+  reactions:
+  - reactants:
+      foo: {}
+    products:
+      quz: {}
+    type: ARRHENIUS
+  type: MECHANISM
