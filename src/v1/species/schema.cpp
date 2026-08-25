@@ -21,13 +21,10 @@ namespace mechanism_configuration::v1
   {
     const std::vector<std::string_view> required_keys = { keys::name };
     const std::vector<std::string_view> optional_keys = { keys::absolute_tolerance,
-                                                          keys::diffusion_coefficient,
                                                           keys::molecular_weight,
                                                           keys::henrys_law_constant_298,
                                                           keys::henrys_law_constant_exponential_factor,
                                                           keys::n_star,
-                                                          keys::density,
-                                                          keys::tracer_type,
                                                           keys::constant_concentration,
                                                           keys::constant_mixing_ratio,
                                                           keys::is_third_body };

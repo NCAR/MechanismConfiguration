@@ -1,0 +1,4 @@
+camp-data:
+- name: invalid tracer type
+  reactions: []
+  type: MECHANISM

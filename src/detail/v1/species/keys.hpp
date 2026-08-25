@@ -16,7 +16,6 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view henrys_law_constant_exponential_factor = "HLC exponential factor [K]";
   inline constexpr std::string_view n_star = "N star";
   inline constexpr std::string_view density = "density [kg m-3]";
-  inline constexpr std::string_view tracer_type = "tracer type";
   inline constexpr std::string_view constant_concentration = "constant concentration [mol m-3]";
   inline constexpr std::string_view constant_mixing_ratio = "constant mixing ratio [mol mol-1]";
   inline constexpr std::string_view is_third_body = "is third body";

@@ -70,7 +70,6 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     // survives serialization to v1 (which represents third bodies via "is third body").
     {
       EXPECT_EQ(species_vector[4].name, "M");
-      EXPECT_EQ(species_vector[4].tracer_type, "THIRD_BODY");
       ASSERT_TRUE(species_vector[4].is_third_body.has_value());
       EXPECT_TRUE(species_vector[4].is_third_body.value());
     }
@@ -114,5 +113,21 @@ TEST(SpeciesConfig, DetectsUnknownSpeciesInReaction)
     EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
     EXPECT_NE(parsed.error()[0].second.find("quz"), std::string::npos);
     EXPECT_TRUE(std::regex_search(parsed.error()[0].second, std::regex("^\\d+:\\d+ error:")));
+  }
+}
+
+TEST(SpeciesConfig, DetectsUnknownTracerType)
+{
+  v0::Parser parser;
+  std::vector<std::string> extensions = { ".json", ".yaml" };
+
+  for (auto& extension : extensions)
+  {
+    std::string file = "./v0_unit_configs/species/invalid_tracer_type/config" + extension;
+    auto parsed = parser.Parse(file);
+    EXPECT_FALSE(parsed);
+    ASSERT_EQ(parsed.error().size(), 1);
+    EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownType);
+    EXPECT_NE(parsed.error()[0].second.find("CONSTANT"), std::string::npos);
   }
 }

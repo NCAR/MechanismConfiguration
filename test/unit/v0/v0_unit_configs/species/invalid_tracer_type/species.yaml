@@ -1,0 +1,4 @@
+camp-data:
+- name: M
+  type: CHEM_SPEC
+  tracer type: CONSTANT
