@@ -25,8 +25,6 @@ namespace mechanism_configuration::v1
         species.tracer_type = object[keys::tracer_type].as<std::string>();
       if (object[keys::absolute_tolerance])
         species.absolute_tolerance = object[keys::absolute_tolerance].as<double>();
-      if (object[keys::diffusion_coefficient])
-        species.diffusion_coefficient = object[keys::diffusion_coefficient].as<double>();
       if (object[keys::molecular_weight])
         species.molecular_weight = object[keys::molecular_weight].as<double>();
       if (object[keys::henrys_law_constant_298])
