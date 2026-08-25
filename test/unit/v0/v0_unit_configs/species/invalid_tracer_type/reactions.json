@@ -1,0 +1,10 @@
+{
+  "camp-data": [
+    {
+      "name": "invalid tracer type",
+      "type": "MECHANISM",
+      "reactions": [
+      ]
+    }
+  ]
+}

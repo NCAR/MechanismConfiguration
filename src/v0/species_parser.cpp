@@ -35,12 +35,18 @@ namespace mechanism_configuration::v0
       if (object[keys::TRACER_TYPE])
       {
         auto tracer_type = object[keys::TRACER_TYPE].as<std::string>();
-        species.tracer_type = tracer_type;
-        // A THIRD_BODY tracer must also be flagged as a third body so the designation
-        // survives serialization to v1 (which represents it via "is third body"); the
-        // v1 "tracer type" string is not otherwise carried through the unified type.
         if (tracer_type == keys::THIRD_BODY)
+        {
           species.is_third_body = true;
+        }
+        else
+        {
+          std::string line = std::to_string(object[keys::TRACER_TYPE].Mark().line + 1);
+          std::string column = std::to_string(object[keys::TRACER_TYPE].Mark().column + 1);
+          errors.push_back(
+              { ErrorCode::UnknownType,
+                line + ":" + column + ": Unknown tracer type '" + tracer_type + "'; only 'THIRD_BODY' is supported" });
+        }
       }
 
       // Load remaining keys as unknown properties

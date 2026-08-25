@@ -21,8 +21,6 @@ namespace mechanism_configuration::v1
 
       species.name = object[keys::name].as<std::string>();
 
-      if (object[keys::tracer_type])
-        species.tracer_type = object[keys::tracer_type].as<std::string>();
       if (object[keys::absolute_tolerance])
         species.absolute_tolerance = object[keys::absolute_tolerance].as<double>();
       if (object[keys::molecular_weight])

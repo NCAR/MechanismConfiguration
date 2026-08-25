@@ -62,7 +62,6 @@ These include:
   the Henry's law constant of the species.
 - ``"N star"``: The mass accommodation parameter of the species.
 - ``"density [kg m-3]"``: The density of the species.
-- ``"tracer type"``: A label that describes the treatment of the species by a solver.
 - ``"constant concentration [mol m-3]"``: The constant concentration of the species.
 - ``"constant mixing ratio [mol mol-1]"``: The constant volume mixing ratio of the species.
 - ``"is third body"``: When present and true, the species concentration calculated as the total air density.

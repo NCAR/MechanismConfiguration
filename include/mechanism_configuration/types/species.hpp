@@ -22,7 +22,6 @@ namespace mechanism_configuration::types
     std::optional<double> henrys_law_constant_exponential_factor;
     std::optional<double> n_star;
     std::optional<double> density;
-    std::optional<std::string> tracer_type;
     std::optional<double> constant_concentration;
     std::optional<double> constant_mixing_ratio;
     std::optional<bool> is_third_body;
