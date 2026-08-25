@@ -19,6 +19,7 @@ occupy a volume of arbitrary shape:
              species:
                - name: foo
                  "diffusion coefficient [m2 s-1]": 1.0
+                 "density [kg m-3]": 1000.0
                - name: bar
                  "__custom property": 0.5
                  "__another custom property": "value"
@@ -36,7 +37,8 @@ occupy a volume of arbitrary shape:
                "species": [
                  {
                    "name": "foo",
-                   "diffusion coefficient [m2 s-1]": 1.0
+                   "diffusion coefficient [m2 s-1]": 1.0,
+                   "density [kg m-3]": 1000.0
                  },
                  {
                    "name": "bar",
@@ -64,6 +66,7 @@ multiple phases.
 Each element in the species array can include optional properties:
 
 - ``"diffusion coefficient [m2 s-1]"``: The diffusion coefficient of the species in the phase.
+- ``"density [kg m-3]"``: The density of the species in the phase.
 
 These optional properties are unique to the species and phase combination. They are
 only required when a reaction requires that a particular property be defined (e.g.,

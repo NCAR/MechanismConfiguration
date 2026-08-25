@@ -61,7 +61,6 @@ These include:
 - ``"HLC exponential factor [K]"``: The exponential factor for the temperature dependence of
   the Henry's law constant of the species.
 - ``"N star"``: The mass accommodation parameter of the species.
-- ``"density [kg m-3]"``: The density of the species.
 - ``"constant concentration [mol m-3]"``: The constant concentration of the species.
 - ``"constant mixing ratio [mol mol-1]"``: The constant volume mixing ratio of the species.
 - ``"is third body"``: When present and true, the species concentration calculated as the total air density.

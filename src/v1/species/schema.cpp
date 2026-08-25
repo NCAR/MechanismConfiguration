@@ -25,7 +25,6 @@ namespace mechanism_configuration::v1
                                                           keys::henrys_law_constant_298,
                                                           keys::henrys_law_constant_exponential_factor,
                                                           keys::n_star,
-                                                          keys::density,
                                                           keys::constant_concentration,
                                                           keys::constant_mixing_ratio,
                                                           keys::is_third_body };
