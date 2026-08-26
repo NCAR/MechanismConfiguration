@@ -41,11 +41,7 @@ namespace mechanism_configuration::v0
         }
         else
         {
-          std::string line = std::to_string(object[keys::TRACER_TYPE].Mark().line + 1);
-          std::string column = std::to_string(object[keys::TRACER_TYPE].Mark().column + 1);
-          errors.push_back(
-              { ErrorCode::UnknownType,
-                line + ":" + column + ": Unknown tracer type '" + tracer_type + "'; only 'THIRD_BODY' is supported" });
+          species.unknown_properties["__" + std::string(keys::TRACER_TYPE)] = tracer_type;
         }
       }
 

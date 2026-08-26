@@ -123,11 +123,11 @@ TEST(SpeciesConfig, DetectsUnknownTracerType)
 
   for (auto& extension : extensions)
   {
-    std::string file = "./v0_unit_configs/species/invalid_tracer_type/config" + extension;
+    std::string file = "./v0_unit_configs/species/tracer_type/config" + extension;
     auto parsed = parser.Parse(file);
-    EXPECT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownType);
-    EXPECT_NE(parsed.error()[0].second.find("CONSTANT"), std::string::npos);
+    EXPECT_TRUE(parsed);
+    EXPECT_EQ(parsed->species.size(), 1);
+    EXPECT_EQ(parsed->species[0].name, "M");
+    EXPECT_EQ(parsed->species[0].unknown_properties.at("__tracer type"), "CONSTANT");
   }
 }
