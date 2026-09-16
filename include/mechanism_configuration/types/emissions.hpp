@@ -30,6 +30,12 @@ namespace mechanism_configuration::types
     std::string directory;
     std::string file_pattern;
     std::string convention;
+    // Per inventory-species molecular weight [kg mol-1], keyed by the
+    // inventory's own variable name. Only species whose file stores a
+    // molar/number flux (e.g. "molecules m-2 s-1") need an entry here --
+    // the reader uses it to convert to the mass flux [kg m-2 s-1] the rest
+    // of the pipeline assumes.
+    std::unordered_map<std::string, double> molecular_weights;
   };
 
   enum class SourceMode

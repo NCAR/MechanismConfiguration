@@ -8,6 +8,8 @@ emissions:
       directory: cams
       file pattern: CAMS-GLOB-ANT_{YYYY}-{MM}.nc
       convention: uptempo
+      molecular weights:
+        bc_anth_sum: 0.012
 
   species maps:
     - name: bc map
