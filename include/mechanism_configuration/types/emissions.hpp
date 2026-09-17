@@ -30,6 +30,8 @@ namespace mechanism_configuration::types
     std::string directory;
     std::string file_pattern;
     std::string convention;
+    // [kg mol-1] per inventory species; only needed for a molar/number flux (e.g. "molecules m-2 s-1").
+    std::unordered_map<std::string, double> molecular_weights;
   };
 
   enum class SourceMode

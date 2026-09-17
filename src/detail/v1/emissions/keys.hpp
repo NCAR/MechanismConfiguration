@@ -20,6 +20,7 @@ namespace mechanism_configuration::v1::keys
   inline constexpr std::string_view directory = "directory";
   inline constexpr std::string_view file_pattern = "file pattern";
   inline constexpr std::string_view convention = "convention";
+  inline constexpr std::string_view molecular_weights = "molecular weights";
 
   // Species map entry
   inline constexpr std::string_view mappings = "mappings";

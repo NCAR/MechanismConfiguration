@@ -37,6 +37,8 @@ TEST(EmissionsV1Parser, ParsesValidConfig)
   EXPECT_EQ(em.inventories[0].directory, "cams");
   EXPECT_EQ(em.inventories[0].file_pattern, "CAMS-GLOB-ANT_{YYYY}-{MM}.nc");
   EXPECT_EQ(em.inventories[0].convention, "uptempo");
+  ASSERT_EQ(em.inventories[0].molecular_weights.size(), 1u);
+  EXPECT_DOUBLE_EQ(em.inventories[0].molecular_weights.at("bc_anth_sum"), 0.012);
 
   ASSERT_EQ(em.species_maps.size(), 1u);
   const auto& smap = em.species_maps[0];
@@ -98,6 +100,7 @@ emissions:
   ASSERT_TRUE(result->emissions.has_value());
   ASSERT_EQ(result->emissions->sources.size(), 1u);
   EXPECT_EQ(result->emissions->sources[0].name, "so2 source");
+  EXPECT_TRUE(result->emissions->inventories[0].molecular_weights.empty());
 }
 
 TEST(EmissionsV1Parser, MechanismWithoutEmissionsHasNoEmissions)

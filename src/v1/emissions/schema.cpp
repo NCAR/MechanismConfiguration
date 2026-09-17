@@ -33,7 +33,7 @@ namespace mechanism_configuration::v1
       const std::vector<std::string_view> required_keys = {
         keys::name, keys::directory, keys::file_pattern, keys::convention
       };
-      const std::vector<std::string_view> optional_keys = {};
+      const std::vector<std::string_view> optional_keys = { keys::molecular_weights };
       for (const auto& item : inventories_node)
       {
         auto schema_errors = CheckSchema(item, required_keys, optional_keys);

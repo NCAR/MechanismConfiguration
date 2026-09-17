@@ -52,6 +52,11 @@ namespace mechanism_configuration::v1
         inv.directory = item[std::string(keys::directory)].as<std::string>();
         inv.file_pattern = item[std::string(keys::file_pattern)].as<std::string>();
         inv.convention = item[std::string(keys::convention)].as<std::string>();
+        if (item[std::string(keys::molecular_weights)])
+        {
+          for (const auto& kv : item[std::string(keys::molecular_weights)])
+            inv.molecular_weights[kv.first.as<std::string>()] = kv.second.as<double>();
+        }
         config.inventories.push_back(std::move(inv));
       }
     }
