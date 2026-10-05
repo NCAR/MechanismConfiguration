@@ -26,6 +26,14 @@
           },
           "MUSICA name": "jbar",
           "scaling factor": 2.5
+        },
+        {
+          "type": "PHOTOLYSIS",
+          "reactants": { },
+          "products": {
+            "foo": { "yield": 1.0 }
+          },
+          "MUSICA name": "jemis"
         }
       ]
     }

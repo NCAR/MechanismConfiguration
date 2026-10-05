@@ -4,6 +4,7 @@
 
 #include "detail/constants.hpp"
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 
@@ -60,11 +61,11 @@ TEST(PhotolysisConfig, ParseConfig)
     Mechanism mechanism = *parsed;
 
     auto& process_vector = mechanism.reactions.photolysis;
-    EXPECT_EQ(process_vector.size(), 2);
+    EXPECT_EQ(process_vector.size(), 3);
 
     // first reaction
     {
-      EXPECT_EQ(process_vector[0].reactants.name, "foo");
+      EXPECT_EQ(process_vector[0].reactants[0].name, "foo");
       EXPECT_EQ(process_vector[0].products.size(), 2);
       EXPECT_EQ(process_vector[0].products[0].name, "bar");
       EXPECT_EQ(process_vector[0].products[0].coefficient, 1.0);
@@ -76,7 +77,7 @@ TEST(PhotolysisConfig, ParseConfig)
 
     // second reaction
     {
-      EXPECT_EQ(process_vector[1].reactants.name, "bar");
+      EXPECT_EQ(process_vector[1].reactants[0].name, "bar");
       EXPECT_EQ(process_vector[1].products.size(), 2);
       EXPECT_EQ(process_vector[1].products[0].name, "bar");
       EXPECT_EQ(process_vector[1].products[0].coefficient, 0.5);
@@ -84,6 +85,16 @@ TEST(PhotolysisConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].products[1].coefficient, 1.0);
       EXPECT_EQ(process_vector[1].name, "jbar");
       EXPECT_EQ(process_vector[1].scaling_factor, 2.5);
+    }
+
+    // A photolysis reaction with no reactants (an emission encoded as photolysis)
+    // is kept, with an empty reactants list, rather than dropped.
+    {
+      EXPECT_EQ(process_vector[2].reactants.size(), 0);
+      ASSERT_EQ(process_vector[2].products.size(), 1);
+      EXPECT_EQ(process_vector[2].products[0].name, "foo");
+      EXPECT_EQ(process_vector[2].products[0].coefficient, 1.0);
+      EXPECT_EQ(process_vector[2].name, "jemis");
     }
   }
 }

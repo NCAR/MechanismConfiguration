@@ -43,9 +43,9 @@ suppress_warnings = ["bibtex.missing_field"]
 
 # -- Intersphinx mappings -------------
 intersphinx_mapping = {
-    'micm': ('https://ncar.github.io/micm/', None),
-    'musica': ('https://ncar.github.io/musica/', None),
-    'mb': ('https://ncar.github.io/music-box/', None)
+    'micm': ('https://micm.readthedocs.io/en/latest/', None),
+    'musica': ('https://musica.readthedocs.io/en/latest/', None),
+    'mb': ('https://music-box.readthedocs.io/en/latest/', None)
 }
 
 # -- Options for HTML output -------------------------------------------------

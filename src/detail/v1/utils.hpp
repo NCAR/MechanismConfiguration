@@ -5,8 +5,8 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types.hpp>
 
+#include <detail/location.hpp>
 #include <detail/v1/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
@@ -15,7 +15,6 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 
 namespace mechanism_configuration::v1
 {
@@ -28,9 +27,10 @@ namespace mechanism_configuration::v1
 
   std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
 
-  /// @brief Reads a reaction component's species reference, accepting either the
-  ///        canonical `name` key or the legacy `species name` alias (v1 files).
-  /// @note Assumes the component has already been validated to contain exactly one of them.
-  std::string GetReactionComponentName(const YAML::Node& component);
+  /// @brief Reads a named entry's name, accepting either a bare-string shorthand or an object
+  ///        keyed by the canonical `name` or the legacy `species name` alias (v1 files). Used for
+  ///        species, phase-species, and reaction component entries.
+  /// @note Assumes the entry has already been validated to contain exactly one of them.
+  std::string GetComponentName(const YAML::Node& component);
 
 }  // namespace mechanism_configuration::v1

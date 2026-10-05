@@ -4,9 +4,12 @@
 
 #include "detail/v0/parser.hpp"
 
-#include "detail/check_schema.hpp"
 #include "detail/constants.hpp"
 #include "detail/conversions.hpp"
+#include "detail/location.hpp"
+#include "detail/schema.hpp"
+#include "detail/semantics/collect.hpp"
+#include "detail/semantics/reactions.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
 
@@ -18,7 +21,54 @@ namespace mechanism_configuration::v0
 {
   using ParserMap = std::map<std::string, std::function<Errors(Mechanism&, const YAML::Node&)>>;
 
-  Errors run_parsers(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
+  namespace
+  {
+    void CollectSemanticInput(const std::string& type, const YAML::Node& element, semantics::ReactionsInput& input)
+    {
+      if (type == "CHEM_SPEC")
+      {
+        if (element[keys::NAME])
+          input.species.push_back({ element[keys::NAME].as<std::string>(), LocationOf(element) });
+        return;
+      }
+      if (type == "RELATIVE_TOLERANCE" || type == "MECHANISM")
+        return;
+
+      semantics::ReactionRef ref;
+      ref.type = type;
+      ref.phase = "gas";
+      ref.location = LocationOf(element);
+
+      if (type == "SURFACE")
+      {
+        CollectBareComponent(element[keys::GAS_PHASE_REACTANT], ref.reactants);
+        CollectMapComponents(element[keys::GAS_PHASE_PRODUCTS], ref.products);
+      }
+      else if (type == "FIRST_ORDER_LOSS")
+      {
+        CollectBareComponent(element[keys::SPECIES], ref.reactants);
+      }
+      else if (type == "EMISSION")
+      {
+        CollectBareComponent(element[keys::SPECIES], ref.products);
+      }
+      else
+      {
+        CollectMapComponents(element[keys::REACTANTS], ref.reactants);
+        CollectMapComponents(element[keys::PRODUCTS], ref.products);
+        CollectMapComponents(element[keys::ALKOXY_PRODUCTS], ref.products);
+        CollectMapComponents(element[keys::NITRATE_PRODUCTS], ref.products);
+      }
+
+      input.reactions.push_back(std::move(ref));
+    }
+  }  // namespace
+
+  Errors run_parsers(
+      const ParserMap& parsers,
+      Mechanism& mechanism,
+      const YAML::Node& object,
+      semantics::ReactionsInput& semantic_input)
   {
     Errors errors;
     for (const auto& element : object)
@@ -29,6 +79,7 @@ namespace mechanism_configuration::v0
       {
         auto parse_errors = it->second(mechanism, element);
         errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+        CollectSemanticInput(type, element, semantic_input);
       }
       else
       {
@@ -39,7 +90,11 @@ namespace mechanism_configuration::v0
     return errors;
   }
 
-  Errors ParseMechanism(const ParserMap& parsers, Mechanism& mechanism, const YAML::Node& object)
+  Errors ParseMechanism(
+      const ParserMap& parsers,
+      Mechanism& mechanism,
+      const YAML::Node& object,
+      semantics::ReactionsInput& semantic_input)
   {
     std::vector<std::string_view> required = { keys::NAME, keys::REACTIONS, keys::TYPE };
 
@@ -49,7 +104,7 @@ namespace mechanism_configuration::v0
     if (validate.empty())
     {
       mechanism.name = object[keys::NAME].as<std::string>();
-      auto parse_errors = run_parsers(parsers, mechanism, object[keys::REACTIONS]);
+      auto parse_errors = run_parsers(parsers, mechanism, object[keys::REACTIONS], semantic_input);
       errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
     }
 
@@ -119,6 +174,7 @@ namespace mechanism_configuration::v0
   {
     Errors errors;
     auto mechanism = Mechanism();
+    semantics::ReactionsInput semantic_input;
 
     std::vector<std::filesystem::path> camp_files;
     auto file_errors = GetCampFiles(config_path, camp_files);
@@ -130,7 +186,8 @@ namespace mechanism_configuration::v0
       ParserMap parsers;
 
       std::function<Errors(Mechanism&, const YAML::Node&)> ParseMechanismArray =
-          [&](Mechanism& mechanism, const YAML::Node& object) { return ParseMechanism(parsers, mechanism, object); };
+          [&](Mechanism& mechanism, const YAML::Node& object)
+      { return ParseMechanism(parsers, mechanism, object, semantic_input); };
 
       parsers["CHEM_SPEC"] = ParseChemicalSpecies;
       parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;
@@ -155,7 +212,7 @@ namespace mechanism_configuration::v0
         {
           YAML::Node config_subset = YAML::LoadFile(camp_file.string());
 
-          auto parse_errors = run_parsers(parsers, mechanism, config_subset[CAMP_DATA]);
+          auto parse_errors = run_parsers(parsers, mechanism, config_subset[CAMP_DATA], semantic_input);
           // prepend the file name to the error messages
           for (auto& error : parse_errors)
           {
@@ -176,11 +233,44 @@ namespace mechanism_configuration::v0
       {
         types::PhaseSpecies phase_species;
         phase_species.name = species.name;
+        // Carry the species-level diffusion coefficient onto the phase species so it survives
+        // into MICM, which reads the coefficient from the phase species (e.g. for surface
+        // reactions) rather than from the species definition.
+        phase_species.diffusion_coefficient = species.diffusion_coefficient;
         gas_phase.species.push_back(phase_species);
       }
       mechanism.phases.push_back(gas_phase);
 
+      semantics::PhaseRef gas_phase_ref;
+      gas_phase_ref.name = "gas";
+      gas_phase_ref.species = semantic_input.species;
+      semantic_input.phases.push_back(std::move(gas_phase_ref));
+
+      // Every v0 reaction operates in the single gas phase. Name it explicitly so the
+      // mechanism round-trips to v1, whose parser requires each reaction to declare a
+      // (non-empty) gas phase.
+      auto set_gas_phase = [](auto& reaction_vector)
+      {
+        for (auto& reaction : reaction_vector)
+          reaction.gas_phase = "gas";
+      };
+      set_gas_phase(mechanism.reactions.arrhenius);
+      set_gas_phase(mechanism.reactions.branched);
+      set_gas_phase(mechanism.reactions.emission);
+      set_gas_phase(mechanism.reactions.first_order_loss);
+      set_gas_phase(mechanism.reactions.photolysis);
+      set_gas_phase(mechanism.reactions.surface);
+      set_gas_phase(mechanism.reactions.taylor_series);
+      set_gas_phase(mechanism.reactions.troe);
+      set_gas_phase(mechanism.reactions.ternary_chemical_activation);
+      set_gas_phase(mechanism.reactions.tunneling);
+      set_gas_phase(mechanism.reactions.user_defined);
+      set_gas_phase(mechanism.reactions.lambda_rate_constant);
+
       mechanism.version = Version(0, 0, 0);
+
+      auto semantic_errors = ValidateReactionsSemantics(semantic_input);
+      errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
     }
 
     std::expected<Mechanism, Errors> result;

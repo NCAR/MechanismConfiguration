@@ -5,28 +5,46 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
 
-#include <detail/v1/keys.hpp>
+#include <detail/v1/reactions/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
+#include <map>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace mechanism_configuration::v1
 {
+  /// @brief Parses a YAML node into reaction components
+  /// @param object YAML node representing ReactionComponents
+  /// @param key Key of the sequence to parse
+  /// @return Vector of `types::ReactionComponent` with names, optional coefficients, and comments
+  std::vector<types::ReactionComponent> ParseReactionComponents(const YAML::Node& object, std::string_view key);
+
+  /// @brief Parses a single reaction component from a YAML node.
+  ///        The parser performs no validation or error checking.
+  /// @param object YAML node representing ReactionComponents
+  /// @param key Key identifying the reaction component
+  /// @return The parsed `types::ReactionComponent`, or a default-constructed one if none found
+  types::ReactionComponent ParseReactionComponent(const YAML::Node& object, std::string_view key);
+
+  /// @brief Parses a collection of YAML nodes into reaction objects
+  ///        Iterates over the given YAML nodes, identifies the parser for each reaction type,
+  ///        and populates a `types::Reactions` container with the parsed reactions.
+  /// @param objects YAML node containing multiple reaction definitions
+  /// @return A `types::Reactions` object with all successfully parsed reactions
+  types::Reactions ParseReactions(const YAML::Node& objects);
+
   /// @brief Abstract interface for reaction parsers
   class IReactionParser
   {
    public:
     /// @brief Checks the schema of a YAML node representing a chemical reaction
     /// @param object The YAML node containing reaction information
-    /// @param existing_species A list of species previously defined in the mechanism
-    /// @param existing_phases A list of chemical phases relevant to the reaction
     /// @return A list of any validation errors encountered
-    virtual Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) = 0;
+    virtual Errors CheckSchema(const YAML::Node& object) = 0;
 
     /// @brief Parses a YAML node representing a chemical reaction
     /// @param object The YAML node containing reaction information
@@ -40,10 +58,7 @@ namespace mechanism_configuration::v1
   class ArrheniusParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -51,10 +66,7 @@ namespace mechanism_configuration::v1
   class BranchedParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -62,10 +74,7 @@ namespace mechanism_configuration::v1
   class EmissionParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -73,10 +82,7 @@ namespace mechanism_configuration::v1
   class FirstOrderLossParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -84,10 +90,7 @@ namespace mechanism_configuration::v1
   class PhotolysisParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -95,10 +98,7 @@ namespace mechanism_configuration::v1
   class SurfaceParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -106,10 +106,7 @@ namespace mechanism_configuration::v1
   class TaylorSeriesParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -117,10 +114,7 @@ namespace mechanism_configuration::v1
   class TroeParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -128,10 +122,7 @@ namespace mechanism_configuration::v1
   class TernaryChemicalActivationParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -139,10 +130,7 @@ namespace mechanism_configuration::v1
   class TunnelingParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -150,10 +138,7 @@ namespace mechanism_configuration::v1
   class UserDefinedParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
@@ -161,10 +146,7 @@ namespace mechanism_configuration::v1
   class LambdaRateConstantParser : public IReactionParser
   {
    public:
-    Errors CheckSchema(
-        const YAML::Node& object,
-        const std::vector<types::Species>& existing_species,
-        const std::vector<types::Phase>& existing_phases) override;
+    Errors CheckSchema(const YAML::Node& object) override;
 
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };

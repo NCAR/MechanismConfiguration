@@ -2,8 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include "detail/check_schema.hpp"
 #include "detail/constants.hpp"
+#include "detail/schema.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
@@ -28,9 +28,7 @@ namespace mechanism_configuration::v0
       double scaling_factor = object[keys::SCALING_FACTOR] ? object[keys::SCALING_FACTOR].as<double>() : 1.0;
 
       std::string name = object[keys::MUSICA_NAME].as<std::string>();
-      types::Emission user_defined = {
-        .scaling_factor = scaling_factor, .products = products, .name = name
-      };
+      types::Emission user_defined = { .scaling_factor = scaling_factor, .products = products, .name = name };
       mechanism.reactions.emission.push_back(user_defined);
     }
 

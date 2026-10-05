@@ -1,0 +1,5 @@
+camp-data:
+- name: foo
+  type: CHEM_SPEC
+- name: bar
+  type: CHEM_SPEC

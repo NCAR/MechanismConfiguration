@@ -10,6 +10,6 @@ namespace mechanism_configuration
 {
   namespace conversions
   {
-    constexpr double MolesM3ToMoleculesCm3 = 1.0e-6 * constants::avogadro;
+    constexpr double MOLES_M3_TO_MOLECULES_CM3 = 1.0e-6 * constants::AVOGADRO;
   }  // namespace conversions
 }  // namespace mechanism_configuration

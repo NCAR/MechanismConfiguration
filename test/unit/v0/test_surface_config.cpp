@@ -4,6 +4,7 @@
 
 #include "detail/constants.hpp"
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 
@@ -70,7 +71,7 @@ TEST(SurfaceConfig, ParseConfig)
       EXPECT_EQ(process_vector[0].gas_phase_products[0].coefficient, 1.0);
       EXPECT_EQ(process_vector[0].gas_phase_products[1].name, "baz");
       EXPECT_EQ(process_vector[0].gas_phase_products[1].coefficient, 3.2);
-      EXPECT_EQ(process_vector[0].name, "SURF.kfoo");
+      EXPECT_EQ(process_vector[0].name, "kfoo");
       EXPECT_EQ(process_vector[0].reaction_probability, 1.0);
       auto it = std::find_if(
           mechanism.species.begin(),
@@ -88,7 +89,7 @@ TEST(SurfaceConfig, ParseConfig)
       EXPECT_EQ(process_vector[1].gas_phase_products[0].coefficient, 0.5);
       EXPECT_EQ(process_vector[1].gas_phase_products[1].name, "foo");
       EXPECT_EQ(process_vector[1].gas_phase_products[1].coefficient, 1.0);
-      EXPECT_EQ(process_vector[1].name, "SURF.kbar");
+      EXPECT_EQ(process_vector[1].name, "kbar");
       EXPECT_EQ(process_vector[1].reaction_probability, 0.5);
       auto it = std::find_if(
           mechanism.species.begin(),

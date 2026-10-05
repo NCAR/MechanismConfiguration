@@ -104,13 +104,15 @@ namespace mechanism_configuration
       const Version version(object["version"].as<std::string>());
       if (version.major != 1)
       {
-        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, mc_fmt::format("error: Unsupported version number '{}'.", version.to_string()) } });
+        return std::unexpected(Errors{
+            { ErrorCode::InvalidVersion, mc_fmt::format("error: Unsupported version number '{}'.", version.to_string()) } });
       }
       return v1::Parser{}.Parse(config);
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse configuration string: {}", e.what()) } });
+      return std::unexpected(
+          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse configuration string: {}", e.what()) } });
     }
   }
 

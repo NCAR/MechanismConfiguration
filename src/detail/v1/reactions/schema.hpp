@@ -1,0 +1,29 @@
+// Copyright (C) 2023–2026 University Corporation for Atmospheric Research
+//                         University of Illinois at Urbana-Champaign
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
+
+#include <mechanism_configuration/errors.hpp>
+
+#include <yaml-cpp/yaml.h>
+
+namespace mechanism_configuration::v1
+{
+  // Structural (schema) validation of v1 reactions. These check required/optional keys and value
+  // shape only; semantic invariants (duplicate names, unknown species, phase membership) are
+  // checked separately by the version-neutral ValidateReactionsSemantics on the built Mechanism.
+
+  /// @brief Schema-validates a sequence of reaction components (reactants or products),
+  ///        requiring exactly one of `name` / `species name` plus an optional coefficient.
+  /// @param object YAML node representing a sequence of reactants or products
+  /// @return List of structural errors, or empty if all entries conform
+  Errors CheckReactantsOrProductsSchema(const YAML::Node& object);
+
+  /// @brief Schema-validates a YAML list of reactions: each has a defined, recognized type,
+  ///        and then each reaction's keys are validated by its parser.
+  /// @param reactions_list YAML node containing the list of reactions
+  /// @return List of structural errors, or empty if all entries conform
+  Errors CheckReactionsSchema(const YAML::Node& reactions_list);
+
+}  // namespace mechanism_configuration::v1

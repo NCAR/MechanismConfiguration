@@ -4,50 +4,12 @@
 
 #pragma once
 
-#include <mechanism_configuration/errors.hpp>
-
-#include <array>
-#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 namespace mechanism_configuration::types
 {
-
-  struct Species
-  {
-    std::string name;
-    std::optional<double> absolute_tolerance;
-    std::optional<double> diffusion_coefficient;
-    std::optional<double> molecular_weight;
-    std::optional<double> henrys_law_constant_298;
-    std::optional<double> henrys_law_constant_exponential_factor;
-    std::optional<double> n_star;
-    std::optional<double> density;
-    std::optional<std::string> tracer_type;
-    std::optional<double> constant_concentration;
-    std::optional<double> constant_mixing_ratio;
-    std::optional<bool> is_third_body;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  struct PhaseSpecies
-  {
-    std::string name;
-    std::optional<double> diffusion_coefficient;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
-
-  struct Phase
-  {
-    std::string name;
-    std::vector<PhaseSpecies> species;
-    /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
-  };
 
   struct ReactionComponent
   {
@@ -140,8 +102,8 @@ namespace mechanism_configuration::types
   {
     /// @brief Scaling factor to apply to user-provided rate constants
     double scaling_factor{ 1.0 };
-    /// @brief A single reactant
-    ReactionComponent reactants;
+    /// @brief Reactants (at most one; empty for a pure production term, e.g. an emission)
+    std::vector<ReactionComponent> reactants;
     /// @brief A list of products
     std::vector<ReactionComponent> products;
     /// @brief An identifier, optional, uniqueness not enforced

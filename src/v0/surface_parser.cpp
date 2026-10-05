@@ -2,8 +2,8 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include "detail/check_schema.hpp"
 #include "detail/constants.hpp"
+#include "detail/schema.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser.hpp"
 #include "detail/v0/parser_types.hpp"
@@ -41,8 +41,10 @@ namespace mechanism_configuration::v0
         parameters.reaction_probability = object[keys::PROBABILITY].as<double>();
       }
 
-      std::string name = "SURF." + object[keys::MUSICA_NAME].as<std::string>();
-      parameters.name = name;
+      // Store the bare MUSICA name, like every other v0 reaction parser. The "SURF."
+      // label prefix is added downstream when the reaction is handed to MICM; prefixing
+      // here too produced a doubled "SURF.SURF." label.
+      parameters.name = object[keys::MUSICA_NAME].as<std::string>();
 
       mechanism.reactions.surface.push_back(parameters);
     }

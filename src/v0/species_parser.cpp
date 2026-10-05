@@ -2,7 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
-#include "detail/check_schema.hpp"
+#include "detail/schema.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
 
@@ -33,7 +33,17 @@ namespace mechanism_configuration::v0
       if (object[keys::ABS_TOLERANCE])
         species.absolute_tolerance = object[keys::ABS_TOLERANCE].as<double>();
       if (object[keys::TRACER_TYPE])
-        species.tracer_type = object[keys::TRACER_TYPE].as<std::string>();
+      {
+        auto tracer_type = object[keys::TRACER_TYPE].as<std::string>();
+        if (tracer_type == keys::THIRD_BODY)
+        {
+          species.is_third_body = true;
+        }
+        else
+        {
+          species.unknown_properties["__" + std::string(keys::TRACER_TYPE)] = tracer_type;
+        }
+      }
 
       // Load remaining keys as unknown properties
       for (auto it = object.begin(); it != object.end(); ++it)

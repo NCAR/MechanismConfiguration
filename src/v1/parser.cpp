@@ -4,15 +4,25 @@
 
 #include "detail/v1/parser.hpp"
 
-#include "detail/check_schema.hpp"
 #include "detail/error_format.hpp"
+#include "detail/schema.hpp"
+#include "detail/v1/aerosol/keys.hpp"
+#include "detail/v1/aerosol/parsers.hpp"
+#include "detail/v1/aerosol/schema.hpp"
+#include "detail/v1/emissions/keys.hpp"
+#include "detail/v1/emissions/parsers.hpp"
+#include "detail/v1/emissions/schema.hpp"
 #include "detail/v1/keys.hpp"
-#include "detail/v1/type_parsers.hpp"
-#include "detail/v1/type_schema.hpp"
+#include "detail/v1/reactions/parsers.hpp"
+#include "detail/v1/reactions/schema.hpp"
+#include "detail/v1/species/keys.hpp"
+#include "detail/v1/species/parsers.hpp"
+#include "detail/v1/species/schema.hpp"
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -40,11 +50,6 @@ namespace mechanism_configuration::v1
       return EntityFormat::Invalid;
     }
 
-    ErrorLocation LocationOf(const YAML::Node& node)
-    {
-      return ErrorLocation{ node.Mark().line, node.Mark().column };
-    }
-
     // Appends each component under `key` (reactant- or product-like) as a located reference.
     void CollectComponents(const YAML::Node& reaction, std::string_view key, std::vector<semantics::NamedRef>& out)
     {
@@ -52,17 +57,17 @@ namespace mechanism_configuration::v1
       if (!reaction[k])
         return;
       for (const auto& item : AsSequence(reaction[k]))
-        out.push_back({ GetReactionComponentName(item), LocationOf(item) });
+        out.push_back({ GetComponentName(item), LocationOf(item) });
     }
   }  // namespace
 
-  semantics::Input BuildSemanticInput(const YAML::Node& object)
+  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object)
   {
-    semantics::Input input;
+    semantics::ReactionsInput input;
 
     if (object[std::string(keys::species)])
       for (const auto& s : object[std::string(keys::species)])
-        input.species.push_back({ GetReactionComponentName(s), LocationOf(s) });
+        input.species.push_back({ GetComponentName(s), LocationOf(s) });
 
     if (object[std::string(keys::phases)])
       for (const auto& phase : object[std::string(keys::phases)])
@@ -72,7 +77,7 @@ namespace mechanism_configuration::v1
         pr.location = LocationOf(phase);
         if (phase[std::string(keys::species)])
           for (const auto& ps : phase[std::string(keys::species)])
-            pr.species.push_back({ GetReactionComponentName(ps), LocationOf(ps) });
+            pr.species.push_back({ GetComponentName(ps), LocationOf(ps) });
         input.phases.push_back(std::move(pr));
       }
 
@@ -96,6 +101,195 @@ namespace mechanism_configuration::v1
         CollectComponents(reaction, keys::nitrate_products, rr.products);
         CollectComponents(reaction, keys::gas_phase_products, rr.products);
         input.reactions.push_back(std::move(rr));
+      }
+
+    return input;
+  }
+
+  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object)
+  {
+    semantics::AerosolInput input;
+
+    if (object[std::string(keys::species)])
+      for (const auto& s : object[std::string(keys::species)])
+        input.species.push_back({ GetComponentName(s), static_cast<bool>(s[std::string(keys::molecular_weight)]) });
+
+    if (object[std::string(keys::phases)])
+      for (const auto& phase : object[std::string(keys::phases)])
+      {
+        semantics::PhaseDef phase_def;
+        phase_def.name = phase[std::string(keys::name)].as<std::string>();
+        if (phase[std::string(keys::species)])
+          for (const auto& ps : phase[std::string(keys::species)])
+          {
+            semantics::PhaseSpeciesDef ps_def;
+            ps_def.name = GetComponentName(ps);
+            if (!ps.IsScalar())
+            {
+              ps_def.has_diffusion_coefficient = static_cast<bool>(ps[std::string(keys::diffusion_coefficient)]);
+              ps_def.has_density = static_cast<bool>(ps[std::string(keys::density)]);
+            }
+            phase_def.species.push_back(std::move(ps_def));
+          }
+        input.phases.push_back(std::move(phase_def));
+      }
+
+    // Sets mechanism.aerosol when both keys are present, avoiding errors for references omitted from the built Mechanism.
+    if (!(object[std::string(keys::aerosol_representations)] && object[std::string(keys::aerosol_processes)]))
+      return input;
+
+    for (const auto& rep_node : object[std::string(keys::aerosol_representations)])
+    {
+      semantics::AerosolRepresentationRef ref;
+      ref.name = rep_node[std::string(keys::name)].as<std::string>();
+      ref.location = LocationOf(rep_node);
+      if (rep_node[std::string(keys::phases)])
+        for (const auto& phase_node : rep_node[std::string(keys::phases)])
+          ref.phases.push_back({ phase_node.as<std::string>(), LocationOf(phase_node) });
+      input.representations.push_back(std::move(ref));
+    }
+
+    for (const auto& entry : object[std::string(keys::aerosol_processes)])
+    {
+      const auto type = entry[std::string(keys::type)].as<std::string>();
+
+      if (type == keys::HenrysLawPhaseTransfer_key)
+      {
+        semantics::HenrysLawPhaseTransferRef ref;
+        ref.gas_phase = { entry[std::string(keys::gas_phase)].as<std::string>(),
+                          LocationOf(entry[std::string(keys::gas_phase)]) };
+        ref.gas_species = { entry[std::string(keys::gas_phase_species)].as<std::string>(),
+                            LocationOf(entry[std::string(keys::gas_phase_species)]) };
+        ref.condensed_phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
+                                LocationOf(entry[std::string(keys::condensed_phase)]) };
+        ref.condensed_species = { entry[std::string(keys::condensed_phase_species)].as<std::string>(),
+                                  LocationOf(entry[std::string(keys::condensed_phase_species)]) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+        ref.location = LocationOf(entry);
+        input.henrys_law_phase_transfers.push_back(std::move(ref));
+      }
+      else if (type == keys::DissolvedReaction_key)
+      {
+        semantics::DissolvedReactionRef ref;
+        ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
+                      LocationOf(entry[std::string(keys::condensed_phase)]) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+        CollectComponents(entry, keys::reactants, ref.reactants);
+        CollectComponents(entry, keys::products, ref.products);
+        ref.location = LocationOf(entry);
+        input.dissolved_reactions.push_back(std::move(ref));
+      }
+      else if (type == keys::DissolvedReversibleReaction_key)
+      {
+        semantics::DissolvedReversibleReactionRef ref;
+        ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
+                      LocationOf(entry[std::string(keys::condensed_phase)]) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+        CollectComponents(entry, keys::reactants, ref.reactants);
+        CollectComponents(entry, keys::products, ref.products);
+        ref.location = LocationOf(entry);
+        input.dissolved_reversible_reactions.push_back(std::move(ref));
+      }
+      else if (type == keys::HenrysLawEquilibrium_key)
+      {
+        semantics::HenrysLawEquilibriumRef ref;
+        ref.gas_phase = { entry[std::string(keys::gas_phase)].as<std::string>(),
+                          LocationOf(entry[std::string(keys::gas_phase)]) };
+        ref.gas_species = { entry[std::string(keys::gas_phase_species)].as<std::string>(),
+                            LocationOf(entry[std::string(keys::gas_phase_species)]) };
+        ref.condensed_phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
+                                LocationOf(entry[std::string(keys::condensed_phase)]) };
+        ref.condensed_species = { entry[std::string(keys::condensed_phase_species)].as<std::string>(),
+                                  LocationOf(entry[std::string(keys::condensed_phase_species)]) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+        ref.location = LocationOf(entry);
+        input.henrys_law_equilibria.push_back(std::move(ref));
+      }
+      else if (type == keys::DissolvedEquilibrium_key)
+      {
+        semantics::DissolvedEquilibriumRef ref;
+        ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
+                      LocationOf(entry[std::string(keys::condensed_phase)]) };
+        ref.algebraic_species = { entry[std::string(keys::algebraic_species)].as<std::string>(),
+                                  LocationOf(entry[std::string(keys::algebraic_species)]) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+        CollectComponents(entry, keys::reactants, ref.reactants);
+        CollectComponents(entry, keys::products, ref.products);
+        ref.location = LocationOf(entry);
+        input.dissolved_equilibria.push_back(std::move(ref));
+      }
+      else if (type == keys::LinearConstraint_key)
+      {
+        semantics::LinearConstraintRef ref;
+        ref.algebraic_phase = { entry[std::string(keys::algebraic_phase)].as<std::string>(),
+                                LocationOf(entry[std::string(keys::algebraic_phase)]) };
+        ref.algebraic_species = { entry[std::string(keys::algebraic_species)].as<std::string>(),
+                                  LocationOf(entry[std::string(keys::algebraic_species)]) };
+        if (entry[std::string(keys::terms)])
+          for (const auto& term_node : entry[std::string(keys::terms)])
+          {
+            semantics::LinearConstraintTermRef term_ref;
+            term_ref.phase = { term_node[std::string(keys::phase)].as<std::string>(),
+                               LocationOf(term_node[std::string(keys::phase)]) };
+            term_ref.species = { term_node[std::string(keys::name)].as<std::string>(),
+                                 LocationOf(term_node[std::string(keys::name)]) };
+            ref.terms.push_back(std::move(term_ref));
+          }
+        ref.location = LocationOf(entry);
+        input.linear_constraints.push_back(std::move(ref));
+      }
+    }
+
+    return input;
+  }
+
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object)
+  {
+    semantics::EmissionsInput input;
+
+    if (!object[std::string(keys::emissions)])
+      return input;
+
+    const YAML::Node& emissions_node = object[std::string(keys::emissions)];
+
+    if (emissions_node[std::string(keys::inventories)])
+      for (const auto& item : emissions_node[std::string(keys::inventories)])
+        input.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+
+    if (emissions_node[std::string(keys::species_maps)])
+      for (const auto& item : emissions_node[std::string(keys::species_maps)])
+      {
+        semantics::SpeciesMapRef smap_ref;
+        smap_ref.name = item[std::string(keys::name)].as<std::string>();
+        smap_ref.location = LocationOf(item);
+        if (item[std::string(keys::mappings)])
+          for (const auto& mapping_node : item[std::string(keys::mappings)])
+          {
+            semantics::SpeciesMappingRef mapping_ref;
+            mapping_ref.inventory_species = mapping_node[std::string(keys::inventory_species)].as<std::string>();
+            mapping_ref.mechanism_species = mapping_node[std::string(keys::mechanism_species)].as<std::string>();
+            if (mapping_node[std::string(keys::scaling_factor)])
+              mapping_ref.scaling_factor = mapping_node[std::string(keys::scaling_factor)].as<double>();
+            smap_ref.mappings.push_back(std::move(mapping_ref));
+          }
+        input.species_maps.push_back(std::move(smap_ref));
+      }
+
+    if (emissions_node[std::string(keys::sources)])
+      for (const auto& item : emissions_node[std::string(keys::sources)])
+      {
+        semantics::SourceRef source_ref;
+        source_ref.name = item[std::string(keys::name)].as<std::string>();
+        source_ref.location = LocationOf(item);
+        source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
+                                 LocationOf(item[std::string(keys::inventory)]) };
+        source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
+                                   LocationOf(item[std::string(keys::species_map)]) };
+        if (item[std::string(keys::category)])
+          source_ref.category = item[std::string(keys::category)].as<int>();
+        if (item[std::string(keys::hierarchy)])
+          source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
+        input.sources.push_back(std::move(source_ref));
       }
 
     return input;
@@ -197,6 +391,11 @@ namespace mechanism_configuration::v1
     resolve_section(keys::species);
     resolve_section(keys::phases);
     resolve_section(keys::reactions);
+    resolve_section(keys::aerosol_representations);
+    resolve_section(keys::aerosol_processes);
+
+    if (object[std::string(keys::emissions)])
+      combined[std::string(keys::emissions)] = object[std::string(keys::emissions)];
 
     if (!errors.empty())
     {
@@ -211,8 +410,10 @@ namespace mechanism_configuration::v1
   {
     Errors errors;
 
-    std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases, keys::reactions };
-    std::vector<std::string_view> optional_keys = { keys::name };
+    std::vector<std::string_view> required_keys = { keys::version, keys::species, keys::phases };
+    std::vector<std::string_view> optional_keys = {
+      keys::name, keys::reactions, keys::aerosol_representations, keys::aerosol_processes, keys::emissions
+    };
 
     // Return early if the required keys are not found
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
@@ -220,6 +421,38 @@ namespace mechanism_configuration::v1
     {
       AppendFilePath(config_path_, schema_errors);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      return errors;
+    }
+
+    // A config must define at least one mechanism mode: gas-phase reactions, or the aerosol
+    // pair 'aerosol representations' + 'aerosol processes'. The two modes may also coexist.
+    const bool has_reactions = static_cast<bool>(object[keys::reactions]);
+    const bool has_aerosol_representations = static_cast<bool>(object[keys::aerosol_representations]);
+    const bool has_aerosol_processes = static_cast<bool>(object[keys::aerosol_processes]);
+    if (has_aerosol_representations != has_aerosol_processes)
+    {
+      ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         mc_fmt::format(
+                             "{} error: '{}' and '{}' must be provided together.",
+                             error_location,
+                             keys::aerosol_representations,
+                             keys::aerosol_processes) });
+    }
+    if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
+    {
+      ErrorLocation error_location{ object.Mark().line, object.Mark().column };
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         mc_fmt::format(
+                             "{} error: A configuration must contain either '{}' or both '{}' and '{}'.",
+                             error_location,
+                             keys::reactions,
+                             keys::aerosol_representations,
+                             keys::aerosol_processes) });
+    }
+    if (!errors.empty())
+    {
+      AppendFilePath(config_path_, errors);
       return errors;
     }
 
@@ -237,6 +470,8 @@ namespace mechanism_configuration::v1
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
 
+    // Species and phases are foundational. If either is invalid, fail fast rather than
+    // reporting noisy downstream errors caused by the malformed section.
     schema_errors = CheckSpeciesSchema(object[keys::species]);
     if (!schema_errors.empty())
     {
@@ -245,9 +480,7 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_species = ParseSpecies(object[keys::species]);
-
-    schema_errors = CheckPhasesSchema(object[keys::phases], parsed_species);
+    schema_errors = CheckPhasesSchema(object[keys::phases]);
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -255,14 +488,44 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    auto parsed_phases = ParsePhases(object[keys::phases]);
-
-    schema_errors = CheckReactionsSchema(object[keys::reactions], parsed_species, parsed_phases);
-    if (!schema_errors.empty())
+    // Gas-phase reactions are optional (an aerosol-only config may omit them).
+    if (has_reactions)
     {
-      AppendFilePath(config_path_, schema_errors);
-      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
-      return errors;
+      schema_errors = CheckReactionsSchema(object[keys::reactions]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+    }
+
+    // Aerosol sections are optional.
+    if (has_aerosol_representations && has_aerosol_processes)
+    {
+      schema_errors = CheckAerosolRepresentationsSchema(object[keys::aerosol_representations]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+
+      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+    }
+
+    if (object[std::string(keys::emissions)])
+    {
+      schema_errors = CheckEmissionsSchema(object[std::string(keys::emissions)]);
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+        return errors;
+      }
     }
 
     return errors;
@@ -305,14 +568,18 @@ namespace mechanism_configuration::v1
   {
     try
     {
-      // 1) Structural (schema) validation.
+      // Structural (schema) validation.
       Errors errors = CheckSchema(object);
 
-      // 2) Semantic validation — needs a structurally-valid document, so only run it when
-      //    the structure is clean. Located via BuildSemanticInput so errors carry line:col.
+      // Semantic validation — needs a structurally-valid document, so only run it when
+      // the structure is clean.
       if (errors.empty())
       {
-        auto semantic_errors = ValidateSemantics(BuildSemanticInput(object));
+        auto semantic_errors = ValidateReactionsSemantics(BuildReactionsSemanticInput(object));
+        auto aerosol_errors = ValidateAerosolSemantics(BuildAerosolSemanticInput(object));
+        auto emissions_errors = ValidateEmissionsSemantics(BuildEmissionsSemanticInput(object));
+        semantic_errors.insert(semantic_errors.end(), aerosol_errors.begin(), aerosol_errors.end());
+        semantic_errors.insert(semantic_errors.end(), emissions_errors.begin(), emissions_errors.end());
         AppendFilePath(config_path_, semantic_errors);
         errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
       }
@@ -322,7 +589,6 @@ namespace mechanism_configuration::v1
         return std::unexpected(std::move(errors));
       }
 
-      // 3) Build the Mechanism (only reached when fully valid).
       return Build(object);
     }
     catch (const std::exception& e)
@@ -340,11 +606,22 @@ namespace mechanism_configuration::v1
     mechanism.version = Version(object[keys::version].as<std::string>());
     mechanism.species = ParseSpecies(object[keys::species]);
     mechanism.phases = ParsePhases(object[keys::phases]);
-    mechanism.reactions = ParseReactions(object[keys::reactions]);
 
     if (object[keys::name])
     {
       mechanism.name = object[keys::name].as<std::string>();
+    }
+    if (object[keys::reactions])
+    {
+      mechanism.reactions = ParseReactions(object[keys::reactions]);
+    }
+    if (object[keys::aerosol_representations] && object[keys::aerosol_processes])
+    {
+      mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
+    }
+    if (object[std::string(keys::emissions)])
+    {
+      mechanism.emissions = ParseEmissions(object[std::string(keys::emissions)]);
     }
 
     return mechanism;

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "detail/v0/parser.hpp"
+#include "utils/print.hpp"
 
 #include <gtest/gtest.h>
 

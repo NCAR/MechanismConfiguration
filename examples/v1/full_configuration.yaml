@@ -199,3 +199,36 @@ reactions:
     products:
       - species name: C
         coefficient: 1
+emissions:
+  inventories:
+    - name: cams global anthro
+      directory: cams/v6.2
+      file pattern: CAMS-GLOB-ANT_v6.2_{YYYY}-{MM}.nc
+      convention: uptempo
+  species maps:
+    - name: MOZART-T1 from CAMS
+      mappings:
+        - inventory species: NOx
+          mechanism species: NO
+          scaling factor: 0.9
+        - inventory species: NOx
+          mechanism species: NO2
+          scaling factor: 0.1
+        - inventory species: CO
+          mechanism species: CO
+        - inventory species: bc_anth_sum
+          mechanism species: BC
+  regridding:
+    type: none
+  sources:
+    - name: cams anthro
+      mode: offline
+      type: anthropogenic
+      inventory: cams global anthro
+      species map: MOZART-T1 from CAMS
+      temporal interpolation: linear
+      vertical injection: surface
+      category: 0
+      hierarchy: 1
+      scaling factor: 1.0
+      sector: anthropogenic

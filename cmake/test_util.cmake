@@ -13,9 +13,10 @@ function(create_standard_test)
   add_executable(test_${TEST_NAME} ${TEST_SOURCES})
 
   target_link_libraries(test_${TEST_NAME} PUBLIC musica::mechanism_configuration GTest::gtest_main)
-  target_include_directories(test_${TEST_NAME} 
-    PUBLIC 
+  target_include_directories(test_${TEST_NAME}
+    PUBLIC
       ${PROJECT_SOURCE_DIR}/src
+      ${PROJECT_SOURCE_DIR}/test
   )
 
 

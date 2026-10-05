@@ -7,6 +7,9 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
 #include <mechanism_configuration/parse.hpp>
-#include <mechanism_configuration/types.hpp>
+#include <mechanism_configuration/types/aerosol.hpp>
+#include <mechanism_configuration/types/emissions.hpp>
+#include <mechanism_configuration/types/reactions.hpp>
+#include <mechanism_configuration/types/species.hpp>
 #include <mechanism_configuration/validate.hpp>
 #include <mechanism_configuration/version.hpp>

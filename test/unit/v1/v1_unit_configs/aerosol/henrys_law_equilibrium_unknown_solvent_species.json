@@ -1,0 +1,31 @@
+{
+  "version": "1.2.0",
+  "name": "henrys law equilibrium references unknown solvent species",
+  "species": [
+    { "name": "A", "molecular weight [kg mol-1]": 0.05 }
+  ],
+  "phases": [
+    { "name": "gas", "species": [ { "name": "A", "diffusion coefficient [m2 s-1]": 1.5e-5 } ] },
+    { "name": "aqueous", "species": ["A"] }
+  ],
+  "aerosol representations": [
+    {
+      "type": "UNIFORM_SECTION",
+      "name": "cloud",
+      "phases": ["aqueous"],
+      "minimum radius [m]": 1.0e-6,
+      "maximum radius [m]": 1.0e-5
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "HENRYS_LAW_EQUILIBRIUM",
+      "gas phase": "gas",
+      "gas-phase species": "A",
+      "condensed phase": "aqueous",
+      "condensed-phase species": "A",
+      "solvent": "not_a_real_species",
+      "Henry's law constant": { "HLC_ref [mol m-3 Pa-1]": 1.0e-2, "C [K]": 3000.0 }
+    }
+  ]
+}

@@ -20,6 +20,11 @@
     {
       "name": "quz",
       "type": "CHEM_SPEC"
+    },
+    {
+      "name": "M",
+      "type": "CHEM_SPEC",
+      "tracer type": "THIRD_BODY"
     }
   ]
 }

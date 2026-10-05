@@ -29,8 +29,8 @@ target_sources(mechanism_configuration
   PRIVATE
     errors.cpp
     parse.cpp
+    schema.cpp
     validate.cpp
-    check_schema.cpp
 )
 
 target_include_directories(mechanism_configuration

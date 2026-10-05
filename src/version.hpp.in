@@ -11,23 +11,23 @@ namespace mechanism_configuration
 extern "C" {
 #endif
 
-  const char* getVersionString()
+  inline const char* getVersionString()
   {
     return "@mechanism_configuration_VERSION@";
   }
-  unsigned getVersionMajor()
+  inline unsigned getVersionMajor()
   {
     return @mechanism_configuration_VERSION_MAJOR@;
   }
-  unsigned getVersionMinor()
+  inline unsigned getVersionMinor()
   {
     return @mechanism_configuration_VERSION_MINOR@+0;
   }
-  unsigned getVersionPatch()
+  inline unsigned getVersionPatch()
   {
     return @mechanism_configuration_VERSION_PATCH@+0;
   }
-  unsigned getVersionTweak()
+  inline unsigned getVersionTweak()
   {
     return @mechanism_configuration_VERSION_TWEAK@+0;
   }
