@@ -13,7 +13,7 @@ extern "C" {
 
   inline const char* getVersionString()
   {
-    return "2.0.0";
+    return "2.1.0";
   }
   inline unsigned getVersionMajor()
   {
@@ -21,7 +21,7 @@ extern "C" {
   }
   inline unsigned getVersionMinor()
   {
-    return 0+0;
+    return 1+0;
   }
   inline unsigned getVersionPatch()
   {
