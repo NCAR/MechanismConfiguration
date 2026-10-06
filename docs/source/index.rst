@@ -55,7 +55,7 @@ and validates these configurations.
    user_guide/index
    api/index
    contributing/index
-   citing_and_bibliography/index
+   bibliography
    changelog
 
 Indices and tables
