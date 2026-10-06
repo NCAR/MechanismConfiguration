@@ -27,37 +27,6 @@ CMake downloads the other dependencies (yaml-cpp, and googletest for the tests).
 
 To change the installation directory, set ``CMAKE_INSTALL_PREFIX``.
 
-Options
--------
-
-You can set these CMake options with ``-D<OPTION>=<VALUE>`` or with ``ccmake``.
-
-.. list-table::
-   :header-rows: 1
-   :widths: 40 10 50
-
-   * - Option
-     - Default
-     - Description
-   * - ``MECH_CONFIG_ENABLE_TESTS``
-     - ``ON``
-     - Build the tests
-   * - ``MECH_CONFIG_BUILD_SHARED_LIBS``
-     - ``OFF``
-     - Build a shared library instead of a static library
-   * - ``MECH_CONFIG_BUILD_DOCS``
-     - ``OFF``
-     - Build this documentation
-   * - ``MECH_CONFIG_ENABLE_COVERAGE``
-     - ``OFF``
-     - Make a code coverage report from the tests
-   * - ``MECH_CONFIG_USE_FMT``
-     - ``OFF``
-     - Use the {fmt} library instead of ``std::format``
-   * - ``MECH_CONFIG_COMPILE_WARNING_AS_ERROR``
-     - ``OFF``
-     - Treat compiler warnings as errors
-
 Use the library in a CMake project
 ----------------------------------
 
