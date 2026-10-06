@@ -6,7 +6,7 @@ Emissions
 
 The ``emissions`` section tells an emissions model which inventory files to read, and how
 to put the inventory species into the mechanism species. MUSICA reads this section for
-:doc:`MIEM <miem:index>`. The section is optional.
+:doc:`MIEM <miem:index>`. The section is optional. It requires version ``1.3.0`` or newer (see :ref:`v1-versions`).
 
 The ``emissions`` section is different from the :doc:`../reactions/emission` reaction.
 The ``EMISSION`` reaction adds a species at a rate that the host model gives.

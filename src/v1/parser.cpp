@@ -26,8 +26,10 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <array>
 #include <filesystem>
 #include <string_view>
+#include <utility>
 
 namespace mechanism_configuration::v1
 {
@@ -58,6 +60,79 @@ namespace mechanism_configuration::v1
         return;
       for (const auto& item : AsSequence(reaction[k]))
         out.push_back({ GetComponentName(item), LocationOf(item) });
+    }
+
+    // The newest v1 minor version that this library can parse.
+    constexpr unsigned int NEWEST_MINOR_VERSION = 3;
+
+    // The first v1 minor version that allows each optional top-level section.
+    // The file-list format (minor version 1) is checked in ResolveFileConfig, before any file loads.
+    constexpr std::array<std::pair<std::string_view, unsigned int>, 3> SECTION_MINIMUM_MINOR_VERSION = { {
+        { keys::aerosol_representations, 2 },
+        { keys::aerosol_processes, 2 },
+        { keys::emissions, 3 },
+    } };
+
+    // The first v1 minor version that allows each reaction type. A reaction type that is not
+    // in this table is allowed in all v1 minor versions.
+    constexpr std::array<std::pair<std::string_view, unsigned int>, 0> REACTION_MINIMUM_MINOR_VERSION = {};
+
+    // Checks that the declared minor version is supported, and that it is new enough for
+    // each section and reaction type that the configuration uses.
+    Errors CheckMinorVersion(const YAML::Node& object, const Version& version)
+    {
+      Errors errors;
+      const YAML::Node version_node = object[std::string(keys::version)];
+
+      if (version.minor > NEWEST_MINOR_VERSION)
+      {
+        errors.push_back(
+            { ErrorCode::InvalidVersion,
+              mc_fmt::format(
+                  "{} error: Version '{}' is not supported. The newest supported version is '1.{}'.",
+                  LocationOf(version_node),
+                  version.to_string(),
+                  NEWEST_MINOR_VERSION) });
+        return errors;
+      }
+
+      for (const auto& [section, minimum_minor] : SECTION_MINIMUM_MINOR_VERSION)
+      {
+        const YAML::Node node = object[std::string(section)];
+        if (node && version.minor < minimum_minor)
+          errors.push_back(
+              { ErrorCode::InvalidVersion,
+                mc_fmt::format(
+                    "{} error: '{}' requires version '1.{}' or newer, but the version is '{}'.",
+                    LocationOf(node),
+                    section,
+                    minimum_minor,
+                    version.to_string()) });
+      }
+
+      const YAML::Node reactions = object[std::string(keys::reactions)];
+      if (!reactions || !reactions.IsSequence())
+        return errors;
+      for (const auto& reaction : reactions)
+      {
+        const YAML::Node type_node = reaction[std::string(keys::type)];
+        if (!type_node || !type_node.IsScalar())
+          continue;
+        const std::string type = type_node.as<std::string>();
+        for (const auto& [reaction_type, minimum_minor] : REACTION_MINIMUM_MINOR_VERSION)
+        {
+          if (type == reaction_type && version.minor < minimum_minor)
+            errors.push_back(
+                { ErrorCode::InvalidVersion,
+                  mc_fmt::format(
+                      "{} error: Reaction type '{}' requires version '1.{}' or newer, but the version is '{}'.",
+                      LocationOf(type_node),
+                      type,
+                      minimum_minor,
+                      version.to_string()) });
+        }
+      }
+      return errors;
     }
   }  // namespace
 
@@ -468,6 +543,12 @@ namespace mechanism_configuration::v1
           MAJOR_VERSION,
           version.major);
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
+    }
+    else
+    {
+      auto version_errors = CheckMinorVersion(object, version);
+      AppendFilePath(config_path_, version_errors);
+      errors.insert(errors.end(), version_errors.begin(), version_errors.end());
     }
 
     // Species and phases are foundational. If either is invalid, fail fast rather than

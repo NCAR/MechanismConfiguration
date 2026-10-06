@@ -1,6 +1,28 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Version Checks
+^^^^^^^^^^^^^^
+
+The ``v1`` parser now checks the minor version of a configuration (see :ref:`v1-versions`):
+
+- The ``"aerosol representations"`` and ``"aerosol processes"`` sections require version ``1.2.0`` or newer.
+- The ``emissions`` section requires version ``1.3.0`` or newer.
+- A minor version newer than ``1.3`` is not supported.
+
+A configuration that does not obey these rules gives an ``InvalidVersion`` error. Before this
+change, the parser accepted these sections in any ``1.x`` version. To fix an older configuration,
+set its version to ``1.2.0`` (aerosol) or ``1.3.0`` (emissions).
+
+Other Changes
+^^^^^^^^^^^^^
+
+- The documentation has new pages for the aerosol and emissions sections, an API reference,
+  a getting started guide, and a contributors guide.
+
 Version 2.0.0
 -------------
 

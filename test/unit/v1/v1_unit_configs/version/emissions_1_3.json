@@ -1,0 +1,89 @@
+{
+  "version": "1.3.0",
+  "name": "emissions 1 3",
+  "species": [
+    {
+      "name": "A",
+      "molecular weight [kg mol-1]": 0.05
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O",
+      "molecular weight [kg mol-1]": 0.018
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        {
+          "name": "A",
+          "diffusion coefficient [m2 s-1]": 1.5e-05
+        }
+      ]
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "H2O",
+          "density [kg m-3]": 1000.0
+        }
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "ARRHENIUS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "name": "A"
+        }
+      ],
+      "products": [
+        {
+          "name": "B"
+        }
+      ]
+    }
+  ],
+  "emissions": {
+    "inventories": [
+      {
+        "name": "inv",
+        "directory": "data",
+        "file pattern": "a_{YYYY}.nc",
+        "convention": "uptempo"
+      }
+    ],
+    "species maps": [
+      {
+        "name": "map",
+        "mappings": [
+          {
+            "inventory species": "a",
+            "mechanism species": "A"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "name": "src",
+        "mode": "offline",
+        "type": "anthropogenic",
+        "inventory": "inv",
+        "species map": "map"
+      }
+    ]
+  }
+}
