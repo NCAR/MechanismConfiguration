@@ -1,0 +1,27 @@
+# Doxygen configuration for the API reference. Settings that are not listed here use
+# the Doxygen defaults. Breathe reads the XML output; Doxygen makes no HTML.
+
+PROJECT_NAME           = "Mechanism Configuration"
+OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
+STRIP_FROM_INC_PATH    = @DOXY_INCLUDE_STRIP@
+
+INPUT                  = @DOXYGEN_INPUT_DIR@
+FILE_PATTERNS          = *.hpp
+RECURSIVE              = YES
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_LOCAL_CLASSES  = YES
+
+QUIET                  = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+XML_PROGRAMLISTING     = YES
+
+ENABLE_PREPROCESSING   = YES
+PREDEFINED             = __cplusplus

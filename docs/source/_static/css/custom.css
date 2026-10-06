@@ -1,3 +1,11 @@
+.sd-card-img-top {
+  width: 33% !important;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
 .download-div {
   display: flex;
   flex-direction: row;
@@ -21,4 +29,13 @@
 
 .download-button:hover {
   background-color: #2980b9;
+}
+
+.transparent-image > img {
+  background-color: unset !important;
+}
+
+blockquote {
+  padding: unset;
+  border-left: unset;
 }

@@ -1,6 +1,8 @@
+breathe
 pydata-sphinx-theme
 setuptools
 sphinx
+sphinx-copybutton
 sphinx-design
 sphinx-tabs
 sphinxcontrib-bibtex
