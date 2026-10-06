@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace mechanism_configuration;
 
@@ -36,6 +37,64 @@ TEST(Parse, ParsesFullV1Configuration)
     EXPECT_TRUE(parsed);
     if (parsed)
       EXPECT_EQ(parsed->version.major, 1);
+  }
+}
+
+TEST(Parse, ParsesTheExampleForEachV1MinorVersion)
+{
+  struct Example
+  {
+    std::string path;
+    unsigned int minor;
+    bool has_aerosol;
+    bool has_emissions;
+  };
+  const std::vector<Example> examples = {
+    { "examples/v1/1.0/config.yaml", 0, false, false },      { "examples/v1/1.0/config.json", 0, false, false },
+    { "examples/v1/1.1/yaml/config.yaml", 1, false, false }, { "examples/v1/1.1/json/config.json", 1, false, false },
+    { "examples/v1/1.2/config.yaml", 2, true, false },       { "examples/v1/1.2/config.json", 2, true, false },
+    { "examples/v1/1.3/config.yaml", 3, true, true },        { "examples/v1/1.3/config.json", 3, true, true },
+  };
+
+  for (const auto& example : examples)
+  {
+    auto parsed = Parse(example.path);
+    if (!parsed)
+      for (const auto& [code, message] : parsed.error())
+        std::cout << message << std::endl;
+    ASSERT_TRUE(parsed) << example.path;
+
+    const Mechanism& mechanism = *parsed;
+    EXPECT_EQ(mechanism.version.major, 1) << example.path;
+    EXPECT_EQ(mechanism.version.minor, example.minor) << example.path;
+
+    // Each example has every gas-phase reaction type.
+    const auto& reactions = mechanism.reactions;
+    EXPECT_EQ(reactions.arrhenius.size(), 2) << example.path;
+    EXPECT_EQ(reactions.branched.size(), 1) << example.path;
+    EXPECT_EQ(reactions.emission.size(), 1) << example.path;
+    EXPECT_EQ(reactions.first_order_loss.size(), 1) << example.path;
+    EXPECT_EQ(reactions.lambda_rate_constant.size(), 1) << example.path;
+    EXPECT_EQ(reactions.photolysis.size(), 1) << example.path;
+    EXPECT_EQ(reactions.surface.size(), 1) << example.path;
+    EXPECT_EQ(reactions.taylor_series.size(), 1) << example.path;
+    EXPECT_EQ(reactions.ternary_chemical_activation.size(), 1) << example.path;
+    EXPECT_EQ(reactions.troe.size(), 1) << example.path;
+    EXPECT_EQ(reactions.tunneling.size(), 1) << example.path;
+    EXPECT_EQ(reactions.user_defined.size(), 1) << example.path;
+
+    // The aerosol examples have every representation, process, and constraint type.
+    EXPECT_EQ(mechanism.aerosol.has_value(), example.has_aerosol) << example.path;
+    if (mechanism.aerosol)
+    {
+      EXPECT_EQ(mechanism.aerosol->representations.size(), 3) << example.path;
+      EXPECT_EQ(mechanism.aerosol->processes.size(), 3) << example.path;
+      EXPECT_EQ(mechanism.aerosol->constraints.size(), 3) << example.path;
+    }
+
+    EXPECT_EQ(mechanism.emissions.has_value(), example.has_emissions) << example.path;
+    if (mechanism.emissions)
+      EXPECT_EQ(mechanism.emissions->sources.size(), 1) << example.path;
   }
 }
 

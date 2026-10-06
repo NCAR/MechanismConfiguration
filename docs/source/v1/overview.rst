@@ -43,7 +43,8 @@ of the older minor versions.
      - The ``emissions`` section. See :ref:`v1-emissions`.
 
 The newest version that this library supports is ``1.3.0``. The parser reports an
-``InvalidVersion`` error for a newer minor version.
+``InvalidVersion`` error for a newer minor version. The ``examples/v1`` directory of the
+repository has a complete example for each version. See :doc:`examples/index`.
 
 .. note::
    File-list format requires minor version ``1`` or greater (e.g. ``1.1.0``).

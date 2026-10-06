@@ -20,6 +20,7 @@ set its version to ``1.2.0`` (aerosol) or ``1.3.0`` (emissions).
 Other Changes
 ^^^^^^^^^^^^^
 
+- The ``examples/v1`` directory has a complete example for each minor version.
 - The documentation has new pages for the aerosol and emissions sections, an API reference,
   a getting started guide, and a contributors guide.
 

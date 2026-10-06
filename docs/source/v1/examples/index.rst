@@ -7,6 +7,29 @@ Examples
    :caption: Contents:
 
 
+Examples for Each Version
+=========================
+
+The ``examples/v1`` directory of the
+`repository <https://github.com/NCAR/MechanismConfiguration/tree/main/examples/v1>`_
+has a complete example for each minor version (see :ref:`v1-versions`). Each example has
+a YAML and a JSON form. The tests parse each of these examples.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Directory
+     - Content
+   * - ``examples/v1/1.0``
+     - An inline configuration with every gas-phase reaction type
+   * - ``examples/v1/1.1``
+     - The 1.0 mechanism, split into species, phases, and reactions files with the file-list format
+   * - ``examples/v1/1.2``
+     - The 1.0 mechanism with an aerosol section that has every representation, process, and constraint type
+   * - ``examples/v1/1.3``
+     - The 1.2 mechanism with an emissions section
+
 Chapman
 =======
 
