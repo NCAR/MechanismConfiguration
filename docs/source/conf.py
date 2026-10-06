@@ -117,8 +117,6 @@ html_css_files = [
     'css/custom.css',
 ]
 
-html_favicon = '_static/favicon/favicon.ico'
-
 
 def setup(app):
     app.connect("builder-inited", lambda _app: _ensure_doxygen_xml())
