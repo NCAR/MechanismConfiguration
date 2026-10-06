@@ -47,7 +47,7 @@ You can set these CMake options with ``-D<OPTION>=<VALUE>`` or with ``ccmake``.
      - Build a shared library instead of a static library
    * - ``MECH_CONFIG_BUILD_DOCS``
      - ``OFF``
-     - Build this documentation. See :ref:`Contributing`.
+     - Build this documentation
    * - ``MECH_CONFIG_ENABLE_COVERAGE``
      - ``OFF``
      - Make a code coverage report from the tests
