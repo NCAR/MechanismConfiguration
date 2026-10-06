@@ -133,9 +133,10 @@ TEST(Parse, ParsesV0DirectoryConfiguration)
     EXPECT_EQ(parsed->version.major, 0);
 }
 
-TEST(Parse, ParsesCamCloudChemistryAerosolConfiguration)
+static void ExpectCamCloudChemistry(const std::string& path)
 {
-  auto parsed = Parse("examples/v1/cam_cloud_chemistry.json");
+  SCOPED_TRACE(path);
+  auto parsed = Parse(path);
   if (!parsed)
     for (const auto& [code, message] : parsed.error())
       std::cout << message << std::endl;
@@ -189,6 +190,12 @@ TEST(Parse, ParsesCamCloudChemistryAerosolConfiguration)
   ASSERT_FALSE(linear.terms.empty());
   EXPECT_EQ(linear.terms[0].phase, "gas");
   EXPECT_EQ(linear.terms[0].name, "SO2");
+}
+
+TEST(Parse, ParsesCamCloudChemistryAerosolConfiguration)
+{
+  ExpectCamCloudChemistry("examples/v1/cam_cloud_chemistry.json");
+  ExpectCamCloudChemistry("examples/v1/cam_cloud_chemistry.yaml");
 }
 TEST(Parse, ParsesV1JsonString)
 {

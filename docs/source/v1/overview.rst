@@ -130,6 +130,22 @@ Use version ``1.1.0`` when any section is a file-list.
 
 .. tab-set::
 
+  .. tab-item:: YAML
+
+    .. code-block:: yaml
+
+        version: 1.1.0
+        name: My Mechanism
+        species:
+          - name: A
+          - name: B
+        phases:
+          files:
+            - gas_phase.yaml
+        reactions:
+          files:
+            - reactions.yaml
+
   .. tab-item:: JSON
 
     .. code-block:: json
