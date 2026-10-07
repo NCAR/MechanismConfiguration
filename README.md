@@ -12,7 +12,7 @@ An attempt at defining a model-independent configuration schema for atmospheric 
 
 Copyright (C) 2017–2026 University Corporation for Atmospheric Research, University of Illinois at Urbana–Champaign, Barcelona Supercomputing Center
 
-The configuration documentation can be found [here](https://ncar.github.io/MechanismConfiguration/).
+The documentation is at [mechanismconfiguration.readthedocs.io](https://mechanismconfiguration.readthedocs.io/).
 
 ## Usage
 
@@ -82,10 +82,12 @@ int main()
 
 ## Building the Documentation
 
-With python and pip installed, go to the `docs/` folder and run:
+The documentation needs Python and [Doxygen](https://www.doxygen.nl/). From the root of the repository, run:
 ```
-pip install -r requirements.txt
-make html
+pip install -r docs/requirements.txt
+mkdir build && cd build
+cmake -DMECH_CONFIG_BUILD_DOCS=ON ..
+make docs
 ```
 
-Then, you can navigate to `docs/build/html/index.html` in a browser to view the documentation.
+Then open `build/docs/sphinx/index.html` in a browser.

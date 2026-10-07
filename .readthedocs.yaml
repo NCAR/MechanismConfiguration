@@ -9,6 +9,10 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.13"
+  # conf.py runs CMake and Doxygen to make the XML for the API reference
+  apt_packages:
+    - cmake
+    - doxygen
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:

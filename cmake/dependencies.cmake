@@ -63,3 +63,11 @@ set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 set(YAML_BUILD_SHARED_LIBS ${MECH_CONFIG_BUILD_SHARED_LIBS} CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(yaml-cpp)
+
+################################################################################
+# Docs
+
+if(MECH_CONFIG_BUILD_DOCS)
+  find_package(Doxygen REQUIRED)
+  find_package(Sphinx REQUIRED)
+endif()
