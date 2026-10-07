@@ -67,5 +67,14 @@ CAM Cloud Chemistry
 This example has aerosol representations, processes, and constraints. It describes
 the sulfur chemistry in cloud droplets that CAM uses. See :ref:`v1-aerosol`.
 
-.. literalinclude:: ../../../../examples/v1/cam_cloud_chemistry.json
-    :language: json
+.. tab-set::
+
+    .. tab-item:: YAML
+
+        .. literalinclude:: ../../../../examples/v1/cam_cloud_chemistry.yaml
+            :language: yaml
+
+    .. tab-item:: JSON
+
+        .. literalinclude:: ../../../../examples/v1/cam_cloud_chemistry.json
+            :language: json
