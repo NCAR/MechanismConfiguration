@@ -28,8 +28,10 @@
 
 #include <array>
 #include <filesystem>
+#include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 namespace mechanism_configuration::v1
 {
@@ -79,6 +81,14 @@ namespace mechanism_configuration::v1
     // in this table is allowed in all v1 minor versions.
     constexpr std::array<std::pair<std::string_view, unsigned int>, 0> REACTION_MINIMUM_MINOR_VERSION = {};
 
+    // A feature that the configuration uses, and the first v1 minor version that allows it.
+    struct VersionRequirement
+    {
+      std::string feature;  // the feature name in the error message
+      YAML::Node node;      // the node that the error points to
+      unsigned int minimum_minor;
+    };
+
     // Checks that the declared minor version is supported, and that it is new enough for
     // the file-list format and for each section and reaction type that the configuration uses.
     // Only the unmerged configuration shows the file-list format, so the caller gives it.
@@ -99,50 +109,43 @@ namespace mechanism_configuration::v1
         return errors;
       }
 
-      if (uses_file_list && version.minor < FILE_LIST_MINIMUM_MINOR_VERSION)
-        errors.push_back(
-            { ErrorCode::InvalidVersion,
-              mc_fmt::format(
-                  "{} error: The file-list format requires version '1.{}' or newer, but the version is '{}'.",
-                  LocationOf(version_node),
-                  FILE_LIST_MINIMUM_MINOR_VERSION,
-                  version.to_string()) });
+      std::vector<VersionRequirement> requirements;
+      if (uses_file_list)
+        requirements.push_back({ "The file-list format", version_node, FILE_LIST_MINIMUM_MINOR_VERSION });
 
       for (const auto& [section, minimum_minor] : SECTION_MINIMUM_MINOR_VERSION)
       {
         const YAML::Node node = object[std::string(section)];
-        if (node && version.minor < minimum_minor)
-          errors.push_back(
-              { ErrorCode::InvalidVersion,
-                mc_fmt::format(
-                    "{} error: '{}' requires version '1.{}' or newer, but the version is '{}'.",
-                    LocationOf(node),
-                    section,
-                    minimum_minor,
-                    version.to_string()) });
+        if (node)
+          requirements.push_back({ mc_fmt::format("'{}'", section), node, minimum_minor });
       }
 
       const YAML::Node reactions = object[std::string(keys::reactions)];
-      if (!reactions || !reactions.IsSequence())
-        return errors;
-      for (const auto& reaction : reactions)
+      if (reactions && reactions.IsSequence())
       {
-        const YAML::Node type_node = reaction[std::string(keys::type)];
-        if (!type_node || !type_node.IsScalar())
-          continue;
-        const std::string type = type_node.as<std::string>();
-        for (const auto& [reaction_type, minimum_minor] : REACTION_MINIMUM_MINOR_VERSION)
+        for (const auto& reaction : reactions)
         {
-          if (type == reaction_type && version.minor < minimum_minor)
-            errors.push_back(
-                { ErrorCode::InvalidVersion,
-                  mc_fmt::format(
-                      "{} error: Reaction type '{}' requires version '1.{}' or newer, but the version is '{}'.",
-                      LocationOf(type_node),
-                      type,
-                      minimum_minor,
-                      version.to_string()) });
+          const YAML::Node type_node = reaction[std::string(keys::type)];
+          if (!type_node || !type_node.IsScalar())
+            continue;
+          const std::string type = type_node.as<std::string>();
+          for (const auto& [reaction_type, minimum_minor] : REACTION_MINIMUM_MINOR_VERSION)
+            if (type == reaction_type)
+              requirements.push_back({ mc_fmt::format("Reaction type '{}'", type), type_node, minimum_minor });
         }
+      }
+
+      for (const auto& requirement : requirements)
+      {
+        if (version.minor < requirement.minimum_minor)
+          errors.push_back(
+              { ErrorCode::InvalidVersion,
+                mc_fmt::format(
+                    "{} error: {} requires version '1.{}' or newer, but the version is '{}'.",
+                    LocationOf(requirement.node),
+                    requirement.feature,
+                    requirement.minimum_minor,
+                    version.to_string()) });
       }
       return errors;
     }
