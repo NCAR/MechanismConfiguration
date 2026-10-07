@@ -4,6 +4,7 @@
 create_standard_test(NAME v1_parse_phases SOURCES test_parse_phases.cpp)
 create_standard_test(NAME v1_parse_species SOURCES test_parse_species.cpp)
 create_standard_test(NAME v1_parse_aerosol SOURCES test_parse_aerosol.cpp)
+create_standard_test(NAME v1_parse_version SOURCES test_parse_version.cpp)
 
 ################################################################################
 # Copy test data

@@ -12,9 +12,9 @@
 .. ~ for subsubsubsections
 .. " for paragraphs
 
-#############
-Version 1.0.0
-#############
+#########
+Version 1
+#########
 
 .. toctree::
    :maxdepth: 2

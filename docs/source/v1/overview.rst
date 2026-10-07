@@ -17,6 +17,34 @@ Each of these three sections can be written in one of two formats:
 Both formats can be mixed freely within the same configuration file.
 For example, ``species`` can be inline while ``reactions`` references external files.
 
+.. _v1-versions:
+
+Versions
+========
+
+Each minor version of the v1 format adds features. A configuration must declare a
+version that has all of the features that it uses. If it does not, the parser reports
+an ``InvalidVersion`` error. A newer minor version can still use all of the features
+of the older minor versions.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Version
+     - Adds
+   * - ``1.0.0``
+     - The inline format. All values are in SI units.
+   * - ``1.1.0``
+     - The file-list format
+   * - ``1.2.0``
+     - The ``"aerosol representations"`` and ``"aerosol processes"`` sections. See :ref:`v1-aerosol`.
+   * - ``1.3.0``
+     - The ``emissions`` section. See :ref:`v1-emissions`.
+
+The newest version that this library supports is ``1.3.0``. The parser reports an
+``InvalidVersion`` error for a newer minor version.
+
 .. note::
    File-list format requires minor version ``1`` or greater (e.g. ``1.1.0``).
    Inline-only configurations use minor version ``0`` (e.g. ``1.0.0``).

@@ -10,6 +10,7 @@ which solves the aerosol systems, which enables mixed phase solving of condensed
 and gas-phase chemistry on top of :doc:`MICM <micm:index>`.
 
 The aerosol section is optional, but if include must contain both keys. 
+It requires version ``1.2.0`` or newer (see :ref:`v1-versions`).
 The two top-level keys are ``"aerosol representations"`` and ``"aerosol processes"``:
 
 - ``"aerosol representations"``: a list of the particle populations and the phases in each population.

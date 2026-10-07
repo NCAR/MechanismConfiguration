@@ -1,0 +1,92 @@
+{
+  "version": "1.2.0",
+  "name": "aerosol 1 2",
+  "species": [
+    {
+      "name": "A",
+      "molecular weight [kg mol-1]": 0.05
+    },
+    {
+      "name": "B"
+    },
+    {
+      "name": "H2O",
+      "molecular weight [kg mol-1]": 0.018
+    }
+  ],
+  "phases": [
+    {
+      "name": "gas",
+      "species": [
+        {
+          "name": "A",
+          "diffusion coefficient [m2 s-1]": 1.5e-05
+        }
+      ]
+    },
+    {
+      "name": "aqueous",
+      "species": [
+        {
+          "name": "A"
+        },
+        {
+          "name": "B"
+        },
+        {
+          "name": "H2O",
+          "density [kg m-3]": 1000.0
+        }
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "type": "ARRHENIUS",
+      "gas phase": "gas",
+      "reactants": [
+        {
+          "name": "A"
+        }
+      ],
+      "products": [
+        {
+          "name": "B"
+        }
+      ]
+    }
+  ],
+  "aerosol representations": [
+    {
+      "type": "SINGLE_MOMENT_MODE",
+      "name": "cloud",
+      "phases": [
+        "aqueous"
+      ],
+      "geometric mean radius [m]": 1e-06,
+      "geometric standard deviation": 1.4
+    }
+  ],
+  "aerosol processes": [
+    {
+      "type": "DISSOLVED_REACTION",
+      "condensed phase": "aqueous",
+      "solvent": "H2O",
+      "reactants": [
+        {
+          "name": "A"
+        }
+      ],
+      "products": [
+        {
+          "name": "B"
+        }
+      ],
+      "rate constant": {
+        "type": "ARRHENIUS",
+        "A": 1000.0,
+        "C": 100.0
+      }
+    }
+  ]
+}

@@ -116,6 +116,9 @@ TEST(ParseFromFileConfigs, VersionMismatch)
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
   EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidVersion);
+  EXPECT_NE(
+      parsed.error()[0].second.find("The file-list format requires version '1.1' or newer, but the version is '1.0.0'."),
+      std::string::npos);
   for (const auto& error : parsed.error())
     std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
 }

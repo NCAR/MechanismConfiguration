@@ -70,7 +70,7 @@ TEST(EmissionsV1Parser, ParsesValidConfig)
 TEST(EmissionsV1Parser, ParsesValidConfigFromString)
 {
   const std::string content = R"(
-version: 1.0.0
+version: 1.3.0
 species: []
 phases: []
 reactions: []
@@ -106,7 +106,7 @@ emissions:
 TEST(EmissionsV1Parser, MechanismWithoutEmissionsHasNoEmissions)
 {
   const std::string content = R"(
-version: 1.0.0
+version: 1.3.0
 species: []
 phases: []
 reactions: []
@@ -207,7 +207,7 @@ TEST(EmissionsV1Parser, RejectsUnsupportedVerticalInjection)
 TEST(EmissionsV1Parser, AcceptsEmptySourcesList)
 {
   const std::string content = R"(
-version: 1.0.0
+version: 1.3.0
 species: []
 phases: []
 reactions: []
@@ -223,7 +223,7 @@ emissions:
 TEST(EmissionsV1Parser, AcceptsAbsentOptionalSections)
 {
   const std::string content = R"(
-version: 1.0.0
+version: 1.3.0
 species: []
 phases: []
 reactions: []
