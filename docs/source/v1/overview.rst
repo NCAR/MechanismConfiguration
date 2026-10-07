@@ -123,3 +123,9 @@ The three main components of a mechanism configuration are described here:
 :ref:`v1-phases`
 
 :ref:`v1-reactions`
+
+A configuration can also have these optional top-level sections:
+
+- ``"aerosol representations"`` and ``"aerosol processes"``. See :ref:`v1-aerosol`.
+
+The aerosol sections can use the inline or the file-list format.
