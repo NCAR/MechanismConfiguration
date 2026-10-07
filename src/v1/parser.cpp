@@ -77,10 +77,6 @@ namespace mechanism_configuration::v1
         { keys::emissions, 3 },
     } };
 
-    // The first v1 minor version that allows each reaction type. A reaction type that is not
-    // in this table is allowed in all v1 minor versions.
-    constexpr std::array<std::pair<std::string_view, unsigned int>, 0> REACTION_MINIMUM_MINOR_VERSION = {};
-
     // A feature that the configuration uses, and the first v1 minor version that allows it.
     struct VersionRequirement
     {
@@ -90,7 +86,7 @@ namespace mechanism_configuration::v1
     };
 
     // Checks that the declared minor version is supported, and that it is new enough for
-    // the file-list format and for each section and reaction type that the configuration uses.
+    // the file-list format and for each optional section that the configuration uses.
     // Only the unmerged configuration shows the file-list format, so the caller gives it.
     Errors CheckMinorVersion(const YAML::Node& object, const Version& version, bool uses_file_list)
     {
@@ -118,21 +114,6 @@ namespace mechanism_configuration::v1
         const YAML::Node node = object[std::string(section)];
         if (node)
           requirements.push_back({ mc_fmt::format("'{}'", section), node, minimum_minor });
-      }
-
-      const YAML::Node reactions = object[std::string(keys::reactions)];
-      if (reactions && reactions.IsSequence())
-      {
-        for (const auto& reaction : reactions)
-        {
-          const YAML::Node type_node = reaction[std::string(keys::type)];
-          if (!type_node || !type_node.IsScalar())
-            continue;
-          const std::string type = type_node.as<std::string>();
-          for (const auto& [reaction_type, minimum_minor] : REACTION_MINIMUM_MINOR_VERSION)
-            if (type == reaction_type)
-              requirements.push_back({ mc_fmt::format("Reaction type '{}'", type), type_node, minimum_minor });
-        }
       }
 
       for (const auto& requirement : requirements)
