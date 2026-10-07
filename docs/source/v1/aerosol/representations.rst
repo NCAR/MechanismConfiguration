@@ -4,9 +4,10 @@
 Representations
 ###############
 
-A representation describes how a particle population is distributed in size.
-Each representation holds one or more phases. MIAM makes a copy of the species
-in each of those phases for each representation.
+A representation describes how a particle population is distributed in size, and 
+what parameters are tracked for that population.
+Each representation holds one or more phases and can use the species in those phases.
+All representations are assumed to be internally mixed.
 
 All representations have these keys:
 

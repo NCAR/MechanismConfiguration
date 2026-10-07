@@ -4,16 +4,19 @@
 Aerosol
 #######
 
-The aerosol section describes particles and the chemistry in them. The
-:doc:`MIAM <miam:index>` library solves these systems.
-The aerosol section is optional. Two top-level keys make up the section:
+This section describes the aerosol representations and the processes that 
+mechanism configuration can define. These are used to configure the :doc:`MIAM <miam:index>` library, 
+which solves the aerosol systems, which enables mixed phase solving of condensed-phase chemistry 
+and gas-phase chemistry on top of :doc:`MICM <micm:index>`.
+
+The aerosol section is optional, but if include must contain both keys. 
+The two top-level keys are ``"aerosol representations"`` and ``"aerosol processes"``:
 
 - ``"aerosol representations"``: a list of the particle populations and the phases in each population.
   See :ref:`v1-aerosol-representations`.
 - ``"aerosol processes"``: a list of the processes and constraints that act on the species in those phases.
   See :ref:`v1-aerosol-processes` and :ref:`v1-aerosol-constraints`.
 
-Give both keys. If you give only one of them, the parser reports an error.
 Both lists use the same ``species`` and ``phases`` as the rest of the mechanism.
 Like ``species``, ``phases``, and ``reactions``, each list can be inline or can use the
 file-list format (see :doc:`../overview`).
@@ -161,16 +164,6 @@ sections of the mechanism. If a property is missing, the parser reports an error
    * - ``"molecular weight [kg mol-1]"``
      - The solvent, in the ``species`` list
      - ``HENRYS_LAW_EQUILIBRIUM``
-
-Validation
-==========
-
-The parser and ``Validate()`` check these rules:
-
-- Each phase in a representation exists.
-- Each species that a process or constraint uses is in the phase that the process or constraint names.
-- The solvent of each process and constraint is in its condensed phase.
-- The properties in the table above exist.
 
 .. toctree::
    :maxdepth: 1
