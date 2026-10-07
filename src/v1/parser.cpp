@@ -95,13 +95,12 @@ namespace mechanism_configuration::v1
 
       if (version.minor > NEWEST_MINOR_VERSION)
       {
-        errors.push_back(
-            { ErrorCode::InvalidVersion,
-              mc_fmt::format(
-                  "{} error: Version '{}' is not supported. The newest supported version is '1.{}'.",
-                  LocationOf(version_node),
-                  version.to_string(),
-                  NEWEST_MINOR_VERSION) });
+        errors.push_back({ ErrorCode::InvalidVersion,
+                           mc_fmt::format(
+                               "{} error: Version '{}' is not supported. The newest supported version is '1.{}'.",
+                               LocationOf(version_node),
+                               version.to_string(),
+                               NEWEST_MINOR_VERSION) });
         return errors;
       }
 
@@ -119,14 +118,13 @@ namespace mechanism_configuration::v1
       for (const auto& requirement : requirements)
       {
         if (version.minor < requirement.minimum_minor)
-          errors.push_back(
-              { ErrorCode::InvalidVersion,
-                mc_fmt::format(
-                    "{} error: {} requires version '1.{}' or newer, but the version is '{}'.",
-                    LocationOf(requirement.node),
-                    requirement.feature,
-                    requirement.minimum_minor,
-                    version.to_string()) });
+          errors.push_back({ ErrorCode::InvalidVersion,
+                             mc_fmt::format(
+                                 "{} error: {} requires version '1.{}' or newer, but the version is '{}'.",
+                                 LocationOf(requirement.node),
+                                 requirement.feature,
+                                 requirement.minimum_minor,
+                                 version.to_string()) });
       }
       return errors;
     }
