@@ -65,8 +65,10 @@ namespace mechanism_configuration::v1
     // The newest v1 minor version that this library can parse.
     constexpr unsigned int NEWEST_MINOR_VERSION = 3;
 
+    // The first v1 minor version that allows the file-list format.
+    constexpr unsigned int FILE_LIST_MINIMUM_MINOR_VERSION = 1;
+
     // The first v1 minor version that allows each optional top-level section.
-    // The file-list format (minor version 1) is checked in ResolveFileConfig, before any file loads.
     constexpr std::array<std::pair<std::string_view, unsigned int>, 3> SECTION_MINIMUM_MINOR_VERSION = { {
         { keys::aerosol_representations, 2 },
         { keys::aerosol_processes, 2 },
@@ -78,8 +80,9 @@ namespace mechanism_configuration::v1
     constexpr std::array<std::pair<std::string_view, unsigned int>, 0> REACTION_MINIMUM_MINOR_VERSION = {};
 
     // Checks that the declared minor version is supported, and that it is new enough for
-    // each section and reaction type that the configuration uses.
-    Errors CheckMinorVersion(const YAML::Node& object, const Version& version)
+    // the file-list format and for each section and reaction type that the configuration uses.
+    // Only the unmerged configuration shows the file-list format, so the caller gives it.
+    Errors CheckMinorVersion(const YAML::Node& object, const Version& version, bool uses_file_list)
     {
       Errors errors;
       const YAML::Node version_node = object[std::string(keys::version)];
@@ -95,6 +98,15 @@ namespace mechanism_configuration::v1
                   NEWEST_MINOR_VERSION) });
         return errors;
       }
+
+      if (uses_file_list && version.minor < FILE_LIST_MINIMUM_MINOR_VERSION)
+        errors.push_back(
+            { ErrorCode::InvalidVersion,
+              mc_fmt::format(
+                  "{} error: The file-list format requires version '1.{}' or newer, but the version is '{}'.",
+                  LocationOf(version_node),
+                  FILE_LIST_MINIMUM_MINOR_VERSION,
+                  version.to_string()) });
 
       for (const auto& [section, minimum_minor] : SECTION_MINIMUM_MINOR_VERSION)
       {
@@ -448,19 +460,21 @@ namespace mechanism_configuration::v1
           break;
       }
     };
-    // A file-list layout requires minor version >= 1; check before loading any files.
+    // Check the minor version before loading any files.
     const bool uses_filelist = (object[std::string(keys::species)] &&
                                 GetEntityFormat(object[std::string(keys::species)]) == EntityFormat::FileList) ||
                                (object[std::string(keys::phases)] &&
                                 GetEntityFormat(object[std::string(keys::phases)]) == EntityFormat::FileList) ||
                                (object[std::string(keys::reactions)] &&
                                 GetEntityFormat(object[std::string(keys::reactions)]) == EntityFormat::FileList);
-    if (uses_filelist && version.minor < 1)
+    if (version.major == 1)
     {
-      errors.push_back({ ErrorCode::InvalidVersion,
-                         "File-list format requires minor version >= 1, got " + std::to_string(version.minor) + "." });
-      AppendFilePath(config_path_, errors);
-      return std::unexpected(std::move(errors));
+      auto version_errors = CheckMinorVersion(object, version, uses_filelist);
+      if (!version_errors.empty())
+      {
+        AppendFilePath(config_path_, version_errors);
+        return std::unexpected(std::move(version_errors));
+      }
     }
 
     resolve_section(keys::species);
@@ -546,7 +560,8 @@ namespace mechanism_configuration::v1
     }
     else
     {
-      auto version_errors = CheckMinorVersion(object, version);
+      // A file configuration is already merged here, so its file-list format was checked in ResolveFileConfig.
+      auto version_errors = CheckMinorVersion(object, version, false);
       AppendFilePath(config_path_, version_errors);
       errors.insert(errors.end(), version_errors.begin(), version_errors.end());
     }
