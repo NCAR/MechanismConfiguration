@@ -25,4 +25,5 @@ Version 1.0.0
    phases/index
    reactions/index
    aerosol/index
+   emissions/index
    examples/index
