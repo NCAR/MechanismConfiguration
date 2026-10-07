@@ -24,4 +24,5 @@ Version 1.0.0
    chemical_species/index
    phases/index
    reactions/index
+   aerosol/index
    examples/index

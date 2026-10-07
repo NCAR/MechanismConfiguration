@@ -93,7 +93,8 @@ breathe_projects = {
 intersphinx_mapping = {
     'micm': ('https://micm.readthedocs.io/en/latest/', None),
     'musica': ('https://musica.readthedocs.io/en/latest/', None),
-    'mb': ('https://music-box.readthedocs.io/en/latest/', None)
+    'mb': ('https://music-box.readthedocs.io/en/latest/', None),
+    'miam': ('https://miam.readthedocs.io/en/latest/', None)
 }
 
 # -- Options for HTML output -------------------------------------------------
