@@ -29,6 +29,8 @@ a YAML and a JSON form. The tests parse each of these examples.
      - The 1.0 mechanism with an aerosol section that has every representation, process, and constraint type
    * - ``examples/v1/1.3``
      - The 1.2 mechanism with an emissions section
+   * - ``examples/v1/1.4``
+     - The 1.3 mechanism with a ``TERNARY_CHEMICAL_ACTIVATION_JPL19`` reaction
 
 Chapman
 =======

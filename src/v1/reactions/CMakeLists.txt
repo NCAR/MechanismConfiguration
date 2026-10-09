@@ -10,6 +10,7 @@ target_sources(mechanism_configuration
     surface.cpp
     taylor_series.cpp
     ternary_chemical_activation.cpp
+    ternary_chemical_activation_jpl19.cpp
     troe.cpp
     tunneling.cpp
     user_defined.cpp

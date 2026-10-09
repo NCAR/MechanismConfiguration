@@ -219,6 +219,49 @@ namespace mechanism_configuration::types
     std::unordered_map<std::string, std::string> unknown_properties;
   };
 
+  /// @brief Ternary chemical activation as defined in JPL-19: the sum of a Troe term and a chemical activation term
+  struct TernaryChemicalActivationJPL19
+  {
+    /// @brief low-pressure limit pre-exponential factor
+    double k0_A = 1.0;
+    /// @brief low-pressure limit temperature-scaling parameter
+    double k0_B = 0.0;
+    /// @brief low-pressure limit exponential factor
+    double k0_C = 0.0;
+    /// @brief low-pressure limit reference temperature [K]
+    double k0_D = 298.0;
+    /// @brief high-pressure limit pre-exponential factor
+    double kinf_A = 1.0;
+    /// @brief high-pressure limit temperature-scaling parameter
+    double kinf_B = 0.0;
+    /// @brief high-pressure limit exponential factor
+    double kinf_C = 0.0;
+    /// @brief high-pressure limit reference temperature [K]
+    double kinf_D = 298.0;
+    /// @brief chemical activation (k_int) pre-exponential factor
+    double kint_A = 1.0;
+    /// @brief chemical activation (k_int) temperature-scaling parameter
+    double kint_B = 0.0;
+    /// @brief chemical activation (k_int) exponential factor
+    double kint_C = 0.0;
+    /// @brief chemical activation (k_int) reference temperature [K] (does not affect the result when kint_B = 0)
+    double kint_D = 298.0;
+    /// @brief TernaryChemicalActivationJPL19 F_c parameter
+    double Fc = 0.6;
+    /// @brief TernaryChemicalActivationJPL19 N parameter
+    double N = 1.0;
+    /// @brief A list of reactants
+    std::vector<ReactionComponent> reactants;
+    /// @brief A list of products
+    std::vector<ReactionComponent> products;
+    /// @brief An identifier, optional, uniqueness not enforced
+    std::string name;
+    /// @brief An identifier indicating which gas phase this reaction takes place in
+    std::string gas_phase;
+    /// @brief Unknown properties, prefixed with two underscores (__)
+    std::unordered_map<std::string, std::string> unknown_properties;
+  };
+
   struct Tunneling
   {
     /// @brief Pre-exponential factor [(mol m−3)^(−(𝑛−1)) s−1]
@@ -283,6 +326,7 @@ namespace mechanism_configuration::types
     std::vector<TaylorSeries> taylor_series;
     std::vector<Troe> troe;
     std::vector<TernaryChemicalActivation> ternary_chemical_activation;
+    std::vector<TernaryChemicalActivationJPL19> ternary_chemical_activation_jpl19;
     std::vector<Tunneling> tunneling;
     std::vector<UserDefined> user_defined;
     std::vector<LambdaRateConstant> lambda_rate_constant;

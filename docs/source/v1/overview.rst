@@ -41,8 +41,10 @@ of the older minor versions.
      - The ``"aerosol representations"`` and ``"aerosol processes"`` sections. See :ref:`v1-aerosol`.
    * - ``1.3.0``
      - The ``emissions`` section. See :ref:`v1-emissions`.
+   * - ``1.4.0``
+     - The ``TERNARY_CHEMICAL_ACTIVATION_JPL19`` reaction type. See :doc:`reactions/ternary_chemical_activation_jpl19`.
 
-The newest version that this library supports is ``1.3.0``. The parser reports an
+The newest version that this library supports is ``1.4.0``. The parser reports an
 ``InvalidVersion`` error for a newer minor version. The ``examples/v1`` directory of the
 repository has a complete example for each version. See :doc:`examples/index`.
 
