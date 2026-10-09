@@ -65,7 +65,7 @@ namespace mechanism_configuration::v1
     }
 
     // The newest v1 minor version that this library can parse.
-    constexpr unsigned int NEWEST_MINOR_VERSION = 3;
+    constexpr unsigned int NEWEST_MINOR_VERSION = 4;
 
     // The first v1 minor version that allows the file-list format.
     constexpr unsigned int FILE_LIST_MINIMUM_MINOR_VERSION = 1;
@@ -77,6 +77,11 @@ namespace mechanism_configuration::v1
         { keys::emissions, 3 },
     } };
 
+    // The first v1 minor version that allows each reaction type that is newer than 1.0.
+    constexpr std::array<std::pair<std::string_view, unsigned int>, 1> REACTION_TYPE_MINIMUM_MINOR_VERSION = { {
+        { keys::TernaryChemicalActivationJPL19_key, 4 },
+    } };
+
     // A feature that the configuration uses, and the first v1 minor version that allows it.
     struct VersionRequirement
     {
@@ -86,7 +91,7 @@ namespace mechanism_configuration::v1
     };
 
     // Checks that the declared minor version is supported, and that it is new enough for
-    // the file-list format and for each optional section that the configuration uses.
+    // the file-list format, for each optional section, and for each reaction type that the configuration uses.
     // Only the unmerged configuration shows the file-list format, so the caller gives it.
     Errors CheckMinorVersion(const YAML::Node& object, const Version& version, bool uses_file_list)
     {
@@ -114,6 +119,20 @@ namespace mechanism_configuration::v1
         if (node)
           requirements.push_back({ mc_fmt::format("'{}'", section), node, minimum_minor });
       }
+
+      // Reactions in a file list are not loaded yet; the merged configuration is checked again later.
+      const YAML::Node reactions = object[std::string(keys::reactions)];
+      if (reactions && reactions.IsSequence())
+        for (const auto& reaction : reactions)
+        {
+          if (!reaction.IsMap() || !reaction[std::string(keys::type)] || !reaction[std::string(keys::type)].IsScalar())
+            continue;
+          const std::string type = reaction[std::string(keys::type)].as<std::string>();
+          for (const auto& [reaction_type, minimum_minor] : REACTION_TYPE_MINIMUM_MINOR_VERSION)
+            if (type == reaction_type)
+              requirements.push_back(
+                  { mc_fmt::format("The '{}' reaction type", type), reaction[std::string(keys::type)], minimum_minor });
+        }
 
       for (const auto& requirement : requirements)
       {
