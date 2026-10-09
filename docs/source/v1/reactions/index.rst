@@ -16,6 +16,7 @@ Their configuration is defined in this repository, as are the algorithms that mi
 * :doc:`surface` - :cpp:struct:`micm::SurfaceRateConstantParameters`
 * :doc:`taylor_series` - :cpp:struct:`micm::TaylorSeriesRateConstantParameters`
 * :doc:`ternary_chemical_activation` - :cpp:struct:`micm::TernaryChemicalActivationRateConstantParameters`
+* :doc:`ternary_chemical_activation_jpl19` - not yet in micm (see `NCAR/micm#1092 <https://github.com/NCAR/micm/issues/1092>`_)
 * :doc:`troe` - :cpp:struct:`micm::TroeRateConstantParameters`
 * :doc:`tunneling` - :cpp:struct:`micm::TunnelingRateConstantParameters`
 * :doc:`user_defined` - :cpp:struct:`micm::UserDefinedRateConstantParameters`
@@ -35,6 +36,7 @@ Their configuration is defined in this repository, as are the algorithms that mi
    surface
    taylor_series
    ternary_chemical_activation
+   ternary_chemical_activation_jpl19
    troe
    tunneling
    user_defined

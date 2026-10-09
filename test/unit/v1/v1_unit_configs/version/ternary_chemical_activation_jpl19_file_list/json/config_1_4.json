@@ -1,0 +1,13 @@
+{
+  "version": "1.4.0",
+  "name": "jpl19 file list 1 4",
+  "species": {
+    "files": ["species.json"]
+  },
+  "phases": {
+    "files": ["phases.json"]
+  },
+  "reactions": {
+    "files": ["reactions.json"]
+  }
+}
