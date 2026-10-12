@@ -4,6 +4,22 @@ Changelog
 Unreleased
 ----------
 
+JPL-19 Ternary Chemical Activation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A new ``TERNARY_CHEMICAL_ACTIVATION_JPL19`` reaction type uses the ternary chemical activation
+equation from JPL Evaluation 19 (see :doc:`v1/reactions/ternary_chemical_activation_jpl19`). Its rate
+constant is the sum of a Troe term and a chemical activation term. Each of the :math:`k_0`,
+:math:`k_{\infty}`, and :math:`k_{int}` rate constants has its own reference temperature, with a
+default of 298 K. The existing ``TERNARY_CHEMICAL_ACTIVATION`` type does not change.
+
+- The new type requires version ``1.4.0`` or newer. A configuration with an older ``1.x`` version
+  that uses it gives an ``InvalidVersion`` error.
+- The newest supported version is now ``1.4``.
+- ``types::TernaryChemicalActivationJPL19`` and ``Reactions::ternary_chemical_activation_jpl19`` hold
+  the parsed reactions, and ``Validate()`` checks them.
+- ``examples/v1/1.4`` has an example that uses the new type.
+
 Version Checks
 ^^^^^^^^^^^^^^
 
@@ -11,7 +27,7 @@ The ``v1`` parser now checks the minor version of a configuration (see :ref:`v1-
 
 - The ``"aerosol representations"`` and ``"aerosol processes"`` sections require version ``1.2.0`` or newer.
 - The ``emissions`` section requires version ``1.3.0`` or newer.
-- A minor version newer than ``1.3`` is not supported.
+- A minor version newer than the newest supported version gives an error.
 
 A configuration that does not obey these rules gives an ``InvalidVersion`` error. Before this
 change, the parser accepted these sections in any ``1.x`` version. To fix an older configuration,

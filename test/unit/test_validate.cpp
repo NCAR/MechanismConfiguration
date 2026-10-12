@@ -170,6 +170,38 @@ TEST(Validate, DetectsUnknownPhase)
   EXPECT_TRUE(HasCode(Validate(m), ErrorCode::UnknownPhase));
 }
 
+TEST(Validate, AcceptsValidTernaryChemicalActivationJPL19)
+{
+  Mechanism m = BaseMechanism();
+  types::TernaryChemicalActivationJPL19 rxn;
+  rxn.gas_phase = "gas";
+  rxn.reactants = { component("A") };
+  rxn.products = { component("B") };
+  m.reactions.ternary_chemical_activation_jpl19 = { rxn };
+
+  EXPECT_TRUE(Validate(m).empty());
+}
+
+TEST(Validate, DetectsInvalidTernaryChemicalActivationJPL19)
+{
+  Mechanism m = BaseMechanism();
+  types::TernaryChemicalActivationJPL19 unknown_species;
+  unknown_species.gas_phase = "gas";
+  unknown_species.reactants = { component("Z") };  // not in the species list
+  types::TernaryChemicalActivationJPL19 wrong_phase;
+  wrong_phase.gas_phase = "gas";
+  wrong_phase.reactants = { component("C") };  // C is known, but only in the aqueous phase
+  types::TernaryChemicalActivationJPL19 unknown_phase;
+  unknown_phase.gas_phase = "stratosphere";  // no such phase
+  unknown_phase.reactants = { component("A") };
+  m.reactions.ternary_chemical_activation_jpl19 = { unknown_species, wrong_phase, unknown_phase };
+
+  auto errors = Validate(m);
+  EXPECT_TRUE(HasCode(errors, ErrorCode::ReactionRequiresUnknownSpecies));
+  EXPECT_TRUE(HasCode(errors, ErrorCode::RequestedSpeciesNotRegisteredInPhase));
+  EXPECT_TRUE(HasCode(errors, ErrorCode::UnknownPhase));
+}
+
 namespace
 {
   // species A (mw), H2O (mw); gas {A: diffusion}, aqueous {A, H2O: density};

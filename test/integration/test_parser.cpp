@@ -54,6 +54,7 @@ TEST(Parse, ParsesTheExampleForEachV1MinorVersion)
     { "examples/v1/1.1/yaml/config.yaml", 1, false, false }, { "examples/v1/1.1/json/config.json", 1, false, false },
     { "examples/v1/1.2/config.yaml", 2, true, false },       { "examples/v1/1.2/config.json", 2, true, false },
     { "examples/v1/1.3/config.yaml", 3, true, true },        { "examples/v1/1.3/config.json", 3, true, true },
+    { "examples/v1/1.4/config.yaml", 4, true, true },        { "examples/v1/1.4/config.json", 4, true, true },
   };
 
   for (const auto& example : examples)
@@ -79,6 +80,8 @@ TEST(Parse, ParsesTheExampleForEachV1MinorVersion)
     EXPECT_EQ(reactions.surface.size(), 1) << example.path;
     EXPECT_EQ(reactions.taylor_series.size(), 1) << example.path;
     EXPECT_EQ(reactions.ternary_chemical_activation.size(), 1) << example.path;
+    // The JPL-19 ternary chemical activation type is new in 1.4.
+    EXPECT_EQ(reactions.ternary_chemical_activation_jpl19.size(), example.minor >= 4 ? 1 : 0) << example.path;
     EXPECT_EQ(reactions.troe.size(), 1) << example.path;
     EXPECT_EQ(reactions.tunneling.size(), 1) << example.path;
     EXPECT_EQ(reactions.user_defined.size(), 1) << example.path;

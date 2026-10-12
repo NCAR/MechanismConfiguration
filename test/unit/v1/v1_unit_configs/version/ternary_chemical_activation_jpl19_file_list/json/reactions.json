@@ -1,0 +1,18 @@
+[
+  {
+    "type": "TERNARY_CHEMICAL_ACTIVATION_JPL19",
+    "gas phase": "gas",
+    "reactants": [
+      { "species name": "A" },
+      { "species name": "M" }
+    ],
+    "products": [
+      { "species name": "B" }
+    ],
+    "k0_A": 6.9e-31,
+    "k0_B": -1.0,
+    "kinf_A": 2.6e-11,
+    "kint_A": 7.5e-12,
+    "kint_C": 250.0
+  }
+]

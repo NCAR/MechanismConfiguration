@@ -43,6 +43,23 @@ namespace mechanism_configuration::v1::keys
   // Fc
   // N
 
+  // Ternary Chemical Activation (JPL-19)
+  inline constexpr std::string_view TernaryChemicalActivationJPL19_key = "TERNARY_CHEMICAL_ACTIVATION_JPL19";
+  inline constexpr std::string_view k0_D = "k0_D";
+  inline constexpr std::string_view kinf_D = "kinf_D";
+  inline constexpr std::string_view kint_A = "kint_A";
+  inline constexpr std::string_view kint_B = "kint_B";
+  inline constexpr std::string_view kint_C = "kint_C";
+  inline constexpr std::string_view kint_D = "kint_D";
+  // also k0_A
+  // k0_B
+  // k0_C
+  // kinf_A
+  // kinf_B
+  // kinf_C
+  // Fc
+  // N
+
   // Branched
   inline constexpr std::string_view Branched_key = "BRANCHED_NO_RO2";
   inline constexpr std::string_view X = "X";

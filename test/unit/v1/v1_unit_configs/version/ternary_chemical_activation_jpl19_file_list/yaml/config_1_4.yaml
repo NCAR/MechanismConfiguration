@@ -1,0 +1,11 @@
+version: 1.4.0
+name: jpl19 file list 1 4
+species:
+  files:
+    - species.yaml
+phases:
+  files:
+    - phases.yaml
+reactions:
+  files:
+    - reactions.yaml

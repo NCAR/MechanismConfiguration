@@ -415,6 +415,8 @@ namespace mechanism_configuration
       add("TROE", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.ternary_chemical_activation)
       add("TERNARY_CHEMICAL_ACTIVATION", x.gas_phase, Refs(x.reactants), Refs(x.products));
+    for (const auto& x : r.ternary_chemical_activation_jpl19)
+      add("TERNARY_CHEMICAL_ACTIVATION_JPL19", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.tunneling)
       add("TUNNELING", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.taylor_series)

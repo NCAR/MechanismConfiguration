@@ -127,6 +127,14 @@ namespace mechanism_configuration::v1
     void Parse(const YAML::Node& object, types::Reactions& reactions) override;
   };
 
+  class TernaryChemicalActivationJPL19Parser : public IReactionParser
+  {
+   public:
+    Errors CheckSchema(const YAML::Node& object) override;
+
+    void Parse(const YAML::Node& object, types::Reactions& reactions) override;
+  };
+
   class TunnelingParser : public IReactionParser
   {
    public:
@@ -167,6 +175,7 @@ namespace mechanism_configuration::v1
       map[std::string(keys::Branched_key)] = std::make_unique<BranchedParser>();
       map[std::string(keys::Troe_key)] = std::make_unique<TroeParser>();
       map[std::string(keys::TernaryChemicalActivation_key)] = std::make_unique<TernaryChemicalActivationParser>();
+      map[std::string(keys::TernaryChemicalActivationJPL19_key)] = std::make_unique<TernaryChemicalActivationJPL19Parser>();
       map[std::string(keys::UserDefined_key)] = std::make_unique<UserDefinedParser>();
       map[std::string(keys::LambdaRateConstant_key)] = std::make_unique<LambdaRateConstantParser>();
       return map;

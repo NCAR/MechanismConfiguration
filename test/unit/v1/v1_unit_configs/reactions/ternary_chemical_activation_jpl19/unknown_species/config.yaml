@@ -1,0 +1,26 @@
+---
+version: 1.4.0
+name: Unknown species
+species:
+- name: foo
+- name: bar
+- name: baz
+- name: quz
+phases:
+- name: gas
+  species:
+  - foo
+  - bar
+  - baz
+  - quz
+reactions:
+- type: TERNARY_CHEMICAL_ACTIVATION_JPL19
+  gas phase: gas
+  reactants:
+  - species name: foo
+    coefficient: 1
+  - species name: qux
+    coefficient: 1
+  products:
+  - species name: bar
+    coefficient: 1
