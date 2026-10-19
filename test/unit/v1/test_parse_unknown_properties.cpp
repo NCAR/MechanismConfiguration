@@ -22,12 +22,12 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
     EXPECT_EQ(mechanism.unknown_properties.at("__author"), "someone");
     ASSERT_TRUE(mechanism.unknown_properties.at("__revision").IsInt());
     EXPECT_EQ(mechanism.unknown_properties.at("__revision").AsInt(), 3);
-    const auto& cam_chem = mechanism.unknown_properties.at("__cam_chem");
-    ASSERT_TRUE(cam_chem.IsObject());
-    ASSERT_TRUE(cam_chem.AsObject().at("fixed").IsArray());
-    EXPECT_EQ(cam_chem.AsObject().at("fixed").AsArray().at(0), "CH4");
-    EXPECT_EQ(cam_chem.AsObject().at("ext_forcing").AsObject().at("SO2"), "Forced");
-    EXPECT_EQ(cam_chem.ToJson(), R"({"ext_forcing":{"SO2":"Forced"},"fixed":["CH4"]})");
+    const auto& nested = mechanism.unknown_properties.at("__nested");
+    ASSERT_TRUE(nested.IsObject());
+    ASSERT_TRUE(nested.AsObject().at("list").IsArray());
+    EXPECT_EQ(nested.AsObject().at("list").AsArray().at(0), "x");
+    EXPECT_EQ(nested.AsObject().at("map").AsObject().at("key"), "value");
+    EXPECT_EQ(nested.ToJson(), R"({"list":["x"],"map":{"key":"value"}})");
 
     // Scalar types on a species
     const auto& species = mechanism.species.at(0).unknown_properties;
@@ -43,12 +43,12 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
     EXPECT_TRUE(mechanism.species.at(1).unknown_properties.empty());
 
     // Phase
-    const auto& kpp = mechanism.phases.at(0).unknown_properties.at("__kpp");
-    EXPECT_EQ(kpp.AsObject().at("integrator"), "rosenbrock");
+    const auto& phase_info = mechanism.phases.at(0).unknown_properties.at("__info");
+    EXPECT_EQ(phase_info.AsObject().at("key"), "phase");
 
     // Reaction and reaction component
     const auto& reaction = mechanism.reactions.arrhenius.at(0);
-    EXPECT_EQ(reaction.unknown_properties.at("__wrf_chem").AsObject().at("custom_rate"), "usr_CO_OH_a");
+    EXPECT_EQ(reaction.unknown_properties.at("__info").AsObject().at("key"), "reaction");
     const auto& tags = reaction.reactants.at(0).unknown_properties.at("__tags");
     ASSERT_TRUE(tags.IsArray());
     EXPECT_EQ(tags.AsArray().size(), 3);

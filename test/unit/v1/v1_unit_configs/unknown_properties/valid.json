@@ -3,7 +3,7 @@
   "name": "Unknown properties",
   "__author": "someone",
   "__revision": 3,
-  "__cam_chem": { "fixed": ["CH4"], "ext_forcing": { "SO2": "Forced" } },
+  "__nested": { "list": ["x"], "map": { "key": "value" } },
   "species": [
     {
       "name": "A",
@@ -19,7 +19,7 @@
     {
       "name": "gas",
       "species": [{ "name": "A" }, { "name": "B" }],
-      "__kpp": { "integrator": "rosenbrock" }
+      "__info": { "key": "phase" }
     }
   ],
   "reactions": [
@@ -28,7 +28,7 @@
       "gas phase": "gas",
       "reactants": [{ "name": "A", "__tags": [1, "two", 3.0] }],
       "products": [{ "name": "B" }],
-      "__wrf_chem": { "custom_rate": "usr_CO_OH_a" }
+      "__info": { "key": "reaction" }
     }
   ]
 }

@@ -194,9 +194,9 @@ structure. A plain number is a number, and a quoted number is a string.
    version: 1.0.0
    name: My mechanism
    __author: someone
-   __cam_chem:
-     fixed: [CH4]
-     ext_forcing:
-       SO2: Forced
+   __my object:
+     a list: [1, 2.5, text]
+     a map:
+       key: value
    species: []
    phases: []
