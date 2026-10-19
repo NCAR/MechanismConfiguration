@@ -414,6 +414,13 @@ namespace mechanism_configuration::v1
       combined[std::string(keys::version)] = object[keys::version];
     if (object[keys::name])
       combined[std::string(keys::name)] = object[keys::name];
+    // Keep the unknown top-level properties (keys that start with __)
+    for (const auto& item : object)
+    {
+      const std::string key = item.first.as<std::string>();
+      if (key.starts_with("__"))
+        combined[key] = item.second;
+    }
 
     // Loads and concatenates every file referenced under `<entity>.files`.
     auto load_files = [&](std::string_view entity) -> YAML::Node
@@ -720,6 +727,7 @@ namespace mechanism_configuration::v1
     {
       mechanism.emissions = ParseEmissions(object[std::string(keys::emissions)]);
     }
+    mechanism.unknown_properties = GetComments(object);
 
     return mechanism;
   }

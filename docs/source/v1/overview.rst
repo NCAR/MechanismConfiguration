@@ -177,3 +177,26 @@ A configuration can also have these optional top-level sections:
 - ``emissions``. See :ref:`v1-emissions`.
 
 The aerosol sections can use the inline or the file-list format. The ``emissions`` section must be inline.
+
+Custom properties
+=================
+
+Any object in the configuration can have custom properties. This includes the top level of
+the configuration. A custom property has a key that starts with two underscores (for example,
+``__author``). The parser keeps each custom property in the ``unknown_properties`` field of the
+object.
+
+A custom property value can be a scalar, a list, or a map. Values keep their type and their
+structure. A plain number is a number, and a quoted number is a string.
+
+.. code-block:: yaml
+
+   version: 1.0.0
+   name: My mechanism
+   __author: someone
+   __cam_chem:
+     fixed: [CH4]
+     ext_forcing:
+       SO2: Forced
+   species: []
+   phases: []

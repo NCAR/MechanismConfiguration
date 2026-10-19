@@ -1,0 +1,34 @@
+version: 1.0.0
+name: Unknown properties
+__author: someone
+__revision: 3
+__cam_chem:
+  fixed:
+  - CH4
+  ext_forcing:
+    SO2: Forced
+species:
+- name: A
+  __quoted number: "0.5"
+  __plain number: 0.5
+  __flag: true
+  __nothing: null
+  __big: 99999999999999999999
+- name: B
+phases:
+- name: gas
+  species:
+  - name: A
+  - name: B
+  __kpp:
+    integrator: rosenbrock
+reactions:
+- type: ARRHENIUS
+  gas phase: gas
+  reactants:
+  - name: A
+    __tags: [1, two, 3.0]
+  products:
+  - name: B
+  __wrf_chem:
+    custom_rate: usr_CO_OH_a

@@ -41,7 +41,7 @@ TEST(ParserBase, CanParseValidTaylorSeriesReaction)
     EXPECT_EQ(mechanism.reactions.taylor_series[0].products[1].name, "C");
     EXPECT_EQ(mechanism.reactions.taylor_series[0].products[1].coefficient, 0.3);
     EXPECT_EQ(mechanism.reactions.taylor_series[0].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.reactions.taylor_series[0].unknown_properties["__solver_param"], "0.1");
+    EXPECT_EQ(mechanism.reactions.taylor_series[0].unknown_properties["__solver_param"].AsDouble(), 0.1);
 
     EXPECT_EQ(mechanism.reactions.taylor_series[1].name, "my taylor_series2");
     EXPECT_EQ(mechanism.reactions.taylor_series[1].gas_phase, "gas");

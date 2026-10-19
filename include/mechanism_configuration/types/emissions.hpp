@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <mechanism_configuration/types/property_value.hpp>
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -74,7 +76,7 @@ namespace mechanism_configuration::types
     int hierarchy{ 1 };
     double scaling_factor{ 1.0 };
     std::string sector;
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   enum class RegriddingType

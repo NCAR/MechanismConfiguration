@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <mechanism_configuration/types/property_value.hpp>
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -16,7 +18,7 @@ namespace mechanism_configuration::types
     std::string name;
     double coefficient{ 1.0 };
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Arrhenius
@@ -41,7 +43,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Branched
@@ -65,7 +67,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Emission
@@ -79,7 +81,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct FirstOrderLoss
@@ -95,7 +97,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Photolysis
@@ -111,7 +113,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Surface
@@ -129,7 +131,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier for the condensed phase where this reaction occurs
     std::string condensed_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct TaylorSeries
@@ -156,7 +158,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Troe
@@ -186,7 +188,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct TernaryChemicalActivation
@@ -216,7 +218,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   /// @brief Ternary chemical activation as defined in JPL-19: the sum of a Troe term and a chemical activation term
@@ -259,7 +261,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Tunneling
@@ -279,7 +281,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct UserDefined
@@ -295,7 +297,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct LambdaRateConstant
@@ -311,7 +313,7 @@ namespace mechanism_configuration::types
     /// @brief An identifier indicating which gas phase this reaction takes place in
     std::string gas_phase;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   /// @brief Represents a collection of different reaction types

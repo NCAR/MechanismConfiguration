@@ -5,6 +5,7 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
+#include <mechanism_configuration/types/property_value.hpp>
 
 #include <detail/location.hpp>
 #include <detail/v1/keys.hpp>
@@ -25,7 +26,9 @@ namespace mechanism_configuration::v1
 
   void AppendFilePath(const std::string& config_path, Errors& errors);
 
-  std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object);
+  /// @brief Collects the unknown properties of an object: every key that starts with two underscores (__).
+  ///        Values keep their type and structure.
+  types::UnknownProperties GetComments(const YAML::Node& object);
 
   /// @brief Reads a named entry's name, accepting either a bare-string shorthand or an object
   ///        keyed by the canonical `name` or the legacy `species name` alias (v1 files). Used for
