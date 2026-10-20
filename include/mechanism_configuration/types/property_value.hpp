@@ -4,12 +4,15 @@
 
 #pragma once
 
+#include <concepts>
 #include <cstdint>
 #include <map>
 #include <ostream>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <unordered_map>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -27,40 +30,13 @@ namespace mechanism_configuration::types
     Variant value{ nullptr };
 
     PropertyValue() = default;
-    PropertyValue(std::nullptr_t)
-        : value(nullptr)
-    {
-    }
-    PropertyValue(bool v)
-        : value(v)
-    {
-    }
-    PropertyValue(int v)
-        : value(static_cast<std::int64_t>(v))
-    {
-    }
-    PropertyValue(std::int64_t v)
-        : value(v)
-    {
-    }
-    PropertyValue(double v)
-        : value(v)
-    {
-    }
-    PropertyValue(const char* v)
-        : value(std::string(v))
-    {
-    }
-    PropertyValue(std::string v)
-        : value(std::move(v))
-    {
-    }
-    PropertyValue(Array v)
-        : value(std::move(v))
-    {
-    }
-    PropertyValue(Object v)
-        : value(std::move(v))
+
+    /// @brief Constructs from any type that the variant accepts, for example nullptr, true, 3, 0.5, "text",
+    ///        an Array, or an Object. An int becomes std::int64_t, and a string literal becomes std::string.
+    template<class T>
+      requires(!std::same_as<std::remove_cvref_t<T>, PropertyValue> && std::constructible_from<Variant, T &&>)
+    PropertyValue(T&& v)
+        : value(std::forward<T>(v))
     {
     }
 
