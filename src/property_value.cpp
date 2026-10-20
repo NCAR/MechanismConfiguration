@@ -4,161 +4,58 @@
 
 #include "detail/property_value.hpp"
 
-#include <charconv>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <limits>
-#include <regex>
-#include <stdexcept>
+#include <cstdint>
 
 namespace mechanism_configuration
 {
   namespace
   {
-    // YAML 1.2 core schema patterns for plain scalars
-    const std::regex kNullPattern{ "^(~|null|Null|NULL)?$" };
-    const std::regex kTruePattern{ "^(true|True|TRUE)$" };
-    const std::regex kFalsePattern{ "^(false|False|FALSE)$" };
-    const std::regex kIntPattern{ "^[-+]?[0-9]+$" };
-    const std::regex kFloatPattern{ "^[-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?$" };
-    const std::regex kInfPattern{ "^([-+]?)\\.(inf|Inf|INF)$" };
-    const std::regex kNanPattern{ "^\\.(nan|NaN|NAN)$" };
-
     types::PropertyValue ScalarToPropertyValue(const YAML::Node& node)
     {
-      const std::string& text = node.Scalar();
-
       // A quoted scalar has the non-specific tag "!", so it is always a string
       if (node.Tag() == "!")
-        return types::PropertyValue(text);
+        return types::PropertyValue(node.Scalar());
 
-      std::smatch match;
-      if (std::regex_match(text, kNullPattern))
-        return types::PropertyValue(nullptr);
-      if (std::regex_match(text, kTruePattern))
-        return types::PropertyValue(true);
-      if (std::regex_match(text, kFalsePattern))
-        return types::PropertyValue(false);
-      if (std::regex_match(text, kIntPattern))
-      {
-        std::int64_t value{};
-        const char* begin = text.data() + (text[0] == '+' ? 1 : 0);
-        auto [ptr, ec] = std::from_chars(begin, text.data() + text.size(), value);
-        if (ec == std::errc() && ptr == text.data() + text.size())
-          return types::PropertyValue(value);
-        // Out of range for a 64-bit integer: fall through to a double
-      }
-      if (std::regex_match(text, kFloatPattern) || std::regex_match(text, kIntPattern))
-      {
-        try
-        {
-          return types::PropertyValue(std::stod(text));
-        }
-        catch (const std::out_of_range&)
-        {
-          // Too large or too small for a double, so keep the text
-          return types::PropertyValue(text);
-        }
-      }
-      if (std::regex_match(text, match, kInfPattern))
-        return types::PropertyValue(
-            match[1] == "-" ? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity());
-      if (std::regex_match(text, kNanPattern))
-        return types::PropertyValue(std::numeric_limits<double>::quiet_NaN());
-      return types::PropertyValue(text);
+      std::int64_t integer{};
+      if (YAML::convert<std::int64_t>::decode(node, integer))
+        return types::PropertyValue(integer);
+      double number{};
+      if (YAML::convert<double>::decode(node, number))
+        return types::PropertyValue(number);
+      bool boolean{};
+      if (YAML::convert<bool>::decode(node, boolean))
+        return types::PropertyValue(boolean);
+      return types::PropertyValue(node.Scalar());
     }
 
-    void AppendJsonString(std::string& out, const std::string& s)
+    void Emit(YAML::Emitter& out, const types::PropertyValue& value)
     {
-      out += '"';
-      for (unsigned char c : s)
+      if (value.IsNull())
+        out << YAML::Null;
+      else if (value.IsBool())
+        out << value.AsBool();
+      else if (value.IsInt())
+        out << value.AsInt();
+      else if (value.IsDouble())
+        out << value.AsDouble();
+      else if (value.IsString())
+        out << value.AsString();
+      else if (value.IsArray())
       {
-        switch (c)
-        {
-          case '"': out += "\\\""; break;
-          case '\\': out += "\\\\"; break;
-          case '\b': out += "\\b"; break;
-          case '\f': out += "\\f"; break;
-          case '\n': out += "\\n"; break;
-          case '\r': out += "\\r"; break;
-          case '\t': out += "\\t"; break;
-          default:
-            if (c < 0x20)
-            {
-              char buffer[7];
-              std::snprintf(buffer, sizeof(buffer), "\\u%04x", c);
-              out += buffer;
-            }
-            else
-            {
-              out += static_cast<char>(c);
-            }
-        }
-      }
-      out += '"';
-    }
-
-    void AppendJson(std::string& out, const types::PropertyValue& v)
-    {
-      if (v.IsNull())
-        out += "null";
-      else if (v.IsBool())
-        out += v.AsBool() ? "true" : "false";
-      else if (v.IsInt())
-        out += std::to_string(v.AsInt());
-      else if (v.IsDouble())
-      {
-        double d = v.AsDouble();
-        // JSON has no representation for inf or nan
-        if (!std::isfinite(d))
-        {
-          out += "null";
-          return;
-        }
-        // Use the shortest precision that reads back to the same double
-        char buffer[32];
-        for (int precision = 15; precision <= 17; ++precision)
-        {
-          std::snprintf(buffer, sizeof(buffer), "%.*g", precision, d);
-          if (std::strtod(buffer, nullptr) == d)
-            break;
-        }
-        std::string text(buffer);
-        // Keep a double recognizable as a double when it has no fraction or exponent
-        if (text.find_first_of(".eE") == std::string::npos)
-          text += ".0";
-        out += text;
-      }
-      else if (v.IsString())
-        AppendJsonString(out, v.AsString());
-      else if (v.IsArray())
-      {
-        out += '[';
-        bool first = true;
-        for (const auto& item : v.AsArray())
-        {
-          if (!first)
-            out += ',';
-          first = false;
-          AppendJson(out, item);
-        }
-        out += ']';
+        out << YAML::BeginSeq;
+        for (const auto& item : value.AsArray())
+          Emit(out, item);
+        out << YAML::EndSeq;
       }
       else
       {
-        out += '{';
-        bool first = true;
-        for (const auto& [key, item] : v.AsObject())
+        out << YAML::BeginMap;
+        for (const auto& [key, item] : value.AsObject())
         {
-          if (!first)
-            out += ',';
-          first = false;
-          AppendJsonString(out, key);
-          out += ':';
-          AppendJson(out, item);
+          out << YAML::Key << key << YAML::Value;
+          Emit(out, item);
         }
-        out += '}';
+        out << YAML::EndMap;
       }
     }
   }  // namespace
@@ -171,7 +68,6 @@ namespace mechanism_configuration
       case YAML::NodeType::Sequence:
       {
         types::PropertyValue::Array array;
-        array.reserve(node.size());
         for (const auto& item : node)
           array.push_back(ToPropertyValue(item));
         return types::PropertyValue(std::move(array));
@@ -187,10 +83,16 @@ namespace mechanism_configuration
     }
   }
 
-  std::string types::PropertyValue::ToJson() const
+  std::string types::PropertyValue::ToString() const
   {
-    std::string out;
-    AppendJson(out, *this);
-    return out;
+    // Flow style with double-quoted strings gives one line that is also valid JSON
+    YAML::Emitter out;
+    out.SetMapFormat(YAML::Flow);
+    out.SetSeqFormat(YAML::Flow);
+    out.SetStringFormat(YAML::DoubleQuoted);
+    out.SetNullFormat(YAML::LowerNull);
+    out.SetBoolFormat(YAML::TrueFalseBool);
+    Emit(out, *this);
+    return out.c_str();
   }
 }  // namespace mechanism_configuration

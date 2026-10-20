@@ -11,7 +11,7 @@
 namespace mechanism_configuration
 {
   /// @brief Converts a YAML node to a PropertyValue, keeping the structure of sequences and maps.
-  ///        Plain scalars are typed with the YAML 1.2 core schema (null, bool, int, float, string).
+  ///        Plain scalars are typed with the yaml-cpp conversions (integer, then double, then bool).
   ///        Quoted scalars are always strings.
   types::PropertyValue ToPropertyValue(const YAML::Node& node);
 }  // namespace mechanism_configuration

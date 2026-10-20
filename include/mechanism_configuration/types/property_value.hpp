@@ -121,8 +121,9 @@ namespace mechanism_configuration::types
       return std::get<Object>(value);
     }
 
-    /// @brief Returns the value as compact JSON text. Strings are quoted and escaped.
-    std::string ToJson() const;
+    /// @brief Returns the value as one line of YAML flow-style text, for example {"a": [1, "x"]}.
+    ///        Strings are double-quoted, so the text is also valid JSON for finite numbers.
+    std::string ToString() const;
 
     bool operator==(const PropertyValue& other) const = default;
 
@@ -139,7 +140,7 @@ namespace mechanism_configuration::types
 
   inline std::ostream& operator<<(std::ostream& os, const PropertyValue& value)
   {
-    return os << value.ToJson();
+    return os << value.ToString();
   }
 
   /// @brief Unknown properties of an object. Keys keep their two-underscore (__) prefix.

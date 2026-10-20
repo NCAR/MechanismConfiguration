@@ -27,7 +27,7 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
     ASSERT_TRUE(nested.AsObject().at("list").IsArray());
     EXPECT_EQ(nested.AsObject().at("list").AsArray().at(0), "x");
     EXPECT_EQ(nested.AsObject().at("map").AsObject().at("key"), "value");
-    EXPECT_EQ(nested.ToJson(), R"({"list":["x"],"map":{"key":"value"}})");
+    EXPECT_EQ(nested.ToString(), R"({"list": ["x"], "map": {"key": "value"}})");
 
     // Scalar types on a species
     const auto& species = mechanism.species.at(0).unknown_properties;
@@ -55,14 +55,14 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
     EXPECT_EQ(tags.AsArray()[0].AsInt(), 1);
     EXPECT_EQ(tags.AsArray()[1], "two");
     EXPECT_TRUE(tags.AsArray()[2].IsDouble());
-    EXPECT_EQ(tags.ToJson(), R"([1,"two",3.0])");
+    EXPECT_EQ(tags.ToString(), R"([1, "two", 3])");
   }
 }
 
-TEST(PropertyValue, ToJsonEscapesStrings)
+TEST(PropertyValue, ToStringEscapesStrings)
 {
   types::PropertyValue value(std::string("line\n\"quoted\""));
-  EXPECT_EQ(value.ToJson(), R"("line\n\"quoted\"")");
-  EXPECT_EQ(types::PropertyValue(0.1).ToJson(), "0.1");
-  EXPECT_EQ(types::PropertyValue(nullptr).ToJson(), "null");
+  EXPECT_EQ(value.ToString(), R"("line\n\"quoted\"")");
+  EXPECT_EQ(types::PropertyValue(0.1).ToString(), "0.1");
+  EXPECT_EQ(types::PropertyValue(nullptr).ToString(), "null");
 }
