@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 using namespace mechanism_configuration;
+using types::PropertyValue;
 
 TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
 {
@@ -23,10 +24,11 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
     ASSERT_TRUE(mechanism.unknown_properties.at("__revision").IsInt());
     EXPECT_EQ(mechanism.unknown_properties.at("__revision").AsInt(), 3);
     const auto& nested = mechanism.unknown_properties.at("__nested");
-    ASSERT_TRUE(nested.IsObject());
-    ASSERT_TRUE(nested.AsObject().at("list").IsArray());
-    EXPECT_EQ(nested.AsObject().at("list").AsArray().at(0), "x");
-    EXPECT_EQ(nested.AsObject().at("map").AsObject().at("key"), "value");
+    EXPECT_EQ(
+        nested,
+        PropertyValue(
+            PropertyValue::Object{ { "list", PropertyValue::Array{ "x" } },
+                                   { "map", PropertyValue::Object{ { "key", "value" } } } }));
     EXPECT_EQ(nested.ToString(), R"({"list": ["x"], "map": {"key": "value"}})");
 
     // Scalar types on a species
@@ -44,11 +46,11 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
 
     // Phase
     const auto& phase_info = mechanism.phases.at(0).unknown_properties.at("__info");
-    EXPECT_EQ(phase_info.AsObject().at("key"), "phase");
+    EXPECT_EQ(phase_info, PropertyValue(PropertyValue::Object{ { "key", "phase" } }));
 
     // Reaction and reaction component
     const auto& reaction = mechanism.reactions.arrhenius.at(0);
-    EXPECT_EQ(reaction.unknown_properties.at("__info").AsObject().at("key"), "reaction");
+    EXPECT_EQ(reaction.unknown_properties.at("__info"), PropertyValue(PropertyValue::Object{ { "key", "reaction" } }));
     const auto& tags = reaction.reactants.at(0).unknown_properties.at("__tags");
     ASSERT_TRUE(tags.IsArray());
     EXPECT_EQ(tags.AsArray().size(), 3);

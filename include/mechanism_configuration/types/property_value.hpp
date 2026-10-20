@@ -6,7 +6,6 @@
 
 #include <concepts>
 #include <cstdint>
-#include <map>
 #include <ostream>
 #include <string>
 #include <string_view>
@@ -23,8 +22,10 @@ namespace mechanism_configuration::types
   ///        Scalars keep their type, and sequences and maps keep their structure.
   struct PropertyValue
   {
+    // Only std::vector is guaranteed to accept an incomplete element type, so Object is a vector of
+    // key-value pairs, not a std::map. The pairs keep the order of the input.
     using Array = std::vector<PropertyValue>;
-    using Object = std::map<std::string, PropertyValue>;
+    using Object = std::vector<std::pair<std::string, PropertyValue>>;
     using Variant = std::variant<std::nullptr_t, bool, std::int64_t, double, std::string, Array, Object>;
 
     Variant value{ nullptr };
