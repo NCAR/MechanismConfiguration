@@ -39,7 +39,9 @@ TEST(ParserBase, CanParseValidTroeReaction)
     EXPECT_EQ(mechanism.reactions.troe[0].unknown_properties.size(), 1);
     // A nested object keeps its structure, and JSON and YAML give the same result
     const auto& my_object = mechanism.reactions.troe[0].unknown_properties["__my object"];
-    EXPECT_EQ(my_object, types::PropertyValue(types::PropertyValue::Object{ { "a", 1.0 } }));
+    ASSERT_TRUE(my_object.IsObject());
+    EXPECT_EQ(my_object.AsObject().size(), 1);
+    EXPECT_EQ(my_object.AsObject().at("a").AsDouble(), 1.0);
 
     EXPECT_EQ(mechanism.reactions.troe[1].name, "my troe");
     EXPECT_EQ(mechanism.reactions.troe[1].gas_phase, "gas");

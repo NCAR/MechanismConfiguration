@@ -76,7 +76,7 @@ namespace mechanism_configuration
       {
         types::PropertyValue::Object object;
         for (const auto& item : node)
-          object.emplace_back(item.first.as<std::string>(), ToPropertyValue(item.second));
+          object[item.first.as<std::string>()] = ToPropertyValue(item.second);
         return types::PropertyValue(std::move(object));
       }
       default: return types::PropertyValue(nullptr);
