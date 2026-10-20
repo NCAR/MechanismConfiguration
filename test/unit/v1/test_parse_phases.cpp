@@ -149,7 +149,7 @@ TEST(ParserBase, CanParsePhaseSpeciesProperties)
     EXPECT_EQ(phase.species[1].name, "bar");
     EXPECT_FALSE(phase.species[1].diffusion_coefficient.has_value());
     EXPECT_EQ(phase.species[1].unknown_properties.size(), 2);
-    EXPECT_EQ(phase.species[1].unknown_properties.at("__custom property"), "0.5");
+    EXPECT_EQ(phase.species[1].unknown_properties.at("__custom property").AsDouble(), 0.5);
     EXPECT_EQ(phase.species[1].unknown_properties.at("__another custom property"), "value");
 
     // Check third species (simple string format)

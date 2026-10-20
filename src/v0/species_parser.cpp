@@ -2,6 +2,7 @@
 //                         University of Illinois at Urbana-Champaign
 // SPDX-License-Identifier: Apache-2.0
 
+#include "detail/property_value.hpp"
 #include "detail/schema.hpp"
 #include "detail/v0/keys.hpp"
 #include "detail/v0/parser_types.hpp"
@@ -54,8 +55,7 @@ namespace mechanism_configuration::v0
         if (std::find(required.begin(), required.end(), key) == required.end() &&
             std::find(optional.begin(), optional.end(), key) == optional.end())
         {
-          std::string stringValue = value.as<std::string>();
-          species.unknown_properties[key] = stringValue;
+          species.unknown_properties[key] = ToPropertyValue(value);
         }
       }
       mechanism.species.push_back(species);

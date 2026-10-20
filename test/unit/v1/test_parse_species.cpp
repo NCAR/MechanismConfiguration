@@ -22,7 +22,7 @@ TEST(ParserBase, CanParseValidSpecies)
 
     EXPECT_EQ(mechanism.species[0].name, "A");
     EXPECT_EQ(mechanism.species[0].unknown_properties.size(), 2);
-    EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"], "1.0e-30");
+    EXPECT_EQ(mechanism.species[0].unknown_properties["__absolute tolerance"].AsDouble(), 1.0e-30);
     EXPECT_EQ(mechanism.species[0].unknown_properties["__long name"], "ozone");
     EXPECT_EQ(mechanism.species[0].is_third_body.has_value(), true);
     EXPECT_EQ(mechanism.species[0].is_third_body.value(), true);
@@ -33,7 +33,7 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[1].constant_concentration.has_value(), true);
     EXPECT_EQ(mechanism.species[1].constant_concentration.value(), 2.5e19);
     EXPECT_EQ(mechanism.species[1].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.species[1].unknown_properties["__absolute tolerance"], "1.0e-10");
+    EXPECT_EQ(mechanism.species[1].unknown_properties["__absolute tolerance"].AsDouble(), 1.0e-10);
 
     EXPECT_EQ(mechanism.species[2].name, "aerosol stuff");
     EXPECT_EQ(mechanism.species[2].molecular_weight.has_value(), true);
@@ -41,7 +41,7 @@ TEST(ParserBase, CanParseValidSpecies)
     EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.has_value(), true);
     EXPECT_EQ(mechanism.species[2].constant_mixing_ratio.value(), 1.0e-6);
     EXPECT_EQ(mechanism.species[2].unknown_properties.size(), 1);
-    EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"], "1.0e-20");
+    EXPECT_EQ(mechanism.species[2].unknown_properties["__absolute tolerance"].AsDouble(), 1.0e-20);
   }
 }
 

@@ -7,6 +7,7 @@
 #include <mechanism_configuration/mechanism_version.hpp>
 #include <mechanism_configuration/types/aerosol.hpp>
 #include <mechanism_configuration/types/emissions.hpp>
+#include <mechanism_configuration/types/property_value.hpp>
 #include <mechanism_configuration/types/reactions.hpp>
 #include <mechanism_configuration/types/species.hpp>
 
@@ -40,5 +41,7 @@ namespace mechanism_configuration
     std::optional<types::Aerosol> aerosol;
     /// @brief Emissions configuration (optional)
     std::optional<types::EmissionsConfig> emissions;
+    /// @brief Unknown top-level properties, prefixed with two underscores (__)
+    types::UnknownProperties unknown_properties;
   };
 }  // namespace mechanism_configuration

@@ -29,6 +29,7 @@ target_sources(mechanism_configuration
   PRIVATE
     errors.cpp
     parse.cpp
+    property_value.cpp
     schema.cpp
     validate.cpp
 )

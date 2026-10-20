@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <mechanism_configuration/types/property_value.hpp>
+
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -25,7 +27,7 @@ namespace mechanism_configuration::types
     std::optional<double> constant_mixing_ratio;
     std::optional<bool> is_third_body;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct PhaseSpecies
@@ -34,7 +36,7 @@ namespace mechanism_configuration::types
     std::optional<double> diffusion_coefficient;
     std::optional<double> density;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
   struct Phase
@@ -42,7 +44,7 @@ namespace mechanism_configuration::types
     std::string name;
     std::vector<PhaseSpecies> species;
     /// @brief Unknown properties, prefixed with two underscores (__)
-    std::unordered_map<std::string, std::string> unknown_properties;
+    UnknownProperties unknown_properties;
   };
 
 }  // namespace mechanism_configuration::types

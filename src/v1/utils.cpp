@@ -4,6 +4,7 @@
 
 #include "detail/v1/utils.hpp"
 
+#include "detail/property_value.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/keys.hpp"
 
@@ -45,9 +46,9 @@ namespace mechanism_configuration::v1
     }
   }
 
-  std::unordered_map<std::string, std::string> GetComments(const YAML::Node& object)
+  types::UnknownProperties GetComments(const YAML::Node& object)
   {
-    std::unordered_map<std::string, std::string> unknown_properties;
+    types::UnknownProperties unknown_properties;
     const std::string comment_start = "__";
 
     for (const auto& key : object)
@@ -57,21 +58,10 @@ namespace mechanism_configuration::v1
       // Check if the key starts with the comment prefix
       if (key_str.compare(0, comment_start.size(), comment_start) == 0)
       {
-        // Check if the value is a YAML node
-        if (key.second.IsScalar())
-        {
-          unknown_properties[key_str] = key.second.as<std::string>();
-        }
-        else
-        {
-          std::stringstream ss;
-          ss << key.second;
-          unknown_properties[key_str] = ss.str();
-        }
+        unknown_properties[key_str] = ToPropertyValue(key.second);
       }
     }
 
-    // Return the map of extracted comments
     return unknown_properties;
   }
 
