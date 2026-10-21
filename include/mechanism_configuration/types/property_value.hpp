@@ -101,7 +101,7 @@ namespace mechanism_configuration::types
     ///        Strings are double-quoted, so the text is also valid JSON for finite numbers.
     std::string ToString() const;
 
-    bool operator==(const PropertyValue& other) const = default;
+    bool operator==(const PropertyValue& other) const;
 
     /// @brief True only when the value is a string equal to `other`
     bool operator==(std::string_view other) const
@@ -113,6 +113,14 @@ namespace mechanism_configuration::types
       return *this == std::string_view(other);
     }
   };
+
+  // Defined after the class, not defaulted inside it. Some compilers (nvc++) check a defaulted
+  // operator== at the end of the class, which instantiates std::pair<const std::string, PropertyValue>
+  // before PropertyValue is complete.
+  inline bool PropertyValue::operator==(const PropertyValue& other) const
+  {
+    return value == other.value;
+  }
 
   inline std::ostream& operator<<(std::ostream& os, const PropertyValue& value)
   {
