@@ -87,33 +87,25 @@ namespace mechanism_configuration
                                reaction.location,
                                mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
 
-      for (const auto& reactant : reaction.reactants)
-      {
-        if (!species_names.contains(reactant.name))
-          errors.push_back(
-              { ErrorCode::ReactionRequiresUnknownSpecies,
-                Message(
-                    reactant.location,
-                    mc_fmt::format("Unknown species '{}' used in '{}' reaction.", reactant.name, reaction.type)) });
-        else if (phase_exists && !phase_it->second.contains(reactant.name))
-          errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                             Message(
-                                 reactant.location,
-                                 mc_fmt::format(
-                                     "Species '{}' used in '{}' is not defined in the '{}' phase.",
-                                     reactant.name,
-                                     reaction.type,
-                                     reaction.phase)) });
-      }
-      for (const auto& product : reaction.products)
-      {
-        if (!species_names.contains(product.name))
-          errors.push_back(
-              { ErrorCode::ReactionRequiresUnknownSpecies,
-                Message(
-                    product.location,
-                    mc_fmt::format("Unknown species '{}' used in '{}' reaction.", product.name, reaction.type)) });
-      }
+      for (const auto* components : { &reaction.reactants, &reaction.products })
+        for (const auto& component : *components)
+        {
+          if (!species_names.contains(component.name))
+            errors.push_back(
+                { ErrorCode::ReactionRequiresUnknownSpecies,
+                  Message(
+                      component.location,
+                      mc_fmt::format("Unknown species '{}' used in '{}' reaction.", component.name, reaction.type)) });
+          else if (phase_exists && !phase_it->second.contains(component.name))
+            errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+                               Message(
+                                   component.location,
+                                   mc_fmt::format(
+                                       "Species '{}' used in '{}' is not defined in the '{}' phase.",
+                                       component.name,
+                                       reaction.type,
+                                       reaction.phase)) });
+        }
     }
 
     return errors;

@@ -11,6 +11,7 @@ phases:
     species:
       - name: A
         "diffusion coefficient [m2 s-1]": 1.5e-05
+      - name: B
   - name: aqueous
     species:
       - name: A
