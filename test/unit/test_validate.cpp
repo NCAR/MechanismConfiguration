@@ -151,6 +151,20 @@ TEST(Validate, AllowsCrossPhaseProduct)
   EXPECT_TRUE(Validate(m).empty());
 }
 
+TEST(Validate, DetectsSurfaceSpeciesWithoutMolecularWeight)
+{
+  Mechanism m = BaseMechanism();
+  types::Surface rxn;
+  rxn.gas_phase = "gas";
+  rxn.gas_phase_species = component("A");  // A has no molecular weight
+  rxn.gas_phase_products = { component("B") };
+  m.reactions.surface = { rxn };
+  EXPECT_TRUE(HasCode(Validate(m), ErrorCode::RequiredKeyNotFound));
+
+  m.species[0].molecular_weight = 0.05;
+  EXPECT_TRUE(Validate(m).empty());
+}
+
 TEST(Validate, DetectsDuplicateSpecies)
 {
   Mechanism m = BaseMechanism();

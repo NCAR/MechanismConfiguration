@@ -114,6 +114,16 @@ namespace mechanism_configuration
                     product.location,
                     mc_fmt::format("Unknown species '{}' used in '{}' reaction.", product.name, reaction.type)) });
       }
+      for (const auto& species : reaction.needs_molecular_weight)
+      {
+        if (species_names.contains(species.name) && !input.species_with_molecular_weight.contains(species.name))
+          errors.push_back(
+              { ErrorCode::RequiredKeyNotFound,
+                Message(
+                    species.location,
+                    mc_fmt::format(
+                        "Species '{}' used in '{}' has no molecular weight defined.", species.name, reaction.type)) });
+      }
     }
 
     return errors;
@@ -392,7 +402,11 @@ namespace mechanism_configuration
     semantics::ReactionsInput input;
 
     for (const auto& s : mechanism.species)
+    {
       input.species.push_back({ s.name, std::nullopt });
+      if (s.molecular_weight)
+        input.species_with_molecular_weight.insert(s.name);
+    }
 
     for (const auto& phase : mechanism.phases)
     {
@@ -432,7 +446,10 @@ namespace mechanism_configuration
     for (const auto& x : r.photolysis)
       add("PHOTOLYSIS", x.gas_phase, Refs(x.reactants), Refs(x.products));
     for (const auto& x : r.surface)
+    {
       add("SURFACE", x.gas_phase, Refs({ x.gas_phase_species }), Refs(x.gas_phase_products));
+      input.reactions.back().needs_molecular_weight = Refs({ x.gas_phase_species });
+    }
     for (const auto& x : r.branched)
     {
       std::vector<types::ReactionComponent> products = x.alkoxy_products;

@@ -155,7 +155,11 @@ namespace mechanism_configuration::v1
 
     if (object[std::string(keys::species)])
       for (const auto& s : object[std::string(keys::species)])
+      {
         input.species.push_back({ GetComponentName(s), LocationOf(s) });
+        if (s[std::string(keys::molecular_weight)])
+          input.species_with_molecular_weight.insert(GetComponentName(s));
+      }
 
     if (object[std::string(keys::phases)])
       for (const auto& phase : object[std::string(keys::phases)])
@@ -183,6 +187,7 @@ namespace mechanism_configuration::v1
         // Reactant-like keys (must be in the reaction's phase).
         CollectComponents(reaction, keys::reactants, rr.reactants);
         CollectComponents(reaction, keys::gas_phase_species, rr.reactants);
+        CollectComponents(reaction, keys::gas_phase_species, rr.needs_molecular_weight);
         // Product-like keys (may reference any phase).
         CollectComponents(reaction, keys::products, rr.products);
         CollectComponents(reaction, keys::alkoxy_products, rr.products);

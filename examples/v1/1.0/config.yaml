@@ -3,6 +3,7 @@ name: Version 1.0 example
 species:
   - name: A
     __absolute tolerance: 1.0e-30
+    molecular weight [kg mol-1]: 0.05
   - name: B
     constant concentration [mol m-3]: 1.0e19
   - name: C
