@@ -10,6 +10,7 @@
 
 #include <optional>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace mechanism_configuration::semantics
@@ -28,11 +29,13 @@ namespace mechanism_configuration::semantics
     std::vector<NamedRef> reactants;  // must exist and be registered in `phase`
     std::vector<NamedRef> products;   // must exist; may belong to any phase
     std::optional<ErrorLocation> location;
+    std::vector<NamedRef> needs_molecular_weight;  // for example, the gas-phase species of a surface reaction
   };
 
   struct ReactionsInput
   {
     std::vector<NamedRef> species;
+    std::unordered_set<std::string> species_with_molecular_weight;
     std::vector<PhaseRef> phases;
     std::vector<ReactionRef> reactions;
   };

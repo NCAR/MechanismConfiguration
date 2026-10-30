@@ -4,6 +4,13 @@ Changelog
 Unreleased
 ----------
 
+Surface Molecular Weight Check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``Validate()`` now checks that the gas-phase species of each ``SURFACE`` reaction has a molecular
+weight. MICM needs it for the mean molecular speed. A configuration without it gives a
+``RequiredKeyNotFound`` error. The examples now set a molecular weight for that species.
+
 Product Phase Check
 ^^^^^^^^^^^^^^^^^^^
 

@@ -31,6 +31,7 @@ reactions:
   type: SURFACE
 species:
 - name: A
+  molecular weight [kg mol-1]: 0.05
 - name: B
 - name: C
 version: 1.0.0

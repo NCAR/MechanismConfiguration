@@ -3,7 +3,8 @@
   "name": "Valid surface",
   "species": [
     {
-      "name": "A"
+      "name": "A",
+      "molecular weight [kg mol-1]": 0.05
     },
     {
       "name": "B"
