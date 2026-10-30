@@ -138,17 +138,16 @@ TEST(Validate, DetectsReactantNotInReactionPhase)
   EXPECT_TRUE(HasCode(errors, ErrorCode::RequestedSpeciesNotRegisteredInPhase));
 }
 
-// Products may reference species from any phase.
-TEST(Validate, AllowsCrossPhaseProduct)
+TEST(Validate, DetectsProductNotInReactionPhase)
 {
   Mechanism m = BaseMechanism();
   types::Arrhenius rxn;
   rxn.gas_phase = "gas";
   rxn.reactants = { component("A") };
-  rxn.products = { component("C") };  // C lives in aqueous; allowed as a product
+  rxn.products = { component("C") };  // C is known, but only in the aqueous phase
   m.reactions.arrhenius = { rxn };
 
-  EXPECT_TRUE(Validate(m).empty());
+  EXPECT_TRUE(HasCode(Validate(m), ErrorCode::RequestedSpeciesNotRegisteredInPhase));
 }
 
 TEST(Validate, DetectsDuplicateSpecies)
