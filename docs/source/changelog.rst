@@ -11,6 +11,13 @@ Surface Molecular Weight Check
 weight. MICM needs it for the mean molecular speed. A configuration without it gives a
 ``RequiredKeyNotFound`` error. The examples now set a molecular weight for that species.
 
+Product Phase Check
+^^^^^^^^^^^^^^^^^^^
+
+``Validate()`` now checks that each product is in the phase of its reaction, as it does for
+reactants. A configuration with a product outside the reaction phase gives a
+``RequestedSpeciesNotRegisteredInPhase`` error.
+
 JPL-19 Ternary Chemical Activation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

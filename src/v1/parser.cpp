@@ -184,11 +184,9 @@ namespace mechanism_configuration::v1
           rr.phase = reaction[std::string(keys::gas_phase)].as<std::string>();
           rr.location = LocationOf(reaction[std::string(keys::gas_phase)]);
         }
-        // Reactant-like keys (must be in the reaction's phase).
         CollectComponents(reaction, keys::reactants, rr.reactants);
         CollectComponents(reaction, keys::gas_phase_species, rr.reactants);
         CollectComponents(reaction, keys::gas_phase_species, rr.needs_molecular_weight);
-        // Product-like keys (may reference any phase).
         CollectComponents(reaction, keys::products, rr.products);
         CollectComponents(reaction, keys::alkoxy_products, rr.products);
         CollectComponents(reaction, keys::nitrate_products, rr.products);
