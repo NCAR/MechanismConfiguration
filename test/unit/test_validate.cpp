@@ -94,7 +94,7 @@ namespace
 
   bool HasCode(const Errors& errors, ErrorCode code)
   {
-    for (const auto& [c, m] : errors)
+    for (const auto& [c, m, p] : errors)
       if (c == code)
         return true;
     return false;

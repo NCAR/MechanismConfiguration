@@ -64,6 +64,6 @@ TEST(V0Parser, ReportsMissingFile)
     auto parsed = parser.Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::FileNotFound);
   }
 }

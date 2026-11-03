@@ -216,7 +216,7 @@ namespace mechanism_configuration::v0
           // prepend the file name to the error messages
           for (auto& error : parse_errors)
           {
-            error.second = camp_file.string() + ":" + error.second;
+            error.message = camp_file.string() + ":" + error.message;
           }
           errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
         }

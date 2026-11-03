@@ -5,6 +5,7 @@
 #include "detail/v1/reactions/schema.hpp"
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/reactions/parsers.hpp"
@@ -39,16 +40,25 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  Errors CheckReactionsSchema(const YAML::Node& reactions_list)
+  Errors CheckReactionsSchema(const YAML::Node& reactions_list, const std::string& path)
   {
     Errors errors;
 
     auto& parsers = GetReactionParserMap();
 
-    std::vector<std::pair<YAML::Node, IReactionParser*>> valid_reactions;
+    struct ValidReaction
+    {
+      YAML::Node node;
+      std::string path;
+      IReactionParser* parser;
+    };
+    std::vector<ValidReaction> valid_reactions;
 
+    std::size_t index = 0;
     for (const auto& object : reactions_list)
     {
+      const std::string reaction_path = ItemPath(reactions_list, path, index++);
+      const ItemErrorPath item_path(errors, reaction_path);
       if (!object[keys::type])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
@@ -71,14 +81,15 @@ namespace mechanism_configuration::v1
 
         continue;
       }
-      valid_reactions.emplace_back(object, it->second.get());
+      valid_reactions.push_back({ object, reaction_path, it->second.get() });
     }
 
     if (!errors.empty())
       return errors;
 
-    for (const auto& [reaction_node, parser] : valid_reactions)
+    for (const auto& [reaction_node, reaction_path, parser] : valid_reactions)
     {
+      const ItemErrorPath item_path(errors, reaction_path);
       auto schema_errors = parser->CheckSchema(reaction_node);
       if (!schema_errors.empty())
       {

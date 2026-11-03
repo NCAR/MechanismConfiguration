@@ -20,6 +20,7 @@ namespace mechanism_configuration::semantics
     std::string name;
     std::vector<NamedRef> species;
     std::optional<ErrorLocation> location;
+    std::optional<std::string> path{};
   };
 
   struct ReactionRef
@@ -30,6 +31,7 @@ namespace mechanism_configuration::semantics
     std::vector<NamedRef> products;   // must exist; may belong to any phase
     std::optional<ErrorLocation> location;
     std::vector<NamedRef> needs_molecular_weight;  // for example, the gas-phase species of a surface reaction
+    std::optional<std::string> path{};             // the path of the gas-phase key, like `location`
   };
 
   struct ReactionsInput

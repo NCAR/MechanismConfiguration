@@ -4,6 +4,28 @@ Changelog
 Unreleased
 ----------
 
+JSON Pointer Paths in Errors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each error now tells which object in the configuration causes it. A program, for example an
+editor, can use this to find the object without a parse of the message text.
+
+- ``Errors`` is now a list of ``Error`` structs, not a list of ``std::pair``. An ``Error`` has a
+  ``code``, a ``message``, and an optional ``path``. This is a breaking change: replace ``.first``
+  with ``.code`` and ``.second`` with ``.message``, and use three names in a structured binding.
+- ``path`` is a JSON Pointer (`RFC 6901 <https://www.rfc-editor.org/rfc/rfc6901>`_) into the
+  document. ``Parse()`` and ``ParseFromString()`` set it for ``v1`` errors.
+- A semantic error points to the reference that causes it, for example
+  ``/reactions/3/products/0`` for a product that is not in the gas phase of the reaction.
+- A schema error points to the item of a top-level list that contains the problem, for example
+  ``/reactions/3``, or to the section or the document when no item contains it.
+- ``Validate()`` on a ``Mechanism`` built in code gives paths into the struct for species,
+  phases, and gas-phase reactions, for example ``/reactions/arrhenius/1/products/0``. The
+  aerosol and emissions errors of such a ``Mechanism`` have no path.
+- ``path`` is empty for ``v0`` configurations and for errors that are not about one item, such
+  as a YAML syntax error.
+- The message does not change, so the ``file:line:col`` prefix still opens the file at the error.
+
 Surface Molecular Weight Check
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -57,10 +57,10 @@ TEST(ParserBase, SurfaceDetectsUnknownSpecies)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -74,11 +74,11 @@ TEST(ParserBase, SurfaceDetectsBadReactionComponent)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -92,10 +92,10 @@ TEST(ParserBase, SurfaceDetectsUnknownGasPhase)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::UnknownPhase);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::UnknownPhase);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }

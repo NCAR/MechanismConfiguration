@@ -46,10 +46,10 @@ TEST(ParserBase, DetectsDuplicatePhases)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed) << "Parsing should have failed due to duplicate phases, but it succeeded.";
     EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicatePhasesDetected);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicatePhasesDetected);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -63,10 +63,10 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -80,10 +80,10 @@ TEST(ParserBase, DetectsInvalidKeys)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -97,10 +97,10 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::PhaseRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::PhaseRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -114,10 +114,10 @@ TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicateSpeciesInPhaseDetected);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicateSpeciesInPhaseDetected);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -168,10 +168,10 @@ TEST(ParserBase, DetectsInvalidSpeciesObject)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_GE(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }

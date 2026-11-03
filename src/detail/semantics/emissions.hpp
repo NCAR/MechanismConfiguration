@@ -24,6 +24,7 @@ namespace mechanism_configuration::semantics
     std::string name;
     std::vector<SpeciesMappingRef> mappings;
     std::optional<ErrorLocation> location;
+    std::optional<std::string> path{};
   };
 
   struct SourceRef
@@ -34,6 +35,7 @@ namespace mechanism_configuration::semantics
     int category{ 0 };
     int hierarchy{ 1 };
     std::optional<ErrorLocation> location;  // location of the source entry itself
+    std::optional<std::string> path{};      // path of the source entry itself
   };
 
   struct EmissionsInput

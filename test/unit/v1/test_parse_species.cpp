@@ -54,13 +54,13 @@ TEST(ParserBase, DetectsDuplicateSpecies)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 4);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[1].first, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[2].first, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[3].first, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[1].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[2].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.error()[3].code, ErrorCode::DuplicateSpeciesDetected);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -74,11 +74,11 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -92,10 +92,10 @@ TEST(ParserBase, DetectsInvalidKeys)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }

@@ -74,9 +74,9 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
   for (const auto& error : parsed.error())
-    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
+    std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
 }
 
 // ── missing_reaction_set ──────────────────────────────────────────────────────
@@ -101,9 +101,9 @@ TEST(ParseFromFileConfigs, MissingSpeciesSet)
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+  EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
   for (const auto& error : parsed.error())
-    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
+    std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
@@ -115,12 +115,12 @@ TEST(ParseFromFileConfigs, VersionMismatch)
 
   EXPECT_FALSE(parsed);
   ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidVersion);
+  EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidVersion);
   EXPECT_NE(
-      parsed.error()[0].second.find("The file-list format requires version '1.1' or newer, but the version is '1.0.0'."),
+      parsed.error()[0].message.find("The file-list format requires version '1.1' or newer, but the version is '1.0.0'."),
       std::string::npos);
   for (const auto& error : parsed.error())
-    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
+    std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
 }
 
 // ── mixed_inline_species ──────────────────────────────────────────────────────
@@ -176,7 +176,7 @@ TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
   ASSERT_EQ(parsed.error().size(), 6);
   for (const auto& error : parsed.error())
   {
-    EXPECT_EQ(error.first, ErrorCode::DuplicateSpeciesDetected);
-    std::cout << error.second << " " << ErrorCodeToString(error.first) << "\n";
+    EXPECT_EQ(error.code, ErrorCode::DuplicateSpeciesDetected);
+    std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
   }
 }

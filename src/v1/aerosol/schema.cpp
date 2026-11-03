@@ -5,6 +5,7 @@
 #include "detail/v1/aerosol/schema.hpp"
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/aerosol/keys.hpp"
 #include "detail/v1/keys.hpp"
@@ -62,12 +63,14 @@ namespace mechanism_configuration::v1
     }
   }  // namespace
 
-  Errors CheckAerosolRepresentationsSchema(const YAML::Node& representations_list)
+  Errors CheckAerosolRepresentationsSchema(const YAML::Node& representations_list, const std::string& path)
   {
     Errors errors;
 
+    std::size_t index = 0;
     for (const auto& object : AsSequence(representations_list))
     {
+      const ItemErrorPath item_path(errors, ItemPath(representations_list, path, index++));
       // Every representation needs a type to dispatch the remaining required keys on.
       if (!object[keys::type])
       {
@@ -112,12 +115,14 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list)
+  Errors CheckAerosolProcessesSchema(const YAML::Node& processes_list, const std::string& path)
   {
     Errors errors;
 
+    std::size_t index = 0;
     for (const auto& object : AsSequence(processes_list))
     {
+      const ItemErrorPath item_path(errors, ItemPath(processes_list, path, index++));
       // Every entry needs a type to dispatch the remaining required keys on.
       if (!object[keys::type])
       {

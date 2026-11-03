@@ -11,12 +11,14 @@
 
 namespace mechanism_configuration::semantics
 {
-  // A referenced name and its source location. Parsed documents populate the location
-  // (line:col for error reporting) and in-code Mechanism leaves it empty.
+  // A referenced name, its source location, and its JSON Pointer in the document. Parsed
+  // documents populate the location (line:col for error reporting) and the path; an in-code
+  // Mechanism leaves both empty.
   struct NamedRef
   {
     std::string name;
     std::optional<ErrorLocation> location;
+    std::optional<std::string> path{};
   };
 
 }  // namespace mechanism_configuration::semantics

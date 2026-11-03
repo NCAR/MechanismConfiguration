@@ -5,6 +5,7 @@
 #include "detail/v1/species/schema.hpp"
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/species/keys.hpp"
@@ -17,7 +18,7 @@
 
 namespace mechanism_configuration::v1
 {
-  Errors CheckSpeciesSchema(const YAML::Node& species_list)
+  Errors CheckSpeciesSchema(const YAML::Node& species_list, const std::string& path)
   {
     const std::vector<std::string_view> required_keys = { keys::name };
     const std::vector<std::string_view> optional_keys = { keys::absolute_tolerance,
@@ -31,15 +32,17 @@ namespace mechanism_configuration::v1
     // Structural validation only. Duplicate-species detection (a semantic check) is performed
     // by the version-neutral ValidateReactionsSemantics.
     Errors errors;
+    std::size_t index = 0;
     for (const auto& object : species_list)
     {
+      const ItemErrorPath item_path(errors, ItemPath(species_list, path, index++));
       auto schema_errors = CheckSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
     }
     return errors;
   }
 
-  Errors CheckPhasesSchema(const YAML::Node& phases_list)
+  Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::string& path)
   {
     // Phase
     const std::vector<std::string_view> required_keys = { keys::name, keys::species };
@@ -52,8 +55,10 @@ namespace mechanism_configuration::v1
     // phase-membership (semantic checks) are performed by the version-neutral
     // ValidateReactionsSemantics.
     Errors errors;
+    std::size_t index = 0;
     for (const auto& object : AsSequence(phases_list))
     {
+      const ItemErrorPath item_path(errors, ItemPath(phases_list, path, index++));
       auto schema_errors = CheckSchema(object, required_keys, optional_keys);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
 

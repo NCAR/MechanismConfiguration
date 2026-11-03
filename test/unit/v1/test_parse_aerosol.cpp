@@ -17,7 +17,7 @@ namespace
 {
   bool HasError(const Errors& errors, ErrorCode code)
   {
-    for (const auto& [error_code, message] : errors)
+    for (const auto& [error_code, message, path] : errors)
     {
       std::cout << message << " " << ErrorCodeToString(error_code) << std::endl;
       if (error_code == code)
@@ -28,7 +28,7 @@ namespace
 
   bool HasErrorAt(const Errors& errors, ErrorCode code, const std::string& location)
   {
-    for (const auto& [error_code, message] : errors)
+    for (const auto& [error_code, message, path] : errors)
     {
       std::cout << message << " " << ErrorCodeToString(error_code) << std::endl;
       if (error_code == code && message.find(location + " error:") != std::string::npos)
@@ -42,7 +42,7 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/valid_aerosol.json");
   if (!parsed)
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 

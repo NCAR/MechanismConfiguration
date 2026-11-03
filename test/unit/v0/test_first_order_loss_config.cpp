@@ -20,20 +20,20 @@ TEST(FirstOrderLossConfig, DetectsInvalidConfig)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
 
     file = "./v0_unit_configs/first_order_loss/missing_MUSICA_name/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -81,10 +81,10 @@ TEST(FirstOrderLossConfig, DetectsNonstandardKeys)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
