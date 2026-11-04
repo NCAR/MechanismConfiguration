@@ -11,8 +11,6 @@
 #include "detail/v1/reactions/schema.hpp"
 #include "detail/v1/utils.hpp"
 
-#include <mechanism_configuration/format_compat.hpp>
-
 #include <string>
 #include <string_view>
 #include <vector>
@@ -74,8 +72,9 @@ namespace mechanism_configuration::v1
       if (!object[keys::type])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           mc_fmt::format("{} error: Missing 'type' object in aerosol representation.", error_location) });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              ToString(error_location) + " error: Missing 'type' object in aerosol representation." });
         continue;
       }
 
@@ -104,7 +103,7 @@ namespace mechanism_configuration::v1
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
         errors.push_back(
             { ErrorCode::UnknownType,
-              mc_fmt::format("{} error: Unknown aerosol representation type '{}' found.", error_location, type) });
+              ToString(error_location) + " error: Unknown aerosol representation type '" + type + "' found." });
         continue;
       }
 
@@ -125,8 +124,9 @@ namespace mechanism_configuration::v1
       if (!object[keys::type])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           mc_fmt::format("{} error: Missing 'type' object in aerosol process.", error_location) });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              ToString(error_location) + " error: Missing 'type' object in aerosol process." });
         continue;
       }
 
@@ -253,21 +253,19 @@ namespace mechanism_configuration::v1
         {
           const auto& node = object[keys::diagnose_from_state];
           ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-          nested_errors.push_back({ ErrorCode::MutuallyExclusiveOption,
-                                    mc_fmt::format(
-                                        "{} error: Mutually exclusive option of '{}' and '{}' found in '{}'.",
-                                        error_location,
-                                        keys::constant,
-                                        keys::diagnose_from_state,
-                                        type) });
+          nested_errors.push_back(
+              { ErrorCode::MutuallyExclusiveOption,
+                ToString(error_location) + " error: Mutually exclusive option of '" + std::string(keys::constant) +
+                    "' and '" + std::string(keys::diagnose_from_state) + "' found in '" + type + "'." });
         }
       }
       else
       {
         const auto& node = object[keys::type];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-        errors.push_back({ ErrorCode::UnknownType,
-                           mc_fmt::format("{} error: Unknown aerosol process type '{}' found.", error_location, type) });
+        errors.push_back(
+            { ErrorCode::UnknownType,
+              ToString(error_location) + " error: Unknown aerosol process type '" + type + "' found." });
         continue;
       }
 

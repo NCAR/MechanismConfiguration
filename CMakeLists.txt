@@ -28,7 +28,6 @@ option(MECH_CONFIG_ENABLE_TESTS "Build the tests" ON)
 option(MECH_CONFIG_BUILD_DOCS "Build the documentation" OFF)
 option(MECH_CONFIG_BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(MECH_CONFIG_ENABLE_COVERAGE "Enable code coverage output" OFF)
-option(MECH_CONFIG_USE_FMT "Use {fmt} library instead of std::format" OFF)
 option(MECH_CONFIG_COMPILE_WARNING_AS_ERROR "Treat compiler warnings as errors for mechanism configuration targets" OFF)
 
 set(MECH_CONFIG_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})

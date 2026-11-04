@@ -9,8 +9,10 @@
 
 #include <mechanism_configuration/validate.hpp>
 
+#include <iomanip>
 #include <map>
 #include <optional>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -27,7 +29,7 @@ namespace mechanism_configuration
     std::string Message(const std::optional<ErrorLocation>& location, const std::string& body)
     {
       if (location)
-        return mc_fmt::format("{} error: {}", *location, body);
+        return ToString(*location) + " error: " + body;
       return "error: " + body;
     }
 
@@ -41,7 +43,8 @@ namespace mechanism_configuration
       for (const auto& ref : refs)
       {
         if (counts[ref.name] > 1)
-          errors.push_back({ code, Message(ref.location, mc_fmt::format("Duplicate {} name '{}' found.", what, ref.name)) });
+          errors.push_back(
+              { code, Message(ref.location, "Duplicate " + std::string(what) + " name '" + ref.name + "' found.") });
       }
     }
   }  // namespace
@@ -69,8 +72,7 @@ namespace mechanism_configuration
         if (!species_names.contains(ps.name))
           errors.push_back(
               { ErrorCode::PhaseRequiresUnknownSpecies,
-                Message(
-                    ps.location, mc_fmt::format("Unknown species name '{}' found in '{}' phase.", ps.name, phase.name)) });
+                Message(ps.location, "Unknown species name '" + ps.name + "' found in '" + phase.name + "' phase.") });
       }
       ReportDuplicates(phase.species, ErrorCode::DuplicateSpeciesInPhaseDetected, "species", errors);
     }
@@ -82,10 +84,9 @@ namespace mechanism_configuration
       const auto phase_it = phase_species.find(reaction.phase);
       const bool phase_exists = phase_it != phase_species.end();
       if (!phase_exists)
-        errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(
-                               reaction.location,
-                               mc_fmt::format("Unknown phase '{}' in '{}' reaction.", reaction.phase, reaction.type)) });
+        errors.push_back(
+            { ErrorCode::UnknownPhase,
+              Message(reaction.location, "Unknown phase '" + reaction.phase + "' in '" + reaction.type + "' reaction.") });
 
       for (const auto* components : { &reaction.reactants, &reaction.products })
         for (const auto& component : *components)
@@ -95,16 +96,14 @@ namespace mechanism_configuration
                 { ErrorCode::ReactionRequiresUnknownSpecies,
                   Message(
                       component.location,
-                      mc_fmt::format("Unknown species '{}' used in '{}' reaction.", component.name, reaction.type)) });
+                      "Unknown species '" + component.name + "' used in '" + reaction.type + "' reaction.") });
           else if (phase_exists && !phase_it->second.contains(component.name))
-            errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                               Message(
-                                   component.location,
-                                   mc_fmt::format(
-                                       "Species '{}' used in '{}' is not defined in the '{}' phase.",
-                                       component.name,
-                                       reaction.type,
-                                       reaction.phase)) });
+            errors.push_back(
+                { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+                  Message(
+                      component.location,
+                      "Species '" + component.name + "' used in '" + reaction.type + "' is not defined in the '" +
+                          reaction.phase + "' phase.") });
         }
       for (const auto& species : reaction.needs_molecular_weight)
       {
@@ -113,8 +112,7 @@ namespace mechanism_configuration
               { ErrorCode::RequiredKeyNotFound,
                 Message(
                     species.location,
-                    mc_fmt::format(
-                        "Species '{}' used in '{}' has no molecular weight defined.", species.name, reaction.type)) });
+                    "Species '" + species.name + "' used in '" + reaction.type + "' has no molecular weight defined.") });
       }
     }
 
@@ -154,7 +152,7 @@ namespace mechanism_configuration
       {
         errors.push_back(
             { ErrorCode::UnknownPhase,
-              Message(phase.location, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase.name, context)) });
+              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
         return nullptr;
       }
       const auto species_it = phase_it->second.find(species.name);
@@ -164,8 +162,7 @@ namespace mechanism_configuration
             { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
               Message(
                   species.location,
-                  mc_fmt::format(
-                      "Species '{}' ({}) is not defined in the '{}' phase.", species.name, context, phase.name)) });
+                  "Species '" + species.name + "' (" + context + ") is not defined in the '" + phase.name + "' phase.") });
         return nullptr;
       }
       return species_it->second;
@@ -176,15 +173,12 @@ namespace mechanism_configuration
     {
       const auto* entry = require_registered_species(phase, species, context);
       if (entry && !entry->has_diffusion_coefficient)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(
-                               species.location,
-                               mc_fmt::format(
-                                   "{}: species '{}' has no diffusion coefficient defined in "
-                                   "the '{}' phase.",
-                                   context,
-                                   species.name,
-                                   phase.name)) });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              Message(
+                  species.location,
+                  context + ": species '" + species.name + "' has no diffusion coefficient defined in the '" + phase.name +
+                      "' phase.") });
     };
 
     auto require_density =
@@ -196,8 +190,7 @@ namespace mechanism_configuration
             { ErrorCode::RequiredKeyNotFound,
               Message(
                   species.location,
-                  mc_fmt::format(
-                      "{}: species '{}' has no density defined in the '{}' phase.", context, species.name, phase.name)) });
+                  context + ": species '" + species.name + "' has no density defined in the '" + phase.name + "' phase.") });
     };
 
     auto require_molecular_weight = [&](const semantics::NamedRef& species, const std::string& context)
@@ -206,13 +199,11 @@ namespace mechanism_configuration
       if (species_it == species_index.end())
         errors.push_back(
             { ErrorCode::UnknownSpecies,
-              Message(species.location, mc_fmt::format("Unknown species '{}' referenced by {}.", species.name, context)) });
+              Message(species.location, "Unknown species '" + species.name + "' referenced by " + context + ".") });
       else if (!species_it->second->has_molecular_weight)
         errors.push_back(
             { ErrorCode::RequiredKeyNotFound,
-              Message(
-                  species.location,
-                  mc_fmt::format("{}: species '{}' has no molecular weight defined.", context, species.name)) });
+              Message(species.location, context + ": species '" + species.name + "' has no molecular weight defined.") });
     };
 
     // Verifies that phase exists.
@@ -221,12 +212,12 @@ namespace mechanism_configuration
       if (!phase_index.contains(phase.name))
         errors.push_back(
             { ErrorCode::UnknownPhase,
-              Message(phase.location, mc_fmt::format("Unknown phase '{}' referenced by {}.", phase.name, context)) });
+              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
     };
 
     for (const auto& representation : input.representations)
       for (const auto& phase : representation.phases)
-        require_phase(phase, mc_fmt::format("aerosol representation '{}'", representation.name));
+        require_phase(phase, "aerosol representation '" + representation.name + "'");
 
     for (const auto& p : input.dissolved_reactions)
     {
@@ -312,34 +303,29 @@ namespace mechanism_configuration
     for (const auto& source : input.sources)
     {
       if (!inventory_names.contains(source.inventory.name))
-        errors.push_back({ ErrorCode::SourceRequiresUnknownInventory,
-                           Message(
-                               source.inventory.location,
-                               mc_fmt::format(
-                                   "Source '{}' references inventory '{}' which is not declared in 'inventories'.",
-                                   source.name,
-                                   source.inventory.name)) });
+        errors.push_back(
+            { ErrorCode::SourceRequiresUnknownInventory,
+              Message(
+                  source.inventory.location,
+                  "Source '" + source.name + "' references inventory '" + source.inventory.name +
+                      "' which is not declared in 'inventories'.") });
 
       if (!species_map_name_set.contains(source.species_map.name))
-        errors.push_back({ ErrorCode::SourceRequiresUnknownSpeciesMap,
-                           Message(
-                               source.species_map.location,
-                               mc_fmt::format(
-                                   "Source '{}' references species map '{}' which is not declared in 'species maps'.",
-                                   source.name,
-                                   source.species_map.name)) });
+        errors.push_back(
+            { ErrorCode::SourceRequiresUnknownSpeciesMap,
+              Message(
+                  source.species_map.location,
+                  "Source '" + source.name + "' references species map '" + source.species_map.name +
+                      "' which is not declared in 'species maps'.") });
 
       if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
         errors.push_back(
             { ErrorCode::DuplicateCategoryHierarchy,
               Message(
                   source.location,
-                  mc_fmt::format(
-                      "Source '{}' has duplicate (category: {}, hierarchy: {}) — each (category, hierarchy) pair "
-                      "must be unique.",
-                      source.name,
-                      source.category,
-                      source.hierarchy)) });
+                  "Source '" + source.name + "' has duplicate (category: " + std::to_string(source.category) +
+                      ", hierarchy: " + std::to_string(source.hierarchy) +
+                      ") — each (category, hierarchy) pair must be unique.") });
     }
 
     for (const auto& smap : input.species_maps)
@@ -351,16 +337,12 @@ namespace mechanism_configuration
       for (const auto& [inventory_species, total] : scale_sum)
       {
         if (total > 1.0 + 1e-9)
-          errors.push_back(
-              { ErrorCode::SpeciesMapScalingExceedsOne,
-                Message(
-                    smap.location,
-                    mc_fmt::format(
-                        "Species map '{}': scaling factors for inventory species '{}' sum to {:.4f}, which exceeds "
-                        "1.0.",
-                        smap.name,
-                        inventory_species,
-                        total)) });
+        {
+          std::ostringstream message;
+          message << "Species map '" << smap.name << "': scaling factors for inventory species '" << inventory_species
+                  << "' sum to " << std::fixed << std::setprecision(4) << total << ", which exceeds 1.0.";
+          errors.push_back({ ErrorCode::SpeciesMapScalingExceedsOne, Message(smap.location, message.str()) });
+        }
       }
     }
 

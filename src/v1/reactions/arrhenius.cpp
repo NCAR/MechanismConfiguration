@@ -52,10 +52,8 @@ namespace mechanism_configuration::v1
       const auto& node = object[keys::Ea];
       ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-      std::string message = mc_fmt::format(
-          "{} error: Mutually exclusive option of 'Ea' and 'C' found in '{}' reaction.",
-          error_location,
-          object[keys::type].as<std::string>());
+      std::string message = ToString(error_location) + " error: Mutually exclusive option of 'Ea' and 'C' found in '" +
+                            object[keys::type].as<std::string>() + "' reaction.";
 
       errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
     }

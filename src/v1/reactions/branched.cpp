@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 #include <mechanism_configuration/types/reactions.hpp>
 
 #include <detail/schema.hpp>

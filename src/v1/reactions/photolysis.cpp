@@ -67,11 +67,9 @@ namespace mechanism_configuration::v1
       const auto& node = object[keys::reactants];
       ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-      std::string message = mc_fmt::format(
-          "{} error: '{}' reaction requires one reactant, but {} were provided.",
-          error_location,
-          object[keys::type].as<std::string>(),
-          species_node_pairs.size());
+      std::string message = ToString(error_location) + " error: '" + object[keys::type].as<std::string>() +
+                            "' reaction requires one reactant, but " + std::to_string(species_node_pairs.size()) +
+                            " were provided.";
 
       errors.push_back({ ErrorCode::TooManyReactionComponents, message });
     }
