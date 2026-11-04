@@ -52,7 +52,7 @@ namespace mechanism_configuration::v1
       if (!object[keys::type])
       {
         ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-        std::string message = mc_fmt::format("{} error: Missing 'type' object in reaction.", error_location);
+        std::string message = ToString(error_location) + " error: Missing 'type' object in reaction.";
         errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
         continue;
       }
@@ -65,7 +65,7 @@ namespace mechanism_configuration::v1
         const auto& node = object[keys::type];
         ErrorLocation error_location{ node.Mark().line, node.Mark().column };
 
-        std::string message = mc_fmt::format("{} error: Unknown reaction type '{}' found.", error_location, type);
+        std::string message = ToString(error_location) + " error: Unknown reaction type '" + type + "' found.";
 
         errors.push_back({ ErrorCode::UnknownType, message });
 

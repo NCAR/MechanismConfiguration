@@ -11,7 +11,6 @@
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 
 #include <string>
 #include <string_view>
@@ -118,12 +117,12 @@ namespace mechanism_configuration::v1
           if (mode_val == std::string(keys::mode_online))
           {
             const ErrorLocation loc = LocationOf(item[std::string(keys::mode)]);
-            errors.push_back({ ErrorCode::OnlineSourcesNotSupported,
-                               mc_fmt::format("{} error: 'mode: online' is not supported in v1", loc) });
+            errors.push_back(
+                { ErrorCode::OnlineSourcesNotSupported, ToString(loc) + " error: 'mode: online' is not supported in v1" });
           }
           else if (mode_val != std::string(keys::mode_offline))
           {
-            errors.push_back({ ErrorCode::UnknownType, mc_fmt::format("Unknown mode '{}'; expected 'offline'", mode_val) });
+            errors.push_back({ ErrorCode::UnknownType, "Unknown mode '" + mode_val + "'; expected 'offline'" });
           }
         }
 
@@ -138,7 +137,7 @@ namespace mechanism_configuration::v1
             if (type_val == std::string(vt))
               found = true;
           if (!found)
-            errors.push_back({ ErrorCode::UnknownType, mc_fmt::format("Unknown source type '{}'", type_val) });
+            errors.push_back({ ErrorCode::UnknownType, "Unknown source type '" + type_val + "'" });
         }
 
         if (item[std::string(keys::vertical_injection)])
@@ -147,13 +146,13 @@ namespace mechanism_configuration::v1
           if (vi_val == std::string(keys::inject_plume))
           {
             const ErrorLocation loc = LocationOf(item[std::string(keys::vertical_injection)]);
-            errors.push_back({ ErrorCode::UnsupportedVerticalInjection,
-                               mc_fmt::format("{} error: 'vertical injection: plume' is not supported in v1", loc) });
+            errors.push_back(
+                { ErrorCode::UnsupportedVerticalInjection,
+                  ToString(loc) + " error: 'vertical injection: plume' is not supported in v1" });
           }
           else if (vi_val != std::string(keys::inject_surface))
           {
-            errors.push_back(
-                { ErrorCode::UnknownType, mc_fmt::format("Unknown vertical injection '{}'; expected 'surface'", vi_val) });
+            errors.push_back({ ErrorCode::UnknownType, "Unknown vertical injection '" + vi_val + "'; expected 'surface'" });
           }
         }
       }
@@ -188,8 +187,7 @@ namespace mechanism_configuration::v1
           const ErrorLocation loc = LocationOf(rg_node[std::string(keys::type)]);
           errors.push_back(
               { ErrorCode::UnsupportedRegriddingType,
-                mc_fmt::format(
-                    "{} error: Unsupported regridding type '{}'; only 'none' is supported in v1", loc, rg_type) });
+                ToString(loc) + " error: Unsupported regridding type '" + rg_type + "'; only 'none' is supported in v1" });
         }
       }
     }

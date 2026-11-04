@@ -21,7 +21,7 @@ namespace mechanism_configuration
 
     if (!object || object.IsNull())
     {
-      std::string message = mc_fmt::format("{} error: Object is null.", error_location);
+      std::string message = ToString(error_location) + " error: Object is null.";
       errors.push_back({ ErrorCode::EmptyObject, message });
 
       return errors;
@@ -52,7 +52,7 @@ namespace mechanism_configuration
 
     for (const auto& key : missing_keys)
     {
-      std::string message = mc_fmt::format("{} error: Required key '{}' is missing.", error_location, key);
+      std::string message = ToString(error_location) + " error: Required key '" + std::string(key) + "' is missing.";
       errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
     }
 
@@ -81,12 +81,12 @@ namespace mechanism_configuration
 
         if (present.empty())
         {
-          std::string message = mc_fmt::format("{} error: Exactly one of {} is required.", error_location, joined);
+          std::string message = ToString(error_location) + " error: Exactly one of " + joined + " is required.";
           errors.push_back({ ErrorCode::RequiredKeyNotFound, message });
         }
         else
         {
-          std::string message = mc_fmt::format("{} error: Only one of {} may be specified.", error_location, joined);
+          std::string message = ToString(error_location) + " error: Only one of " + joined + " may be specified.";
           errors.push_back({ ErrorCode::MutuallyExclusiveOption, message });
         }
       }
@@ -115,7 +115,7 @@ namespace mechanism_configuration
     {
       if (key.find("__") == std::string::npos)
       {
-        std::string message = mc_fmt::format("{} error: Non-standard key '{}' found.", error_location, key);
+        std::string message = ToString(error_location) + " error: Non-standard key '" + std::string(key) + "' found.";
         errors.push_back({ ErrorCode::InvalidKey, message });
       }
     }

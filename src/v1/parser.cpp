@@ -100,12 +100,10 @@ namespace mechanism_configuration::v1
 
       if (version.minor > NEWEST_MINOR_VERSION)
       {
-        errors.push_back({ ErrorCode::InvalidVersion,
-                           mc_fmt::format(
-                               "{} error: Version '{}' is not supported. The newest supported version is '1.{}'.",
-                               LocationOf(version_node),
-                               version.to_string(),
-                               NEWEST_MINOR_VERSION) });
+        errors.push_back(
+            { ErrorCode::InvalidVersion,
+              ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
+                  "' is not supported. The newest supported version is '1." + std::to_string(NEWEST_MINOR_VERSION) + "'." });
         return errors;
       }
 
@@ -117,7 +115,7 @@ namespace mechanism_configuration::v1
       {
         const YAML::Node node = object[std::string(section)];
         if (node)
-          requirements.push_back({ mc_fmt::format("'{}'", section), node, minimum_minor });
+          requirements.push_back({ "'" + std::string(section) + "'", node, minimum_minor });
       }
 
       // Reactions in a file list are not loaded yet; the merged configuration is checked again later.
@@ -131,19 +129,17 @@ namespace mechanism_configuration::v1
           for (const auto& [reaction_type, minimum_minor] : REACTION_TYPE_MINIMUM_MINOR_VERSION)
             if (type == reaction_type)
               requirements.push_back(
-                  { mc_fmt::format("The '{}' reaction type", type), reaction[std::string(keys::type)], minimum_minor });
+                  { "The '" + type + "' reaction type", reaction[std::string(keys::type)], minimum_minor });
         }
 
       for (const auto& requirement : requirements)
       {
         if (version.minor < requirement.minimum_minor)
-          errors.push_back({ ErrorCode::InvalidVersion,
-                             mc_fmt::format(
-                                 "{} error: {} requires version '1.{}' or newer, but the version is '{}'.",
-                                 LocationOf(requirement.node),
-                                 requirement.feature,
-                                 requirement.minimum_minor,
-                                 version.to_string()) });
+          errors.push_back(
+              { ErrorCode::InvalidVersion,
+                ToString(LocationOf(requirement.node)) + " error: " + requirement.feature + " requires version '1." +
+                    std::to_string(requirement.minimum_minor) + "' or newer, but the version is '" + version.to_string() +
+                    "'." });
       }
       return errors;
     }
@@ -390,9 +386,9 @@ namespace mechanism_configuration::v1
   {
     if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
     {
-      return std::unexpected(Errors{
-          { ErrorCode::FileNotFound,
-            mc_fmt::format("Configuration file '{}' does not exist or is not a regular file.", config_path.string()) } });
+      return std::unexpected(
+          Errors{ { ErrorCode::FileNotFound,
+                    "Configuration file '" + config_path.string() + "' does not exist or is not a regular file." } });
     }
 
     SetConfigPath(config_path.string());
@@ -404,8 +400,9 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(Errors{
-          { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
+      return std::unexpected(
+          Errors{
+              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
     }
 
     Errors errors;
@@ -532,23 +529,19 @@ namespace mechanism_configuration::v1
     if (has_aerosol_representations != has_aerosol_processes)
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         mc_fmt::format(
-                             "{} error: '{}' and '{}' must be provided together.",
-                             error_location,
-                             keys::aerosol_representations,
-                             keys::aerosol_processes) });
+      errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "' must be provided together." });
     }
     if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         mc_fmt::format(
-                             "{} error: A configuration must contain either '{}' or both '{}' and '{}'.",
-                             error_location,
-                             keys::reactions,
-                             keys::aerosol_representations,
-                             keys::aerosol_processes) });
+      errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: A configuration must contain either '" + std::string(keys::reactions) +
+                "' or both '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "'." });
     }
     if (!errors.empty())
     {
@@ -562,11 +555,8 @@ namespace mechanism_configuration::v1
     {
       ErrorLocation error_location{ object[keys::version].Mark().line, object[keys::version].Mark().column };
 
-      std::string message = mc_fmt::format(
-          "{} error: The version must be '{}' but the invalid version number '{}' found.",
-          error_location,
-          MAJOR_VERSION,
-          version.major);
+      std::string message = ToString(error_location) + " error: The version must be '" + std::to_string(MAJOR_VERSION) +
+                            "' but the invalid version number '" + std::to_string(version.major) + "' found.";
       errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
     }
     else
@@ -659,8 +649,7 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse document: {}", e.what()) } });
+      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, "Failed to parse document: " + std::string(e.what()) } });
     }
     return ValidateAndBuild(object);
   }
@@ -702,7 +691,7 @@ namespace mechanism_configuration::v1
     {
       const std::string where = config_path_.empty() ? "document" : "'" + config_path_ + "'";
       return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse {}: {}", where, e.what()) } });
+          Errors{ { ErrorCode::UnexpectedError, "Failed to parse " + where + ": " + std::string(e.what()) } });
     }
   }
 

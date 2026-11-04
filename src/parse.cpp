@@ -30,8 +30,8 @@ namespace mechanism_configuration
   {
     if (!std::filesystem::exists(config_path))
     {
-      return std::unexpected(Errors{
-          { ErrorCode::FileNotFound, mc_fmt::format("Configuration file '{}' does not exist.", config_path.string()) } });
+      return std::unexpected(
+          Errors{ { ErrorCode::FileNotFound, "Configuration file '" + config_path.string() + "' does not exist." } });
     }
 
     if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path))
@@ -46,8 +46,9 @@ namespace mechanism_configuration
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(Errors{
-          { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse '{}': {}", config_path.string(), e.what()) } });
+      return std::unexpected(
+          Errors{
+              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
     }
 
     // The version field is version-agnostic (it's how we dispatch), so read it literally
@@ -82,9 +83,8 @@ namespace mechanism_configuration
         // file and the version field has a location; point the error at it (path:line:col).
         const std::string body =
             version->location
-                ? mc_fmt::format(
-                      "{} error: Unsupported version number '{}'.", *version->location, version->version.to_string())
-                : mc_fmt::format("error: Unsupported version number '{}'.", version->version.to_string());
+                ? ToString(*version->location) + " error: Unsupported version number '" + version->version.to_string() + "'."
+                : "error: Unsupported version number '" + version->version.to_string() + "'.";
         return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body } });
       }
     }
@@ -104,15 +104,15 @@ namespace mechanism_configuration
       const Version version(object["version"].as<std::string>());
       if (version.major != 1)
       {
-        return std::unexpected(Errors{
-            { ErrorCode::InvalidVersion, mc_fmt::format("error: Unsupported version number '{}'.", version.to_string()) } });
+        return std::unexpected(
+            Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '" + version.to_string() + "'." } });
       }
       return v1::Parser{}.Parse(config);
     }
     catch (const YAML::Exception& e)
     {
       return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, mc_fmt::format("Failed to parse configuration string: {}", e.what()) } });
+          Errors{ { ErrorCode::UnexpectedError, "Failed to parse configuration string: " + std::string(e.what()) } });
     }
   }
 

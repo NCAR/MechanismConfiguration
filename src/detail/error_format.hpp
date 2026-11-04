@@ -5,16 +5,13 @@
 #pragma once
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 
-#include <ostream>
+#include <string>
 
 namespace mechanism_configuration
 {
-  // Kept internal (not in the public errors.hpp). Only the .cpp files that build
-  // error-message strings need it.
-  inline std::ostream& operator<<(std::ostream& out, const ErrorLocation& loc)
+  inline std::string ToString(const ErrorLocation& location)
   {
-    return out << loc.line << ':' << loc.column;
+    return std::to_string(location.line) + ":" + std::to_string(location.column);
   }
 }  // namespace mechanism_configuration

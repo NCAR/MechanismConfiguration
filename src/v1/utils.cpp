@@ -9,7 +9,6 @@
 #include "detail/v1/keys.hpp"
 
 #include <mechanism_configuration/errors.hpp>
-#include <mechanism_configuration/format_compat.hpp>
 
 #include <functional>
 #include <unordered_set>
