@@ -19,14 +19,13 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         architecture: [Win32, x64]
-        use_fmt: [OFF, ON]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Run Cmake
-        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON
+        run: cmake -S . -B build -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
@@ -43,7 +42,6 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [Debug, Release]
-        use_fmt: [OFF, ON]
 
     steps:
       - name: Checkout code
@@ -69,7 +67,6 @@ jobs:
         run: |
           cmake -S . -B build -G "MinGW Makefiles" \
                               -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                              -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }} \
                               -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON
 
       - name: Build the project

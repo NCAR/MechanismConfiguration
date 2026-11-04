@@ -19,7 +19,6 @@ jobs:
       matrix:
         xcode: ['16.4']
         build_type: [Release]
-        use_fmt: [OFF, ON]
         compiler:
           - { cpp: g++-13, c: gcc-13 }
           - { cpp: g++-14, c: gcc-14 }
@@ -38,7 +37,7 @@ jobs:
           xcode-version: ${{ matrix.xcode }}
 
       - name: Run Cmake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON
 
       - name: Build
         run: cmake --build build --parallel 10

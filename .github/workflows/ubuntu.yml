@@ -23,10 +23,6 @@ jobs:
           - { cpp: g++-14, c: gcc-14 }
           - { cpp: clang++, c: clang }
         build_type: [Release]
-        use_fmt: [OFF, ON]
-        exclude:
-          - compiler: { cpp: g++-12, c: gcc-12 }
-            use_fmt: OFF
     env:
       CC: ${{ matrix.compiler.c }}
       CXX: ${{ matrix.compiler.cpp }}
@@ -47,7 +43,7 @@ jobs:
           if [ "${{ matrix.compiler.cpp }}" = "clang++" ]; then
             EXTRA_FLAGS="-D CMAKE_CXX_FLAGS=-stdlib=libc++"
           fi
-          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_USE_FMT=${{ matrix.use_fmt }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON $EXTRA_FLAGS
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -D MECH_CONFIG_COMPILE_WARNING_AS_ERROR=ON $EXTRA_FLAGS
 
       - name: Build
         run: cmake --build build --config ${{ matrix.build_type }} --parallel 10
