@@ -92,18 +92,16 @@ namespace mechanism_configuration
         for (const auto& component : *components)
         {
           if (!species_names.contains(component.name))
-            errors.push_back(
-                { ErrorCode::ReactionRequiresUnknownSpecies,
-                  Message(
-                      component.location,
-                      "Unknown species '" + component.name + "' used in '" + reaction.type + "' reaction.") });
+            errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
+                               Message(
+                                   component.location,
+                                   "Unknown species '" + component.name + "' used in '" + reaction.type + "' reaction.") });
           else if (phase_exists && !phase_it->second.contains(component.name))
-            errors.push_back(
-                { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                  Message(
-                      component.location,
-                      "Species '" + component.name + "' used in '" + reaction.type + "' is not defined in the '" +
-                          reaction.phase + "' phase.") });
+            errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+                               Message(
+                                   component.location,
+                                   "Species '" + component.name + "' used in '" + reaction.type +
+                                       "' is not defined in the '" + reaction.phase + "' phase.") });
         }
       for (const auto& species : reaction.needs_molecular_weight)
       {
@@ -150,9 +148,8 @@ namespace mechanism_configuration
       const auto phase_it = phase_index.find(phase.name);
       if (phase_it == phase_index.end())
       {
-        errors.push_back(
-            { ErrorCode::UnknownPhase,
-              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
+        errors.push_back({ ErrorCode::UnknownPhase,
+                           Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
         return nullptr;
       }
       const auto species_it = phase_it->second.find(species.name);
@@ -173,12 +170,11 @@ namespace mechanism_configuration
     {
       const auto* entry = require_registered_species(phase, species, context);
       if (entry && !entry->has_diffusion_coefficient)
-        errors.push_back(
-            { ErrorCode::RequiredKeyNotFound,
-              Message(
-                  species.location,
-                  context + ": species '" + species.name + "' has no diffusion coefficient defined in the '" + phase.name +
-                      "' phase.") });
+        errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                           Message(
+                               species.location,
+                               context + ": species '" + species.name + "' has no diffusion coefficient defined in the '" +
+                                   phase.name + "' phase.") });
     };
 
     auto require_density =
@@ -210,9 +206,8 @@ namespace mechanism_configuration
     auto require_phase = [&](const semantics::NamedRef& phase, const std::string& context)
     {
       if (!phase_index.contains(phase.name))
-        errors.push_back(
-            { ErrorCode::UnknownPhase,
-              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
+        errors.push_back({ ErrorCode::UnknownPhase,
+                           Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
     };
 
     for (const auto& representation : input.representations)
@@ -303,29 +298,26 @@ namespace mechanism_configuration
     for (const auto& source : input.sources)
     {
       if (!inventory_names.contains(source.inventory.name))
-        errors.push_back(
-            { ErrorCode::SourceRequiresUnknownInventory,
-              Message(
-                  source.inventory.location,
-                  "Source '" + source.name + "' references inventory '" + source.inventory.name +
-                      "' which is not declared in 'inventories'.") });
+        errors.push_back({ ErrorCode::SourceRequiresUnknownInventory,
+                           Message(
+                               source.inventory.location,
+                               "Source '" + source.name + "' references inventory '" + source.inventory.name +
+                                   "' which is not declared in 'inventories'.") });
 
       if (!species_map_name_set.contains(source.species_map.name))
-        errors.push_back(
-            { ErrorCode::SourceRequiresUnknownSpeciesMap,
-              Message(
-                  source.species_map.location,
-                  "Source '" + source.name + "' references species map '" + source.species_map.name +
-                      "' which is not declared in 'species maps'.") });
+        errors.push_back({ ErrorCode::SourceRequiresUnknownSpeciesMap,
+                           Message(
+                               source.species_map.location,
+                               "Source '" + source.name + "' references species map '" + source.species_map.name +
+                                   "' which is not declared in 'species maps'.") });
 
       if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
-        errors.push_back(
-            { ErrorCode::DuplicateCategoryHierarchy,
-              Message(
-                  source.location,
-                  "Source '" + source.name + "' has duplicate (category: " + std::to_string(source.category) +
-                      ", hierarchy: " + std::to_string(source.hierarchy) +
-                      ") — each (category, hierarchy) pair must be unique.") });
+        errors.push_back({ ErrorCode::DuplicateCategoryHierarchy,
+                           Message(
+                               source.location,
+                               "Source '" + source.name + "' has duplicate (category: " + std::to_string(source.category) +
+                                   ", hierarchy: " + std::to_string(source.hierarchy) +
+                                   ") — each (category, hierarchy) pair must be unique.") });
     }
 
     for (const auto& smap : input.species_maps)
