@@ -46,9 +46,8 @@ namespace mechanism_configuration
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(
-          Errors{
-              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
     }
 
     // The version field is version-agnostic (it's how we dispatch), so read it literally

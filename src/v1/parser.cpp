@@ -100,10 +100,10 @@ namespace mechanism_configuration::v1
 
       if (version.minor > NEWEST_MINOR_VERSION)
       {
-        errors.push_back(
-            { ErrorCode::InvalidVersion,
-              ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
-                  "' is not supported. The newest supported version is '1." + std::to_string(NEWEST_MINOR_VERSION) + "'." });
+        errors.push_back({ ErrorCode::InvalidVersion,
+                           ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
+                               "' is not supported. The newest supported version is '1." +
+                               std::to_string(NEWEST_MINOR_VERSION) + "'." });
         return errors;
       }
 
@@ -135,11 +135,10 @@ namespace mechanism_configuration::v1
       for (const auto& requirement : requirements)
       {
         if (version.minor < requirement.minimum_minor)
-          errors.push_back(
-              { ErrorCode::InvalidVersion,
-                ToString(LocationOf(requirement.node)) + " error: " + requirement.feature + " requires version '1." +
-                    std::to_string(requirement.minimum_minor) + "' or newer, but the version is '" + version.to_string() +
-                    "'." });
+          errors.push_back({ ErrorCode::InvalidVersion,
+                             ToString(LocationOf(requirement.node)) + " error: " + requirement.feature +
+                                 " requires version '1." + std::to_string(requirement.minimum_minor) +
+                                 "' or newer, but the version is '" + version.to_string() + "'." });
       }
       return errors;
     }
@@ -400,9 +399,8 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(
-          Errors{
-              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
+      return std::unexpected(Errors{
+          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
     }
 
     Errors errors;
@@ -529,19 +527,17 @@ namespace mechanism_configuration::v1
     if (has_aerosol_representations != has_aerosol_processes)
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back(
-          { ErrorCode::RequiredKeyNotFound,
-            ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
-                std::string(keys::aerosol_processes) + "' must be provided together." });
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
+                             std::string(keys::aerosol_processes) + "' must be provided together." });
     }
     if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back(
-          { ErrorCode::RequiredKeyNotFound,
-            ToString(error_location) + " error: A configuration must contain either '" + std::string(keys::reactions) +
-                "' or both '" + std::string(keys::aerosol_representations) + "' and '" +
-                std::string(keys::aerosol_processes) + "'." });
+      errors.push_back({ ErrorCode::RequiredKeyNotFound,
+                         ToString(error_location) + " error: A configuration must contain either '" +
+                             std::string(keys::reactions) + "' or both '" + std::string(keys::aerosol_representations) +
+                             "' and '" + std::string(keys::aerosol_processes) + "'." });
     }
     if (!errors.empty())
     {
