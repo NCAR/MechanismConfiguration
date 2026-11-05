@@ -104,10 +104,8 @@ namespace mechanism_configuration
       const Version version(object["version"].as<std::string>());
       if (version.major != 1)
       {
-        return std::unexpected(
-            Errors{ { ErrorCode::InvalidVersion,
-                      "error: Unsupported version number '" + version.to_string() + "'.",
-                      "/version" } });
+        return std::unexpected(Errors{
+            { ErrorCode::InvalidVersion, "error: Unsupported version number '" + version.to_string() + "'.", "/version" } });
       }
       return v1::Parser{}.Parse(config);
     }
