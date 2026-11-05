@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 
+#include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
@@ -33,19 +34,28 @@ namespace
            extra + "}";
   }
 
-  // The (code, path) pairs of the errors from parsing `document`.
-  std::vector<std::pair<ErrorCode, std::optional<std::string>>> ErrorPaths(const std::string& document)
+  using Paths = std::vector<std::pair<ErrorCode, std::optional<std::string>>>;
+
+  // Prints the errors and gives their (code, path) pairs.
+  Paths PrintAndCollect(const Errors& errors)
   {
-    std::vector<std::pair<ErrorCode, std::optional<std::string>>> result;
-    auto parsed = ParseFromString(document);
-    EXPECT_FALSE(parsed);
-    if (!parsed)
-      for (const auto& error : parsed.error())
-        result.emplace_back(error.code, error.path);
+    Paths result;
+    for (const auto& error : errors)
+    {
+      std::cout << ErrorCodeToString(error.code) << " at " << (error.path ? "\"" + *error.path + "\"" : "<no path>") << ": "
+                << error.message << std::endl;
+      result.emplace_back(error.code, error.path);
+    }
     return result;
   }
 
-  using Paths = std::vector<std::pair<ErrorCode, std::optional<std::string>>>;
+  // The (code, path) pairs of the errors from parsing `document`.
+  Paths ErrorPaths(const std::string& document)
+  {
+    auto parsed = ParseFromString(document);
+    EXPECT_FALSE(parsed);
+    return parsed ? Paths{} : PrintAndCollect(parsed.error());
+  }
 }  // namespace
 
 TEST(ErrorPaths, MissingKeyPointsToTheObject)
@@ -122,11 +132,8 @@ TEST(ErrorPaths, InCodeMechanismPointsIntoTheStruct)
   mechanism.reactions.arrhenius = { reaction };
   mechanism.reactions.troe = { unknown_species };
 
-  std::vector<std::pair<ErrorCode, std::optional<std::string>>> paths;
-  for (const auto& error : Validate(mechanism))
-    paths.emplace_back(error.code, error.path);
   EXPECT_EQ(
-      paths,
+      PrintAndCollect(Validate(mechanism)),
       (Paths{ { ErrorCode::RequestedSpeciesNotRegisteredInPhase, "/reactions/arrhenius/0/products/0" },
               { ErrorCode::ReactionRequiresUnknownSpecies, "/reactions/troe/0/reactants/0" } }));
 }

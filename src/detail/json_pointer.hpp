@@ -14,8 +14,7 @@
 namespace mechanism_configuration
 {
   // JSON Pointers (RFC 6901) identify the item in a configuration document that causes an
-  // error. The empty string is the whole document. The paths use only the fixed keys of the
-  // format and array indexes, which contain no '~' or '/', so the keys need no escape.
+  // error. The empty string is the whole document.
 
   /// @brief Appends an object key to a JSON Pointer.
   inline void AppendSegment(std::string& path, std::string_view key)
