@@ -51,7 +51,7 @@ TEST(V1Parser, ParsesFullV1Configuration)
 {
   auto parsed = Parse("examples/v1/full_configuration.json");
   if (!parsed)
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 
@@ -82,7 +82,7 @@ TEST(V1Parser, ReportsMissingFile)
     auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::FileNotFound);
   }
 }
 

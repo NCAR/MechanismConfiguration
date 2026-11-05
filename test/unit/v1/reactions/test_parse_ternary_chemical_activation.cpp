@@ -24,7 +24,7 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
     {
       for (auto& error : parsed.error())
       {
-        std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+        std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
       }
     }
     EXPECT_TRUE(parsed);
@@ -89,22 +89,22 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
     EXPECT_EQ(parsed.error().size(), 12);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].first, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[3].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[4].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[5].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[6].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[7].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[8].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[9].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[10].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[11].first, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[2].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[3].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[4].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[5].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[6].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[7].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[8].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[9].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[10].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[11].code, ErrorCode::InvalidKey);
 
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -119,7 +119,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -134,7 +134,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
     EXPECT_FALSE(parsed);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }

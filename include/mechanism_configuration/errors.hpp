@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace mechanism_configuration
@@ -65,5 +65,17 @@ namespace mechanism_configuration
 
   std::string ErrorCodeToString(const ErrorCode& status);
 
-  using Errors = std::vector<std::pair<ErrorCode, std::string>>;
+  /// @brief An error found when a configuration is parsed or validated
+  struct Error
+  {
+    ErrorCode code;
+    /// @brief The full message, with the "file:line:col" prefix when the location is known
+    std::string message;
+    /// @brief A JSON Pointer (RFC 6901) to the object in the configuration document that
+    ///        causes the error. Empty when the error is not about one object, or when the
+    ///        mechanism has no document (for example, a Mechanism built in code).
+    std::optional<std::string> path{};
+  };
+
+  using Errors = std::vector<Error>;
 }  // namespace mechanism_configuration

@@ -4,6 +4,7 @@
 
 #include "detail/v1/utils.hpp"
 
+#include "detail/json_pointer.hpp"
 #include "detail/property_value.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/keys.hpp"
@@ -26,6 +27,11 @@ namespace mechanism_configuration::v1
     return sequence;
   }
 
+  std::string ItemPath(const YAML::Node& node, const std::string& path, std::size_t index)
+  {
+    return node.IsSequence() ? ChildPath(path, index) : path;
+  }
+
   std::string GetComponentName(const YAML::Node& component)
   {
     // A component may be given as a bare string (shorthand for its name),
@@ -41,7 +47,7 @@ namespace mechanism_configuration::v1
   {
     for (auto& error : errors)
     {
-      error.second = config_path + ":" + error.second;
+      error.message = config_path + ":" + error.message;
     }
   }
 

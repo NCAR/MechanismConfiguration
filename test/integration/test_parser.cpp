@@ -32,7 +32,7 @@ TEST(Parse, ParsesFullV1Configuration)
   {
     auto parsed = Parse("examples/v1/full_configuration" + extension);
     if (!parsed)
-      for (const auto& [code, message] : parsed.error())
+      for (const auto& [code, message, path] : parsed.error())
         std::cout << message << std::endl;
     EXPECT_TRUE(parsed);
     if (parsed)
@@ -61,7 +61,7 @@ TEST(Parse, ParsesTheExampleForEachV1MinorVersion)
   {
     auto parsed = Parse(example.path);
     if (!parsed)
-      for (const auto& [code, message] : parsed.error())
+      for (const auto& [code, message, path] : parsed.error())
         std::cout << message << std::endl;
     ASSERT_TRUE(parsed) << example.path;
 
@@ -108,7 +108,7 @@ TEST(Parse, ReportsMissingFile)
     auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::FileNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::FileNotFound);
   }
 }
 
@@ -118,7 +118,7 @@ TEST(Parse, ReportsUnsupportedVersion)
   EXPECT_FALSE(parsed);
 
   bool found_invalid_version = false;
-  for (const auto& [code, message] : parsed.error())
+  for (const auto& [code, message, path] : parsed.error())
   {
     if (code == ErrorCode::InvalidVersion)
       found_invalid_version = true;
@@ -141,7 +141,7 @@ static void ExpectCamCloudChemistry(const std::string& path)
   SCOPED_TRACE(path);
   auto parsed = Parse(path);
   if (!parsed)
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 
@@ -241,7 +241,7 @@ TEST(Parse, ParsesV1JsonString)
   }
   else
   {
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -287,7 +287,7 @@ TEST(Parse, ParsesV11JsonString)
   }
   else
   {
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -321,7 +321,7 @@ reactions:
   }
   else
   {
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -355,7 +355,7 @@ reactions:
   }
   else
   {
-    for (const auto& [code, message] : parsed.error())
+    for (const auto& [code, message, path] : parsed.error())
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }

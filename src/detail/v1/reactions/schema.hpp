@@ -8,6 +8,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <string>
+
 namespace mechanism_configuration::v1
 {
   // Structural (schema) validation of v1 reactions. These check required/optional keys and value
@@ -23,7 +25,8 @@ namespace mechanism_configuration::v1
   /// @brief Schema-validates a YAML list of reactions: each has a defined, recognized type,
   ///        and then each reaction's keys are validated by its parser.
   /// @param reactions_list YAML node containing the list of reactions
+  /// @param path JSON Pointer to the section. The errors of an item point to that item.
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckReactionsSchema(const YAML::Node& reactions_list);
+  Errors CheckReactionsSchema(const YAML::Node& reactions_list, const std::string& path);
 
 }  // namespace mechanism_configuration::v1

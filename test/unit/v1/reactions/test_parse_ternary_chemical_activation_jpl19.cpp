@@ -24,7 +24,7 @@ TEST(TernaryChemicalActivationJPL19Config, ParseValidConfig)
     {
       for (auto& error : parsed.error())
       {
-        std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+        std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
       }
     }
     ASSERT_TRUE(parsed);
@@ -106,17 +106,17 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsNonStandardKey)
     ASSERT_FALSE(parsed);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
     // 'Reactants' and 'Products' each give a missing key and an invalid key; the third
     // reaction has all 14 parameters in lower case.
     ASSERT_EQ(parsed.error().size(), 18);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].first, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.error()[2].code, ErrorCode::RequiredKeyNotFound);
     for (std::size_t i = 3; i < parsed.error().size(); ++i)
     {
-      EXPECT_EQ(parsed.error()[i].first, ErrorCode::InvalidKey) << i;
+      EXPECT_EQ(parsed.error()[i].code, ErrorCode::InvalidKey) << i;
     }
   }
 }
@@ -130,10 +130,10 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsMissingProducts)
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -147,10 +147,10 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsMissingReactants)
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }
@@ -164,10 +164,10 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsUnknownSpecies)
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
     for (auto& error : parsed.error())
     {
-      std::cout << error.second << " " << ErrorCodeToString(error.first) << std::endl;
+      std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
   }
 }

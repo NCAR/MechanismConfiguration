@@ -27,7 +27,7 @@ static auto ParseString(const std::string& content)
 TEST(EmissionsV1Parser, ParsesValidConfig)
 {
   auto result = ParseFile("emissions_unit_configs/valid.yaml");
-  ASSERT_TRUE(result) << "Parse failed: " << (result ? "" : result.error()[0].second);
+  ASSERT_TRUE(result) << "Parse failed: " << (result ? "" : result.error()[0].message);
 
   ASSERT_TRUE(result->emissions.has_value());
   const auto& em = *result->emissions;
@@ -122,7 +122,7 @@ TEST(EmissionsV1Parser, RejectsDuplicateSourceName)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::DuplicateSourceDetected)
+    if (e.code == ErrorCode::DuplicateSourceDetected)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -133,7 +133,7 @@ TEST(EmissionsV1Parser, RejectsDuplicateCategoryHierarchy)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::DuplicateCategoryHierarchy)
+    if (e.code == ErrorCode::DuplicateCategoryHierarchy)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -144,7 +144,7 @@ TEST(EmissionsV1Parser, RejectsSourceWithUnknownInventory)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::SourceRequiresUnknownInventory)
+    if (e.code == ErrorCode::SourceRequiresUnknownInventory)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -155,7 +155,7 @@ TEST(EmissionsV1Parser, RejectsSourceWithUnknownSpeciesMap)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::SourceRequiresUnknownSpeciesMap)
+    if (e.code == ErrorCode::SourceRequiresUnknownSpeciesMap)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -166,7 +166,7 @@ TEST(EmissionsV1Parser, RejectsScalingFactorExceedingOne)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::SpeciesMapScalingExceedsOne)
+    if (e.code == ErrorCode::SpeciesMapScalingExceedsOne)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -177,7 +177,7 @@ TEST(EmissionsV1Parser, RejectsOnlineSource)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::OnlineSourcesNotSupported)
+    if (e.code == ErrorCode::OnlineSourcesNotSupported)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -188,7 +188,7 @@ TEST(EmissionsV1Parser, RejectsUnsupportedRegriddingType)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::UnsupportedRegriddingType)
+    if (e.code == ErrorCode::UnsupportedRegriddingType)
       found = true;
   EXPECT_TRUE(found);
 }
@@ -199,7 +199,7 @@ TEST(EmissionsV1Parser, RejectsUnsupportedVerticalInjection)
   ASSERT_FALSE(result);
   bool found = false;
   for (const auto& e : result.error())
-    if (e.first == ErrorCode::UnsupportedVerticalInjection)
+    if (e.code == ErrorCode::UnsupportedVerticalInjection)
       found = true;
   EXPECT_TRUE(found);
 }

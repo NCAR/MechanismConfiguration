@@ -5,6 +5,7 @@
 #include "detail/v1/emissions/schema.hpp"
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/emissions/keys.hpp"
 #include "detail/v1/keys.hpp"
@@ -20,7 +21,7 @@ namespace mechanism_configuration::v1
 {
   namespace
   {
-    Errors CheckInventoriesSchema(const YAML::Node& inventories_node)
+    Errors CheckInventoriesSchema(const YAML::Node& inventories_node, const std::string& path)
     {
       Errors errors;
       if (!inventories_node.IsSequence())
@@ -33,8 +34,10 @@ namespace mechanism_configuration::v1
         keys::name, keys::directory, keys::file_pattern, keys::convention
       };
       const std::vector<std::string_view> optional_keys = { keys::molecular_weights };
+      std::size_t index = 0;
       for (const auto& item : inventories_node)
       {
+        const ItemErrorPath item_path(errors, ChildPath(path, index++));
         auto schema_errors = CheckSchema(item, required_keys, optional_keys);
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
@@ -60,7 +63,7 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    Errors CheckSpeciesMapsSchema(const YAML::Node& species_maps_node)
+    Errors CheckSpeciesMapsSchema(const YAML::Node& species_maps_node, const std::string& path)
     {
       Errors errors;
       if (!species_maps_node.IsSequence())
@@ -71,8 +74,10 @@ namespace mechanism_configuration::v1
 
       const std::vector<std::string_view> required_keys = { keys::name, keys::mappings };
       const std::vector<std::string_view> optional_keys = {};
+      std::size_t index = 0;
       for (const auto& item : species_maps_node)
       {
+        const ItemErrorPath item_path(errors, ChildPath(path, index++));
         auto schema_errors = CheckSchema(item, required_keys, optional_keys);
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
 
@@ -85,7 +90,7 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    Errors CheckSourcesSchema(const YAML::Node& sources_node)
+    Errors CheckSourcesSchema(const YAML::Node& sources_node, const std::string& path)
     {
       Errors errors;
       if (!sources_node.IsSequence())
@@ -104,8 +109,10 @@ namespace mechanism_configuration::v1
                                                             keys::scaling_factor,
                                                             keys::sector };
 
+      std::size_t index = 0;
       for (const auto& item : sources_node)
       {
+        const ItemErrorPath item_path(errors, ChildPath(path, index++));
         auto schema_errors = CheckSchema(item, required_keys, optional_keys);
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
 
@@ -159,19 +166,23 @@ namespace mechanism_configuration::v1
     }
   }  // namespace
 
-  Errors CheckEmissionsSchema(const YAML::Node& emissions_node)
+  Errors CheckEmissionsSchema(const YAML::Node& emissions_node, const std::string& path)
   {
     Errors errors;
 
     if (emissions_node[std::string(keys::inventories)])
     {
-      auto e = CheckInventoriesSchema(emissions_node[std::string(keys::inventories)]);
+      const std::string section_path = ChildPath(path, keys::inventories);
+      auto e = CheckInventoriesSchema(emissions_node[std::string(keys::inventories)], section_path);
+      SetMissingPaths(e, section_path);
       errors.insert(errors.end(), e.begin(), e.end());
     }
 
     if (emissions_node[std::string(keys::species_maps)])
     {
-      auto e = CheckSpeciesMapsSchema(emissions_node[std::string(keys::species_maps)]);
+      const std::string section_path = ChildPath(path, keys::species_maps);
+      auto e = CheckSpeciesMapsSchema(emissions_node[std::string(keys::species_maps)], section_path);
+      SetMissingPaths(e, section_path);
       errors.insert(errors.end(), e.begin(), e.end());
     }
 
@@ -186,14 +197,17 @@ namespace mechanism_configuration::v1
           const ErrorLocation loc = LocationOf(rg_node[std::string(keys::type)]);
           errors.push_back(
               { ErrorCode::UnsupportedRegriddingType,
-                ToString(loc) + " error: Unsupported regridding type '" + rg_type + "'; only 'none' is supported in v1" });
+                ToString(loc) + " error: Unsupported regridding type '" + rg_type + "'; only 'none' is supported in v1",
+                ChildPath(path, keys::regridding) });
         }
       }
     }
 
     if (emissions_node[std::string(keys::sources)])
     {
-      auto e = CheckSourcesSchema(emissions_node[std::string(keys::sources)]);
+      const std::string section_path = ChildPath(path, keys::sources);
+      auto e = CheckSourcesSchema(emissions_node[std::string(keys::sources)], section_path);
+      SetMissingPaths(e, section_path);
       errors.insert(errors.end(), e.begin(), e.end());
     }
 

@@ -22,7 +22,7 @@ TEST(V1FileConfigs, ParsesMultiFileConfiguration)
   {
     auto parsed = Parse(main);
     if (!parsed)
-      for (const auto& [code, message] : parsed.error())
+      for (const auto& [code, message, path] : parsed.error())
         std::cout << "[" << ErrorCodeToString(code) << "] " << message << "\n";
     ASSERT_TRUE(parsed);
 

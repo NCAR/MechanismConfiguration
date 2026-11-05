@@ -5,6 +5,7 @@
 #include "detail/v1/parser.hpp"
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/schema.hpp"
 #include "detail/v1/aerosol/keys.hpp"
 #include "detail/v1/aerosol/parsers.hpp"
@@ -55,13 +56,20 @@ namespace mechanism_configuration::v1
     }
 
     // Appends each component under `key` (reactant- or product-like) as a located reference.
-    void CollectComponents(const YAML::Node& reaction, std::string_view key, std::vector<semantics::NamedRef>& out)
+    // `path` is the JSON Pointer to `reaction`.
+    void CollectComponents(
+        const YAML::Node& reaction,
+        const std::string& path,
+        std::string_view key,
+        std::vector<semantics::NamedRef>& out)
     {
       const std::string k(key);
       if (!reaction[k])
         return;
+      const std::string list_path = ChildPath(path, key);
+      std::size_t index = 0;
       for (const auto& item : AsSequence(reaction[k]))
-        out.push_back({ GetComponentName(item), LocationOf(item) });
+        out.push_back({ GetComponentName(item), LocationOf(item), ItemPath(reaction[k], list_path, index++) });
     }
 
     // The newest v1 minor version that this library can parse.
@@ -87,6 +95,7 @@ namespace mechanism_configuration::v1
     {
       std::string feature;  // the feature name in the error message
       YAML::Node node;      // the node that the error points to
+      std::string path;     // the JSON Pointer to `node`
       unsigned int minimum_minor;
     };
 
@@ -100,45 +109,56 @@ namespace mechanism_configuration::v1
 
       if (version.minor > NEWEST_MINOR_VERSION)
       {
-        errors.push_back({ ErrorCode::InvalidVersion,
-                           ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
-                               "' is not supported. The newest supported version is '1." +
-                               std::to_string(NEWEST_MINOR_VERSION) + "'." });
+        errors.push_back(
+            { ErrorCode::InvalidVersion,
+              ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
+                  "' is not supported. The newest supported version is '1." + std::to_string(NEWEST_MINOR_VERSION) + "'.",
+              RootPath(keys::version) });
         return errors;
       }
 
       std::vector<VersionRequirement> requirements;
       if (uses_file_list)
-        requirements.push_back({ "The file-list format", version_node, FILE_LIST_MINIMUM_MINOR_VERSION });
+        requirements.push_back(
+            { "The file-list format", version_node, RootPath(keys::version), FILE_LIST_MINIMUM_MINOR_VERSION });
 
       for (const auto& [section, minimum_minor] : SECTION_MINIMUM_MINOR_VERSION)
       {
         const YAML::Node node = object[std::string(section)];
         if (node)
-          requirements.push_back({ "'" + std::string(section) + "'", node, minimum_minor });
+          requirements.push_back({ "'" + std::string(section) + "'", node, RootPath(section), minimum_minor });
       }
 
       // Reactions in a file list are not loaded yet; the merged configuration is checked again later.
       const YAML::Node reactions = object[std::string(keys::reactions)];
       if (reactions && reactions.IsSequence())
+      {
+        std::size_t index = 0;
         for (const auto& reaction : reactions)
         {
+          const std::string path = RootPath(keys::reactions, index++);
           if (!reaction.IsMap() || !reaction[std::string(keys::type)] || !reaction[std::string(keys::type)].IsScalar())
             continue;
           const std::string type = reaction[std::string(keys::type)].as<std::string>();
           for (const auto& [reaction_type, minimum_minor] : REACTION_TYPE_MINIMUM_MINOR_VERSION)
             if (type == reaction_type)
               requirements.push_back(
-                  { "The '" + type + "' reaction type", reaction[std::string(keys::type)], minimum_minor });
+                  { "The '" + type + "' reaction type",
+                    reaction[std::string(keys::type)],
+                    ChildPath(path, keys::type),
+                    minimum_minor });
         }
+      }
 
       for (const auto& requirement : requirements)
       {
         if (version.minor < requirement.minimum_minor)
-          errors.push_back({ ErrorCode::InvalidVersion,
-                             ToString(LocationOf(requirement.node)) + " error: " + requirement.feature +
-                                 " requires version '1." + std::to_string(requirement.minimum_minor) +
-                                 "' or newer, but the version is '" + version.to_string() + "'." });
+          errors.push_back(
+              { ErrorCode::InvalidVersion,
+                ToString(LocationOf(requirement.node)) + " error: " + requirement.feature + " requires version '1." +
+                    std::to_string(requirement.minimum_minor) + "' or newer, but the version is '" + version.to_string() +
+                    "'.",
+                requirement.path });
       }
       return errors;
     }
@@ -149,28 +169,42 @@ namespace mechanism_configuration::v1
     semantics::ReactionsInput input;
 
     if (object[std::string(keys::species)])
+    {
+      std::size_t index = 0;
       for (const auto& s : object[std::string(keys::species)])
       {
-        input.species.push_back({ GetComponentName(s), LocationOf(s) });
+        input.species.push_back({ GetComponentName(s), LocationOf(s), RootPath(keys::species, index++) });
         if (s[std::string(keys::molecular_weight)])
           input.species_with_molecular_weight.insert(GetComponentName(s));
       }
+    }
 
     if (object[std::string(keys::phases)])
+    {
+      std::size_t index = 0;
       for (const auto& phase : object[std::string(keys::phases)])
       {
         semantics::PhaseRef pr;
         pr.name = phase[std::string(keys::name)].as<std::string>();
         pr.location = LocationOf(phase);
+        pr.path = RootPath(keys::phases, index++);
         if (phase[std::string(keys::species)])
+        {
+          const std::string species_path = ChildPath(*pr.path, keys::species);
+          std::size_t species_index = 0;
           for (const auto& ps : phase[std::string(keys::species)])
-            pr.species.push_back({ GetComponentName(ps), LocationOf(ps) });
+            pr.species.push_back({ GetComponentName(ps), LocationOf(ps), ChildPath(species_path, species_index++) });
+        }
         input.phases.push_back(std::move(pr));
       }
+    }
 
     if (object[std::string(keys::reactions)])
+    {
+      std::size_t index = 0;
       for (const auto& reaction : object[std::string(keys::reactions)])
       {
+        const std::string path = RootPath(keys::reactions, index++);
         semantics::ReactionRef rr;
         if (reaction[std::string(keys::type)])
           rr.type = reaction[std::string(keys::type)].as<std::string>();
@@ -178,16 +212,18 @@ namespace mechanism_configuration::v1
         {
           rr.phase = reaction[std::string(keys::gas_phase)].as<std::string>();
           rr.location = LocationOf(reaction[std::string(keys::gas_phase)]);
+          rr.path = ChildPath(path, keys::gas_phase);
         }
-        CollectComponents(reaction, keys::reactants, rr.reactants);
-        CollectComponents(reaction, keys::gas_phase_species, rr.reactants);
-        CollectComponents(reaction, keys::gas_phase_species, rr.needs_molecular_weight);
-        CollectComponents(reaction, keys::products, rr.products);
-        CollectComponents(reaction, keys::alkoxy_products, rr.products);
-        CollectComponents(reaction, keys::nitrate_products, rr.products);
-        CollectComponents(reaction, keys::gas_phase_products, rr.products);
+        CollectComponents(reaction, path, keys::reactants, rr.reactants);
+        CollectComponents(reaction, path, keys::gas_phase_species, rr.reactants);
+        CollectComponents(reaction, path, keys::gas_phase_species, rr.needs_molecular_weight);
+        CollectComponents(reaction, path, keys::products, rr.products);
+        CollectComponents(reaction, path, keys::alkoxy_products, rr.products);
+        CollectComponents(reaction, path, keys::nitrate_products, rr.products);
+        CollectComponents(reaction, path, keys::gas_phase_products, rr.products);
         input.reactions.push_back(std::move(rr));
       }
+    }
 
     return input;
   }
@@ -224,33 +260,48 @@ namespace mechanism_configuration::v1
     if (!(object[std::string(keys::aerosol_representations)] && object[std::string(keys::aerosol_processes)]))
       return input;
 
+    std::size_t representation_index = 0;
     for (const auto& rep_node : object[std::string(keys::aerosol_representations)])
     {
+      const std::string rep_path = RootPath(keys::aerosol_representations, representation_index++);
       semantics::AerosolRepresentationRef ref;
       ref.name = rep_node[std::string(keys::name)].as<std::string>();
       ref.location = LocationOf(rep_node);
       if (rep_node[std::string(keys::phases)])
+      {
+        const std::string phases_path = ChildPath(rep_path, keys::phases);
+        std::size_t phase_index = 0;
         for (const auto& phase_node : rep_node[std::string(keys::phases)])
-          ref.phases.push_back({ phase_node.as<std::string>(), LocationOf(phase_node) });
+          ref.phases.push_back(
+              { phase_node.as<std::string>(), LocationOf(phase_node), ChildPath(phases_path, phase_index++) });
+      }
       input.representations.push_back(std::move(ref));
     }
 
+    std::size_t process_index = 0;
     for (const auto& entry : object[std::string(keys::aerosol_processes)])
     {
+      const std::string entry_path = RootPath(keys::aerosol_processes, process_index++);
       const auto type = entry[std::string(keys::type)].as<std::string>();
 
       if (type == keys::HenrysLawPhaseTransfer_key)
       {
         semantics::HenrysLawPhaseTransferRef ref;
         ref.gas_phase = { entry[std::string(keys::gas_phase)].as<std::string>(),
-                          LocationOf(entry[std::string(keys::gas_phase)]) };
+                          LocationOf(entry[std::string(keys::gas_phase)]),
+                          ChildPath(entry_path, keys::gas_phase) };
         ref.gas_species = { entry[std::string(keys::gas_phase_species)].as<std::string>(),
-                            LocationOf(entry[std::string(keys::gas_phase_species)]) };
+                            LocationOf(entry[std::string(keys::gas_phase_species)]),
+                            ChildPath(entry_path, keys::gas_phase_species) };
         ref.condensed_phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
-                                LocationOf(entry[std::string(keys::condensed_phase)]) };
+                                LocationOf(entry[std::string(keys::condensed_phase)]),
+                                ChildPath(entry_path, keys::condensed_phase) };
         ref.condensed_species = { entry[std::string(keys::condensed_phase_species)].as<std::string>(),
-                                  LocationOf(entry[std::string(keys::condensed_phase_species)]) };
-        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+                                  LocationOf(entry[std::string(keys::condensed_phase_species)]),
+                                  ChildPath(entry_path, keys::condensed_phase_species) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(),
+                        LocationOf(entry[std::string(keys::solvent)]),
+                        ChildPath(entry_path, keys::solvent) };
         ref.location = LocationOf(entry);
         input.henrys_law_phase_transfers.push_back(std::move(ref));
       }
@@ -258,10 +309,13 @@ namespace mechanism_configuration::v1
       {
         semantics::DissolvedReactionRef ref;
         ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
-                      LocationOf(entry[std::string(keys::condensed_phase)]) };
-        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
-        CollectComponents(entry, keys::reactants, ref.reactants);
-        CollectComponents(entry, keys::products, ref.products);
+                      LocationOf(entry[std::string(keys::condensed_phase)]),
+                      ChildPath(entry_path, keys::condensed_phase) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(),
+                        LocationOf(entry[std::string(keys::solvent)]),
+                        ChildPath(entry_path, keys::solvent) };
+        CollectComponents(entry, entry_path, keys::reactants, ref.reactants);
+        CollectComponents(entry, entry_path, keys::products, ref.products);
         ref.location = LocationOf(entry);
         input.dissolved_reactions.push_back(std::move(ref));
       }
@@ -269,10 +323,13 @@ namespace mechanism_configuration::v1
       {
         semantics::DissolvedReversibleReactionRef ref;
         ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
-                      LocationOf(entry[std::string(keys::condensed_phase)]) };
-        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
-        CollectComponents(entry, keys::reactants, ref.reactants);
-        CollectComponents(entry, keys::products, ref.products);
+                      LocationOf(entry[std::string(keys::condensed_phase)]),
+                      ChildPath(entry_path, keys::condensed_phase) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(),
+                        LocationOf(entry[std::string(keys::solvent)]),
+                        ChildPath(entry_path, keys::solvent) };
+        CollectComponents(entry, entry_path, keys::reactants, ref.reactants);
+        CollectComponents(entry, entry_path, keys::products, ref.products);
         ref.location = LocationOf(entry);
         input.dissolved_reversible_reactions.push_back(std::move(ref));
       }
@@ -280,14 +337,20 @@ namespace mechanism_configuration::v1
       {
         semantics::HenrysLawEquilibriumRef ref;
         ref.gas_phase = { entry[std::string(keys::gas_phase)].as<std::string>(),
-                          LocationOf(entry[std::string(keys::gas_phase)]) };
+                          LocationOf(entry[std::string(keys::gas_phase)]),
+                          ChildPath(entry_path, keys::gas_phase) };
         ref.gas_species = { entry[std::string(keys::gas_phase_species)].as<std::string>(),
-                            LocationOf(entry[std::string(keys::gas_phase_species)]) };
+                            LocationOf(entry[std::string(keys::gas_phase_species)]),
+                            ChildPath(entry_path, keys::gas_phase_species) };
         ref.condensed_phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
-                                LocationOf(entry[std::string(keys::condensed_phase)]) };
+                                LocationOf(entry[std::string(keys::condensed_phase)]),
+                                ChildPath(entry_path, keys::condensed_phase) };
         ref.condensed_species = { entry[std::string(keys::condensed_phase_species)].as<std::string>(),
-                                  LocationOf(entry[std::string(keys::condensed_phase_species)]) };
-        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
+                                  LocationOf(entry[std::string(keys::condensed_phase_species)]),
+                                  ChildPath(entry_path, keys::condensed_phase_species) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(),
+                        LocationOf(entry[std::string(keys::solvent)]),
+                        ChildPath(entry_path, keys::solvent) };
         ref.location = LocationOf(entry);
         input.henrys_law_equilibria.push_back(std::move(ref));
       }
@@ -295,12 +358,16 @@ namespace mechanism_configuration::v1
       {
         semantics::DissolvedEquilibriumRef ref;
         ref.phase = { entry[std::string(keys::condensed_phase)].as<std::string>(),
-                      LocationOf(entry[std::string(keys::condensed_phase)]) };
+                      LocationOf(entry[std::string(keys::condensed_phase)]),
+                      ChildPath(entry_path, keys::condensed_phase) };
         ref.algebraic_species = { entry[std::string(keys::algebraic_species)].as<std::string>(),
-                                  LocationOf(entry[std::string(keys::algebraic_species)]) };
-        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(), LocationOf(entry[std::string(keys::solvent)]) };
-        CollectComponents(entry, keys::reactants, ref.reactants);
-        CollectComponents(entry, keys::products, ref.products);
+                                  LocationOf(entry[std::string(keys::algebraic_species)]),
+                                  ChildPath(entry_path, keys::algebraic_species) };
+        ref.solvent = { entry[std::string(keys::solvent)].as<std::string>(),
+                        LocationOf(entry[std::string(keys::solvent)]),
+                        ChildPath(entry_path, keys::solvent) };
+        CollectComponents(entry, entry_path, keys::reactants, ref.reactants);
+        CollectComponents(entry, entry_path, keys::products, ref.products);
         ref.location = LocationOf(entry);
         input.dissolved_equilibria.push_back(std::move(ref));
       }
@@ -308,19 +375,28 @@ namespace mechanism_configuration::v1
       {
         semantics::LinearConstraintRef ref;
         ref.algebraic_phase = { entry[std::string(keys::algebraic_phase)].as<std::string>(),
-                                LocationOf(entry[std::string(keys::algebraic_phase)]) };
+                                LocationOf(entry[std::string(keys::algebraic_phase)]),
+                                ChildPath(entry_path, keys::algebraic_phase) };
         ref.algebraic_species = { entry[std::string(keys::algebraic_species)].as<std::string>(),
-                                  LocationOf(entry[std::string(keys::algebraic_species)]) };
+                                  LocationOf(entry[std::string(keys::algebraic_species)]),
+                                  ChildPath(entry_path, keys::algebraic_species) };
         if (entry[std::string(keys::terms)])
+        {
+          const std::string terms_path = ChildPath(entry_path, keys::terms);
+          std::size_t term_index = 0;
           for (const auto& term_node : entry[std::string(keys::terms)])
           {
+            const std::string term_path = ChildPath(terms_path, term_index++);
             semantics::LinearConstraintTermRef term_ref;
             term_ref.phase = { term_node[std::string(keys::phase)].as<std::string>(),
-                               LocationOf(term_node[std::string(keys::phase)]) };
+                               LocationOf(term_node[std::string(keys::phase)]),
+                               ChildPath(term_path, keys::phase) };
             term_ref.species = { term_node[std::string(keys::name)].as<std::string>(),
-                                 LocationOf(term_node[std::string(keys::name)]) };
+                                 LocationOf(term_node[std::string(keys::name)]),
+                                 ChildPath(term_path, keys::name) };
             ref.terms.push_back(std::move(term_ref));
           }
+        }
         ref.location = LocationOf(entry);
         input.linear_constraints.push_back(std::move(ref));
       }
@@ -337,17 +413,27 @@ namespace mechanism_configuration::v1
       return input;
 
     const YAML::Node& emissions_node = object[std::string(keys::emissions)];
+    const std::string emissions_path = RootPath(keys::emissions);
 
     if (emissions_node[std::string(keys::inventories)])
+    {
+      const std::string inventories_path = ChildPath(emissions_path, keys::inventories);
+      std::size_t index = 0;
       for (const auto& item : emissions_node[std::string(keys::inventories)])
-        input.inventories.push_back({ item[std::string(keys::name)].as<std::string>(), LocationOf(item) });
+        input.inventories.push_back(
+            { item[std::string(keys::name)].as<std::string>(), LocationOf(item), ChildPath(inventories_path, index++) });
+    }
 
     if (emissions_node[std::string(keys::species_maps)])
+    {
+      const std::string species_maps_path = ChildPath(emissions_path, keys::species_maps);
+      std::size_t index = 0;
       for (const auto& item : emissions_node[std::string(keys::species_maps)])
       {
         semantics::SpeciesMapRef smap_ref;
         smap_ref.name = item[std::string(keys::name)].as<std::string>();
         smap_ref.location = LocationOf(item);
+        smap_ref.path = ChildPath(species_maps_path, index++);
         if (item[std::string(keys::mappings)])
           for (const auto& mapping_node : item[std::string(keys::mappings)])
           {
@@ -360,23 +446,32 @@ namespace mechanism_configuration::v1
           }
         input.species_maps.push_back(std::move(smap_ref));
       }
+    }
 
     if (emissions_node[std::string(keys::sources)])
+    {
+      const std::string sources_path = ChildPath(emissions_path, keys::sources);
+      std::size_t index = 0;
       for (const auto& item : emissions_node[std::string(keys::sources)])
       {
+        const std::string source_path = ChildPath(sources_path, index++);
         semantics::SourceRef source_ref;
         source_ref.name = item[std::string(keys::name)].as<std::string>();
         source_ref.location = LocationOf(item);
+        source_ref.path = source_path;
         source_ref.inventory = { item[std::string(keys::inventory)].as<std::string>(),
-                                 LocationOf(item[std::string(keys::inventory)]) };
+                                 LocationOf(item[std::string(keys::inventory)]),
+                                 ChildPath(source_path, keys::inventory) };
         source_ref.species_map = { item[std::string(keys::species_map)].as<std::string>(),
-                                   LocationOf(item[std::string(keys::species_map)]) };
+                                   LocationOf(item[std::string(keys::species_map)]),
+                                   ChildPath(source_path, keys::species_map) };
         if (item[std::string(keys::category)])
           source_ref.category = item[std::string(keys::category)].as<int>();
         if (item[std::string(keys::hierarchy)])
           source_ref.hierarchy = item[std::string(keys::hierarchy)].as<int>();
         input.sources.push_back(std::move(source_ref));
       }
+    }
 
     return input;
   }
@@ -424,12 +519,15 @@ namespace mechanism_configuration::v1
     auto load_files = [&](std::string_view entity) -> YAML::Node
     {
       YAML::Node merged(YAML::NodeType::Sequence);
+      const std::string files_path = RootPath(entity, "files");
+      std::size_t index = 0;
       for (const auto& file_node : object[std::string(entity)]["files"])
       {
+        const std::string file_node_path = ChildPath(files_path, index++);
         const std::filesystem::path file_path = base_dir / file_node.as<std::string>();
         if (!std::filesystem::exists(file_path))
         {
-          errors.push_back({ ErrorCode::FileNotFound, "File not found: " + file_path.string() });
+          errors.push_back({ ErrorCode::FileNotFound, "File not found: " + file_path.string(), file_node_path });
           continue;
         }
         try
@@ -440,7 +538,10 @@ namespace mechanism_configuration::v1
         }
         catch (const std::exception& e)
         {
-          errors.push_back({ ErrorCode::UnexpectedError, "Failed to parse file: " + file_path.string() + ": " + e.what() });
+          errors.push_back(
+              { ErrorCode::UnexpectedError,
+                "Failed to parse file: " + file_path.string() + ": " + e.what(),
+                file_node_path });
         }
       }
       return merged;
@@ -460,9 +561,11 @@ namespace mechanism_configuration::v1
         case EntityFormat::FileList: combined[key] = load_files(entity); break;
         case EntityFormat::Invalid:
           if (object[key].IsMap())
-            errors.push_back({ ErrorCode::RequiredKeyNotFound, "Missing 'files' key in '" + key + "' section." });
+            errors.push_back(
+                { ErrorCode::RequiredKeyNotFound, "Missing 'files' key in '" + key + "' section.", RootPath(key) });
           else
-            errors.push_back({ ErrorCode::InvalidType, "'" + key + "' must be a file-list object or an inline array." });
+            errors.push_back(
+                { ErrorCode::InvalidType, "'" + key + "' must be a file-list object or an inline array.", RootPath(key) });
           break;
       }
     };
@@ -514,6 +617,7 @@ namespace mechanism_configuration::v1
     auto schema_errors = mechanism_configuration::CheckSchema(object, required_keys, optional_keys);
     if (!schema_errors.empty())
     {
+      SetMissingPaths(schema_errors, "");
       AppendFilePath(config_path_, schema_errors);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       return errors;
@@ -527,17 +631,21 @@ namespace mechanism_configuration::v1
     if (has_aerosol_representations != has_aerosol_processes)
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
-                             std::string(keys::aerosol_processes) + "' must be provided together." });
+      errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "' must be provided together.",
+            "" });
     }
     if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         ToString(error_location) + " error: A configuration must contain either '" +
-                             std::string(keys::reactions) + "' or both '" + std::string(keys::aerosol_representations) +
-                             "' and '" + std::string(keys::aerosol_processes) + "'." });
+      errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: A configuration must contain either '" + std::string(keys::reactions) +
+                "' or both '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "'.",
+            "" });
     }
     if (!errors.empty())
     {
@@ -553,7 +661,7 @@ namespace mechanism_configuration::v1
 
       std::string message = ToString(error_location) + " error: The version must be '" + std::to_string(MAJOR_VERSION) +
                             "' but the invalid version number '" + std::to_string(version.major) + "' found.";
-      errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message });
+      errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message, RootPath(keys::version) });
     }
     else
     {
@@ -565,7 +673,7 @@ namespace mechanism_configuration::v1
 
     // Species and phases are foundational. If either is invalid, fail fast rather than
     // reporting noisy downstream errors caused by the malformed section.
-    schema_errors = CheckSpeciesSchema(object[keys::species]);
+    schema_errors = CheckSpeciesSchema(object[keys::species], RootPath(keys::species));
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -573,7 +681,7 @@ namespace mechanism_configuration::v1
       return errors;
     }
 
-    schema_errors = CheckPhasesSchema(object[keys::phases]);
+    schema_errors = CheckPhasesSchema(object[keys::phases], RootPath(keys::phases));
     if (!schema_errors.empty())
     {
       AppendFilePath(config_path_, schema_errors);
@@ -584,7 +692,7 @@ namespace mechanism_configuration::v1
     // Gas-phase reactions are optional (an aerosol-only config may omit them).
     if (has_reactions)
     {
-      schema_errors = CheckReactionsSchema(object[keys::reactions]);
+      schema_errors = CheckReactionsSchema(object[keys::reactions], RootPath(keys::reactions));
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);
@@ -595,14 +703,15 @@ namespace mechanism_configuration::v1
     // Aerosol sections are optional.
     if (has_aerosol_representations && has_aerosol_processes)
     {
-      schema_errors = CheckAerosolRepresentationsSchema(object[keys::aerosol_representations]);
+      schema_errors =
+          CheckAerosolRepresentationsSchema(object[keys::aerosol_representations], RootPath(keys::aerosol_representations));
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);
         errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
       }
 
-      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes]);
+      schema_errors = CheckAerosolProcessesSchema(object[keys::aerosol_processes], RootPath(keys::aerosol_processes));
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);
@@ -612,7 +721,7 @@ namespace mechanism_configuration::v1
 
     if (object[std::string(keys::emissions)])
     {
-      schema_errors = CheckEmissionsSchema(object[std::string(keys::emissions)]);
+      schema_errors = CheckEmissionsSchema(object[std::string(keys::emissions)], RootPath(keys::emissions));
       if (!schema_errors.empty())
       {
         AppendFilePath(config_path_, schema_errors);

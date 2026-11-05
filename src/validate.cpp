@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "detail/error_format.hpp"
+#include "detail/json_pointer.hpp"
 #include "detail/semantics/aerosol.hpp"
 #include "detail/semantics/emissions.hpp"
 #include "detail/semantics/reactions.hpp"
@@ -44,7 +45,9 @@ namespace mechanism_configuration
       {
         if (counts[ref.name] > 1)
           errors.push_back(
-              { code, Message(ref.location, "Duplicate " + std::string(what) + " name '" + ref.name + "' found.") });
+              { code,
+                Message(ref.location, "Duplicate " + std::string(what) + " name '" + ref.name + "' found."),
+                ref.path });
       }
     }
   }  // namespace
@@ -64,7 +67,7 @@ namespace mechanism_configuration
     std::vector<semantics::NamedRef> phase_names;
     for (const auto& phase : input.phases)
     {
-      phase_names.push_back({ phase.name, phase.location });
+      phase_names.push_back({ phase.name, phase.location, phase.path });
       auto& registered = phase_species[phase.name];
       for (const auto& ps : phase.species)
       {
@@ -72,7 +75,8 @@ namespace mechanism_configuration
         if (!species_names.contains(ps.name))
           errors.push_back(
               { ErrorCode::PhaseRequiresUnknownSpecies,
-                Message(ps.location, "Unknown species name '" + ps.name + "' found in '" + phase.name + "' phase.") });
+                Message(ps.location, "Unknown species name '" + ps.name + "' found in '" + phase.name + "' phase."),
+                ps.path });
       }
       ReportDuplicates(phase.species, ErrorCode::DuplicateSpeciesInPhaseDetected, "species", errors);
     }
@@ -86,22 +90,27 @@ namespace mechanism_configuration
       if (!phase_exists)
         errors.push_back(
             { ErrorCode::UnknownPhase,
-              Message(reaction.location, "Unknown phase '" + reaction.phase + "' in '" + reaction.type + "' reaction.") });
+              Message(reaction.location, "Unknown phase '" + reaction.phase + "' in '" + reaction.type + "' reaction."),
+              reaction.path });
 
       for (const auto* components : { &reaction.reactants, &reaction.products })
         for (const auto& component : *components)
         {
           if (!species_names.contains(component.name))
-            errors.push_back({ ErrorCode::ReactionRequiresUnknownSpecies,
-                               Message(
-                                   component.location,
-                                   "Unknown species '" + component.name + "' used in '" + reaction.type + "' reaction.") });
+            errors.push_back(
+                { ErrorCode::ReactionRequiresUnknownSpecies,
+                  Message(
+                      component.location,
+                      "Unknown species '" + component.name + "' used in '" + reaction.type + "' reaction."),
+                  component.path });
           else if (phase_exists && !phase_it->second.contains(component.name))
-            errors.push_back({ ErrorCode::RequestedSpeciesNotRegisteredInPhase,
-                               Message(
-                                   component.location,
-                                   "Species '" + component.name + "' used in '" + reaction.type +
-                                       "' is not defined in the '" + reaction.phase + "' phase.") });
+            errors.push_back(
+                { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
+                  Message(
+                      component.location,
+                      "Species '" + component.name + "' used in '" + reaction.type + "' is not defined in the '" +
+                          reaction.phase + "' phase."),
+                  component.path });
         }
       for (const auto& species : reaction.needs_molecular_weight)
       {
@@ -110,7 +119,8 @@ namespace mechanism_configuration
               { ErrorCode::RequiredKeyNotFound,
                 Message(
                     species.location,
-                    "Species '" + species.name + "' used in '" + reaction.type + "' has no molecular weight defined.") });
+                    "Species '" + species.name + "' used in '" + reaction.type + "' has no molecular weight defined."),
+                species.path });
       }
     }
 
@@ -148,8 +158,10 @@ namespace mechanism_configuration
       const auto phase_it = phase_index.find(phase.name);
       if (phase_it == phase_index.end())
       {
-        errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
+        errors.push_back(
+            { ErrorCode::UnknownPhase,
+              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + "."),
+              phase.path });
         return nullptr;
       }
       const auto species_it = phase_it->second.find(species.name);
@@ -159,7 +171,8 @@ namespace mechanism_configuration
             { ErrorCode::RequestedSpeciesNotRegisteredInPhase,
               Message(
                   species.location,
-                  "Species '" + species.name + "' (" + context + ") is not defined in the '" + phase.name + "' phase.") });
+                  "Species '" + species.name + "' (" + context + ") is not defined in the '" + phase.name + "' phase."),
+              species.path });
         return nullptr;
       }
       return species_it->second;
@@ -170,11 +183,13 @@ namespace mechanism_configuration
     {
       const auto* entry = require_registered_species(phase, species, context);
       if (entry && !entry->has_diffusion_coefficient)
-        errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                           Message(
-                               species.location,
-                               context + ": species '" + species.name + "' has no diffusion coefficient defined in the '" +
-                                   phase.name + "' phase.") });
+        errors.push_back(
+            { ErrorCode::RequiredKeyNotFound,
+              Message(
+                  species.location,
+                  context + ": species '" + species.name + "' has no diffusion coefficient defined in the '" + phase.name +
+                      "' phase."),
+              species.path });
     };
 
     auto require_density =
@@ -186,7 +201,8 @@ namespace mechanism_configuration
             { ErrorCode::RequiredKeyNotFound,
               Message(
                   species.location,
-                  context + ": species '" + species.name + "' has no density defined in the '" + phase.name + "' phase.") });
+                  context + ": species '" + species.name + "' has no density defined in the '" + phase.name + "' phase."),
+              species.path });
     };
 
     auto require_molecular_weight = [&](const semantics::NamedRef& species, const std::string& context)
@@ -195,19 +211,23 @@ namespace mechanism_configuration
       if (species_it == species_index.end())
         errors.push_back(
             { ErrorCode::UnknownSpecies,
-              Message(species.location, "Unknown species '" + species.name + "' referenced by " + context + ".") });
+              Message(species.location, "Unknown species '" + species.name + "' referenced by " + context + "."),
+              species.path });
       else if (!species_it->second->has_molecular_weight)
         errors.push_back(
             { ErrorCode::RequiredKeyNotFound,
-              Message(species.location, context + ": species '" + species.name + "' has no molecular weight defined.") });
+              Message(species.location, context + ": species '" + species.name + "' has no molecular weight defined."),
+              species.path });
     };
 
     // Verifies that phase exists.
     auto require_phase = [&](const semantics::NamedRef& phase, const std::string& context)
     {
       if (!phase_index.contains(phase.name))
-        errors.push_back({ ErrorCode::UnknownPhase,
-                           Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + ".") });
+        errors.push_back(
+            { ErrorCode::UnknownPhase,
+              Message(phase.location, "Unknown phase '" + phase.name + "' referenced by " + context + "."),
+              phase.path });
     };
 
     for (const auto& representation : input.representations)
@@ -275,12 +295,12 @@ namespace mechanism_configuration
 
     std::vector<semantics::NamedRef> species_map_names;
     for (const auto& smap : input.species_maps)
-      species_map_names.push_back({ smap.name, smap.location });
+      species_map_names.push_back({ smap.name, smap.location, smap.path });
     ReportDuplicates(species_map_names, ErrorCode::DuplicateSpeciesMapDetected, "species map", errors);
 
     std::vector<semantics::NamedRef> source_names;
     for (const auto& source : input.sources)
-      source_names.push_back({ source.name, source.location });
+      source_names.push_back({ source.name, source.location, source.path });
     ReportDuplicates(source_names, ErrorCode::DuplicateSourceDetected, "source", errors);
 
     std::unordered_set<std::string> inventory_names;
@@ -298,26 +318,32 @@ namespace mechanism_configuration
     for (const auto& source : input.sources)
     {
       if (!inventory_names.contains(source.inventory.name))
-        errors.push_back({ ErrorCode::SourceRequiresUnknownInventory,
-                           Message(
-                               source.inventory.location,
-                               "Source '" + source.name + "' references inventory '" + source.inventory.name +
-                                   "' which is not declared in 'inventories'.") });
+        errors.push_back(
+            { ErrorCode::SourceRequiresUnknownInventory,
+              Message(
+                  source.inventory.location,
+                  "Source '" + source.name + "' references inventory '" + source.inventory.name +
+                      "' which is not declared in 'inventories'."),
+              source.inventory.path });
 
       if (!species_map_name_set.contains(source.species_map.name))
-        errors.push_back({ ErrorCode::SourceRequiresUnknownSpeciesMap,
-                           Message(
-                               source.species_map.location,
-                               "Source '" + source.name + "' references species map '" + source.species_map.name +
-                                   "' which is not declared in 'species maps'.") });
+        errors.push_back(
+            { ErrorCode::SourceRequiresUnknownSpeciesMap,
+              Message(
+                  source.species_map.location,
+                  "Source '" + source.name + "' references species map '" + source.species_map.name +
+                      "' which is not declared in 'species maps'."),
+              source.species_map.path });
 
       if (cat_hier_counts[{ source.category, source.hierarchy }] > 1)
-        errors.push_back({ ErrorCode::DuplicateCategoryHierarchy,
-                           Message(
-                               source.location,
-                               "Source '" + source.name + "' has duplicate (category: " + std::to_string(source.category) +
-                                   ", hierarchy: " + std::to_string(source.hierarchy) +
-                                   ") — each (category, hierarchy) pair must be unique.") });
+        errors.push_back(
+            { ErrorCode::DuplicateCategoryHierarchy,
+              Message(
+                  source.location,
+                  "Source '" + source.name + "' has duplicate (category: " + std::to_string(source.category) +
+                      ", hierarchy: " + std::to_string(source.hierarchy) +
+                      ") — each (category, hierarchy) pair must be unique."),
+              source.path });
     }
 
     for (const auto& smap : input.species_maps)
@@ -333,7 +359,7 @@ namespace mechanism_configuration
           std::ostringstream message;
           message << "Species map '" << smap.name << "': scaling factors for inventory species '" << inventory_species
                   << "' sum to " << std::fixed << std::setprecision(4) << total << ", which exceeds 1.0.";
-          errors.push_back({ ErrorCode::SpeciesMapScalingExceedsOne, Message(smap.location, message.str()) });
+          errors.push_back({ ErrorCode::SpeciesMapScalingExceedsOne, Message(smap.location, message.str()), smap.path });
         }
       }
     }
@@ -353,6 +379,24 @@ namespace mechanism_configuration
       return refs;
     }
 
+    // Builds the component references of a list in a struct, with a path to each component,
+    // for example "/reactions/arrhenius/0/products/1".
+    std::vector<semantics::NamedRef> Refs(const std::vector<types::ReactionComponent>& components, const std::string& path)
+    {
+      std::vector<semantics::NamedRef> refs;
+      refs.reserve(components.size());
+      for (std::size_t i = 0; i < components.size(); ++i)
+        refs.push_back({ components[i].name, std::nullopt, ChildPath(path, i) });
+      return refs;
+    }
+
+    // Builds the reference of a single component in a struct, for example the gas-phase species
+    // of a surface reaction.
+    std::vector<semantics::NamedRef> Refs(const types::ReactionComponent& component, const std::string& path)
+    {
+      return { { component.name, std::nullopt, path } };
+    }
+
     semantics::ReactionRef ReactionRefOf(
         std::string_view type,
         const std::string& phase,
@@ -367,61 +411,93 @@ namespace mechanism_configuration
   {
     semantics::ReactionsInput input;
 
-    for (const auto& s : mechanism.species)
+    // A Mechanism in code has no document. Its paths point into the struct, for example
+    // "/reactions/arrhenius/1/products/0" for mechanism.reactions.arrhenius[1].products[0].
+    const std::string species_path = RootPath("species");
+    for (std::size_t i = 0; i < mechanism.species.size(); ++i)
     {
-      input.species.push_back({ s.name, std::nullopt });
+      const auto& s = mechanism.species[i];
+      input.species.push_back({ s.name, std::nullopt, ChildPath(species_path, i) });
       if (s.molecular_weight)
         input.species_with_molecular_weight.insert(s.name);
     }
 
-    for (const auto& phase : mechanism.phases)
+    const std::string phases_path = RootPath("phases");
+    for (std::size_t i = 0; i < mechanism.phases.size(); ++i)
     {
-      semantics::PhaseRef pr{ phase.name, {}, std::nullopt };
-      for (const auto& ps : phase.species)
-        pr.species.push_back({ ps.name, std::nullopt });
+      const auto& phase = mechanism.phases[i];
+      const std::string phase_path = ChildPath(phases_path, i);
+      semantics::PhaseRef pr{ phase.name, {}, std::nullopt, phase_path };
+      for (std::size_t j = 0; j < phase.species.size(); ++j)
+        pr.species.push_back({ phase.species[j].name, std::nullopt, ChildPath(phase_path, "species", j) });
       input.phases.push_back(std::move(pr));
     }
 
     const auto& r = mechanism.reactions;
-    auto add = [&](std::string_view type,
-                   const std::string& phase,
-                   std::vector<semantics::NamedRef> reactants,
-                   std::vector<semantics::NamedRef> products)
-    { input.reactions.push_back(ReactionRefOf(type, phase, std::move(reactants), std::move(products))); };
+    const std::string reactions_path = RootPath("reactions");
+    // Adds the reactions of one type. `refs` gives the reactants and the products of a
+    // reaction, from the reaction and its path.
+    auto add_all = [&](std::string_view type, std::string_view field, const auto& reactions, auto refs)
+    {
+      const std::string type_path = ChildPath(reactions_path, field);
+      for (std::size_t i = 0; i < reactions.size(); ++i)
+      {
+        const std::string path = ChildPath(type_path, i);
+        auto [reactants, products] = refs(reactions[i], path);
+        auto ref = ReactionRefOf(type, reactions[i].gas_phase, std::move(reactants), std::move(products));
+        ref.path = ChildPath(path, "gas_phase");
+        input.reactions.push_back(std::move(ref));
+      }
+    };
+    // Most types have reactants and products. A first-order loss has one reactant.
+    auto lists = [](const auto& x, const std::string& path)
+    { return std::pair{ Refs(x.reactants, ChildPath(path, "reactants")), Refs(x.products, ChildPath(path, "products")) }; };
 
-    for (const auto& x : r.arrhenius)
-      add("ARRHENIUS", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.troe)
-      add("TROE", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.ternary_chemical_activation)
-      add("TERNARY_CHEMICAL_ACTIVATION", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.ternary_chemical_activation_jpl19)
-      add("TERNARY_CHEMICAL_ACTIVATION_JPL19", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.tunneling)
-      add("TUNNELING", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.taylor_series)
-      add("TAYLOR_SERIES", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.user_defined)
-      add("USER_DEFINED", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.lambda_rate_constant)
-      add("LAMBDA_RATE_CONSTANT", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.emission)
-      add("EMISSION", x.gas_phase, {}, Refs(x.products));
-    for (const auto& x : r.first_order_loss)
-      add("FIRST_ORDER_LOSS", x.gas_phase, Refs({ x.reactants }), Refs(x.products));
-    for (const auto& x : r.photolysis)
-      add("PHOTOLYSIS", x.gas_phase, Refs(x.reactants), Refs(x.products));
-    for (const auto& x : r.surface)
-    {
-      add("SURFACE", x.gas_phase, Refs({ x.gas_phase_species }), Refs(x.gas_phase_products));
-      input.reactions.back().needs_molecular_weight = Refs({ x.gas_phase_species });
-    }
-    for (const auto& x : r.branched)
-    {
-      std::vector<types::ReactionComponent> products = x.alkoxy_products;
-      products.insert(products.end(), x.nitrate_products.begin(), x.nitrate_products.end());
-      add("BRANCHED", x.gas_phase, Refs(x.reactants), Refs(products));
-    }
+    add_all("ARRHENIUS", "arrhenius", r.arrhenius, lists);
+    add_all("TROE", "troe", r.troe, lists);
+    add_all("TERNARY_CHEMICAL_ACTIVATION", "ternary_chemical_activation", r.ternary_chemical_activation, lists);
+    add_all(
+        "TERNARY_CHEMICAL_ACTIVATION_JPL19",
+        "ternary_chemical_activation_jpl19",
+        r.ternary_chemical_activation_jpl19,
+        lists);
+    add_all("TUNNELING", "tunneling", r.tunneling, lists);
+    add_all("TAYLOR_SERIES", "taylor_series", r.taylor_series, lists);
+    add_all("USER_DEFINED", "user_defined", r.user_defined, lists);
+    add_all("LAMBDA_RATE_CONSTANT", "lambda_rate_constant", r.lambda_rate_constant, lists);
+    add_all(
+        "EMISSION",
+        "emission",
+        r.emission,
+        [](const auto& x, const std::string& path)
+        { return std::pair{ std::vector<semantics::NamedRef>{}, Refs(x.products, ChildPath(path, "products")) }; });
+    add_all("FIRST_ORDER_LOSS", "first_order_loss", r.first_order_loss, lists);
+    add_all("PHOTOLYSIS", "photolysis", r.photolysis, lists);
+    const std::size_t first_surface = input.reactions.size();
+    add_all(
+        "SURFACE",
+        "surface",
+        r.surface,
+        [](const auto& x, const std::string& path)
+        {
+          return std::pair{ Refs(x.gas_phase_species, ChildPath(path, "gas_phase_species")),
+                            Refs(x.gas_phase_products, ChildPath(path, "gas_phase_products")) };
+        });
+    // The gas-phase species of a surface reaction needs a molecular weight.
+    for (std::size_t i = first_surface; i < input.reactions.size(); ++i)
+      input.reactions[i].needs_molecular_weight = input.reactions[i].reactants;
+    add_all(
+        "BRANCHED",
+        "branched",
+        r.branched,
+        [](const auto& x, const std::string& path)
+        {
+          // The products of both branches must be in the phase, and each keeps the path of its own list.
+          auto products = Refs(x.alkoxy_products, ChildPath(path, "alkoxy_products"));
+          auto nitrate = Refs(x.nitrate_products, ChildPath(path, "nitrate_products"));
+          products.insert(products.end(), nitrate.begin(), nitrate.end());
+          return std::pair{ Refs(x.reactants, ChildPath(path, "reactants")), std::move(products) };
+        });
 
     return ValidateReactionsSemantics(input);
   }

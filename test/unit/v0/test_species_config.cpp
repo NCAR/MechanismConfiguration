@@ -25,7 +25,7 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     {
       for (auto& error : parsed.error())
       {
-        std::cerr << error.second << std::endl;
+        std::cerr << error.message << std::endl;
       }
     }
     Mechanism mechanism = *parsed;
@@ -110,9 +110,9 @@ TEST(SpeciesConfig, DetectsUnknownSpeciesInReaction)
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
     ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].first, ErrorCode::ReactionRequiresUnknownSpecies);
-    EXPECT_NE(parsed.error()[0].second.find("quz"), std::string::npos);
-    EXPECT_TRUE(std::regex_search(parsed.error()[0].second, std::regex("^\\d+:\\d+ error:")));
+    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    EXPECT_NE(parsed.error()[0].message.find("quz"), std::string::npos);
+    EXPECT_TRUE(std::regex_search(parsed.error()[0].message, std::regex("^\\d+:\\d+ error:")));
   }
 }
 

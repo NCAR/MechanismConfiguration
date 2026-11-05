@@ -84,7 +84,7 @@ namespace mechanism_configuration
             version->location
                 ? ToString(*version->location) + " error: Unsupported version number '" + version->version.to_string() + "'."
                 : "error: Unsupported version number '" + version->version.to_string() + "'.";
-        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body } });
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body, "/version" } });
       }
     }
   }
@@ -98,13 +98,16 @@ namespace mechanism_configuration
       object = YAML::Load(config);
       if (!object["version"])
       {
-        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'." } });
+        // The document has no version key, so the error points to the whole document.
+        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'.", "" } });
       }
       const Version version(object["version"].as<std::string>());
       if (version.major != 1)
       {
         return std::unexpected(
-            Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '" + version.to_string() + "'." } });
+            Errors{ { ErrorCode::InvalidVersion,
+                      "error: Unsupported version number '" + version.to_string() + "'.",
+                      "/version" } });
       }
       return v1::Parser{}.Parse(config);
     }

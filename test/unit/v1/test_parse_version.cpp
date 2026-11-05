@@ -20,7 +20,7 @@ namespace
   std::vector<std::string> MessagesWithCode(const Errors& errors, ErrorCode code)
   {
     std::vector<std::string> messages;
-    for (const auto& [error_code, message] : errors)
+    for (const auto& [error_code, message, path] : errors)
     {
       std::cout << message << " " << ErrorCodeToString(error_code) << std::endl;
       if (error_code == code)

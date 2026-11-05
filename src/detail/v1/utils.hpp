@@ -24,6 +24,14 @@ namespace mechanism_configuration::v1
   /// @return A YAML sequence node containing the original node(s)
   YAML::Node AsSequence(const YAML::Node& node);
 
+  /// @brief The JSON Pointer to item `index` of AsSequence(node). A node that is not a sequence
+  ///        is its own only item, so its path is `path`.
+  /// @param node The YAML node that AsSequence was called on
+  /// @param path The JSON Pointer to `node`
+  /// @param index The index of the item in AsSequence(node)
+  std::string ItemPath(const YAML::Node& node, const std::string& path, std::size_t index);
+
+  /// @brief Puts the configuration file path in front of each error message.
   void AppendFilePath(const std::string& config_path, Errors& errors);
 
   /// @brief Collects the unknown properties of an object: every key that starts with two underscores (__).

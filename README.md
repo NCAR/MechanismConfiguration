@@ -30,8 +30,14 @@ using namespace mechanism_configuration;
 
 void print_errors(const Errors& errors)
 {
-  for (const auto& [code, message] : errors)
-    std::cerr << "  [" << ErrorCodeToString(code) << "] " << message << '\n';
+  for (const auto& [code, message, path] : errors)
+  {
+    std::cerr << "  [" << ErrorCodeToString(code) << "] " << message;
+    // The JSON Pointer to the object that causes the error, when the error has a document
+    if (path)
+      std::cerr << " (at '" << *path << "')";
+    std::cerr << '\n';
+  }
 }
 
 int main()

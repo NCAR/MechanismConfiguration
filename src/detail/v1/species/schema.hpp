@@ -8,6 +8,8 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <string>
+
 namespace mechanism_configuration::v1
 {
   // Structural (schema) validation of v1 species and phases. These check required/optional keys
@@ -16,12 +18,14 @@ namespace mechanism_configuration::v1
 
   /// @brief Schema-validates each species entry's keys.
   /// @param species_list YAML node containing species entries
+  /// @param path JSON Pointer to the section. The errors of an item point to that item.
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckSpeciesSchema(const YAML::Node& species_list);
+  Errors CheckSpeciesSchema(const YAML::Node& species_list, const std::string& path);
 
   /// @brief Schema-validates each phase and its phase-species entries.
   /// @param phases_list YAML node containing the list of phase entries
+  /// @param path JSON Pointer to the section. The errors of an item point to that item.
   /// @return List of structural errors, or empty if all entries conform
-  Errors CheckPhasesSchema(const YAML::Node& phases_list);
+  Errors CheckPhasesSchema(const YAML::Node& phases_list, const std::string& path);
 
 }  // namespace mechanism_configuration::v1
