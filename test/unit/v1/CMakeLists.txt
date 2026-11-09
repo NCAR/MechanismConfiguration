@@ -7,6 +7,7 @@ create_standard_test(NAME v1_parse_aerosol SOURCES test_parse_aerosol.cpp)
 create_standard_test(NAME v1_parse_version SOURCES test_parse_version.cpp)
 create_standard_test(NAME v1_parse_unknown_properties SOURCES test_parse_unknown_properties.cpp)
 create_standard_test(NAME v1_error_paths SOURCES test_error_paths.cpp)
+create_standard_test(NAME v1_partial_parse SOURCES test_partial_parse.cpp)
 
 ################################################################################
 # Copy test data

@@ -23,12 +23,12 @@ TEST(SpeciesConfig, ValidSpeciesConfig)
     EXPECT_TRUE(parsed);
     if (!parsed)
     {
-      for (auto& error : parsed.error())
+      for (auto& error : parsed.errors)
       {
         std::cerr << error.message << std::endl;
       }
     }
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     auto& species_vector = mechanism.species;
     EXPECT_EQ(species_vector.size(), 5);
@@ -109,10 +109,10 @@ TEST(SpeciesConfig, DetectsUnknownSpeciesInReaction)
     std::string file = "./v0_unit_configs/species/unknown_species_in_reaction/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
-    EXPECT_NE(parsed.error()[0].message.find("quz"), std::string::npos);
-    EXPECT_TRUE(std::regex_search(parsed.error()[0].message, std::regex("^\\d+:\\d+ error:")));
+    ASSERT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    EXPECT_NE(parsed.errors[0].message.find("quz"), std::string::npos);
+    EXPECT_TRUE(std::regex_search(parsed.errors[0].message, std::regex("^\\d+:\\d+ error:")));
   }
 }
 
@@ -126,8 +126,8 @@ TEST(SpeciesConfig, DetectsUnknownTracerType)
     std::string file = "./v0_unit_configs/species/tracer_type/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_TRUE(parsed);
-    EXPECT_EQ(parsed->species.size(), 1);
-    EXPECT_EQ(parsed->species[0].name, "M");
-    EXPECT_EQ(parsed->species[0].unknown_properties.at("__tracer type"), "CONSTANT");
+    EXPECT_EQ(parsed.mechanism->species.size(), 1);
+    EXPECT_EQ(parsed.mechanism->species[0].name, "M");
+    EXPECT_EQ(parsed.mechanism->species[0].unknown_properties.at("__tracer type"), "CONSTANT");
   }
 }

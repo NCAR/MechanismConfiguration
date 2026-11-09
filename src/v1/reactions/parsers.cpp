@@ -4,10 +4,13 @@
 
 #include "detail/v1/reactions/parsers.hpp"
 
+#include "detail/json_pointer.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/errors.hpp>
+
+#include <stdexcept>
 
 namespace mechanism_configuration::v1
 {
@@ -48,18 +51,28 @@ namespace mechanism_configuration::v1
     return std::move(reaction_components.front());
   };
 
-  types::Reactions ParseReactions(const YAML::Node& objects)
+  types::Reactions ParseReactions(const YAML::Node& objects, LeftOutItems& left_out)
   {
     auto& parsers = GetReactionParserMap();
     types::Reactions reactions;
 
+    std::size_t index = 0;
     for (const auto& object : objects)
     {
-      auto it = parsers.find(object[keys::type].as<std::string>());
-      if (it != parsers.end())
-      {
-        it->second->Parse(object, reactions);
-      }
+      BuildItem(
+          object,
+          RootPath(keys::reactions, index++),
+          "reaction",
+          left_out,
+          [&]
+          {
+            const auto type = object[keys::type].as<std::string>();
+            auto it = parsers.find(type);
+            if (it != parsers.end())
+              it->second->Parse(object, reactions);
+            else
+              throw std::runtime_error("no parser exists for the type '" + type + "'");
+          });
     }
 
     return reactions;

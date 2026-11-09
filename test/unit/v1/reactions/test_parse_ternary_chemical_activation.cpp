@@ -22,13 +22,13 @@ TEST(TernaryChemicalActivationConfig, ParseValidConfig)
     auto parsed = Parse(file);
     if (!parsed)
     {
-      for (auto& error : parsed.error())
+      for (auto& error : parsed.errors)
       {
         std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
       }
     }
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     auto& process_vector = mechanism.reactions.ternary_chemical_activation;
     EXPECT_EQ(process_vector.size(), 2);
@@ -88,21 +88,24 @@ TEST(TernaryChemicalActivationConfig, DetectsNonStandardKey)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/contains_nonstandard_key/config" + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 12);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].code, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[3].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[4].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[5].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[6].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[7].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[8].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[9].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[10].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[11].code, ErrorCode::InvalidKey);
+    // The first two reactions are left out, so the last two errors tell that.
+    EXPECT_EQ(parsed.errors.size(), 14);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[3].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[4].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[5].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[6].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[7].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[8].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[9].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[10].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[11].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[12].code, ErrorCode::ItemLeftOut);
+    EXPECT_EQ(parsed.errors[13].code, ErrorCode::ItemLeftOut);
 
-    for (auto& error : parsed.error())
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -117,7 +120,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingProducts)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_products/config" + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    for (auto& error : parsed.error())
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -132,7 +135,7 @@ TEST(TernaryChemicalActivationConfig, DetectsMissingReactants)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation/missing_reactants/config" + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    for (auto& error : parsed.error())
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

@@ -63,13 +63,13 @@ namespace mechanism_configuration
                             ErrorLocation{ version_node.Mark().line, version_node.Mark().column } };
   }
 
-  std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path)
+  ParseResult Parse(const std::filesystem::path& config_path)
   {
     auto version = GetVersion(config_path);
 
     if (!version)
     {
-      return std::unexpected(std::move(version.error()));
+      return ParseResult{ std::nullopt, std::move(version.error()) };
     }
 
     switch (version->version.major)
@@ -84,12 +84,12 @@ namespace mechanism_configuration
             version->location
                 ? ToString(*version->location) + " error: Unsupported version number '" + version->version.to_string() + "'."
                 : "error: Unsupported version number '" + version->version.to_string() + "'.";
-        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, config_path.string() + ":" + body, "/version" } });
+        return ParseResult{ std::nullopt, { { ErrorCode::InvalidVersion, config_path.string() + ":" + body, "/version" } } };
       }
     }
   }
 
-  std::expected<Mechanism, Errors> ParseFromString(const std::string& config)
+  ParseResult ParseFromString(const std::string& config)
   {
     // only v1 supports parsing from a string, so we must first detect the version from the string
     YAML::Node object;
@@ -99,22 +99,24 @@ namespace mechanism_configuration
       if (!object["version"])
       {
         // The document has no version key, so the error points to the whole document.
-        return std::unexpected(Errors{ { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'.", "" } });
+        return ParseResult{ std::nullopt,
+                            { { ErrorCode::InvalidVersion, "error: Unsupported version number '0.0.0'.", "" } } };
       }
       const Version version(object["version"].as<std::string>());
       if (version.major != 1)
       {
-        return std::unexpected(
-            Errors{ { ErrorCode::InvalidVersion,
-                      "error: Unsupported version number '" + version.to_string() + "'.",
-                      "/version" } });
+        return ParseResult{
+          std::nullopt,
+          { { ErrorCode::InvalidVersion, "error: Unsupported version number '" + version.to_string() + "'.", "/version" } }
+        };
       }
       return v1::Parser{}.Parse(config);
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, "Failed to parse configuration string: " + std::string(e.what()) } });
+      return ParseResult{
+        std::nullopt, { { ErrorCode::UnexpectedError, "Failed to parse configuration string: " + std::string(e.what()) } }
+      };
     }
   }
 

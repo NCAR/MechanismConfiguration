@@ -8,6 +8,7 @@
 #include <mechanism_configuration/types/reactions.hpp>
 
 #include <detail/v1/reactions/keys.hpp>
+#include <detail/v1/utils.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <map>
@@ -34,8 +35,10 @@ namespace mechanism_configuration::v1
   ///        Iterates over the given YAML nodes, identifies the parser for each reaction type,
   ///        and populates a `types::Reactions` container with the parsed reactions.
   /// @param objects YAML node containing multiple reaction definitions
+  /// @param left_out Gets each reaction that cannot be built, also one with an
+  ///        unknown type. See BuildItem.
   /// @return A `types::Reactions` object with all successfully parsed reactions
-  types::Reactions ParseReactions(const YAML::Node& objects);
+  types::Reactions ParseReactions(const YAML::Node& objects, LeftOutItems& left_out);
 
   /// @brief Abstract interface for reaction parsers
   class IReactionParser

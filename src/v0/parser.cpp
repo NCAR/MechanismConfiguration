@@ -83,8 +83,8 @@ namespace mechanism_configuration::v0
       }
       else
       {
-        const std::string& msg = "Unknown type: " + type;
-        throw std::runtime_error(msg);
+        // The parser leaves out an item with an unknown type and continues with the next item.
+        errors.push_back({ ErrorCode::UnknownType, "Unknown type: " + type });
       }
     }
     return errors;
@@ -170,7 +170,7 @@ namespace mechanism_configuration::v0
     return errors;
   }
 
-  std::expected<Mechanism, Errors> Parser::Parse(const std::filesystem::path& config_path)
+  ParseResult Parser::Parse(const std::filesystem::path& config_path)
   {
     Errors errors;
     auto mechanism = Mechanism();
@@ -180,108 +180,101 @@ namespace mechanism_configuration::v0
     auto file_errors = GetCampFiles(config_path, camp_files);
     errors.insert(errors.end(), file_errors.begin(), file_errors.end());
 
-    // Only attempt to parse the mechanism if we were able to gather the CAMP files.
-    if (errors.empty())
-    {
-      ParserMap parsers;
-
-      std::function<Errors(Mechanism&, const YAML::Node&)> ParseMechanismArray =
-          [&](Mechanism& mechanism, const YAML::Node& object)
-      { return ParseMechanism(parsers, mechanism, object, semantic_input); };
-
-      parsers["CHEM_SPEC"] = ParseChemicalSpecies;
-      parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;
-      parsers["PHOTOLYSIS"] = PhotolysisParser;
-      parsers["EMISSION"] = EmissionParser;
-      parsers["FIRST_ORDER_LOSS"] = FirstOrderLossParser;
-      parsers["ARRHENIUS"] = ArrheniusParser;
-      parsers["TROE"] = TroeParser;
-      parsers["TERNARY_CHEMICAL_ACTIVATION"] = TernaryChemicalActivationParser;
-      parsers["BRANCHED"] = BranchedParser;
-      parsers["WENNBERG_NO_RO2"] = BranchedParser;
-      parsers["TUNNELING"] = TunnelingParser;
-      parsers["WENNBERG_TUNNELING"] = TunnelingParser;
-      parsers["SURFACE"] = SurfaceParser;
-      parsers["USER_DEFINED"] = UserDefinedParser;
-      parsers["MECHANISM"] = ParseMechanismArray;
-
-      for (const auto& camp_file : camp_files)
-      {
-        // Parse each file independently so one malformed file does not abort the rest.
-        try
-        {
-          YAML::Node config_subset = YAML::LoadFile(camp_file.string());
-
-          auto parse_errors = run_parsers(parsers, mechanism, config_subset[CAMP_DATA], semantic_input);
-          // prepend the file name to the error messages
-          for (auto& error : parse_errors)
-          {
-            error.message = camp_file.string() + ":" + error.message;
-          }
-          errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
-        }
-        catch (const std::exception& e)
-        {
-          errors.push_back({ ErrorCode::UnexpectedError, camp_file.string() + ":" + e.what() });
-        }
-      }
-
-      // all species in version 0 are in the gas phase
-      types::Phase gas_phase;
-      gas_phase.name = "gas";
-      for (auto& species : mechanism.species)
-      {
-        types::PhaseSpecies phase_species;
-        phase_species.name = species.name;
-        // Carry the species-level diffusion coefficient onto the phase species so it survives
-        // into MICM, which reads the coefficient from the phase species (e.g. for surface
-        // reactions) rather than from the species definition.
-        phase_species.diffusion_coefficient = species.diffusion_coefficient;
-        gas_phase.species.push_back(phase_species);
-      }
-      mechanism.phases.push_back(gas_phase);
-
-      semantics::PhaseRef gas_phase_ref;
-      gas_phase_ref.name = "gas";
-      gas_phase_ref.species = semantic_input.species;
-      semantic_input.phases.push_back(std::move(gas_phase_ref));
-
-      // Every v0 reaction operates in the single gas phase. Name it explicitly so the
-      // mechanism round-trips to v1, whose parser requires each reaction to declare a
-      // (non-empty) gas phase.
-      auto set_gas_phase = [](auto& reaction_vector)
-      {
-        for (auto& reaction : reaction_vector)
-          reaction.gas_phase = "gas";
-      };
-      set_gas_phase(mechanism.reactions.arrhenius);
-      set_gas_phase(mechanism.reactions.branched);
-      set_gas_phase(mechanism.reactions.emission);
-      set_gas_phase(mechanism.reactions.first_order_loss);
-      set_gas_phase(mechanism.reactions.photolysis);
-      set_gas_phase(mechanism.reactions.surface);
-      set_gas_phase(mechanism.reactions.taylor_series);
-      set_gas_phase(mechanism.reactions.troe);
-      set_gas_phase(mechanism.reactions.ternary_chemical_activation);
-      set_gas_phase(mechanism.reactions.tunneling);
-      set_gas_phase(mechanism.reactions.user_defined);
-      set_gas_phase(mechanism.reactions.lambda_rate_constant);
-
-      mechanism.version = Version(0, 0, 0);
-
-      auto semantic_errors = ValidateReactionsSemantics(semantic_input);
-      errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
-    }
-
-    std::expected<Mechanism, Errors> result;
+    // Without the CAMP files, there is no mechanism.
     if (!errors.empty())
     {
-      result = std::unexpected(std::move(errors));
+      return ParseResult{ std::nullopt, std::move(errors) };
     }
-    else
+
+    ParserMap parsers;
+
+    std::function<Errors(Mechanism&, const YAML::Node&)> ParseMechanismArray =
+        [&](Mechanism& mechanism, const YAML::Node& object)
+    { return ParseMechanism(parsers, mechanism, object, semantic_input); };
+
+    parsers["CHEM_SPEC"] = ParseChemicalSpecies;
+    parsers["RELATIVE_TOLERANCE"] = ParseRelativeTolerance;
+    parsers["PHOTOLYSIS"] = PhotolysisParser;
+    parsers["EMISSION"] = EmissionParser;
+    parsers["FIRST_ORDER_LOSS"] = FirstOrderLossParser;
+    parsers["ARRHENIUS"] = ArrheniusParser;
+    parsers["TROE"] = TroeParser;
+    parsers["TERNARY_CHEMICAL_ACTIVATION"] = TernaryChemicalActivationParser;
+    parsers["BRANCHED"] = BranchedParser;
+    parsers["WENNBERG_NO_RO2"] = BranchedParser;
+    parsers["TUNNELING"] = TunnelingParser;
+    parsers["WENNBERG_TUNNELING"] = TunnelingParser;
+    parsers["SURFACE"] = SurfaceParser;
+    parsers["USER_DEFINED"] = UserDefinedParser;
+    parsers["MECHANISM"] = ParseMechanismArray;
+
+    for (const auto& camp_file : camp_files)
     {
-      result = mechanism;
+      // Parse each file independently so one malformed file does not abort the rest.
+      try
+      {
+        YAML::Node config_subset = YAML::LoadFile(camp_file.string());
+
+        auto parse_errors = run_parsers(parsers, mechanism, config_subset[CAMP_DATA], semantic_input);
+        // prepend the file name to the error messages
+        for (auto& error : parse_errors)
+        {
+          error.message = camp_file.string() + ":" + error.message;
+        }
+        errors.insert(errors.end(), parse_errors.begin(), parse_errors.end());
+      }
+      catch (const std::exception& e)
+      {
+        errors.push_back({ ErrorCode::UnexpectedError, camp_file.string() + ":" + e.what() });
+      }
     }
-    return result;
+
+    // all species in version 0 are in the gas phase
+    types::Phase gas_phase;
+    gas_phase.name = "gas";
+    for (auto& species : mechanism.species)
+    {
+      types::PhaseSpecies phase_species;
+      phase_species.name = species.name;
+      // Carry the species-level diffusion coefficient onto the phase species so it survives
+      // into MICM, which reads the coefficient from the phase species (e.g. for surface
+      // reactions) rather than from the species definition.
+      phase_species.diffusion_coefficient = species.diffusion_coefficient;
+      gas_phase.species.push_back(phase_species);
+    }
+    mechanism.phases.push_back(gas_phase);
+
+    semantics::PhaseRef gas_phase_ref;
+    gas_phase_ref.name = "gas";
+    gas_phase_ref.species = semantic_input.species;
+    semantic_input.phases.push_back(std::move(gas_phase_ref));
+
+    // Every v0 reaction operates in the single gas phase. Name it explicitly so the
+    // mechanism round-trips to v1, whose parser requires each reaction to declare a
+    // (non-empty) gas phase.
+    auto set_gas_phase = [](auto& reaction_vector)
+    {
+      for (auto& reaction : reaction_vector)
+        reaction.gas_phase = "gas";
+    };
+    set_gas_phase(mechanism.reactions.arrhenius);
+    set_gas_phase(mechanism.reactions.branched);
+    set_gas_phase(mechanism.reactions.emission);
+    set_gas_phase(mechanism.reactions.first_order_loss);
+    set_gas_phase(mechanism.reactions.photolysis);
+    set_gas_phase(mechanism.reactions.surface);
+    set_gas_phase(mechanism.reactions.taylor_series);
+    set_gas_phase(mechanism.reactions.troe);
+    set_gas_phase(mechanism.reactions.ternary_chemical_activation);
+    set_gas_phase(mechanism.reactions.tunneling);
+    set_gas_phase(mechanism.reactions.user_defined);
+    set_gas_phase(mechanism.reactions.lambda_rate_constant);
+
+    mechanism.version = Version(0, 0, 0);
+
+    auto semantic_errors = ValidateReactionsSemantics(semantic_input);
+    errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
+
+    return ParseResult{ std::move(mechanism), std::move(errors) };
   }
 }  // namespace mechanism_configuration::v0

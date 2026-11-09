@@ -18,7 +18,7 @@ using namespace mechanism_configuration;
 namespace
 {
   // Parses an in-memory v1 document through the engine (validate, then build).
-  std::expected<Mechanism, Errors> ParseString(const std::string& content)
+  ParseResult ParseString(const std::string& content)
   {
     return v1::Parser{}.Parse(content);
   }
@@ -51,11 +51,11 @@ TEST(V1Parser, ParsesFullV1Configuration)
 {
   auto parsed = Parse("examples/v1/full_configuration.json");
   if (!parsed)
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 
-  const Mechanism& mechanism = *parsed;
+  const Mechanism& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.name, "Full Configuration");
   EXPECT_EQ(mechanism.species.size(), 7);
   EXPECT_EQ(mechanism.phases.size(), 1);
@@ -81,8 +81,8 @@ TEST(V1Parser, ReportsMissingFile)
   {
     auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::FileNotFound);
+    ASSERT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::FileNotFound);
   }
 }
 
@@ -90,11 +90,11 @@ TEST(V1Parser, CanParseFromYamlString)
 {
   auto parsed = ParseString(kYamlConfig);
   ASSERT_TRUE(parsed);
-  EXPECT_EQ(parsed->name, "Simple Configuration");
-  EXPECT_EQ(parsed->species.size(), 2);
-  EXPECT_EQ(parsed->phases.size(), 1);
-  EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
-  EXPECT_EQ(parsed->version.major, 1);
+  EXPECT_EQ(parsed.mechanism->name, "Simple Configuration");
+  EXPECT_EQ(parsed.mechanism->species.size(), 2);
+  EXPECT_EQ(parsed.mechanism->phases.size(), 1);
+  EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
+  EXPECT_EQ(parsed.mechanism->version.major, 1);
 }
 
 TEST(V1Parser, CanParseFromJsonString)
@@ -116,8 +116,8 @@ TEST(V1Parser, CanParseFromJsonString)
 })";
   auto parsed = ParseString(content);
   ASSERT_TRUE(parsed);
-  EXPECT_EQ(parsed->name, "Simple Configuration");
-  EXPECT_EQ(parsed->species.size(), 2);
-  EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
-  EXPECT_EQ(parsed->version.major, 1);
+  EXPECT_EQ(parsed.mechanism->name, "Simple Configuration");
+  EXPECT_EQ(parsed.mechanism->species.size(), 2);
+  EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
+  EXPECT_EQ(parsed.mechanism->version.major, 1);
 }

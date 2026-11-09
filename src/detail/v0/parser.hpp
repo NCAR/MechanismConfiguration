@@ -6,10 +6,10 @@
 
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/parse.hpp>
 
 #include <yaml-cpp/yaml.h>
 
-#include <expected>
 #include <filesystem>
 #include <iostream>
 
@@ -26,6 +26,10 @@ namespace mechanism_configuration::v0
     Errors GetCampFiles(const std::filesystem::path& config_path, std::vector<std::filesystem::path>& camp_files);
 
    public:
-    std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
+    /// @brief Parses a v0 configuration. Each reaction and species is added only when its checks
+    ///        pass, so the mechanism has everything that the parser can build.
+    /// @return The mechanism and all the errors. The mechanism is empty only when the parser
+    ///         cannot find the CAMP files.
+    ParseResult Parse(const std::filesystem::path& config_path);
   };
 }  // namespace mechanism_configuration::v0

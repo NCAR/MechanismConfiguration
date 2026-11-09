@@ -7,8 +7,10 @@
 #include "detail/semantics/aerosol.hpp"
 #include "detail/semantics/emissions.hpp"
 #include "detail/semantics/reactions.hpp"
+#include "detail/v1/utils.hpp"
 
 #include <mechanism_configuration/mechanism.hpp>
+#include <mechanism_configuration/parse.hpp>
 #include <mechanism_configuration/validate.hpp>
 
 #include <yaml-cpp/yaml.h>
@@ -22,18 +24,19 @@ namespace mechanism_configuration::v1
   /// @brief Extracts a located semantics::ReactionsInput from a fully-resolved (inline) v1 YAML
   ///        node, so the version-neutral ValidateReactionsSemantics can run the semantic checks
   ///        with line:col.
-  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object);
+  ///        The input has no item in `left_out`, because the mechanism does not have it.
+  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object, const LeftOutItems& left_out);
 
   /// @brief Extracts a located semantics::AerosolInput from a fully-resolved (inline) v1 YAML
   ///        node, so ValidateAerosolSemantics can run with line:col. Species/phase definitions
   ///        are always populated; representations/processes/constraints are only populated when
   ///        both `aerosol representations` and `aerosol processes` are present.
-  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object);
+  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object, const LeftOutItems& left_out);
 
   /// @brief Extracts a located semantics::EmissionsInput from a fully-resolved (inline) v1 YAML
   ///        node, so ValidateEmissionsSemantics can run with line:col. Returns a default-empty
   ///        EmissionsInput (validates with no errors) when the document has no `emissions` key.
-  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object);
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object, const LeftOutItems& left_out);
 
   class Parser
   {
@@ -44,20 +47,19 @@ namespace mechanism_configuration::v1
     ///        (v1.1+ `{ files: [...] }`) into a single document, validates it, and builds the
     ///        Mechanism. This is the file entry point — no separate resolve/validate step.
     /// @param config_path Path to the main configuration file.
-    /// @return The parsed Mechanism, or all structural / file-loading / semantic errors.
-    std::expected<Mechanism, Errors> Parse(const std::filesystem::path& config_path);
+    /// @return The mechanism and all the errors. See mechanism_configuration::Parse.
+    ParseResult Parse(const std::filesystem::path& config_path);
 
     /// @brief Parse a v1 mechanism from an in-memory YAML/JSON document string.
     /// @param content The document contents (not a file path).
-    /// @return The parsed Mechanism, or all structural and semantic errors.
-    std::expected<Mechanism, Errors> Parse(const std::string& content);
+    /// @return The mechanism and all the errors.
+    ParseResult Parse(const std::string& content);
 
     /// @brief Validate an already-loaded YAML node (structure + semantics) and build the
-    ///        Mechanism. Validation always runs first, so a caller cannot build from an
-    ///        unvalidated node.
+    ///        Mechanism.
     /// @param object The YAML node to validate and parse
-    /// @return The parsed Mechanism, or all structural and semantic errors encountered
-    std::expected<Mechanism, Errors> Parse(const YAML::Node& object);
+    /// @return The mechanism and all the errors.
+    ParseResult Parse(const YAML::Node& object);
 
    private:
     std::string config_path_;
@@ -65,16 +67,19 @@ namespace mechanism_configuration::v1
     /// @brief Resolves a configuration file's file-list sections into a single inline node.
     std::expected<YAML::Node, Errors> ResolveFileConfig(const std::filesystem::path& config_path);
 
-    /// @brief Runs structural then semantic validation and, if both pass, builds the Mechanism,
-    ///        mapping any thrown exception to an error. Uses config_path_ for message prefixes.
-    std::expected<Mechanism, Errors> ValidateAndBuild(const YAML::Node& object);
+    /// @brief Runs the structural checks, builds every item that it can, and then runs the
+    ///        semantic checks on the items that it built. Maps a thrown exception to an error.
+    ///        Uses config_path_ for message prefixes.
+    ParseResult ValidateAndBuild(const YAML::Node& object);
 
-    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only).
+    /// @brief Checks the structural schema of a mechanism YAML node (keys/shape only). It checks
+    ///        each section, also when an earlier section has errors.
     Errors CheckSchema(const YAML::Node& object);
 
-    /// @brief Constructs a Mechanism from an already-validated node. The emissions section, if
-    ///        present, is parsed separately and assigned by the caller (ValidateAndBuild).
-    Mechanism Build(const YAML::Node& object);
+    /// @brief Constructs a Mechanism from a node that can have errors.
+    /// @param object The YAML node to build
+    /// @param left_out Gets each item that cannot be built. See BuildItem.
+    Mechanism Build(const YAML::Node& object, LeftOutItems& left_out);
 
     inline void SetConfigPath(const std::string& config_path)
     {
