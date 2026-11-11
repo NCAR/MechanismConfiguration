@@ -10,7 +10,7 @@ endif()
 
 add_library(musica::mechanism_configuration ALIAS mechanism_configuration)
 
-target_compile_features(mechanism_configuration PUBLIC cxx_std_23)
+target_compile_features(mechanism_configuration PUBLIC cxx_std_20)
 
 set_target_properties(mechanism_configuration PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY ${MECH_CONFIG_LIB_DIR}
