@@ -47,35 +47,8 @@ namespace mechanism_configuration::v1
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
     }
 
-    if (!errors.empty())
-      return errors;
-
-    // Reactants must belong to the reaction's phase; products may reference any phase.
-    std::vector<std::pair<types::ReactionComponent, YAML::Node>> reactant_node_pairs;
-    for (const auto& obj : object[keys::reactants])
-    {
-      types::ReactionComponent component;
-      component.name = GetComponentName(obj);
-      reactant_node_pairs.emplace_back(component, obj);
-    }
-    std::vector<std::pair<types::ReactionComponent, YAML::Node>> species_node_pairs = reactant_node_pairs;
-
-    // Checks the number of reactants
-    // This must be done before collecting errors from the products
-    if (species_node_pairs.size() > 1)
-    {
-      const auto& node = object[keys::reactants];
-      ErrorLocation error_location{ node.Mark().line, node.Mark().column };
-
-      std::string message = ToString(error_location) + " error: '" + object[keys::type].as<std::string>() +
-                            "' reaction requires one reactant, but " + std::to_string(species_node_pairs.size()) +
-                            " were provided.";
-
-      errors.push_back({ ErrorCode::TooManyReactionComponents, message });
-    }
-
-    // Semantic checks (species existence, phase membership) are performed by the
-    // version-neutral ValidateReactionsSemantics over the canonical Mechanism.
+    // The number of reactants, species existence, and phase membership are checked by the
+    // version-neutral ValidateReactionsSemantics, which also validates a Mechanism made in code.
     return errors;
   }
 
