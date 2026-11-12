@@ -496,13 +496,14 @@ namespace mechanism_configuration::v1
     return input;
   }
 
-  std::expected<YAML::Node, Errors> Parser::ResolveFileConfig(const std::filesystem::path& config_path)
+  std::optional<YAML::Node> Parser::ResolveFileConfig(const std::filesystem::path& config_path, Errors& errors)
   {
     if (!std::filesystem::exists(config_path) || !std::filesystem::is_regular_file(config_path))
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::FileNotFound,
-                    "Configuration file '" + config_path.string() + "' does not exist or is not a regular file." } });
+      errors.push_back(
+          { ErrorCode::FileNotFound,
+            "Configuration file '" + config_path.string() + "' does not exist or is not a regular file." });
+      return std::nullopt;
     }
 
     SetConfigPath(config_path.string());
@@ -514,11 +515,11 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(Errors{
-          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
+      errors.push_back(
+          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) });
+      return std::nullopt;
     }
 
-    Errors errors;
     const std::filesystem::path base_dir = config_path.parent_path();
     const Version version = object[keys::version] ? Version(object[keys::version].as<std::string>()) : Version();
 
@@ -601,7 +602,8 @@ namespace mechanism_configuration::v1
       if (!version_errors.empty())
       {
         AppendFilePath(config_path_, version_errors);
-        return std::unexpected(std::move(version_errors));
+        errors.insert(errors.end(), version_errors.begin(), version_errors.end());
+        return std::nullopt;
       }
     }
 
@@ -617,7 +619,7 @@ namespace mechanism_configuration::v1
     if (!errors.empty())
     {
       AppendFilePath(config_path_, errors);
-      return std::unexpected(std::move(errors));
+      return std::nullopt;
     }
 
     return combined;
@@ -764,10 +766,11 @@ namespace mechanism_configuration::v1
   ParseResult Parser::Parse(const std::filesystem::path& config_path)
   {
     // ResolveFileConfig sets config_path_ so errors carry the file path.
-    auto object = ResolveFileConfig(config_path);
+    Errors errors;
+    auto object = ResolveFileConfig(config_path, errors);
     if (!object)
     {
-      return ParseResult{ std::nullopt, std::move(object.error()) };
+      return ParseResult{ std::nullopt, std::move(errors) };
     }
     return ValidateAndBuild(*object);
   }
