@@ -54,14 +54,19 @@ namespace
   {
     auto parsed = ParseFromString(document);
     EXPECT_FALSE(parsed);
-    return parsed ? Paths{} : PrintAndCollect(parsed.error());
+    return parsed ? Paths{} : PrintAndCollect(parsed.errors);
   }
 }  // namespace
 
 TEST(ErrorPaths, MissingKeyPointsToTheObject)
 {
   const auto document = Document(R"([ { "name": "A" }, { "molecular weight [kg mol-1]": 0.1 } ])", kPhases, "[]");
-  EXPECT_EQ(ErrorPaths(document), (Paths{ { ErrorCode::RequiredKeyNotFound, "/species/1" } }));
+  // The species without a name is left out, so the phase refers to an unknown species.
+  EXPECT_EQ(
+      ErrorPaths(document),
+      (Paths{ { ErrorCode::RequiredKeyNotFound, "/species/1" },
+              { ErrorCode::ItemLeftOut, "/species/1" },
+              { ErrorCode::PhaseRequiresUnknownSpecies, "/phases/0/species/1" } }));
 }
 
 // Schema errors point to the item of a top-level list, not to the key in the item.
@@ -82,7 +87,9 @@ TEST(ErrorPaths, SchemaErrorInAReactionComponentPointsToTheReaction)
 TEST(ErrorPaths, UnknownReactionTypePointsToTheReaction)
 {
   const auto document = Document(kSpecies, kPhases, "[" + Reaction() + R"(, { "type": "NOT_A_TYPE" } ])");
-  EXPECT_EQ(ErrorPaths(document), (Paths{ { ErrorCode::UnknownType, "/reactions/1" } }));
+  EXPECT_EQ(
+      ErrorPaths(document),
+      (Paths{ { ErrorCode::UnknownType, "/reactions/1" }, { ErrorCode::ItemLeftOut, "/reactions/1" } }));
 }
 
 // Semantic errors point to the reference in the item.

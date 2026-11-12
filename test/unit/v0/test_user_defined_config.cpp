@@ -19,9 +19,9 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
     std::string file = "./v0_unit_configs/user_defined/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -29,9 +29,9 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/user_defined/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -39,9 +39,9 @@ TEST(UserDefinedConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/user_defined/missing_MUSICA_name/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -58,7 +58,7 @@ TEST(UserDefinedConfig, ParseConfig)
     std::string file = "./v0_unit_configs/user_defined/valid/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     auto& process_vector = mechanism.reactions.user_defined;
     EXPECT_EQ(process_vector.size(), 2);
@@ -104,9 +104,9 @@ TEST(UserDefinedConfig, DetectsNonstandardKeys)
     std::string file = "./v0_unit_configs/user_defined/contains_nonstandard_key/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -122,9 +122,9 @@ TEST(UserDefinedConfig, DetectsNonstandardProductCoefficient)
     std::string file = "./v0_unit_configs/user_defined/nonstandard_product_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -140,9 +140,9 @@ TEST(UserDefinedConfig, DetectsNonstandardReactantCoefficient)
     std::string file = "./v0_unit_configs/user_defined/nonstandard_reactant_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

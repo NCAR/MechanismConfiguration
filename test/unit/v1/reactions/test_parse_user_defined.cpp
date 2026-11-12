@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidUserDefinedReaction)
   {
     auto parsed = Parse(std::string("v1_unit_configs/reactions/user_defined/valid") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     EXPECT_EQ(mechanism.reactions.user_defined.size(), 2);
 
@@ -54,9 +54,9 @@ TEST(ParserBase, UserDefinedDetectsUnknownSpecies)
     std::string file = std::string("v1_unit_configs/reactions/user_defined/unknown_species") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -71,9 +71,9 @@ TEST(ParserBase, UserDefinedDetectsBadReactionComponent)
     std::string file = std::string("v1_unit_configs/reactions/user_defined/bad_reaction_component") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -88,9 +88,9 @@ TEST(ParserBase, UserDefinedDetectsUnknownPhase)
     std::string file = std::string("v1_unit_configs/reactions/user_defined/missing_phase") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::UnknownPhase);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::UnknownPhase);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

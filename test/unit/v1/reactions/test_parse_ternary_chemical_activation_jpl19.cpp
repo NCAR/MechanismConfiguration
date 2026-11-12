@@ -22,13 +22,13 @@ TEST(TernaryChemicalActivationJPL19Config, ParseValidConfig)
     auto parsed = Parse(file);
     if (!parsed)
     {
-      for (auto& error : parsed.error())
+      for (auto& error : parsed.errors)
       {
         std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
       }
     }
     ASSERT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     EXPECT_EQ(mechanism.reactions.ternary_chemical_activation.size(), 0);
     auto& process_vector = mechanism.reactions.ternary_chemical_activation_jpl19;
@@ -104,20 +104,22 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsNonStandardKey)
         "./v1_unit_configs/reactions/ternary_chemical_activation_jpl19/contains_nonstandard_key/config" + extension;
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
-    for (auto& error : parsed.error())
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
     // 'Reactants' and 'Products' each give a missing key and an invalid key; the third
-    // reaction has all 14 parameters in lower case.
-    ASSERT_EQ(parsed.error().size(), 18);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].code, ErrorCode::RequiredKeyNotFound);
-    for (std::size_t i = 3; i < parsed.error().size(); ++i)
+    // reaction has all 14 parameters in lower case. The first two reactions are left out.
+    ASSERT_EQ(parsed.errors.size(), 20);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::RequiredKeyNotFound);
+    for (std::size_t i = 3; i < 18; ++i)
     {
-      EXPECT_EQ(parsed.error()[i].code, ErrorCode::InvalidKey) << i;
+      EXPECT_EQ(parsed.errors[i].code, ErrorCode::InvalidKey) << i;
     }
+    EXPECT_EQ(parsed.errors[18].code, ErrorCode::ItemLeftOut);
+    EXPECT_EQ(parsed.errors[19].code, ErrorCode::ItemLeftOut);
   }
 }
 
@@ -129,9 +131,10 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsMissingProducts)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation_jpl19/missing_products/config" + extension;
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    ASSERT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::ItemLeftOut);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -146,9 +149,10 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsMissingReactants)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation_jpl19/missing_reactants/config" + extension;
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    ASSERT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::ItemLeftOut);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -163,9 +167,9 @@ TEST(TernaryChemicalActivationJPL19Config, DetectsUnknownSpecies)
     std::string file = "./v1_unit_configs/reactions/ternary_chemical_activation_jpl19/unknown_species/config" + extension;
     auto parsed = Parse(file);
     ASSERT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.error())
+    ASSERT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

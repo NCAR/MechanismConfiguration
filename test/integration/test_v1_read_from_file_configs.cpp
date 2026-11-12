@@ -22,11 +22,11 @@ TEST(V1FileConfigs, ParsesMultiFileConfiguration)
   {
     auto parsed = Parse(main);
     if (!parsed)
-      for (const auto& [code, message, path] : parsed.error())
+      for (const auto& [code, message, path] : parsed.errors)
         std::cout << "[" << ErrorCodeToString(code) << "] " << message << "\n";
     ASSERT_TRUE(parsed);
 
-    const Mechanism& mechanism = *parsed;
+    const Mechanism& mechanism = *parsed.mechanism;
     EXPECT_EQ(mechanism.name, "troposphere and stratosphere configs");
 
     ASSERT_EQ(mechanism.species.size(), 3);

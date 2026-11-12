@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidSpecies)
   {
     auto parsed = Parse(std::string("v1_unit_configs/species/valid_species") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
     EXPECT_EQ(mechanism.species.size(), 3);
 
     EXPECT_EQ(mechanism.species[0].name, "A");
@@ -53,12 +53,12 @@ TEST(ParserBase, DetectsDuplicateSpecies)
     std::string file = std::string("v1_unit_configs/species/duplicate_species") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 4);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[2].code, ErrorCode::DuplicateSpeciesDetected);
-    EXPECT_EQ(parsed.error()[3].code, ErrorCode::DuplicateSpeciesDetected);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 4);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::DuplicateSpeciesDetected);
+    EXPECT_EQ(parsed.errors[3].code, ErrorCode::DuplicateSpeciesDetected);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -73,10 +73,12 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     std::string file = std::string("v1_unit_configs/species/missing_required_key") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 3);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    // The item cannot be built, so the parser leaves it out.
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::ItemLeftOut);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -91,9 +93,9 @@ TEST(ParserBase, DetectsInvalidKeys)
     std::string file = std::string("v1_unit_configs/species/invalid_key") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

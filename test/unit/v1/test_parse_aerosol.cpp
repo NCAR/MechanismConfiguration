@@ -42,11 +42,11 @@ TEST(ParseAerosol, ParsesValidAerosolConfiguration)
 {
   auto parsed = Parse("v1_unit_configs/aerosol/valid_aerosol.json");
   if (!parsed)
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 
-  const Mechanism& mechanism = *parsed;
+  const Mechanism& mechanism = *parsed.mechanism;
   ASSERT_TRUE(mechanism.aerosol.has_value());
   const auto& aerosol = *mechanism.aerosol;
 
@@ -97,9 +97,9 @@ TEST(ParseAerosol, RejectsPhaseTransferWhenGasSpeciesHasNoDiffusionCoefficient)
   auto parsed = Parse("v1_unit_configs/aerosol/phase_transfer_missing_diffusion.json");
   EXPECT_FALSE(parsed);
   ASSERT_FALSE(parsed) << "Expected validation to fail for a missing diffusion coefficient.";
-  EXPECT_TRUE(HasError(parsed.error(), ErrorCode::RequiredKeyNotFound));
+  EXPECT_TRUE(HasError(parsed.errors, ErrorCode::RequiredKeyNotFound));
   // The location should point at the gas-phase species reference (line 28), not just anywhere.
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequiredKeyNotFound, "28:28"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::RequiredKeyNotFound, "28:28"));
 }
 
 TEST(ParseAerosol, RejectsHenrysLawEquilibriumWhenSolventHasNoDensity)
@@ -107,9 +107,9 @@ TEST(ParseAerosol, RejectsHenrysLawEquilibriumWhenSolventHasNoDensity)
   auto parsed = Parse("v1_unit_configs/aerosol/equilibrium_missing_solvent_density.json");
   EXPECT_FALSE(parsed);
   ASSERT_FALSE(parsed) << "Expected validation to fail for a missing solvent density.";
-  EXPECT_TRUE(HasError(parsed.error(), ErrorCode::RequiredKeyNotFound));
+  EXPECT_TRUE(HasError(parsed.errors, ErrorCode::RequiredKeyNotFound));
   // Location points at the solvent (line 31).
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequiredKeyNotFound, "31:18"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::RequiredKeyNotFound, "31:18"));
 }
 
 TEST(ParseAerosol, RejectsRepresentationReferencingUnknownPhase)
@@ -117,7 +117,7 @@ TEST(ParseAerosol, RejectsRepresentationReferencingUnknownPhase)
   auto parsed = Parse("v1_unit_configs/aerosol/representation_unknown_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a representation referencing an unknown phase.";
   // Location points at the phase name inside the representation's "phases" list (line 14).
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownPhase, "14:18"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::UnknownPhase, "14:18"));
 }
 
 TEST(ParseAerosol, RejectsDissolvedReactionReferencingUnknownPhase)
@@ -125,7 +125,7 @@ TEST(ParseAerosol, RejectsDissolvedReactionReferencingUnknownPhase)
   auto parsed = Parse("v1_unit_configs/aerosol/dissolved_reaction_unknown_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a dissolved reaction referencing an unknown phase.";
   // Location points at the "condensed phase" value (line 22).
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownPhase, "22:26"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::UnknownPhase, "22:26"));
 }
 
 TEST(ParseAerosol, RejectsDissolvedReactionReactantNotRegisteredInPhase)
@@ -133,7 +133,7 @@ TEST(ParseAerosol, RejectsDissolvedReactionReactantNotRegisteredInPhase)
   auto parsed = Parse("v1_unit_configs/aerosol/dissolved_reaction_reactant_not_in_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a reactant not registered in the reaction's phase.";
   // Location points at the reactant entry itself (line 25).
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequestedSpeciesNotRegisteredInPhase, "25:22"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::RequestedSpeciesNotRegisteredInPhase, "25:22"));
 }
 
 TEST(ParseAerosol, RejectsHenrysLawEquilibriumReferencingUnknownSolventSpecies)
@@ -142,8 +142,8 @@ TEST(ParseAerosol, RejectsHenrysLawEquilibriumReferencingUnknownSolventSpecies)
   ASSERT_FALSE(parsed) << "Expected validation to fail for a solvent species that isn't declared anywhere.";
   // Location points at the "solvent" value (line 27). The undeclared species trips both the
   // phase-membership check (density) and the species-existence check (molecular weight).
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::RequestedSpeciesNotRegisteredInPhase, "27:18"));
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownSpecies, "27:18"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::RequestedSpeciesNotRegisteredInPhase, "27:18"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::UnknownSpecies, "27:18"));
 }
 
 TEST(ParseAerosol, RejectsLinearConstraintTermReferencingUnknownPhase)
@@ -151,5 +151,5 @@ TEST(ParseAerosol, RejectsLinearConstraintTermReferencingUnknownPhase)
   auto parsed = Parse("v1_unit_configs/aerosol/linear_constraint_term_unknown_phase.json");
   ASSERT_FALSE(parsed) << "Expected validation to fail for a linear constraint term referencing an unknown phase.";
   // Location points at the term's own "phase" value (line 25), nested inside the terms list.
-  EXPECT_TRUE(HasErrorAt(parsed.error(), ErrorCode::UnknownPhase, "25:29"));
+  EXPECT_TRUE(HasErrorAt(parsed.errors, ErrorCode::UnknownPhase, "25:29"));
 }

@@ -4,6 +4,34 @@ Changelog
 Unreleased
 ----------
 
+Parse Results with Partial Mechanisms
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``Parse()`` and ``ParseFromString()`` now build as much of a mechanism as possible. They return
+a ``ParseResult`` with the ``mechanism`` and all the ``errors``, not ``std::expected``. An editor
+can use the result to import a configuration that has problems, and to show the problems on the
+imported items.
+
+- **Breaking change:** ``ParseResult`` replaces ``std::expected<Mechanism, Errors>``. Use
+  ``result.mechanism`` in place of ``*result`` and ``result.errors`` in place of
+  ``result.error()``.
+- The result converts to ``true`` only when it has a mechanism and no errors. A program that
+  solves a mechanism must use it only then.
+- ``mechanism`` is empty only when the parser cannot read the configuration, for example when the
+  file does not exist, or the version is missing or not supported.
+- The parser checks all the sections, and then builds every item that it can, also an item with a
+  schema error. For example, a reaction with a non-standard key is kept, and the key is reported.
+- An item that cannot be built is left out, with an ``ItemLeftOut`` error at its path. Examples
+  are a species without a name, and a reaction with an unknown type.
+- An aerosol or emissions section is built as a whole, because its items refer to each other.
+- A missing ``species``, ``phases``, or ``reactions`` section is reported, and is empty.
+- The semantic checks run on the items that are built, also when schema errors exist. A reference
+  to an item that was left out gives a semantic error, for example ``Unknown species``. Before,
+  the semantic checks ran only when there were no schema errors.
+- A ``v0`` configuration also gives its partial mechanism. A reaction with an unknown type is left
+  out with an ``UnknownType`` error. Before, it stopped the parse of the rest of its file.
+- ``ErrorCode`` has the new value ``ItemLeftOut``.
+
 JSON Pointer Paths in Errors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

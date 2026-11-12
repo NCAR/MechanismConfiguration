@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidPhotolysisReaction)
   {
     auto parsed = Parse(std::string("v1_unit_configs/reactions/photolysis/valid") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     EXPECT_EQ(mechanism.reactions.photolysis.size(), 2);
 
@@ -50,9 +50,9 @@ TEST(ParserBase, PhotolysisDetectsUnknownSpecies)
     std::string file = std::string("v1_unit_configs/reactions/photolysis/unknown_species") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -67,9 +67,9 @@ TEST(ParserBase, PhotolysisDetectsBadReactionComponent)
     std::string file = std::string("v1_unit_configs/reactions/photolysis/bad_reaction_component") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -84,9 +84,9 @@ TEST(ParserBase, PhotolysisDetectsUnknownPhase)
     std::string file = std::string("v1_unit_configs/reactions/photolysis/missing_phase") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::UnknownPhase);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::UnknownPhase);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -101,9 +101,9 @@ TEST(ParserBase, PhotolysisDoesNotAcceptMoreThanOneReactant)
     std::string file = std::string("v1_unit_configs/reactions/photolysis/more_than_one_reactant") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::TooManyReactionComponents);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::TooManyReactionComponents);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

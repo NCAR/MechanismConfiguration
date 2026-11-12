@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidPhases)
   {
     auto parsed = Parse(std::string("v1_unit_configs/phases/valid_phases") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
     EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.phases.size(), 2);
 
@@ -45,9 +45,9 @@ TEST(ParserBase, DetectsDuplicatePhases)
     std::string file = std::string("v1_unit_configs/phases/duplicate_phases") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed) << "Parsing should have failed due to duplicate phases, but it succeeded.";
-    EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicatePhasesDetected);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::DuplicatePhasesDetected);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -62,9 +62,9 @@ TEST(ParserBase, DetectsMissingRequiredKeys)
     std::string file = std::string("v1_unit_configs/phases/missing_required_key") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -79,9 +79,9 @@ TEST(ParserBase, DetectsInvalidKeys)
     std::string file = std::string("v1_unit_configs/phases/invalid_key") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -96,9 +96,9 @@ TEST(ParserBase, DetectsPhaseRequestingUnknownSpecies)
     std::string file = std::string("v1_unit_configs/phases/unknown_species") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::PhaseRequiresUnknownSpecies);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::PhaseRequiresUnknownSpecies);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -113,9 +113,9 @@ TEST(ParserBase, DetectsDuplicateSpeciesInPhase)
     std::string file = std::string("v1_unit_configs/phases/duplicate_species_in_phase") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::DuplicateSpeciesInPhaseDetected);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 2);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::DuplicateSpeciesInPhaseDetected);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -129,7 +129,7 @@ TEST(ParserBase, CanParsePhaseSpeciesProperties)
   {
     auto parsed = Parse(std::string("v1_unit_configs/phases/phase_species_properties") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
     EXPECT_EQ(mechanism.species.size(), 3);
     EXPECT_EQ(mechanism.phases.size(), 1);
 
@@ -167,9 +167,9 @@ TEST(ParserBase, DetectsInvalidSpeciesObject)
     std::string file = std::string("v1_unit_configs/phases/invalid_species_object") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_GE(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_GE(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

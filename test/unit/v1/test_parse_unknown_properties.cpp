@@ -15,7 +15,7 @@ TEST(ParserBase, UnknownPropertiesKeepTypesAndStructure)
   {
     auto parsed = Parse(std::string("v1_unit_configs/unknown_properties/valid") + extension);
     ASSERT_TRUE(parsed) << extension;
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     // Top-level properties
     EXPECT_EQ(mechanism.unknown_properties.size(), 3);

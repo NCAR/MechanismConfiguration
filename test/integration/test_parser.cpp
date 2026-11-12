@@ -22,7 +22,7 @@ TEST(Parse, ConfigurationWithoutVersionFallsBackToV0)
     auto parsed = Parse("examples/v0/config" + extension);
     EXPECT_TRUE(parsed);
     if (parsed)
-      EXPECT_EQ(parsed->version.major, 0);
+      EXPECT_EQ(parsed.mechanism->version.major, 0);
   }
 }
 
@@ -32,11 +32,11 @@ TEST(Parse, ParsesFullV1Configuration)
   {
     auto parsed = Parse("examples/v1/full_configuration" + extension);
     if (!parsed)
-      for (const auto& [code, message, path] : parsed.error())
+      for (const auto& [code, message, path] : parsed.errors)
         std::cout << message << std::endl;
     EXPECT_TRUE(parsed);
     if (parsed)
-      EXPECT_EQ(parsed->version.major, 1);
+      EXPECT_EQ(parsed.mechanism->version.major, 1);
   }
 }
 
@@ -61,11 +61,11 @@ TEST(Parse, ParsesTheExampleForEachV1MinorVersion)
   {
     auto parsed = Parse(example.path);
     if (!parsed)
-      for (const auto& [code, message, path] : parsed.error())
+      for (const auto& [code, message, path] : parsed.errors)
         std::cout << message << std::endl;
     ASSERT_TRUE(parsed) << example.path;
 
-    const Mechanism& mechanism = *parsed;
+    const Mechanism& mechanism = *parsed.mechanism;
     EXPECT_EQ(mechanism.version.major, 1) << example.path;
     EXPECT_EQ(mechanism.version.minor, example.minor) << example.path;
 
@@ -107,8 +107,8 @@ TEST(Parse, ReportsMissingFile)
   {
     auto parsed = Parse("examples/_missing_configuration" + extension);
     EXPECT_FALSE(parsed);
-    ASSERT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::FileNotFound);
+    ASSERT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::FileNotFound);
   }
 }
 
@@ -118,7 +118,7 @@ TEST(Parse, ReportsUnsupportedVersion)
   EXPECT_FALSE(parsed);
 
   bool found_invalid_version = false;
-  for (const auto& [code, message, path] : parsed.error())
+  for (const auto& [code, message, path] : parsed.errors)
   {
     if (code == ErrorCode::InvalidVersion)
       found_invalid_version = true;
@@ -133,7 +133,7 @@ TEST(Parse, ParsesV0DirectoryConfiguration)
   auto parsed = Parse(std::filesystem::path("examples/v0/"));
   EXPECT_TRUE(parsed);
   if (parsed)
-    EXPECT_EQ(parsed->version.major, 0);
+    EXPECT_EQ(parsed.mechanism->version.major, 0);
 }
 
 static void ExpectCamCloudChemistry(const std::string& path)
@@ -141,11 +141,11 @@ static void ExpectCamCloudChemistry(const std::string& path)
   SCOPED_TRACE(path);
   auto parsed = Parse(path);
   if (!parsed)
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << std::endl;
   ASSERT_TRUE(parsed);
 
-  const Mechanism& mechanism = *parsed;
+  const Mechanism& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.version.major, 1);
   EXPECT_EQ(mechanism.name, "CAM Cloud Chemistry");
   EXPECT_EQ(mechanism.species.size(), 10u);
@@ -234,14 +234,14 @@ TEST(Parse, ParsesV1JsonString)
   EXPECT_TRUE(parsed);
   if (parsed)
   {
-    EXPECT_EQ(parsed->version.major, 1);
-    EXPECT_EQ(parsed->species.size(), 1);
-    EXPECT_EQ(parsed->phases.size(), 1);
-    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+    EXPECT_EQ(parsed.mechanism->version.major, 1);
+    EXPECT_EQ(parsed.mechanism->species.size(), 1);
+    EXPECT_EQ(parsed.mechanism->phases.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
   }
   else
   {
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -280,14 +280,14 @@ TEST(Parse, ParsesV11JsonString)
   EXPECT_TRUE(parsed);
   if (parsed)
   {
-    EXPECT_EQ(parsed->version.major, 1);
-    EXPECT_EQ(parsed->species.size(), 1);
-    EXPECT_EQ(parsed->phases.size(), 1);
-    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+    EXPECT_EQ(parsed.mechanism->version.major, 1);
+    EXPECT_EQ(parsed.mechanism->species.size(), 1);
+    EXPECT_EQ(parsed.mechanism->phases.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
   }
   else
   {
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -314,14 +314,14 @@ reactions:
   EXPECT_TRUE(parsed);
   if (parsed)
   {
-    EXPECT_EQ(parsed->version.major, 1);
-    EXPECT_EQ(parsed->species.size(), 1);
-    EXPECT_EQ(parsed->phases.size(), 1);
-    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+    EXPECT_EQ(parsed.mechanism->version.major, 1);
+    EXPECT_EQ(parsed.mechanism->species.size(), 1);
+    EXPECT_EQ(parsed.mechanism->phases.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
   }
   else
   {
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }
@@ -348,14 +348,14 @@ reactions:
   EXPECT_TRUE(parsed);
   if (parsed)
   {
-    EXPECT_EQ(parsed->version.major, 1);
-    EXPECT_EQ(parsed->species.size(), 1);
-    EXPECT_EQ(parsed->phases.size(), 1);
-    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
+    EXPECT_EQ(parsed.mechanism->version.major, 1);
+    EXPECT_EQ(parsed.mechanism->species.size(), 1);
+    EXPECT_EQ(parsed.mechanism->phases.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
   }
   else
   {
-    for (const auto& [code, message, path] : parsed.error())
+    for (const auto& [code, message, path] : parsed.errors)
       std::cout << message << " " << ErrorCodeToString(code) << std::endl;
   }
 }

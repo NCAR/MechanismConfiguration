@@ -4,6 +4,7 @@
 
 #include "detail/v1/species/parsers.hpp"
 
+#include "detail/json_pointer.hpp"
 #include "detail/v1/keys.hpp"
 #include "detail/v1/species/keys.hpp"
 #include "detail/v1/utils.hpp"
@@ -12,10 +13,9 @@
 
 namespace mechanism_configuration::v1
 {
-  std::vector<types::Species> ParseSpecies(const YAML::Node& objects)
+  namespace
   {
-    std::vector<types::Species> all_species;
-    for (const auto& object : objects)
+    types::Species ParseOneSpecies(const YAML::Node& object)
     {
       types::Species species;
 
@@ -40,15 +40,10 @@ namespace mechanism_configuration::v1
 
       species.unknown_properties = GetComments(object);
 
-      all_species.push_back(species);
+      return species;
     }
-    return all_species;
-  }
 
-  std::vector<types::Phase> ParsePhases(const YAML::Node& objects)
-  {
-    std::vector<types::Phase> all_phases;
-    for (const auto& object : objects)
+    types::Phase ParseOnePhase(const YAML::Node& object)
     {
       types::Phase phase;
       phase.name = object[keys::name].as<std::string>();
@@ -84,7 +79,38 @@ namespace mechanism_configuration::v1
 
       phase.species = species;
       phase.unknown_properties = GetComments(object);
-      all_phases.emplace_back(phase);
+      return phase;
+    }
+  }  // namespace
+
+  std::vector<types::Species> ParseSpecies(const YAML::Node& objects, LeftOutItems& left_out)
+  {
+    std::vector<types::Species> all_species;
+    std::size_t index = 0;
+    for (const auto& object : objects)
+    {
+      BuildItem(
+          object,
+          RootPath(keys::species, index++),
+          "species",
+          left_out,
+          [&] { all_species.push_back(ParseOneSpecies(object)); });
+    }
+    return all_species;
+  }
+
+  std::vector<types::Phase> ParsePhases(const YAML::Node& objects, LeftOutItems& left_out)
+  {
+    std::vector<types::Phase> all_phases;
+    std::size_t index = 0;
+    for (const auto& object : objects)
+    {
+      BuildItem(
+          object,
+          RootPath(keys::phases, index++),
+          "phase",
+          left_out,
+          [&] { all_phases.emplace_back(ParseOnePhase(object)); });
     }
 
     return all_phases;

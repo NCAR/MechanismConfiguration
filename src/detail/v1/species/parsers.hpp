@@ -7,6 +7,7 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types/species.hpp>
 
+#include <detail/v1/utils.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <vector>
@@ -17,14 +18,16 @@ namespace mechanism_configuration::v1
   ///        The input must be validated using CheckSpeciesSchema().
   ///        This function assumes the structure and types are correct.
   /// @param objects YAML node representing species list
+  /// @param left_out Gets each species that cannot be built. See BuildItem.
   /// @return A vector of parsed species
-  std::vector<types::Species> ParseSpecies(const YAML::Node& objects);
+  std::vector<types::Species> ParseSpecies(const YAML::Node& objects, LeftOutItems& left_out);
 
   /// @brief Parses a YAML node into a vector of Phases
   ///        Extracts each phase's name and its associated species (including optional properties).
   ///        Assumes the input YAML has already been validated for required structure and keys.
   /// @param objects YAML node representing phase list
+  /// @param left_out Gets each phase that cannot be built. See BuildItem.
   /// @return A vector of parsed Phases
-  std::vector<types::Phase> ParsePhases(const YAML::Node& objects);
+  std::vector<types::Phase> ParsePhases(const YAML::Node& objects, LeftOutItems& left_out);
 
 }  // namespace mechanism_configuration::v1

@@ -17,7 +17,7 @@ TEST(ParserBase, CanParseValidBranchedReaction)
   {
     auto parsed = Parse(std::string("v1_unit_configs/reactions/branched/valid") + extension);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     EXPECT_EQ(mechanism.reactions.branched.size(), 1);
 
@@ -53,9 +53,9 @@ TEST(ParserBase, BranchedDetectsUnknownSpecies)
     std::string file = std::string("v1_unit_configs/reactions/branched/unknown_species") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::ReactionRequiresUnknownSpecies);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -70,10 +70,12 @@ TEST(ParserBase, BranchedDetectsBadReactionComponent)
     std::string file = std::string("v1_unit_configs/reactions/branched/bad_reaction_component") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 2);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 3);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    // The item cannot be built, so the parser leaves it out.
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::ItemLeftOut);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -88,9 +90,9 @@ TEST(ParserBase, BranchedDetectsUnknownPhase)
     std::string file = std::string("v1_unit_configs/reactions/branched/missing_phase") + extension;
     auto parsed = Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::UnknownPhase);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::UnknownPhase);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

@@ -53,7 +53,7 @@ TEST(ParseVersion, RejectsUnsupportedMinorVersion)
   {
     auto parsed = Parse("./v1_unit_configs/version/unsupported_minor" + extension);
     ASSERT_FALSE(parsed);
-    auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+    auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
     ASSERT_EQ(messages.size(), 1);
     EXPECT_TRUE(Contains(messages[0], "Version '1.5.0' is not supported"));
     EXPECT_TRUE(Contains(messages[0], "newest supported version is '1.4'"));
@@ -66,16 +66,16 @@ TEST(ParseVersion, AerosolRequiresMinorVersionTwo)
   {
     auto parsed = Parse("./v1_unit_configs/version/aerosol_1_1" + extension);
     ASSERT_FALSE(parsed);
-    auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+    auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
     ASSERT_EQ(messages.size(), 2);
     EXPECT_TRUE(Contains(messages[0], "'aerosol representations' requires version '1.2' or newer"));
     EXPECT_TRUE(Contains(messages[1], "'aerosol processes' requires version '1.2' or newer"));
 
     parsed = Parse("./v1_unit_configs/version/aerosol_1_2" + extension);
     EXPECT_TRUE(parsed);
-    ASSERT_TRUE(parsed->aerosol.has_value());
-    EXPECT_EQ(parsed->aerosol->representations.size(), 1);
-    EXPECT_EQ(parsed->aerosol->processes.size(), 1);
+    ASSERT_TRUE(parsed.mechanism->aerosol.has_value());
+    EXPECT_EQ(parsed.mechanism->aerosol->representations.size(), 1);
+    EXPECT_EQ(parsed.mechanism->aerosol->processes.size(), 1);
   }
 }
 
@@ -85,14 +85,14 @@ TEST(ParseVersion, EmissionsRequiresMinorVersionThree)
   {
     auto parsed = Parse("./v1_unit_configs/version/emissions_1_2" + extension);
     ASSERT_FALSE(parsed);
-    auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+    auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
     ASSERT_EQ(messages.size(), 1);
     EXPECT_TRUE(Contains(messages[0], "'emissions' requires version '1.3' or newer"));
 
     parsed = Parse("./v1_unit_configs/version/emissions_1_3" + extension);
     EXPECT_TRUE(parsed);
-    ASSERT_TRUE(parsed->emissions.has_value());
-    EXPECT_EQ(parsed->emissions->sources.size(), 1);
+    ASSERT_TRUE(parsed.mechanism->emissions.has_value());
+    EXPECT_EQ(parsed.mechanism->emissions->sources.size(), 1);
   }
 }
 
@@ -102,7 +102,7 @@ TEST(ParseVersion, TernaryChemicalActivationJPL19RequiresMinorVersionFour)
   {
     auto parsed = Parse("./v1_unit_configs/version/ternary_chemical_activation_jpl19_1_3" + extension);
     ASSERT_FALSE(parsed);
-    auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+    auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
     ASSERT_EQ(messages.size(), 1);
     EXPECT_TRUE(
         Contains(messages[0], "The 'TERNARY_CHEMICAL_ACTIVATION_JPL19' reaction type requires version '1.4' or newer"));
@@ -110,8 +110,8 @@ TEST(ParseVersion, TernaryChemicalActivationJPL19RequiresMinorVersionFour)
 
     parsed = Parse("./v1_unit_configs/version/ternary_chemical_activation_jpl19_1_4" + extension);
     ASSERT_TRUE(parsed);
-    EXPECT_EQ(parsed->reactions.arrhenius.size(), 1);
-    EXPECT_EQ(parsed->reactions.ternary_chemical_activation_jpl19.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.arrhenius.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.ternary_chemical_activation_jpl19.size(), 1);
   }
 }
 
@@ -122,14 +122,14 @@ TEST(ParseVersion, TernaryChemicalActivationJPL19InReactionFileRequiresMinorVers
     const std::string dir = "./v1_unit_configs/version/ternary_chemical_activation_jpl19_file_list/" + format;
     auto parsed = Parse(dir + "/config_1_3." + format);
     ASSERT_FALSE(parsed);
-    auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+    auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
     ASSERT_EQ(messages.size(), 1);
     EXPECT_TRUE(
         Contains(messages[0], "The 'TERNARY_CHEMICAL_ACTIVATION_JPL19' reaction type requires version '1.4' or newer"));
 
     parsed = Parse(dir + "/config_1_4." + format);
     ASSERT_TRUE(parsed);
-    EXPECT_EQ(parsed->reactions.ternary_chemical_activation_jpl19.size(), 1);
+    EXPECT_EQ(parsed.mechanism->reactions.ternary_chemical_activation_jpl19.size(), 1);
   }
 }
 
@@ -155,7 +155,7 @@ reactions:
 )";
   auto parsed = ParseFromString(config);
   ASSERT_FALSE(parsed);
-  auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+  auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
   ASSERT_EQ(messages.size(), 1);
   EXPECT_TRUE(
       Contains(messages[0], "The 'TERNARY_CHEMICAL_ACTIVATION_JPL19' reaction type requires version '1.4' or newer"));
@@ -175,7 +175,7 @@ reactions: []
 )";
   auto parsed = ParseFromString(config);
   ASSERT_FALSE(parsed);
-  auto messages = MessagesWithCode(parsed.error(), ErrorCode::InvalidVersion);
+  auto messages = MessagesWithCode(parsed.errors, ErrorCode::InvalidVersion);
   ASSERT_EQ(messages.size(), 1);
   EXPECT_TRUE(Contains(messages[0], "Version '1.9.0' is not supported"));
 }

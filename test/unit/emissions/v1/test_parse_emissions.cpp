@@ -27,10 +27,10 @@ static auto ParseString(const std::string& content)
 TEST(EmissionsV1Parser, ParsesValidConfig)
 {
   auto result = ParseFile("emissions_unit_configs/valid.yaml");
-  ASSERT_TRUE(result) << "Parse failed: " << (result ? "" : result.error()[0].message);
+  ASSERT_TRUE(result) << "Parse failed: " << (result ? "" : result.errors[0].message);
 
-  ASSERT_TRUE(result->emissions.has_value());
-  const auto& em = *result->emissions;
+  ASSERT_TRUE(result.mechanism->emissions.has_value());
+  const auto& em = *result.mechanism->emissions;
 
   ASSERT_EQ(em.inventories.size(), 1u);
   EXPECT_EQ(em.inventories[0].name, "cams bc");
@@ -97,10 +97,10 @@ emissions:
 
   auto result = ParseString(content);
   ASSERT_TRUE(result);
-  ASSERT_TRUE(result->emissions.has_value());
-  ASSERT_EQ(result->emissions->sources.size(), 1u);
-  EXPECT_EQ(result->emissions->sources[0].name, "so2 source");
-  EXPECT_TRUE(result->emissions->inventories[0].molecular_weights.empty());
+  ASSERT_TRUE(result.mechanism->emissions.has_value());
+  ASSERT_EQ(result.mechanism->emissions->sources.size(), 1u);
+  EXPECT_EQ(result.mechanism->emissions->sources[0].name, "so2 source");
+  EXPECT_TRUE(result.mechanism->emissions->inventories[0].molecular_weights.empty());
 }
 
 TEST(EmissionsV1Parser, MechanismWithoutEmissionsHasNoEmissions)
@@ -113,7 +113,7 @@ reactions: []
 )";
   auto result = ParseString(content);
   ASSERT_TRUE(result);
-  EXPECT_FALSE(result->emissions.has_value());
+  EXPECT_FALSE(result.mechanism->emissions.has_value());
 }
 
 TEST(EmissionsV1Parser, RejectsDuplicateSourceName)
@@ -121,7 +121,7 @@ TEST(EmissionsV1Parser, RejectsDuplicateSourceName)
   auto result = ParseFile("emissions_unit_configs/duplicate_source.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::DuplicateSourceDetected)
       found = true;
   EXPECT_TRUE(found);
@@ -132,7 +132,7 @@ TEST(EmissionsV1Parser, RejectsDuplicateCategoryHierarchy)
   auto result = ParseFile("emissions_unit_configs/duplicate_category_hierarchy.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::DuplicateCategoryHierarchy)
       found = true;
   EXPECT_TRUE(found);
@@ -143,7 +143,7 @@ TEST(EmissionsV1Parser, RejectsSourceWithUnknownInventory)
   auto result = ParseFile("emissions_unit_configs/unknown_inventory.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::SourceRequiresUnknownInventory)
       found = true;
   EXPECT_TRUE(found);
@@ -154,7 +154,7 @@ TEST(EmissionsV1Parser, RejectsSourceWithUnknownSpeciesMap)
   auto result = ParseFile("emissions_unit_configs/unknown_species_map.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::SourceRequiresUnknownSpeciesMap)
       found = true;
   EXPECT_TRUE(found);
@@ -165,7 +165,7 @@ TEST(EmissionsV1Parser, RejectsScalingFactorExceedingOne)
   auto result = ParseFile("emissions_unit_configs/scaling_exceeds_one.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::SpeciesMapScalingExceedsOne)
       found = true;
   EXPECT_TRUE(found);
@@ -176,7 +176,7 @@ TEST(EmissionsV1Parser, RejectsOnlineSource)
   auto result = ParseFile("emissions_unit_configs/online_source.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::OnlineSourcesNotSupported)
       found = true;
   EXPECT_TRUE(found);
@@ -187,7 +187,7 @@ TEST(EmissionsV1Parser, RejectsUnsupportedRegriddingType)
   auto result = ParseFile("emissions_unit_configs/unsupported_regridding.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::UnsupportedRegriddingType)
       found = true;
   EXPECT_TRUE(found);
@@ -198,7 +198,7 @@ TEST(EmissionsV1Parser, RejectsUnsupportedVerticalInjection)
   auto result = ParseFile("emissions_unit_configs/unsupported_vertical_injection.yaml");
   ASSERT_FALSE(result);
   bool found = false;
-  for (const auto& e : result.error())
+  for (const auto& e : result.errors)
     if (e.code == ErrorCode::UnsupportedVerticalInjection)
       found = true;
   EXPECT_TRUE(found);
@@ -216,8 +216,8 @@ emissions:
 )";
   auto result = ParseString(content);
   ASSERT_TRUE(result);
-  ASSERT_TRUE(result->emissions.has_value());
-  EXPECT_TRUE(result->emissions->sources.empty());
+  ASSERT_TRUE(result.mechanism->emissions.has_value());
+  EXPECT_TRUE(result.mechanism->emissions->sources.empty());
 }
 
 TEST(EmissionsV1Parser, AcceptsAbsentOptionalSections)
@@ -231,8 +231,8 @@ emissions: {}
 )";
   auto result = ParseString(content);
   ASSERT_TRUE(result);
-  ASSERT_TRUE(result->emissions.has_value());
-  EXPECT_TRUE(result->emissions->sources.empty());
-  EXPECT_TRUE(result->emissions->inventories.empty());
-  EXPECT_TRUE(result->emissions->species_maps.empty());
+  ASSERT_TRUE(result.mechanism->emissions.has_value());
+  EXPECT_TRUE(result.mechanism->emissions->sources.empty());
+  EXPECT_TRUE(result.mechanism->emissions->inventories.empty());
+  EXPECT_TRUE(result.mechanism->emissions->species_maps.empty());
 }

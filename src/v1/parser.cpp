@@ -160,9 +160,14 @@ namespace mechanism_configuration::v1
       }
       return errors;
     }
+    // Tells if the parser left out the item at `path`, so that the checks skip it.
+    bool IsLeftOut(const LeftOutItems& left_out, const std::string& path)
+    {
+      return left_out.paths.contains(path);
+    }
   }  // namespace
 
-  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object)
+  semantics::ReactionsInput BuildReactionsSemanticInput(const YAML::Node& object, const LeftOutItems& left_out)
   {
     semantics::ReactionsInput input;
 
@@ -171,7 +176,10 @@ namespace mechanism_configuration::v1
       std::size_t index = 0;
       for (const auto& s : object[std::string(keys::species)])
       {
-        input.species.push_back({ GetComponentName(s), LocationOf(s), RootPath(keys::species, index++) });
+        const std::string path = RootPath(keys::species, index++);
+        if (IsLeftOut(left_out, path))
+          continue;
+        input.species.push_back({ GetComponentName(s), LocationOf(s), path });
         if (s[std::string(keys::molecular_weight)])
           input.species_with_molecular_weight.insert(GetComponentName(s));
       }
@@ -182,10 +190,13 @@ namespace mechanism_configuration::v1
       std::size_t index = 0;
       for (const auto& phase : object[std::string(keys::phases)])
       {
+        const std::string path = RootPath(keys::phases, index++);
+        if (IsLeftOut(left_out, path))
+          continue;
         semantics::PhaseRef pr;
         pr.name = phase[std::string(keys::name)].as<std::string>();
         pr.location = LocationOf(phase);
-        pr.path = RootPath(keys::phases, index++);
+        pr.path = path;
         if (phase[std::string(keys::species)])
         {
           const std::string species_path = ChildPath(*pr.path, keys::species);
@@ -203,6 +214,8 @@ namespace mechanism_configuration::v1
       for (const auto& reaction : object[std::string(keys::reactions)])
       {
         const std::string path = RootPath(keys::reactions, index++);
+        if (IsLeftOut(left_out, path))
+          continue;
         semantics::ReactionRef rr;
         if (reaction[std::string(keys::type)])
           rr.type = reaction[std::string(keys::type)].as<std::string>();
@@ -226,17 +239,25 @@ namespace mechanism_configuration::v1
     return input;
   }
 
-  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object)
+  semantics::AerosolInput BuildAerosolSemanticInput(const YAML::Node& object, const LeftOutItems& left_out)
   {
     semantics::AerosolInput input;
 
+    std::size_t species_index = 0;
     if (object[std::string(keys::species)])
       for (const auto& s : object[std::string(keys::species)])
+      {
+        if (IsLeftOut(left_out, RootPath(keys::species, species_index++)))
+          continue;
         input.species.push_back({ GetComponentName(s), static_cast<bool>(s[std::string(keys::molecular_weight)]) });
+      }
 
+    std::size_t phase_index = 0;
     if (object[std::string(keys::phases)])
       for (const auto& phase : object[std::string(keys::phases)])
       {
+        if (IsLeftOut(left_out, RootPath(keys::phases, phase_index++)))
+          continue;
         semantics::PhaseDef phase_def;
         phase_def.name = phase[std::string(keys::name)].as<std::string>();
         if (phase[std::string(keys::species)])
@@ -255,7 +276,8 @@ namespace mechanism_configuration::v1
       }
 
     // Sets mechanism.aerosol when both keys are present, avoiding errors for references omitted from the built Mechanism.
-    if (!(object[std::string(keys::aerosol_representations)] && object[std::string(keys::aerosol_processes)]))
+    if (!(object[std::string(keys::aerosol_representations)] && object[std::string(keys::aerosol_processes)]) ||
+        IsLeftOut(left_out, RootPath(keys::aerosol_representations)))
       return input;
 
     std::size_t representation_index = 0;
@@ -403,11 +425,11 @@ namespace mechanism_configuration::v1
     return input;
   }
 
-  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object)
+  semantics::EmissionsInput BuildEmissionsSemanticInput(const YAML::Node& object, const LeftOutItems& left_out)
   {
     semantics::EmissionsInput input;
 
-    if (!object[std::string(keys::emissions)])
+    if (!object[std::string(keys::emissions)] || IsLeftOut(left_out, RootPath(keys::emissions)))
       return input;
 
     const YAML::Node& emissions_node = object[std::string(keys::emissions)];
@@ -617,7 +639,6 @@ namespace mechanism_configuration::v1
       SetMissingPaths(schema_errors, "");
       AppendFilePath(config_path_, schema_errors);
       errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
-      return errors;
     }
 
     // A config must define at least one mechanism mode: gas-phase reactions, or the aerosol
@@ -625,63 +646,75 @@ namespace mechanism_configuration::v1
     const bool has_reactions = static_cast<bool>(object[keys::reactions]);
     const bool has_aerosol_representations = static_cast<bool>(object[keys::aerosol_representations]);
     const bool has_aerosol_processes = static_cast<bool>(object[keys::aerosol_processes]);
+    Errors mode_errors;
     if (has_aerosol_representations != has_aerosol_processes)
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
-                             std::string(keys::aerosol_processes) + "' must be provided together.",
-                         "" });
+      mode_errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "' must be provided together.",
+            "" });
     }
     if (!has_reactions && !(has_aerosol_representations && has_aerosol_processes))
     {
       ErrorLocation error_location{ object.Mark().line, object.Mark().column };
-      errors.push_back({ ErrorCode::RequiredKeyNotFound,
-                         ToString(error_location) + " error: A configuration must contain either '" +
-                             std::string(keys::reactions) + "' or both '" + std::string(keys::aerosol_representations) +
-                             "' and '" + std::string(keys::aerosol_processes) + "'.",
-                         "" });
+      mode_errors.push_back(
+          { ErrorCode::RequiredKeyNotFound,
+            ToString(error_location) + " error: A configuration must contain either '" + std::string(keys::reactions) +
+                "' or both '" + std::string(keys::aerosol_representations) + "' and '" +
+                std::string(keys::aerosol_processes) + "'.",
+            "" });
     }
-    if (!errors.empty())
+    if (!mode_errors.empty())
     {
-      AppendFilePath(config_path_, errors);
-      return errors;
-    }
-
-    constexpr unsigned int MAJOR_VERSION = 1;
-    Version version = Version(object[keys::version].as<std::string>());
-    if (version.major != MAJOR_VERSION)
-    {
-      ErrorLocation error_location{ object[keys::version].Mark().line, object[keys::version].Mark().column };
-
-      std::string message = ToString(error_location) + " error: The version must be '" + std::to_string(MAJOR_VERSION) +
-                            "' but the invalid version number '" + std::to_string(version.major) + "' found.";
-      errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message, RootPath(keys::version) });
-    }
-    else
-    {
-      // A file configuration is already merged here, so its file-list format was checked in ResolveFileConfig.
-      auto version_errors = CheckMinorVersion(object, version, false);
-      AppendFilePath(config_path_, version_errors);
-      errors.insert(errors.end(), version_errors.begin(), version_errors.end());
+      AppendFilePath(config_path_, mode_errors);
+      errors.insert(errors.end(), mode_errors.begin(), mode_errors.end());
     }
 
-    // Species and phases are foundational. If either is invalid, fail fast rather than
-    // reporting noisy downstream errors caused by the malformed section.
-    schema_errors = CheckSpeciesSchema(object[keys::species], RootPath(keys::species));
-    if (!schema_errors.empty())
+    // The check of the required keys reports a missing version.
+    if (object[keys::version])
     {
-      AppendFilePath(config_path_, schema_errors);
-      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
-      return errors;
+      constexpr unsigned int MAJOR_VERSION = 1;
+      Version version = Version(object[keys::version].as<std::string>());
+      if (version.major != MAJOR_VERSION)
+      {
+        ErrorLocation error_location{ object[keys::version].Mark().line, object[keys::version].Mark().column };
+
+        std::string message = ToString(error_location) + " error: The version must be '" + std::to_string(MAJOR_VERSION) +
+                              "' but the invalid version number '" + std::to_string(version.major) + "' found.";
+        errors.push_back({ ErrorCode::InvalidVersion, config_path_ + ":" + message, RootPath(keys::version) });
+      }
+      else
+      {
+        // A file configuration is already merged here, so its file-list format was checked in ResolveFileConfig.
+        auto version_errors = CheckMinorVersion(object, version, false);
+        AppendFilePath(config_path_, version_errors);
+        errors.insert(errors.end(), version_errors.begin(), version_errors.end());
+      }
     }
 
-    schema_errors = CheckPhasesSchema(object[keys::phases], RootPath(keys::phases));
-    if (!schema_errors.empty())
+    // Each section is checked, also when an earlier section has errors, so that the errors of
+    // all sections are reported. The semantic checks of a full parse still run only on a
+    // document without schema errors.
+    if (object[keys::species])
     {
-      AppendFilePath(config_path_, schema_errors);
-      errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
-      return errors;
+      schema_errors = CheckSpeciesSchema(object[keys::species], RootPath(keys::species));
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
+    }
+
+    if (object[keys::phases])
+    {
+      schema_errors = CheckPhasesSchema(object[keys::phases], RootPath(keys::phases));
+      if (!schema_errors.empty())
+      {
+        AppendFilePath(config_path_, schema_errors);
+        errors.insert(errors.end(), schema_errors.begin(), schema_errors.end());
+      }
     }
 
     // Gas-phase reactions are optional (an aerosol-only config may omit them).
@@ -728,18 +761,18 @@ namespace mechanism_configuration::v1
     return errors;
   }
 
-  std::expected<Mechanism, Errors> Parser::Parse(const std::filesystem::path& config_path)
+  ParseResult Parser::Parse(const std::filesystem::path& config_path)
   {
     // ResolveFileConfig sets config_path_ so errors carry the file path.
     auto object = ResolveFileConfig(config_path);
     if (!object)
     {
-      return std::unexpected(std::move(object.error()));
+      return ParseResult{ std::nullopt, std::move(object.error()) };
     }
     return ValidateAndBuild(*object);
   }
 
-  std::expected<Mechanism, Errors> Parser::Parse(const std::string& content)
+  ParseResult Parser::Parse(const std::string& content)
   {
     SetDefaultConfigPath();  // no file backing this document
     YAML::Node object;
@@ -749,59 +782,58 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(Errors{ { ErrorCode::UnexpectedError, "Failed to parse document: " + std::string(e.what()) } });
+      return ParseResult{ std::nullopt,
+                          { { ErrorCode::UnexpectedError, "Failed to parse document: " + std::string(e.what()) } } };
     }
     return ValidateAndBuild(object);
   }
 
-  std::expected<Mechanism, Errors> Parser::Parse(const YAML::Node& object)
+  ParseResult Parser::Parse(const YAML::Node& object)
   {
     SetDefaultConfigPath();  // no file backing this node
     return ValidateAndBuild(object);
   }
 
-  std::expected<Mechanism, Errors> Parser::ValidateAndBuild(const YAML::Node& object)
+  ParseResult Parser::ValidateAndBuild(const YAML::Node& object)
   {
     try
     {
-      // Structural (schema) validation.
       Errors errors = CheckSchema(object);
 
-      // Semantic validation — needs a structurally-valid document, so only run it when
-      // the structure is clean.
-      if (errors.empty())
-      {
-        auto semantic_errors = ValidateReactionsSemantics(BuildReactionsSemanticInput(object));
-        auto aerosol_errors = ValidateAerosolSemantics(BuildAerosolSemanticInput(object));
-        auto emissions_errors = ValidateEmissionsSemantics(BuildEmissionsSemanticInput(object));
-        semantic_errors.insert(semantic_errors.end(), aerosol_errors.begin(), aerosol_errors.end());
-        semantic_errors.insert(semantic_errors.end(), emissions_errors.begin(), emissions_errors.end());
-        AppendFilePath(config_path_, semantic_errors);
-        errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
-      }
+      // Builds every item that it can, also an item with a schema error. The semantic checks
+      // then skip the items that the mechanism does not have.
+      LeftOutItems left_out;
+      Mechanism mechanism = Build(object, left_out);
+      auto semantic_errors = ValidateReactionsSemantics(BuildReactionsSemanticInput(object, left_out));
+      auto aerosol_errors = ValidateAerosolSemantics(BuildAerosolSemanticInput(object, left_out));
+      auto emissions_errors = ValidateEmissionsSemantics(BuildEmissionsSemanticInput(object, left_out));
+      semantic_errors.insert(semantic_errors.begin(), left_out.errors.begin(), left_out.errors.end());
+      semantic_errors.insert(semantic_errors.end(), aerosol_errors.begin(), aerosol_errors.end());
+      semantic_errors.insert(semantic_errors.end(), emissions_errors.begin(), emissions_errors.end());
+      AppendFilePath(config_path_, semantic_errors);
+      errors.insert(errors.end(), semantic_errors.begin(), semantic_errors.end());
 
-      if (!errors.empty())
-      {
-        return std::unexpected(std::move(errors));
-      }
-
-      return Build(object);
+      return ParseResult{ std::move(mechanism), std::move(errors) };
     }
     catch (const std::exception& e)
     {
       const std::string where = config_path_.empty() ? "document" : "'" + config_path_ + "'";
-      return std::unexpected(
-          Errors{ { ErrorCode::UnexpectedError, "Failed to parse " + where + ": " + std::string(e.what()) } });
+      return ParseResult{ std::nullopt,
+                          { { ErrorCode::UnexpectedError, "Failed to parse " + where + ": " + std::string(e.what()) } } };
     }
   }
 
-  Mechanism Parser::Build(const YAML::Node& object)
+  Mechanism Parser::Build(const YAML::Node& object, LeftOutItems& left_out)
   {
     Mechanism mechanism;
 
-    mechanism.version = Version(object[keys::version].as<std::string>());
-    mechanism.species = ParseSpecies(object[keys::species]);
-    mechanism.phases = ParsePhases(object[keys::phases]);
+    // A document with errors can have no version, species, or phases.
+    if (object[keys::version])
+      mechanism.version = Version(object[keys::version].as<std::string>());
+    if (object[keys::species])
+      mechanism.species = ParseSpecies(object[keys::species], left_out);
+    if (object[keys::phases])
+      mechanism.phases = ParsePhases(object[keys::phases], left_out);
 
     if (object[keys::name])
     {
@@ -809,15 +841,26 @@ namespace mechanism_configuration::v1
     }
     if (object[keys::reactions])
     {
-      mechanism.reactions = ParseReactions(object[keys::reactions]);
+      mechanism.reactions = ParseReactions(object[keys::reactions], left_out);
     }
+    // The aerosol and emissions items refer to each other, so each section is built as a whole.
     if (object[keys::aerosol_representations] && object[keys::aerosol_processes])
     {
-      mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases);
+      BuildItem(
+          object[keys::aerosol_representations],
+          RootPath(keys::aerosol_representations),
+          "aerosol section",
+          left_out,
+          [&] { mechanism.aerosol = ParseAerosol(object, mechanism.species, mechanism.phases); });
     }
     if (object[std::string(keys::emissions)])
     {
-      mechanism.emissions = ParseEmissions(object[std::string(keys::emissions)]);
+      BuildItem(
+          object[std::string(keys::emissions)],
+          RootPath(keys::emissions),
+          "emissions section",
+          left_out,
+          [&] { mechanism.emissions = ParseEmissions(object[std::string(keys::emissions)]); });
     }
     mechanism.unknown_properties = GetComments(object);
 

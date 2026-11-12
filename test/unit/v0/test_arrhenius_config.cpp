@@ -20,9 +20,9 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     std::string file = "./v0_unit_configs/arrhenius/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -30,9 +30,9 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/arrhenius/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -40,9 +40,9 @@ TEST(ArrheniusConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/arrhenius/mutually_exclusive/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::MutuallyExclusiveOption);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::MutuallyExclusiveOption);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -59,7 +59,7 @@ TEST(ArrheniusConfig, ParseConfig)
     std::string file = "./v0_unit_configs/arrhenius/valid/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     // first reaction
     {
@@ -127,11 +127,11 @@ TEST(ArrheniusConfig, DetectsNonstandardKeys)
     std::string file = "./v0_unit_configs/arrhenius/contains_nonstandard_key/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 3);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 3);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -147,9 +147,9 @@ TEST(ArrheniusConfig, DetectsNonstandardProductCoefficient)
     std::string file = "./v0_unit_configs/arrhenius/nonstandard_product_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -165,9 +165,9 @@ TEST(ArrheniusConfig, DetectsNonstandardReactantCoefficient)
     std::string file = "./v0_unit_configs/arrhenius/nonstandard_reactant_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

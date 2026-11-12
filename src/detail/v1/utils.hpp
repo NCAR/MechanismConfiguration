@@ -7,18 +7,70 @@
 #include <mechanism_configuration/errors.hpp>
 #include <mechanism_configuration/types/property_value.hpp>
 
+#include <detail/error_format.hpp>
 #include <detail/location.hpp>
 #include <detail/v1/keys.hpp>
 #include <yaml-cpp/yaml.h>
 
+#include <exception>
 #include <filesystem>
 #include <iostream>
+#include <set>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace mechanism_configuration::v1
 {
+  /// @brief The items that the parser cannot build, and the errors that tell why.
+  struct LeftOutItems
+  {
+    /// @brief The JSON Pointer of each item that the mechanism does not have
+    std::set<std::string, std::less<>> paths;
+    Errors errors;
+  };
+
+  /// @brief Records that the item at `path` is left out. `reason` follows the message.
+  inline void LeaveOut(
+      const YAML::Node& item,
+      const std::string& path,
+      std::string_view what,
+      const std::string& reason,
+      LeftOutItems& left_out)
+  {
+    left_out.paths.insert(path);
+    left_out.errors.push_back(
+        { ErrorCode::ItemLeftOut,
+          ToString(LocationOf(item)) + " error: The " + std::string(what) + " cannot be built, so it is left out" + reason +
+              ".",
+          path });
+  }
+
+  /// @brief Builds one item with `build`. If the build throws, the item is left out, and
+  ///        `left_out` gets its path and an error.
+  /// @param item The YAML node of the item, for the location in the error
+  /// @param path The JSON Pointer to the item
+  /// @param what The kind of the item, for example "species"
+  template<typename Build>
+  void
+  BuildItem(const YAML::Node& item, const std::string& path, std::string_view what, LeftOutItems& left_out, Build&& build)
+  {
+    try
+    {
+      build();
+    }
+    catch (const YAML::Exception&)
+    {
+      // A schema error of the item tells the cause, so the yaml-cpp message is not added.
+      LeaveOut(item, path, what, "", left_out);
+    }
+    catch (const std::exception& e)
+    {
+      LeaveOut(item, path, what, std::string(": ") + e.what(), left_out);
+    }
+  }
+
   /// @brief Ensures a YAML node is treated as a sequence
   /// @param node The YAML node to convert
   /// @return A YAML sequence node containing the original node(s)

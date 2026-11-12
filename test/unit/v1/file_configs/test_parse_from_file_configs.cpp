@@ -26,7 +26,7 @@ TEST(ParseFromFileConfigs, TwoSpeciesSets)
   auto parsed = Parse(configBase + "two_species_sets/main.json");
   ASSERT_TRUE(parsed);
 
-  auto& mechanism = *parsed;
+  auto& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.name, "troposphere and stratosphere configs");
 
   ASSERT_EQ(mechanism.species.size(), 6);
@@ -53,7 +53,7 @@ TEST(ParseFromFileConfigs, TwoPhasesSets)
   auto parsed = Parse(configBase + "two_phases_sets/main.json");
   ASSERT_TRUE(parsed);
 
-  auto& mechanism = *parsed;
+  auto& mechanism = *parsed.mechanism;
 
   ASSERT_EQ(mechanism.species.size(), 3);
 
@@ -73,9 +73,9 @@ TEST(ParseFromFileConfigs, MissingPhaseSet)
   auto parsed = Parse(configBase + "missing_phase_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-  for (const auto& error : parsed.error())
+  ASSERT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+  for (const auto& error : parsed.errors)
     std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
 }
 
@@ -87,23 +87,34 @@ TEST(ParseFromFileConfigs, MissingReactionSet)
   auto parsed = Parse(configBase + "missing_reaction_set/main.json");
   ASSERT_TRUE(parsed);
 
-  auto& mechanism = *parsed;
+  auto& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.reactions.arrhenius.size(), 0);
   EXPECT_EQ(mechanism.reactions.photolysis.size(), 0);
 }
 
 // ── missing_species_set ───────────────────────────────────────────────────────
-// "species" key absent from main.json : RequiredKeyNotFound from CheckSchema
+// "species" key absent from main.json : RequiredKeyNotFound from CheckSchema. The phases and the
+// reactions are still built, so each of their species references is unknown.
 
 TEST(ParseFromFileConfigs, MissingSpeciesSet)
 {
   auto parsed = Parse(configBase + "missing_species_set/main.json");
 
-  EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-  for (const auto& error : parsed.error())
+  for (const auto& error : parsed.errors)
     std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
+  EXPECT_FALSE(parsed);
+  ASSERT_TRUE(parsed.mechanism);
+  ASSERT_GT(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+  for (std::size_t i = 1; i < parsed.errors.size(); ++i)
+  {
+    EXPECT_TRUE(
+        parsed.errors[i].code == ErrorCode::PhaseRequiresUnknownSpecies ||
+        parsed.errors[i].code == ErrorCode::ReactionRequiresUnknownSpecies)
+        << i;
+  }
+  EXPECT_TRUE(parsed.mechanism->species.empty());
+  EXPECT_FALSE(parsed.mechanism->phases.empty());
 }
 
 // ── version_mismatch ──────────────────────────────────────────────────────────
@@ -114,12 +125,12 @@ TEST(ParseFromFileConfigs, VersionMismatch)
   auto parsed = Parse(configBase + "version_mismatch/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.error().size(), 1);
-  EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidVersion);
+  ASSERT_EQ(parsed.errors.size(), 1);
+  EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidVersion);
   EXPECT_NE(
-      parsed.error()[0].message.find("The file-list format requires version '1.1' or newer, but the version is '1.0.0'."),
+      parsed.errors[0].message.find("The file-list format requires version '1.1' or newer, but the version is '1.0.0'."),
       std::string::npos);
-  for (const auto& error : parsed.error())
+  for (const auto& error : parsed.errors)
     std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";
 }
 
@@ -131,7 +142,7 @@ TEST(ParseFromFileConfigs, MixedInlineSpecies)
   auto parsed = Parse(configBase + "mixed_inline_species/main.json");
   ASSERT_TRUE(parsed);
 
-  auto& mechanism = *parsed;
+  auto& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.name, "mixed inline species");
 
   ASSERT_EQ(mechanism.species.size(), 3);
@@ -153,7 +164,7 @@ TEST(ParseFromFileConfigs, MixedInlineReactions)
   auto parsed = Parse(configBase + "mixed_inline_reactions/main.json");
   ASSERT_TRUE(parsed);
 
-  auto& mechanism = *parsed;
+  auto& mechanism = *parsed.mechanism;
   EXPECT_EQ(mechanism.name, "mixed inline reactions");
 
   ASSERT_EQ(mechanism.species.size(), 3);
@@ -173,8 +184,8 @@ TEST(ParseFromFileConfigs, DuplicateSpeciesSet)
   auto parsed = Parse(configBase + "duplicate_species_set/main.json");
 
   EXPECT_FALSE(parsed);
-  ASSERT_EQ(parsed.error().size(), 6);
-  for (const auto& error : parsed.error())
+  ASSERT_EQ(parsed.errors.size(), 6);
+  for (const auto& error : parsed.errors)
   {
     EXPECT_EQ(error.code, ErrorCode::DuplicateSpeciesDetected);
     std::cout << error.message << " " << ErrorCodeToString(error.code) << "\n";

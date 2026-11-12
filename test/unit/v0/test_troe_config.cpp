@@ -20,9 +20,9 @@ TEST(TroeConfig, DetectsInvalidConfig)
     std::string file = "./v0_unit_configs/troe/missing_reactants/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -30,9 +30,9 @@ TEST(TroeConfig, DetectsInvalidConfig)
     file = "./v0_unit_configs/troe/missing_products/config" + extension;
     parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::RequiredKeyNotFound);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::RequiredKeyNotFound);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -49,7 +49,7 @@ TEST(TroeConfig, ParseConfig)
     std::string file = "./v0_unit_configs/troe/valid/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_TRUE(parsed);
-    Mechanism mechanism = *parsed;
+    Mechanism mechanism = *parsed.mechanism;
 
     auto& process_vector = mechanism.reactions.troe;
     EXPECT_EQ(process_vector.size(), 2);
@@ -107,16 +107,16 @@ TEST(TroeConfig, DetectsNonstandardKeys)
     std::string file = "./v0_unit_configs/troe/contains_nonstandard_key/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 8);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[1].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[2].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[3].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[4].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[5].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[6].code, ErrorCode::InvalidKey);
-    EXPECT_EQ(parsed.error()[7].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 8);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[1].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[2].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[3].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[4].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[5].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[6].code, ErrorCode::InvalidKey);
+    EXPECT_EQ(parsed.errors[7].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -132,9 +132,9 @@ TEST(TroeConfig, DetectsNonstandardProductCoefficient)
     std::string file = "./v0_unit_configs/troe/nonstandard_product_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }
@@ -150,9 +150,9 @@ TEST(TroeConfig, DetectsNonstandardReactantCoefficient)
     std::string file = "./v0_unit_configs/troe/nonstandard_reactant_coef/config" + extension;
     auto parsed = parser.Parse(file);
     EXPECT_FALSE(parsed);
-    EXPECT_EQ(parsed.error().size(), 1);
-    EXPECT_EQ(parsed.error()[0].code, ErrorCode::InvalidKey);
-    for (auto& error : parsed.error())
+    EXPECT_EQ(parsed.errors.size(), 1);
+    EXPECT_EQ(parsed.errors[0].code, ErrorCode::InvalidKey);
+    for (auto& error : parsed.errors)
     {
       std::cout << error.message << " " << ErrorCodeToString(error.code) << std::endl;
     }

@@ -61,6 +61,8 @@ namespace mechanism_configuration
     OnlineSourcesNotSupported,
     UnsupportedRegriddingType,
     UnsupportedVerticalInjection,
+    // A partial parse could not build an item, so the mechanism does not have it
+    ItemLeftOut,
   };
 
   std::string ErrorCodeToString(const ErrorCode& status);

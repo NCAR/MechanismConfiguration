@@ -79,18 +79,19 @@ All work goes through the ``mechanism_configuration::Mechanism`` struct. You can
     {
       int status = 0;
 
-      // 1) Parse from a file (YAML or JSON; v0 or v1). Returns std::expected<Mechanism, Errors>
-      //    with both structural and semantic errors reported.
+      // 1) Parse from a file (YAML or JSON; v0 or v1). The result has as much of the mechanism as
+      //    the parser can build, and all the structural and semantic errors. It converts to true
+      //    only when there are no errors.
       if (auto parsed = Parse("examples/v1/full_configuration.yaml"))
       {
-        const Mechanism& mechanism = *parsed;
+        const Mechanism& mechanism = *parsed.mechanism;
         std::cout << "Parsed '" << mechanism.name << "': " << mechanism.species.size()
                   << " species, " << mechanism.reactions.arrhenius.size() << " Arrhenius reactions\n";
       }
       else
       {
         std::cerr << "Failed to parse file:\n";
-        print_errors(parsed.error());
+        print_errors(parsed.errors);
         status = 1;
       }
 
