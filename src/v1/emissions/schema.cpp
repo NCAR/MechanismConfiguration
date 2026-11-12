@@ -153,8 +153,9 @@ namespace mechanism_configuration::v1
           if (vi_val == std::string(keys::inject_plume))
           {
             const ErrorLocation loc = LocationOf(item[std::string(keys::vertical_injection)]);
-            errors.push_back({ ErrorCode::UnsupportedVerticalInjection,
-                               ToString(loc) + " error: 'vertical injection: plume' is not supported in v1" });
+            errors.push_back(
+                { ErrorCode::UnsupportedVerticalInjection,
+                  ToString(loc) + " error: 'vertical injection: plume' is not supported in v1" });
           }
           else if (vi_val != std::string(keys::inject_surface))
           {
