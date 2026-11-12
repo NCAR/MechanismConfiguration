@@ -15,8 +15,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <expected>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 namespace mechanism_configuration::v1
@@ -65,7 +65,8 @@ namespace mechanism_configuration::v1
     std::string config_path_;
 
     /// @brief Resolves a configuration file's file-list sections into a single inline node.
-    std::expected<YAML::Node, Errors> ResolveFileConfig(const std::filesystem::path& config_path);
+    ///        Gives no node, and adds to `errors`, when the configuration cannot be resolved.
+    std::optional<YAML::Node> ResolveFileConfig(const std::filesystem::path& config_path, Errors& errors);
 
     /// @brief Runs the structural checks, builds every item that it can, and then runs the
     ///        semantic checks on the items that it built. Maps a thrown exception to an error.

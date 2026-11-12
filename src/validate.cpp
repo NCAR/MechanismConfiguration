@@ -112,6 +112,18 @@ namespace mechanism_configuration
                           reaction.phase + "' phase."),
                   component.path });
         }
+      // The struct keeps the reactants of a photolysis in a list, so the list can have more than one.
+      if (reaction.type == "PHOTOLYSIS" && reaction.reactants.size() > 1)
+      {
+        const auto& extra = reaction.reactants[1];
+        errors.push_back(
+            { ErrorCode::TooManyReactionComponents,
+              Message(
+                  extra.location,
+                  "'" + reaction.type + "' reaction requires one reactant, but " +
+                      std::to_string(reaction.reactants.size()) + " were provided."),
+              extra.path });
+      }
       for (const auto& species : reaction.needs_molecular_weight)
       {
         if (species_names.contains(species.name) && !input.species_with_molecular_weight.contains(species.name))

@@ -4,6 +4,12 @@ Changelog
 Unreleased
 ----------
 
+C++20
+^^^^^
+
+- The library now requires C++20, not C++23. The public headers do not use C++23 features, and
+  the library does not use ``std::expected`` internally.
+
 Parse Results with Partial Mechanisms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

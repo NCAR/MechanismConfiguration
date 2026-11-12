@@ -164,6 +164,24 @@ TEST(Validate, DetectsSurfaceSpeciesWithoutMolecularWeight)
   EXPECT_TRUE(Validate(m).empty());
 }
 
+// The parser checks this too, but a Photolysis made in code can have more than one reactant.
+TEST(Validate, DetectsPhotolysisWithMoreThanOneReactant)
+{
+  Mechanism m = BaseMechanism();
+  types::Photolysis rxn;
+  rxn.gas_phase = "gas";
+  rxn.reactants = { component("A") };
+  rxn.products = { component("B") };
+  m.reactions.photolysis = { rxn };
+  EXPECT_TRUE(Validate(m).empty());
+
+  m.reactions.photolysis[0].reactants.push_back(component("B"));
+  auto errors = Validate(m);
+  ASSERT_EQ(errors.size(), 1);
+  EXPECT_EQ(errors[0].code, ErrorCode::TooManyReactionComponents);
+  EXPECT_EQ(errors[0].path, "/reactions/photolysis/0/reactants/1");
+}
+
 TEST(Validate, DetectsDuplicateSpecies)
 {
   Mechanism m = BaseMechanism();

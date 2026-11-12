@@ -26,12 +26,13 @@ namespace mechanism_configuration
     std::optional<ErrorLocation> location;
   };
 
-  std::expected<DetectedVersion, Errors> GetVersion(const std::filesystem::path& config_path)
+  // Gives no version, and adds to `errors`, when the file does not exist or cannot be read.
+  std::optional<DetectedVersion> GetVersion(const std::filesystem::path& config_path, Errors& errors)
   {
     if (!std::filesystem::exists(config_path))
     {
-      return std::unexpected(
-          Errors{ { ErrorCode::FileNotFound, "Configuration file '" + config_path.string() + "' does not exist." } });
+      errors.push_back({ ErrorCode::FileNotFound, "Configuration file '" + config_path.string() + "' does not exist." });
+      return std::nullopt;
     }
 
     if (std::filesystem::exists(config_path) && std::filesystem::is_directory(config_path))
@@ -46,9 +47,9 @@ namespace mechanism_configuration
     }
     catch (const YAML::Exception& e)
     {
-      return std::unexpected(
-          Errors{
-              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
+      errors.push_back(
+          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) });
+      return std::nullopt;
     }
 
     // The version field is version-agnostic (it's how we dispatch), so read it literally
@@ -66,11 +67,12 @@ namespace mechanism_configuration
 
   ParseResult Parse(const std::filesystem::path& config_path)
   {
-    auto version = GetVersion(config_path);
+    Errors errors;
+    auto version = GetVersion(config_path, errors);
 
     if (!version)
     {
-      return ParseResult{ std::nullopt, std::move(version.error()) };
+      return ParseResult{ std::nullopt, std::move(errors) };
     }
 
     switch (version->version.major)
