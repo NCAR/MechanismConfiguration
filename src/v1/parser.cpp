@@ -109,11 +109,11 @@ namespace mechanism_configuration::v1
 
       if (version.minor > NEWEST_MINOR_VERSION)
       {
-        errors.push_back({ ErrorCode::InvalidVersion,
-                           ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
-                               "' is not supported. The newest supported version is '1." +
-                               std::to_string(NEWEST_MINOR_VERSION) + "'.",
-                           RootPath(keys::version) });
+        errors.push_back(
+            { ErrorCode::InvalidVersion,
+              ToString(LocationOf(version_node)) + " error: Version '" + version.to_string() +
+                  "' is not supported. The newest supported version is '1." + std::to_string(NEWEST_MINOR_VERSION) + "'.",
+              RootPath(keys::version) });
         return errors;
       }
 
@@ -142,21 +142,23 @@ namespace mechanism_configuration::v1
           const std::string type = reaction[std::string(keys::type)].as<std::string>();
           for (const auto& [reaction_type, minimum_minor] : REACTION_TYPE_MINIMUM_MINOR_VERSION)
             if (type == reaction_type)
-              requirements.push_back({ "The '" + type + "' reaction type",
-                                       reaction[std::string(keys::type)],
-                                       ChildPath(path, keys::type),
-                                       minimum_minor });
+              requirements.push_back(
+                  { "The '" + type + "' reaction type",
+                    reaction[std::string(keys::type)],
+                    ChildPath(path, keys::type),
+                    minimum_minor });
         }
       }
 
       for (const auto& requirement : requirements)
       {
         if (version.minor < requirement.minimum_minor)
-          errors.push_back({ ErrorCode::InvalidVersion,
-                             ToString(LocationOf(requirement.node)) + " error: " + requirement.feature +
-                                 " requires version '1." + std::to_string(requirement.minimum_minor) +
-                                 "' or newer, but the version is '" + version.to_string() + "'.",
-                             requirement.path });
+          errors.push_back(
+              { ErrorCode::InvalidVersion,
+                ToString(LocationOf(requirement.node)) + " error: " + requirement.feature + " requires version '1." +
+                    std::to_string(requirement.minimum_minor) + "' or newer, but the version is '" + version.to_string() +
+                    "'.",
+                requirement.path });
       }
       return errors;
     }
@@ -514,8 +516,9 @@ namespace mechanism_configuration::v1
     }
     catch (const std::exception& e)
     {
-      return std::unexpected(Errors{
-          { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
+      return std::unexpected(
+          Errors{
+              { ErrorCode::UnexpectedError, "Failed to parse '" + config_path.string() + "': " + std::string(e.what()) } });
     }
 
     Errors errors;
@@ -558,9 +561,10 @@ namespace mechanism_configuration::v1
         }
         catch (const std::exception& e)
         {
-          errors.push_back({ ErrorCode::UnexpectedError,
-                             "Failed to parse file: " + file_path.string() + ": " + e.what(),
-                             file_node_path });
+          errors.push_back(
+              { ErrorCode::UnexpectedError,
+                "Failed to parse file: " + file_path.string() + ": " + e.what(),
+                file_node_path });
         }
       }
       return merged;
